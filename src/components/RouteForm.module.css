@@ -1,0 +1,228 @@
+/* ===== Поле ===== */
+
+.field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.field:focus-within {
+  z-index: 10;
+}
+
+.label {
+  color: var(--muted, #a6bdca);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 10px;
+
+  border: 1px solid rgba(132, 184, 206, 0.25);
+  border-radius: 9px;
+  background: #102431;
+
+  color: #f5f3ee;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.triggerOpen {
+  border-color: #79ddef;
+  background: #14303e;
+}
+
+.trigger:focus-visible {
+  outline: 2px solid #79ddef;
+  outline-offset: 3px;
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: #9db8c6;
+  transition: transform 180ms ease;
+}
+
+.triggerOpen .chevron {
+  transform: rotate(180deg);
+}
+
+/* ===== Флаги и иконки ===== */
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 20px;
+  color: #a6bdca;
+}
+
+.flagImage {
+  display: block;
+  width: 22px;
+  height: 16px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+.programIcon {
+  color: #f5a383;
+}
+
+/* ===== Выпадающий список ===== */
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+
+  width: max-content;
+  min-width: 100%;
+  max-width: min(280px, calc(100vw - 48px));
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+
+  border: 1px solid #345362;
+  border-radius: 12px;
+
+  background: #0d2230;
+  box-shadow:
+    inset 0 1px 0 rgba(222, 244, 255, 0.04),
+    0 16px 36px rgba(0, 0, 0, 0.28);
+
+  scrollbar-width: thin;
+  scrollbar-color: #365767 #0d2230;
+}
+
+/* Последний список раскрывается в сторону формы */
+.field:last-child .menu {
+  right: 0;
+  left: auto;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 42px;
+  padding: 10px;
+  border-radius: 8px;
+
+  color: #c6d8e1;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.optionText {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.optionSelected {
+  color: #ffffff;
+}
+
+.optionActive {
+  background: #1b3b4b;
+  color: #ffffff;
+}
+
+.check {
+  flex-shrink: 0;
+  margin-left: 6px;
+  color: #f5a383;
+}
+
+@media (hover: hover) {
+  .trigger:hover {
+    border-color: rgba(132, 184, 206, 0.5);
+  }
+
+  .triggerOpen:hover {
+    border-color: #79ddef;
+  }
+
+  .option:hover {
+    background: #1b3b4b;
+    color: #ffffff;
+  }
+}
+
+/* ===== Телефон ===== */
+
+@media (max-width: 700px) {
+  .label {
+    font-size: 10px;
+  }
+
+  .trigger {
+    min-height: 46px;
+    padding-inline: 12px;
+    font-size: 16px;
+  }
+
+  .menu {
+    width: 100%;
+    max-width: none;
+  }
+
+  .option {
+    min-height: 46px;
+    font-size: 15px;
+  }
+}
+
+/* ===== Уменьшение анимаций ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .chevron,
+  .option {
+    transition: none;
+  }
+}

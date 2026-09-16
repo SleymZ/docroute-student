@@ -1,26 +1,74 @@
-import { Route } from "lucide-react";
+import {
+  ArrowUpRight,
+  Compass,
+  GraduationCap,
+  LogIn,
+  MapPinned,
+  Route,
+  Signpost,
+} from "lucide-react";
+
+import styles from "./Header.module.css";
+
+const navigation = [
+  {
+  label: "Explore",
+  href: "/explore",
+  icon: Compass,
+},
+  {
+    label: "Universities",
+    href: "#universities",
+    icon: GraduationCap,
+  },
+  {
+    label: "Residence routes",
+    href: "#residence",
+    icon: MapPinned,
+  },
+  {
+    label: "How it works",
+    href: "#how-it-works",
+    icon: Signpost,
+  },
+];
 
 export function Header() {
   return (
-    <header className="site-header">
-      <a className="brand" href="#">
-        <span className="brand-icon">
-          <Route size={20} />
+    <header className={styles.header}>
+      <a
+        href="/"
+        className={styles.brand}
+        aria-label="DocRoute Student — home"
+      >
+        <span className={styles.brandMark}>
+          <Route size={25} strokeWidth={1.7} aria-hidden="true" />
         </span>
-        <span>DocRoute Student</span>
+
+        <span className={styles.brandText}>
+          <span className={styles.brandName}>DocRoute</span>
+          <span className={styles.brandCaption}>STUDENT</span>
+        </span>
       </a>
 
-      <nav className="navigation">
-        <a href="#explore">Explore</a>
-        <a href="#universities">Universities</a>
-        <a href="#residence">Residence routes</a>
-        <a href="#how-it-works">How it works</a>
+      <nav className={styles.navigation} aria-label="Main navigation">
+        {navigation.map(({ label, href, icon: Icon }) => (
+          <a key={label} href={href} className={styles.navLink}>
+            <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+            <span>{label}</span>
+          </a>
+        ))}
       </nav>
 
-      <div className="header-actions">
-        <button className="login-button">Log in</button>
-        <a className="primary-button compact" href="#route-builder">
-          Build my route
+      <div className={styles.actions}>
+        <button type="button" className={styles.login}>
+          <LogIn size={16} aria-hidden="true" />
+          <span>Log in</span>
+        </button>
+
+        <a href="#route-builder" className={styles.buildRoute}>
+          <span>Build my route</span>
+          <ArrowUpRight size={18} aria-hidden="true" />
         </a>
       </div>
     </header>

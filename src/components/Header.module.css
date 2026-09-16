@@ -1,0 +1,314 @@
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  width: calc(100% - var(--page-gutter, 24px) * 2);
+  min-height: var(--header-height, 72px);
+  margin-inline: auto;
+  padding-block: 10px;
+}
+
+/* Нижняя линия связывает шапку с картой */
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    rgba(126, 175, 194, 0.26),
+    rgba(126, 175, 194, 0.1) 55%,
+    rgba(126, 175, 194, 0.26)
+  );
+}
+
+/* Логотип */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid rgba(255, 151, 122, 0.28);
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 137, 108, 0.14),
+      rgba(255, 137, 108, 0.025)
+    ),
+    #10212b;
+
+  color: #ff947b;
+
+  box-shadow: inset 0 1px 0 rgba(255, 222, 199, 0.06);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brandName {
+  color: #f5f3ee;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.brandCaption {
+  color: #a8c3ce;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.27em;
+}
+
+/* Общая капсула меню */
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px;
+
+  border: 1px solid rgba(132, 184, 206, 0.16);
+  border-radius: 15px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(18, 40, 53, 0.84),
+    rgba(10, 27, 38, 0.84)
+  );
+
+  box-shadow: inset 0 1px 0 rgba(221, 245, 255, 0.035);
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 40px;
+  padding: 9px 16px;
+  border-radius: 10px;
+
+  color: #d5e2e9;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color 180ms ease,
+    background-color 180ms ease;
+}
+
+.navLink svg {
+  flex-shrink: 0;
+  color: #f49a78;
+  transition: color 180ms ease;
+}
+
+/* Действия справа */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.login,
+.buildRoute {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  min-height: 44px;
+  padding: 11px 15px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.login {
+  border-color: rgba(132, 184, 206, 0.16);
+  background: rgba(13, 31, 42, 0.6);
+  color: #c6d7df;
+}
+
+.login svg {
+  color: #93b5c4;
+}
+
+.buildRoute {
+  border-color: rgba(255, 220, 199, 0.22);
+  background: #ff8067;
+  color: #10202a;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 217, 0.22);
+}
+
+.buildRoute svg {
+  transition: transform 180ms ease;
+}
+
+@media (hover: hover) {
+  .navLink:hover {
+    background: rgba(121, 221, 239, 0.08);
+    color: #f5f3ee;
+  }
+
+ .navLink:hover svg {
+  color: #ffbc9d;
+}
+
+  .login:hover {
+    border-color: rgba(132, 184, 206, 0.35);
+    background: #142d3a;
+    color: #ffffff;
+  }
+
+  .buildRoute:hover {
+    background: #ff947d;
+  }
+
+  .buildRoute:hover svg {
+    transform: translate(2px, -2px);
+  }
+}
+
+.brand:focus-visible,
+.navLink:focus-visible,
+.login:focus-visible,
+.buildRoute:focus-visible {
+  outline: 2px solid #79ddef;
+  outline-offset: 3px;
+}
+
+/* На среднем экране убираем только иконки меню */
+@media (min-width: 1101px) and (max-width: 1350px) {
+  .header {
+    gap: 16px;
+  }
+
+  .navLink {
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+
+  .navLink svg {
+    display: none;
+  }
+}
+
+/* Меню переносится на вторую строку */
+@media (max-width: 1100px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-block: 12px;
+  }
+
+  .navigation {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .navLink {
+    flex: 1 0 auto;
+  }
+
+  .actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    gap: 10px;
+  }
+
+  .brandMark {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+
+  .brandName {
+    font-size: 18px;
+  }
+
+  .brandCaption {
+    font-size: 8px;
+  }
+
+  .login,
+  .buildRoute {
+    min-height: 40px;
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .login svg {
+    display: none;
+  }
+
+  .navigation {
+    border-radius: 12px;
+  }
+
+  .navLink {
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+
+  .navLink svg {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink,
+  .navLink svg,
+  .login,
+  .buildRoute,
+  .buildRoute svg {
+    transition: none;
+  }
+}

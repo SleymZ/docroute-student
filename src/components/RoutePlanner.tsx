@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { CheckCircle2 } from "lucide-react";
 
 import {
   demoDestinations,
   destinationOptions,
+  programOptions,
 } from "@/data/demo-destinations";
 
 import type { Destination } from "@/types/destination";
-
 import { RouteForm } from "@/components/RouteForm";
 import { EuropeMap } from "@/components/EuropeMap";
 
@@ -19,8 +19,30 @@ export function RoutePlanner() {
   const [destination, setDestination] =
     useState<Destination>("Slovakia");
   const [program, setProgram] = useState("Medicine");
-
   const [routeGenerated, setRouteGenerated] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const requestedDestination = params.get("destination");
+    const requestedProgram = params.get("program");
+
+    const validDestination = destinationOptions.find(
+      (item) => item === requestedDestination,
+    );
+
+    const validProgram = programOptions.find(
+      (item) => item === requestedProgram,
+    );
+
+    if (validDestination) {
+      setDestination(validDestination);
+    }
+
+    if (validProgram) {
+      setProgram(validProgram);
+    }
+  }, []);
 
   const selectedDestination = demoDestinations[destination];
 
@@ -62,8 +84,9 @@ export function RoutePlanner() {
         </h1>
 
         <p className="hero-description">
-          Plan your university applications and the documents you’ll need
-          along the way — from admission to student residence.
+          Plan your university applications and the documents
+          you’ll need along the way — from admission to student
+          residence.
         </p>
 
         <RouteForm
@@ -78,19 +101,19 @@ export function RoutePlanner() {
 
         {routeGenerated && (
           <div className="generated-result" role="status">
-            <CheckCircle2 size={21} />
+            <CheckCircle2 size={21} aria-hidden="true" />
 
             <div>
               <strong>Your demo preview is ready</strong>
-
               <p>
                 {documentCountry} → {destination} · {program}
               </p>
             </div>
 
             <span>
-              {selectedDestination.sourceDocuments} sample documents →{" "}
-              {selectedDestination.requirements} sample requirements
+              {selectedDestination.sourceDocuments} sample
+              documents → {selectedDestination.requirements} sample
+              requirements
             </span>
           </div>
         )}
