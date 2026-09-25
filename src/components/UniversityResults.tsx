@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 import {
   ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   Bookmark,
   Building2,
@@ -23,6 +24,7 @@ import {
 } from "@/data/verified-programs";
 
 import styles from "./ExploreCatalog.module.css";
+import linkStyles from "./UniversityResults.module.css";
 
 const PAGE_SIZE = 8;
 
@@ -285,31 +287,40 @@ export function UniversityResults() {
           .slice(0, visibleCount)
           .map((university, index) => {
             const isSaved = saved.has(university.id);
+            const universityHref = `/universities/${encodeURIComponent(
+              university.id,
+            )}?${new URLSearchParams({
+              program: selectedProgram,
+            }).toString()}`;
 
             return (
               <article
                 key={university.id}
                 className={styles.universityCard}
               >
-                <div className={styles.universityVisual}>
-  <UniversityImage
-    name={university.name}
-    country={university.country}
-  />
+                <Link
+                  href={universityHref}
+                  className={`${styles.universityVisual} ${linkStyles.universityVisualLink}`}
+                  aria-label={`Open ${university.name}`}
+                >
+                  <UniversityImage
+                    name={university.name}
+                    country={university.country}
+                  />
 
-  <span className={styles.cardNumber}>
-    {String(index + 1).padStart(2, "0")}
-  </span>
+                  <span className={styles.cardNumber}>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-  <Image
-    src={`https://flagcdn.com/w80/${countryCode.toLowerCase()}.png`}
-    alt=""
-    width={34}
-    height={25}
-    unoptimized
-    className={styles.cardFlag}
-  />
-</div>
+                  <Image
+                    src={`https://flagcdn.com/w80/${countryCode.toLowerCase()}.png`}
+                    alt=""
+                    width={34}
+                    height={25}
+                    unoptimized
+                    className={styles.cardFlag}
+                  />
+                </Link>
 
                 <div className={styles.universityContent}>
                   <div className={styles.cardStatus}>
@@ -359,7 +370,14 @@ export function UniversityResults() {
                       : ""}
                   </p>
 
-                  <h2>{university.name}</h2>
+                  <h2>
+                    <Link
+                      href={universityHref}
+                      className={linkStyles.universityTitleLink}
+                    >
+                      {university.name}
+                    </Link>
+                  </h2>
 
                   {university.matchingPrograms.length > 0 ? (
                     <div className={styles.programMatches}>
@@ -401,7 +419,20 @@ export function UniversityResults() {
                     </p>
                   )}
 
-                  <div className={styles.cardActions}>
+                  <div
+                    className={`${styles.cardActions} ${linkStyles.cardActions}`}
+                  >
+                    <Link
+                      href={universityHref}
+                      className={linkStyles.profileLink}
+                    >
+                      View university
+                      <ArrowRight
+                        size={17}
+                        aria-hidden="true"
+                      />
+                    </Link>
+
                     <a
                       href={university.website}
                       target="_blank"

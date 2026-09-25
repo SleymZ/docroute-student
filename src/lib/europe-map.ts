@@ -5,6 +5,7 @@ import type {
   Topology,
 } from "topojson-specification";
 import worldData from "world-atlas/countries-50m.json";
+
 import type { Destination } from "@/types/destination";
 
 type CountryProperties = {
@@ -15,6 +16,14 @@ type WorldTopology = Topology<{
   countries: GeometryCollection<CountryProperties>;
 }>;
 
+type MapPoint = {
+  x: number;
+  y: number;
+};
+
+export const MAP_WIDTH = 1100;
+export const MAP_HEIGHT = 600;
+
 const topology = worldData as unknown as WorldTopology;
 
 const countries = feature(
@@ -22,38 +31,118 @@ const countries = feature(
   topology.objects.countries,
 ).features;
 
-
-
-/*
- * Европейские страны.
- * Россия включена, но восточная часть выходит за пределы кадра.
- * Заморские территории отсекаются отдельно ниже.
- */
-export const MAP_WIDTH = 1100;
-export const MAP_HEIGHT = 600;
-
 const projection = geoMercator()
   .center([16, 50])
   .scale(875)
-  .translate([MAP_WIDTH / 2, MAP_HEIGHT / 2]);
+  .translate([MAP_WIDTH / 2, MAP_HEIGHT / 2])
+  .clipExtent([
+    [0, 0],
+    [MAP_WIDTH, MAP_HEIGHT],
+  ]);
+
 const pathGenerator = geoPath(projection);
 
-const destinationById: Record<string, Destination> = {
+/*
+ * Only these destinations currently have verified route data.
+ * Germany is highlighted below, but it is not connected to
+ * Destination until its route data is added.
+ */
+const destinationById: Partial<Record<string, Destination>> = {
   "703": "Slovakia",
   "203": "Czechia",
   "642": "Romania",
   "100": "Bulgaria",
 };
 
+/*
+ * Featured countries stay highlighted even while another
+ * European country is being explored.
+ */
+const highlightedCountryIds = new Set([
+  "703", // Slovakia
+  "203", // Czechia
+  "642", // Romania
+  "100", // Bulgaria
+  "276", // Germany
+]);
+
+/*
+ * Stable English names avoid differences between server and
+ * browser locale data during hydration.
+ */
+const europeanCountryNames: Record<string, string> = {
+  "008": "Albania",
+  "020": "Andorra",
+  "040": "Austria",
+  "051": "Armenia",
+  "031": "Azerbaijan",
+  "112": "Belarus",
+  "056": "Belgium",
+  "070": "Bosnia and Herzegovina",
+  "100": "Bulgaria",
+  "191": "Croatia",
+  "196": "Cyprus",
+  "203": "Czechia",
+  "208": "Denmark",
+  "233": "Estonia",
+  "246": "Finland",
+  "250": "France",
+  "268": "Georgia",
+  "276": "Germany",
+  "300": "Greece",
+  "348": "Hungary",
+  "352": "Iceland",
+  "372": "Ireland",
+  "380": "Italy",
+  "383": "Kosovo",
+  "428": "Latvia",
+  "438": "Liechtenstein",
+  "440": "Lithuania",
+  "442": "Luxembourg",
+  "470": "Malta",
+  "498": "Moldova",
+  "492": "Monaco",
+  "499": "Montenegro",
+  "528": "Netherlands",
+  "807": "North Macedonia",
+  "578": "Norway",
+  "616": "Poland",
+  "620": "Portugal",
+  "642": "Romania",
+  "643": "Russia",
+  "674": "San Marino",
+  "688": "Serbia",
+  "703": "Slovakia",
+  "705": "Slovenia",
+  "724": "Spain",
+  "752": "Sweden",
+  "756": "Switzerland",
+  "792": "Turkey",
+  "804": "Ukraine",
+  "826": "United Kingdom",
+  "336": "Vatican City",
+};
+
+const interactiveCountryIds = new Set(
+  Object.keys(europeanCountryNames),
+);
+
 export const mapCountries = countries
   .map((country, index) => {
-    const id = String(country.id ?? `country-${index}`).padStart(3, "0");
+    const id = String(
+      country.id ?? `country-${index}`,
+    ).padStart(3, "0");
 
     return {
       id,
-      name: country.properties?.name ?? "Country",
+      name:
+        europeanCountryNames[id] ??
+        country.properties?.name ??
+        "Country",
       path: pathGenerator(country) ?? "",
       destination: destinationById[id],
+      highlighted: highlightedCountryIds.has(id),
+      interactive: interactiveCountryIds.has(id),
     };
   })
   .filter((country) => country.path.length > 0);
@@ -61,12 +150,9 @@ export const mapCountries = countries
 export const graticulePath =
   pathGenerator(geoGraticule10()) ?? "";
 
-type MapPoint = {
-  x: number;
-  y: number;
-};
-
-function projectPoint(coordinates: [number, number]): MapPoint {
+function projectPoint(
+  coordinates: [number, number],
+): MapPoint {
   const point = projection(coordinates);
 
   if (!point) {
@@ -79,14 +165,20 @@ function projectPoint(coordinates: [number, number]): MapPoint {
   };
 }
 
-const capitalCoordinates: Record<Destination, [number, number]> = {
+const capitalCoordinates: Record<
+  Destination,
+  [number, number]
+> = {
   Slovakia: [17.1077, 48.1486],
   Czechia: [14.4378, 50.0755],
   Romania: [26.1025, 44.4268],
   Bulgaria: [23.3219, 42.6977],
 };
 
-export const destinationPoints: Record<Destination, MapPoint> = {
+export const destinationPoints: Record<
+  Destination,
+  MapPoint
+> = {
   Slovakia: projectPoint(capitalCoordinates.Slovakia),
   Czechia: projectPoint(capitalCoordinates.Czechia),
   Romania: projectPoint(capitalCoordinates.Romania),

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import {
   ArrowUpRight,
   Compass,
@@ -12,23 +14,23 @@ import styles from "./Header.module.css";
 
 const navigation = [
   {
-  label: "Explore",
-  href: "/explore",
-  icon: Compass,
-},
+    label: "Explore",
+    href: "/explore",
+    icon: Compass,
+  },
   {
     label: "Universities",
-    href: "#universities",
+    href: "/#universities",
     icon: GraduationCap,
   },
   {
     label: "Residence routes",
-    href: "#residence",
+    href: "/#residence",
     icon: MapPinned,
   },
   {
     label: "How it works",
-    href: "#how-it-works",
+    href: "/#how-it-works",
     icon: Signpost,
   },
 ];
@@ -36,40 +38,62 @@ const navigation = [
 export function Header() {
   return (
     <header className={styles.header}>
-      <a
+      <Link
         href="/"
         className={styles.brand}
         aria-label="DocRoute Student — home"
       >
         <span className={styles.brandMark}>
-          <Route size={25} strokeWidth={1.7} aria-hidden="true" />
+          <Route
+            size={25}
+            strokeWidth={1.7}
+            aria-hidden="true"
+          />
         </span>
 
         <span className={styles.brandText}>
           <span className={styles.brandName}>DocRoute</span>
           <span className={styles.brandCaption}>STUDENT</span>
         </span>
-      </a>
+      </Link>
 
-      <nav className={styles.navigation} aria-label="Main navigation">
+      <nav
+        className={styles.navigation}
+        aria-label="Main navigation"
+      >
         {navigation.map(({ label, href, icon: Icon }) => (
-          <a key={label} href={href} className={styles.navLink}>
-            <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+          <Link
+            key={label}
+            href={href}
+            className={styles.navLink}
+          >
+            <Icon
+              size={16}
+              strokeWidth={1.7}
+              aria-hidden="true"
+            />
+
             <span>{label}</span>
-          </a>
+          </Link>
         ))}
       </nav>
 
       <div className={styles.actions}>
-        <button type="button" className={styles.login}>
+        <Link
+          href="/auth?mode=login"
+          className={styles.login}
+        >
           <LogIn size={16} aria-hidden="true" />
           <span>Log in</span>
-        </button>
+        </Link>
 
-        <a href="#route-builder" className={styles.buildRoute}>
+        <Link
+          href="/auth?mode=signup"
+          className={styles.buildRoute}
+        >
           <span>Build my route</span>
           <ArrowUpRight size={18} aria-hidden="true" />
-        </a>
+        </Link>
       </div>
     </header>
   );

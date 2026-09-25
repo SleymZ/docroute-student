@@ -17,27 +17,37 @@ type UniversityMedia = {
   author: string | null;
   license: string | null;
   licenseUrl: string | null;
+  label?: string | null;
 };
 
-function getInitials(name: string) {
-  const ignoredWords = new Set([
-    "of",
-    "the",
-    "and",
-    "in",
-    "university",
-  ]);
+const visualClasses = [
+  styles.variantOne,
+  styles.variantTwo,
+  styles.variantThree,
+  styles.variantFour,
+];
 
-  const initials = name
-    .split(/\s+/)
-    .filter(
-      (word) => !ignoredWords.has(word.toLowerCase()),
-    )
-    .slice(0, 2)
-    .map((word) => word[0]?.toUpperCase())
-    .join("");
+function getVisualVariant(value: string) {
+  let hash = 0;
 
-  return initials || "U";
+  for (
+    let index = 0;
+    index < value.length;
+    index += 1
+  ) {
+    hash =
+      (hash * 31 + value.charCodeAt(index)) >>>
+      0;
+  }
+
+  return hash % visualClasses.length;
+}
+
+function isAbortError(error: unknown) {
+  return (
+    error instanceof Error &&
+    error.name === "AbortError"
+  );
 }
 
 export function UniversityImage({
@@ -46,39 +56,77 @@ export function UniversityImage({
   className = "",
   showCredit = false,
 }: UniversityImageProps) {
-  const [media, setMedia] =
-    useState<UniversityMedia | null>(null);
+  const [
+    universityMedia,
+    setUniversityMedia,
+  ] = useState<UniversityMedia | null>(null);
+
+  const [
+    countryMedia,
+    setCountryMedia,
+  ] = useState<UniversityMedia | null>(null);
+
+  const [
+    failedImageUrls,
+    setFailedImageUrls,
+  ] = useState<string[]>([]);
+
+  const [
+    loadedImageUrl,
+    setLoadedImageUrl,
+  ] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    const searchParams = new URLSearchParams({
-      name,
-      country,
-    });
+    setUniversityMedia(null);
+    setCountryMedia(null);
+    setFailedImageUrls([]);
+    setLoadedImageUrl(null);
 
-    async function loadImage() {
+    const universitySearchParams =
+      new URLSearchParams({
+        name,
+        country,
+      });
+
+    const countrySearchParams =
+      new URLSearchParams({
+        country,
+
+        /*
+         * Название университета используется как seed.
+         * Благодаря этому разные университеты получают
+         * разные фотографии.
+         */
+        seed: name,
+      });
+
+    async function requestMedia(
+      url: string,
+    ): Promise<UniversityMedia | null> {
+      const response = await fetch(url, {
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      return (await response.json()) as UniversityMedia;
+    }
+
+    async function loadUniversityMedia() {
       try {
-        const response = await fetch(
-          `/api/university-image?${searchParams.toString()}`,
-          {
-            signal: controller.signal,
-          },
+        const result = await requestMedia(
+          `/api/university-image?${universitySearchParams.toString()}`,
         );
 
-        if (!response.ok) {
-          return;
+        if (!controller.signal.aborted) {
+          setUniversityMedia(result);
         }
-
-        const result =
-          (await response.json()) as UniversityMedia;
-
-        setMedia(result);
       } catch (error) {
-        if (
-          error instanceof Error &&
-          error.name !== "AbortError"
-        ) {
+        if (!isAbortError(error)) {
           console.error(
             "Could not load university image:",
             error,
@@ -87,59 +135,220 @@ export function UniversityImage({
       }
     }
 
-    void loadImage();
+    async function loadCountryMedia() {
+      try {
+        const result = await requestMedia(
+          `/api/country-image?${countrySearchParams.toString()}`,
+        );
+
+        if (!controller.signal.aborted) {
+          setCountryMedia(result);
+        }
+      } catch (error) {
+        if (!isAbortError(error)) {
+          console.error(
+            "Could not load country image:",
+            error,
+          );
+        }
+      }
+    }
+
+    /*
+     * Запросы выполняются параллельно.
+     * Фото университета всегда имеет приоритет.
+     */
+    void loadUniversityMedia();
+    void loadCountryMedia();
 
     return () => {
       controller.abort();
     };
   }, [name, country]);
 
-  const photoStyle = media?.imageUrl
-    ? {
-        backgroundImage: `url("${media.imageUrl.replaceAll(
-          '"',
-          "%22",
-        )}")`,
+  const usableUniversityMedia =
+    universityMedia?.imageUrl &&
+    !failedImageUrls.includes(
+      universityMedia.imageUrl,
+    )
+      ? universityMedia
+      : null;
+
+  const usableCountryMedia =
+    countryMedia?.imageUrl &&
+    !failedImageUrls.includes(
+      countryMedia.imageUrl,
+    )
+      ? countryMedia
+      : null;
+
+  const activeMedia =
+    usableUniversityMedia ??
+    usableCountryMedia;
+
+  const activeImageUrl =
+    activeMedia?.imageUrl ?? null;
+
+  const isCountryFallback = Boolean(
+    activeMedia &&
+      usableCountryMedia &&
+      activeMedia === usableCountryMedia,
+  );
+
+  const imageLoaded =
+    activeImageUrl === loadedImageUrl;
+
+  const visualClass =
+    visualClasses[getVisualVariant(name)];
+
+  const shouldShowCredit = Boolean(
+    activeMedia?.sourcePage &&
+      (showCredit ||
+        isCountryFallback ||
+        activeMedia.license),
+  );
+
+  const ariaLabel = activeImageUrl
+    ? isCountryFallback
+      ? `${country} city visual used for ${name}`
+      : `${name} campus`
+    : `Decorative university visual for ${name}`;
+
+  function handleImageError() {
+    if (!activeImageUrl) {
+      return;
+    }
+
+    setFailedImageUrls((currentUrls) => {
+      if (
+        currentUrls.includes(activeImageUrl)
+      ) {
+        return currentUrls;
       }
-    : undefined;
+
+      return [
+        ...currentUrls,
+        activeImageUrl,
+      ];
+    });
+  }
 
   return (
     <div
       className={`${styles.root} ${className}`}
       role="img"
-      aria-label={`${name} campus`}
+      aria-label={ariaLabel}
     >
-      <div className={styles.placeholder}>
-        <span>{getInitials(name)}</span>
+      <div
+        className={`${styles.placeholder} ${visualClass}`}
+        aria-hidden="true"
+      >
+        <div className={styles.fallbackGlow} />
+
+        <div className={styles.campus}>
+          <div className={styles.campusRoof} />
+
+          <div className={styles.campusBody}>
+            <div
+              className={styles.campusColumns}
+            >
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+
+          <div className={styles.campusSteps}>
+            <span />
+            <span />
+            <span />
+          </div>
+        </div>
+
+        <div
+          className={styles.placeholderCopy}
+        >
+          <span>University directory</span>
+          <strong>{country}</strong>
+        </div>
       </div>
 
-      {media?.imageUrl && (
-        <div
-          className={styles.photo}
-          style={photoStyle}
-          aria-hidden="true"
+      {activeImageUrl && (
+        // A native image is used because its source is
+        // dynamic and an onError fallback is required.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={activeImageUrl}
+          src={activeImageUrl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className={`${styles.photo} ${
+            imageLoaded
+              ? styles.photoLoaded
+              : ""
+          }`}
+          onLoad={() =>
+            setLoadedImageUrl(
+              activeImageUrl,
+            )
+          }
+          onError={handleImageError}
         />
       )}
 
-      <div className={styles.overlay} />
+      <div
+        className={styles.overlay}
+        aria-hidden="true"
+      />
 
-      {showCredit &&
-        media?.sourcePage &&
-        media.imageUrl && (
-          <a
-            href={media.sourcePage}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.credit}
-          >
-            {media.author
-              ? `Photo: ${media.author}`
-              : "Photo source"}
+      {isCountryFallback && (
+        <span className={styles.visualLabel}>
+          {activeMedia?.label ??
+            `${country} city visual`}
+        </span>
+      )}
 
-            {media.license
-              ? ` · ${media.license}`
-              : ""}
-          </a>
+      {shouldShowCredit &&
+        activeMedia?.sourcePage && (
+          <div className={styles.credit}>
+            <a
+              href={activeMedia.sourcePage}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {activeMedia.author
+                ? `Photo: ${activeMedia.author}`
+                : "Photo source"}
+            </a>
+
+            {activeMedia.license && (
+              <>
+                <span aria-hidden="true">
+                  ·
+                </span>
+
+                {activeMedia.licenseUrl ? (
+                  <a
+                    href={
+                      activeMedia.licenseUrl
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {activeMedia.license}
+                  </a>
+                ) : (
+                  <span>
+                    {activeMedia.license}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
         )}
     </div>
   );
