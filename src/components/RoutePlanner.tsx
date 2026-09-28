@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import {
-  demoDestinations,
   destinationOptions,
   programOptions,
 } from "@/data/demo-destinations";
@@ -14,46 +13,72 @@ import type { Destination } from "@/types/destination";
 import { RouteForm } from "@/components/RouteForm";
 import { EuropeMap } from "@/components/EuropeMap";
 
+const destinationCountryCodes: Record<Destination, string> = {
+  Slovakia: "SK",
+  Czechia: "CZ",
+  Romania: "RO",
+  Bulgaria: "BG",
+};
+
+const educationCountryCodes: Record<string, string> = {
+  Israel: "IL",
+  Ukraine: "UA",
+  India: "IN",
+  "United Kingdom": "GB",
+};
+
 export function RoutePlanner() {
+  const router = useRouter();
   const [documentCountry, setDocumentCountry] = useState("Israel");
   const [destination, setDestination] =
     useState<Destination>("Slovakia");
   const [program, setProgram] = useState("Medicine");
-  const [routeGenerated, setRouteGenerated] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
 
-    const requestedDestination = params.get("destination");
-    const requestedProgram = params.get("program");
+      const requestedDestination = params.get("destination");
+      const requestedProgram = params.get("program");
 
-    const validDestination = destinationOptions.find(
-      (item) => item === requestedDestination,
-    );
+      const validDestination = destinationOptions.find(
+        (item) => item === requestedDestination,
+      );
 
-    const validProgram = programOptions.find(
-      (item) => item === requestedProgram,
-    );
+      const validProgram = programOptions.find(
+        (item) => item === requestedProgram,
+      );
 
-    if (validDestination) {
-      setDestination(validDestination);
-    }
+      if (validDestination) {
+        setDestination(validDestination);
+      }
 
-    if (validProgram) {
-      setProgram(validProgram);
-    }
+      if (validProgram) {
+        setProgram(validProgram);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
-
-  const selectedDestination = demoDestinations[destination];
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setRouteGenerated(true);
+
+    const params = new URLSearchParams({
+      country: destinationCountryCodes[destination],
+      program,
+    });
+    const educationCountry = educationCountryCodes[documentCountry];
+
+    if (educationCountry) {
+      params.set("educationCountry", educationCountry);
+    }
+
+    router.push(`/route/profile?${params.toString()}`);
   }
 
   function handleDocumentCountryChange(value: string) {
     setDocumentCountry(value);
-    setRouteGenerated(false);
   }
 
   function handleDestinationChange(value: string) {
@@ -64,12 +89,10 @@ export function RoutePlanner() {
     if (!matchingDestination) return;
 
     setDestination(matchingDestination);
-    setRouteGenerated(false);
   }
 
   function handleProgramChange(value: string) {
     setProgram(value);
-    setRouteGenerated(false);
   }
 
   return (
@@ -99,24 +122,6 @@ export function RoutePlanner() {
           onSubmit={handleSubmit}
         />
 
-        {routeGenerated && (
-          <div className="generated-result" role="status">
-            <CheckCircle2 size={21} aria-hidden="true" />
-
-            <div>
-              <strong>Your demo preview is ready</strong>
-              <p>
-                {documentCountry} → {destination} · {program}
-              </p>
-            </div>
-
-            <span>
-              {selectedDestination.sourceDocuments} sample
-              documents → {selectedDestination.requirements} sample
-              requirements
-            </span>
-          </div>
-        )}
       </div>
 
       <EuropeMap

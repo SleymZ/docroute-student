@@ -535,27 +535,81 @@
 .invalidPage {
   display: grid;
   place-items: center;
-  min-height: 65vh;
-  padding: 50px 0;
+  min-height: calc(100vh - 92px);
+  padding: 48px 0;
   color: #79ddef;
   text-align: center;
+  background:
+    linear-gradient(rgba(121, 221, 239, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(121, 221, 239, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 50% 42%, rgba(31, 98, 119, 0.18), transparent 38%);
+  background-size: 48px 48px, 48px 48px, auto;
 }
 
-.invalidPage h1 {
-  margin: 15px 0 0;
+.invalidCard {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: min(680px, 100%);
+  padding: clamp(38px, 6vw, 68px);
+  border: 1px solid #294b59;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255, 128, 103, 0.13), transparent 32%),
+    linear-gradient(145deg, rgba(15, 43, 55, 0.96), rgba(6, 23, 33, 0.98));
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.2);
+}
+
+.invalidIcon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid rgba(255, 128, 103, 0.32);
+  border-radius: 17px;
+  background: rgba(255, 128, 103, 0.09);
+  color: #ff8e74;
+}
+
+.invalidEyebrow {
+  margin: 24px 0 0 !important;
+  color: #79ddef !important;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.invalidCard h1 {
+  margin: 12px 0 0;
   color: #f5f3ee;
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.05em;
 }
 
-.invalidPage p {
-  margin: 8px 0 20px;
+.invalidCard > p:not(.invalidEyebrow) {
+  max-width: 520px;
+  margin: 16px 0 0;
   color: #9bb3bd;
+  font-size: 13px;
+  line-height: 1.7;
 }
 
-.invalidPage a {
+.invalidCard a {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  color: #ff9277;
+  min-height: 48px;
+  margin-top: 26px;
+  padding: 0 18px;
+  border-radius: 11px;
+  background: #ff8067;
+  color: #071821;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
 }
 
 @media (hover: hover) {
