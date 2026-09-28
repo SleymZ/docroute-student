@@ -13,6 +13,7 @@ import {
   Building2,
   CalendarDays,
   CheckCircle2,
+  CircleDashed,
   FileText,
   Languages,
   Search,
@@ -21,17 +22,20 @@ import {
 import { UniversityImage } from "./UniversityImage";
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
-import {
-  verifiedPrograms,
-} from "@/data/verified-programs";
+import { verifiedPrograms } from "@/data/verified-programs";
+import { useApplicantProfile } from "@/hooks/useApplicantProfile";
+import { createProfileSearchParams } from "@/lib/profile-query";
 import { matchPrograms } from "@/lib/match-programs";
-import { parseApplicantProfile } from "@/lib/profile-query";
 import type { ProgramMatch } from "@/types/admission";
 
 import styles from "./ExploreCatalog.module.css";
 import linkStyles from "./UniversityResults.module.css";
 
 const PAGE_SIZE = 8;
+
+type UniversityResultsProps = {
+  mode?: "explore" | "route";
+};
 
 function normalize(value: string) {
   return value
@@ -49,21 +53,27 @@ function getWebsiteHost(website: string) {
   }
 }
 
-export function UniversityResults() {
+export function UniversityResults({
+  mode = "explore",
+}: UniversityResultsProps) {
   const searchParams = useSearchParams();
-
-  const countryCode =
+  const requestedCountryCode =
     searchParams.get("country")?.toUpperCase() ?? "";
-  const selectedProgram =
+  const requestedProgram =
     searchParams.get("program") ?? "";
-  const profileKey = searchParams.toString();
-  const profile = useMemo(
-    () =>
-      parseApplicantProfile(
-        new URLSearchParams(profileKey),
-      ),
-    [profileKey],
+  const profileState = useApplicantProfile(
+    searchParams,
+    {
+      destinationCountryCode: requestedCountryCode,
+      studyCategory: requestedProgram,
+    },
+    mode === "route",
   );
+  const profile = mode === "route" ? profileState.profile : null;
+  const countryCode =
+    requestedCountryCode || profile?.destinationCountryCode || "";
+  const selectedProgram =
+    requestedProgram || profile?.studyCategory || "";
 
   const [query, setQuery] = useState("");
   const [scope, setScope] =
@@ -76,6 +86,20 @@ export function UniversityResults() {
 
   const validProgram =
     programOptions.includes(selectedProgram);
+
+  const verifiedCatalogHosts = useMemo(
+    () =>
+      new Set(
+        verifiedPrograms
+          .filter(
+            (program) =>
+              program.countryCode === countryCode &&
+              program.category === selectedProgram,
+          )
+          .map((program) => program.universityHost),
+      ),
+    [countryCode, selectedProgram],
+  );
 
   const countryUniversities = useMemo(
     () =>
@@ -121,7 +145,10 @@ export function UniversityResults() {
         return {
           ...university,
           matchingPrograms,
-          verified: matchingPrograms.length > 0,
+          verified:
+            mode === "route"
+              ? matchingPrograms.length > 0
+              : verifiedCatalogHosts.has(host),
         };
       })
       .filter((university) => {
@@ -144,13 +171,23 @@ export function UniversityResults() {
           Number(b.verified) - Number(a.verified) ||
           a.name.localeCompare(b.name),
       );
-  }, [countryUniversities, query, scope, verifiedByHost]);
+  }, [
+    countryUniversities,
+    mode,
+    query,
+    scope,
+    verifiedByHost,
+    verifiedCatalogHosts,
+  ]);
 
   const verifiedCount = countryUniversities.filter(
-    (university) =>
-      verifiedByHost.has(
-        getWebsiteHost(university.website),
-      ),
+    (university) => {
+      const host = getWebsiteHost(university.website);
+
+      return mode === "route"
+        ? verifiedByHost.has(host)
+        : verifiedCatalogHosts.has(host);
+    },
   ).length;
 
   function toggleSaved(id: string) {
@@ -165,6 +202,43 @@ export function UniversityResults() {
 
       return next;
     });
+  }
+
+  if (mode === "route" && profileState.loading) {
+    return (
+      <div className={styles.invalidPage} role="status">
+        <CircleDashed
+          className={linkStyles.profileLoader}
+          size={34}
+          aria-hidden="true"
+        />
+        <p>Loading your saved profile...</p>
+      </div>
+    );
+  }
+
+  if (mode === "route" && !profile) {
+    const profileHref = countryCode && selectedProgram
+      ? `/route/profile?${new URLSearchParams({
+          country: countryCode,
+          program: selectedProgram,
+        }).toString()}`
+      : "/route/profile";
+
+    return (
+      <div className={styles.invalidPage}>
+        <FileText size={34} aria-hidden="true" />
+        <h1>Complete your applicant profile</h1>
+        <p>
+          Add your education, residence status, and languages to see
+          personalised university matches.
+        </p>
+        <Link href={profileHref}>
+          Continue to profile
+          <ArrowRight size={17} aria-hidden="true" />
+        </Link>
+      </div>
+    );
   }
 
   if (!countryCode || !validProgram || !countryName) {
@@ -187,30 +261,13 @@ export function UniversityResults() {
     );
   }
 
-  if (!profile) {
-    const profileHref = `/explore/profile?${new URLSearchParams({
-      country: countryCode,
-      program: selectedProgram,
-    }).toString()}`;
-
-    return (
-      <div className={styles.invalidPage}>
-        <FileText size={34} aria-hidden="true" />
-
-        <h1>Complete your applicant profile</h1>
-
-        <p>
-          We need your education and all known languages before we can
-          explain which requirements apply to you.
-        </p>
-
-        <Link href={profileHref}>
-          Continue to profile
-          <ArrowRight size={17} aria-hidden="true" />
-        </Link>
-      </div>
-    );
-  }
+  const resultsParams = profile
+    ? createProfileSearchParams(profile)
+    : new URLSearchParams({
+        country: countryCode,
+        program: selectedProgram,
+      });
+  resultsParams.set("flow", mode);
 
   return (
     <div className={styles.resultsPage}>
@@ -237,8 +294,17 @@ export function UniversityResults() {
           </h1>
 
           <p>
-            Personalised for your <strong>{selectedProgram}</strong> route,
-            education background, and languages.
+            {mode === "route" ? (
+              <>
+                Personalised for your <strong>{selectedProgram}</strong> route,
+                education background, and languages.
+              </>
+            ) : (
+              <>
+                Explore universities offering <strong>{selectedProgram}</strong>
+                .
+              </>
+            )}
           </p>
         </div>
 
@@ -252,6 +318,7 @@ export function UniversityResults() {
         />
       </header>
 
+      {mode === "route" && profile && (
       <section className={linkStyles.profileSnapshot}>
         <div>
           <span className={linkStyles.snapshotIcon}>
@@ -287,15 +354,38 @@ export function UniversityResults() {
         </div>
 
         <Link
-          href={`/explore/profile?${new URLSearchParams({
-            country: countryCode,
-            program: selectedProgram,
-          }).toString()}`}
+          href={`/route/profile?${resultsParams.toString()}`}
         >
           Edit profile
           <ArrowRight size={15} aria-hidden="true" />
         </Link>
       </section>
+      )}
+
+      {mode === "explore" && (
+        <section
+          className={`${linkStyles.profileSnapshot} ${linkStyles.directoryPrompt}`}
+        >
+          <div>
+            <span className={linkStyles.snapshotIcon}>
+              <Building2 size={18} aria-hidden="true" />
+            </span>
+            <p>
+              <small>PUBLIC DIRECTORY</small>
+              <strong>Browse institutions without an applicant profile.</strong>
+            </p>
+          </div>
+          <Link
+            href={`/route/profile?${new URLSearchParams({
+              country: countryCode,
+              program: selectedProgram,
+            }).toString()}`}
+          >
+            Build a personal route
+            <ArrowRight size={15} aria-hidden="true" />
+          </Link>
+        </section>
+      )}
 
       <section className={styles.resultsToolbar}>
         <label className={styles.resultsSearch}>
@@ -347,9 +437,9 @@ export function UniversityResults() {
         <CheckCircle2 size={19} aria-hidden="true" />
 
         <p>
-          Verified matches use published admissions rules and explain what
-          your profile meets, what is conditional, and what still needs
-          preparation. Other institutions remain visible but unverified.
+          {mode === "route"
+            ? "Verified matches use published admissions rules and explain what your profile meets, what is conditional, and what still needs preparation. Other institutions remain visible but unverified."
+            : "Verified program information is based on published admissions rules. Other institutions remain visible in the complete country directory."}
         </p>
       </div>
 
@@ -369,9 +459,7 @@ export function UniversityResults() {
             const firstMatch = university.matchingPrograms[0];
             const displayName =
               firstMatch?.program.universityName ?? university.name;
-            const universityParams = new URLSearchParams(
-              searchParams.toString(),
-            );
+            const universityParams = new URLSearchParams(resultsParams);
 
             if (firstMatch) {
               universityParams.set("programId", firstMatch.program.id);
@@ -551,10 +639,9 @@ export function UniversityResults() {
                     </div>
                   ) : (
                     <p className={styles.pendingText}>
-                      We have not yet verified whether this
-                      institution offers {selectedProgram}. It is
-                      shown as part of the complete country
-                      directory.
+                      {university.verified
+                        ? `Published ${selectedProgram} program information is available. Build a route to see requirements for your profile.`
+                        : `We have not yet verified whether this institution offers ${selectedProgram}. It is shown as part of the complete country directory.`}
                     </p>
                   )}
 

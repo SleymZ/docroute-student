@@ -24,10 +24,14 @@ import {
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
 import { createProfileSearchParams } from "@/lib/profile-query";
+import { saveApplicantProfile } from "@/lib/supabase/applicant-profile";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type {
   ApplicantLanguage,
   ApplicantProfile,
   CefrLevel,
+  CurrentResidenceStatus,
   EducationStatus,
   GradeScale,
   WaiverEvidence,
@@ -150,6 +154,8 @@ export function ApplicantProfileForm() {
 
   const [citizenship, setCitizenship] = useState("");
   const [educationCountry, setEducationCountry] = useState("");
+  const [currentResidenceStatus, setCurrentResidenceStatus] =
+    useState<CurrentResidenceStatus | "">("");
   const [educationStatus, setEducationStatus] =
     useState<EducationStatus>("final-year");
   const [gradeScale, setGradeScale] =
@@ -241,7 +247,7 @@ export function ApplicantProfileForm() {
     });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
 
@@ -250,8 +256,10 @@ export function ApplicantProfileForm() {
       completeLanguages.map((language) => language.code),
     );
 
-    if (!citizenship || !educationCountry) {
-      setError("Select your citizenship and education country.");
+    if (!citizenship || !educationCountry || !currentResidenceStatus) {
+      setError(
+        "Select your citizenship, education country, and current residence status.",
+      );
       return;
     }
 
@@ -282,6 +290,7 @@ export function ApplicantProfileForm() {
       intake: "2027/28",
       citizenshipCountryCode: citizenship,
       educationCountryCode: educationCountry,
+      currentResidenceStatus,
       educationStatus,
       gradeScale,
       penultimateYearAverage: numericAverage,
@@ -295,9 +304,25 @@ export function ApplicantProfileForm() {
       waiverEvidence: [...waiverEvidence],
     };
 
-    router.push(
-      `/explore/universities?${createProfileSearchParams(profile).toString()}`,
-    );
+    const profileParams = createProfileSearchParams(profile);
+
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = createSupabaseBrowserClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          await saveApplicantProfile(supabase, user.id, profile);
+        }
+      } catch {
+        setError("We could not save your profile. Please try again.");
+        return;
+      }
+    }
+
+    router.push(`/route/universities?${profileParams.toString()}`);
   }
 
   return (
@@ -415,6 +440,28 @@ export function ApplicantProfileForm() {
                   ))}
                 </select>
               </div>
+            </label>
+
+            <label className={styles.field}>
+              <span>Current residence status</span>
+              <select
+                value={currentResidenceStatus}
+                onChange={(event) =>
+                  setCurrentResidenceStatus(
+                    event.target.value as CurrentResidenceStatus | "",
+                  )
+                }
+                required
+              >
+                <option value="">Select current residence status</option>
+                <option value="outside-slovakia">Outside Slovakia</option>
+                <option value="slovak-residence">Slovak residence permit</option>
+                <option value="eu-residence">Residence in another EU country</option>
+                <option value="slovak-national-visa">Slovak national visa</option>
+                <option value="visa-free">Visa-free stay</option>
+                <option value="temporary-protection">Temporary protection</option>
+                <option value="other">Other</option>
+              </select>
             </label>
 
             <label className={styles.field}>

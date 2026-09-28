@@ -22,6 +22,7 @@ type ProfileOverrides = {
 export function useApplicantProfile(
   searchParams: SearchParamsReader,
   overrides: ProfileOverrides = {},
+  enabled = true,
 ) {
   const profileKey = searchParams.toString();
   const urlProfile = useMemo(
@@ -29,7 +30,7 @@ export function useApplicantProfile(
       parseApplicantProfile(new URLSearchParams(profileKey)),
     [profileKey],
   );
-  const configured = isSupabaseConfigured();
+  const configured = enabled && isSupabaseConfigured();
   const [storedProfile, setStoredProfile] =
     useState<ApplicantProfile | null>(null);
   const [loading, setLoading] = useState(
