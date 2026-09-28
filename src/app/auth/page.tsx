@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 type AuthPageProps = {
   searchParams: Promise<{
     mode?: string | string[];
+    next?: string | string[];
+    error?: string | string[];
   }>;
 };
 
@@ -21,8 +23,20 @@ export default async function AuthPage({
   const rawMode = Array.isArray(query.mode)
     ? query.mode[0]
     : query.mode;
+  const rawNext = Array.isArray(query.next)
+    ? query.next[0]
+    : query.next;
+  const rawError = Array.isArray(query.error)
+    ? query.error[0]
+    : query.error;
 
   const initialMode = rawMode === "signup" ? "signup" : "login";
 
-  return <AuthScreen initialMode={initialMode} />;
+  return (
+    <AuthScreen
+      initialMode={initialMode}
+      nextPath={rawNext}
+      initialMessage={rawError ?? ""}
+    />
+  );
 }

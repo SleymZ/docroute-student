@@ -123,7 +123,7 @@ const countryOptions: CountryOption[] = [
     universityCount: countryCounts[code] ?? 0,
   }))
   .sort((a, b) =>
-    a.name.localeCompare(b.name),
+    a.name.localeCompare(b.name, "en"),
   );
 
 const featuredCountries = featuredCountryCodes
@@ -663,7 +663,7 @@ export function ExploreCatalog() {
             href={resultsHref}
             className={styles.atlasContinue}
           >
-            Explore universities
+            Show universities
 
             <ArrowRight
               size={18}

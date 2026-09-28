@@ -1,15 +1,13 @@
 import Link from "next/link";
 
 import {
-  ArrowUpRight,
   Compass,
-  GraduationCap,
-  LogIn,
   MapPinned,
   Route,
   Signpost,
 } from "lucide-react";
 
+import { AuthNavigation } from "./AuthNavigation";
 import styles from "./Header.module.css";
 
 const navigation = [
@@ -19,9 +17,9 @@ const navigation = [
     icon: Compass,
   },
   {
-    label: "Universities",
-    href: "/#universities",
-    icon: GraduationCap,
+    label: "Build route",
+    href: "/#route-builder",
+    icon: Route,
   },
   {
     label: "Residence routes",
@@ -78,23 +76,7 @@ export function Header() {
         ))}
       </nav>
 
-      <div className={styles.actions}>
-        <Link
-          href="/auth?mode=login"
-          className={styles.login}
-        >
-          <LogIn size={16} aria-hidden="true" />
-          <span>Log in</span>
-        </Link>
-
-        <Link
-          href="/auth?mode=signup"
-          className={styles.buildRoute}
-        >
-          <span>Build my route</span>
-          <ArrowUpRight size={18} aria-hidden="true" />
-        </Link>
-      </div>
+      <AuthNavigation />
     </header>
   );
 }

@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import {
   ArrowLeft,
@@ -19,11 +20,15 @@ import {
 } from "lucide-react";
 
 import styles from "./AuthScreen.module.css";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 type AuthMode = "login" | "signup";
 
 type AuthScreenProps = {
   initialMode: AuthMode;
+  nextPath?: string;
+  initialMessage?: string;
 };
 
 const routeStages = [
@@ -50,33 +55,190 @@ const routeStages = [
   },
 ];
 
-export function AuthScreen({ initialMode }: AuthScreenProps) {
+function safeNextPath(value?: string) {
+  return value?.startsWith("/") && !value.startsWith("//")
+    ? value
+    : "/explore";
+}
+
+export function AuthScreen({
+  initialMode,
+  nextPath,
+  initialMessage = "",
+}: AuthScreenProps) {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(initialMessage);
+  const [messageIsError, setMessageIsError] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const isLogin = mode === "login";
 
   function changeMode(nextMode: AuthMode) {
     setMode(nextMode);
     setMessage("");
+    setMessageIsError(false);
 
-    window.history.replaceState(
-      null,
-      "",
-      `/auth?mode=${nextMode}`,
-    );
+    const params = new URLSearchParams({ mode: nextMode });
+    const destination = safeNextPath(nextPath);
+
+    if (destination !== "/explore") {
+      params.set("next", destination);
+    }
+
+    window.history.replaceState(null, "", `/auth?${params.toString()}`);
   }
 
-  function showPrototypeMessage() {
+  function ensureConfigured() {
+    if (isSupabaseConfigured()) {
+      return true;
+    }
+
+    setMessageIsError(true);
     setMessage(
-      "The page is ready. Account authentication will be connected in the next step.",
+      "Supabase is not configured yet. Add the project URL and publishable key to .env.local.",
     );
+    return false;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    showPrototypeMessage();
+
+    if (!ensureConfigured()) {
+      return;
+    }
+
+    setBusy(true);
+    setMessage("");
+    setMessageIsError(false);
+
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const destination = safeNextPath(nextPath);
+
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        router.replace(destination);
+        router.refresh();
+        return;
+      }
+
+      const callbackUrl = new URL(
+        "/auth/callback",
+        window.location.origin,
+      );
+      callbackUrl.searchParams.set("next", destination);
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: callbackUrl.toString(),
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.session) {
+        router.replace(destination);
+        router.refresh();
+      } else {
+        setMessage(
+          "Check your email and confirm the account. Your applicant profile will be saved after you sign in.",
+        );
+      }
+    } catch (error) {
+      setMessageIsError(true);
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Authentication failed. Please try again.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    if (!ensureConfigured()) {
+      return;
+    }
+
+    setBusy(true);
+    setMessage("");
+    setMessageIsError(false);
+
+    const callbackUrl = new URL(
+      "/auth/callback",
+      window.location.origin,
+    );
+    callbackUrl.searchParams.set("next", safeNextPath(nextPath));
+
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: callbackUrl.toString(),
+      },
+    });
+
+    if (error) {
+      setBusy(false);
+      setMessageIsError(true);
+      setMessage(error.message);
+    }
+  }
+
+  async function handlePasswordReset() {
+    if (!email) {
+      setMessageIsError(true);
+      setMessage("Enter your email address first.");
+      return;
+    }
+
+    if (!ensureConfigured()) {
+      return;
+    }
+
+    setBusy(true);
+    setMessage("");
+    setMessageIsError(false);
+
+    const callbackUrl = new URL(
+      "/auth/callback",
+      window.location.origin,
+    );
+    callbackUrl.searchParams.set("next", "/auth/update-password");
+
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: callbackUrl.toString(),
+    });
+
+    setBusy(false);
+
+    if (error) {
+      setMessageIsError(true);
+      setMessage(error.message);
+      return;
+    }
+
+    setMessage(
+      "If an account exists for this email, a password reset link has been sent.",
+    );
   }
 
   return (
@@ -237,7 +399,8 @@ export function AuthScreen({ initialMode }: AuthScreenProps) {
           <button
             type="button"
             className={styles.googleButton}
-            onClick={showPrototypeMessage}
+            disabled={busy}
+            onClick={handleGoogleSignIn}
           >
             <span className={styles.googleMark}>G</span>
             Continue with Google
@@ -263,6 +426,8 @@ export function AuthScreen({ initialMode }: AuthScreenProps) {
                   name="email"
                   placeholder="you@example.com"
                   autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   required
                 />
               </div>
@@ -275,7 +440,8 @@ export function AuthScreen({ initialMode }: AuthScreenProps) {
                 {isLogin && (
                   <button
                     type="button"
-                    onClick={showPrototypeMessage}
+                    disabled={busy}
+                    onClick={handlePasswordReset}
                   >
                     Forgot password?
                   </button>
@@ -296,6 +462,8 @@ export function AuthScreen({ initialMode }: AuthScreenProps) {
                   autoComplete={
                     isLogin ? "current-password" : "new-password"
                   }
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                   minLength={isLogin ? undefined : 8}
                   required
                 />
@@ -326,13 +494,25 @@ export function AuthScreen({ initialMode }: AuthScreenProps) {
               </label>
             )}
 
-            <button type="submit" className={styles.submitButton}>
-              {isLogin ? "Log in to DocRoute" : "Create free account"}
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={busy}
+            >
+              {busy
+                ? "Please wait..."
+                : isLogin
+                  ? "Log in to DocRoute"
+                  : "Create free account"}
               <ArrowRight size={18} aria-hidden="true" />
             </button>
 
             {message && (
-              <p className={styles.prototypeMessage} role="status">
+              <p
+                className={styles.prototypeMessage}
+                data-error={messageIsError || undefined}
+                role={messageIsError ? "alert" : "status"}
+              >
                 {message}
               </p>
             )}

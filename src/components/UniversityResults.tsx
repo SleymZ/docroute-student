@@ -1,6 +1,5 @@
 "use client";
 
-import { UniversityImage } from "./UniversityImage";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,16 +11,22 @@ import {
   ArrowUpRight,
   Bookmark,
   Building2,
+  CalendarDays,
   CheckCircle2,
+  FileText,
+  Languages,
   Search,
 } from "lucide-react";
 
+import { UniversityImage } from "./UniversityImage";
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
 import {
   verifiedPrograms,
-  type VerifiedProgram,
 } from "@/data/verified-programs";
+import { matchPrograms } from "@/lib/match-programs";
+import { parseApplicantProfile } from "@/lib/profile-query";
+import type { ProgramMatch } from "@/types/admission";
 
 import styles from "./ExploreCatalog.module.css";
 import linkStyles from "./UniversityResults.module.css";
@@ -51,6 +56,14 @@ export function UniversityResults() {
     searchParams.get("country")?.toUpperCase() ?? "";
   const selectedProgram =
     searchParams.get("program") ?? "";
+  const profileKey = searchParams.toString();
+  const profile = useMemo(
+    () =>
+      parseApplicantProfile(
+        new URLSearchParams(profileKey),
+      ),
+    [profileKey],
+  );
 
   const [query, setQuery] = useState("");
   const [scope, setScope] =
@@ -76,23 +89,25 @@ export function UniversityResults() {
   const countryName =
     countryUniversities[0]?.country ?? "";
 
+  const profileMatches = useMemo(
+    () =>
+      profile ? matchPrograms(profile, verifiedPrograms) : [],
+    [profile],
+  );
+
   const verifiedByHost = useMemo(() => {
-    const result = new Map<string, VerifiedProgram[]>();
+    const matchesByHost = new Map<string, ProgramMatch[]>();
 
-    for (const program of verifiedPrograms) {
-      if (program.category !== selectedProgram) {
-        continue;
-      }
-
+    for (const match of profileMatches) {
       const existing =
-        result.get(program.universityHost) ?? [];
+        matchesByHost.get(match.program.universityHost) ?? [];
 
-      existing.push(program);
-      result.set(program.universityHost, existing);
+      existing.push(match);
+      matchesByHost.set(match.program.universityHost, existing);
     }
 
-    return result;
-  }, [selectedProgram]);
+    return matchesByHost;
+  }, [profileMatches]);
 
   const universityResults = useMemo(() => {
     const normalizedQuery = normalize(query);
@@ -129,12 +144,7 @@ export function UniversityResults() {
           Number(b.verified) - Number(a.verified) ||
           a.name.localeCompare(b.name),
       );
-  }, [
-    countryUniversities,
-    query,
-    scope,
-    verifiedByHost,
-  ]);
+  }, [countryUniversities, query, scope, verifiedByHost]);
 
   const verifiedCount = countryUniversities.filter(
     (university) =>
@@ -177,6 +187,31 @@ export function UniversityResults() {
     );
   }
 
+  if (!profile) {
+    const profileHref = `/explore/profile?${new URLSearchParams({
+      country: countryCode,
+      program: selectedProgram,
+    }).toString()}`;
+
+    return (
+      <div className={styles.invalidPage}>
+        <FileText size={34} aria-hidden="true" />
+
+        <h1>Complete your applicant profile</h1>
+
+        <p>
+          We need your education and all known languages before we can
+          explain which requirements apply to you.
+        </p>
+
+        <Link href={profileHref}>
+          Continue to profile
+          <ArrowRight size={17} aria-hidden="true" />
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.resultsPage}>
       <nav className={styles.breadcrumb}>
@@ -202,8 +237,8 @@ export function UniversityResults() {
           </h1>
 
           <p>
-            Exploring options related to{" "}
-            <strong>{selectedProgram}</strong>.
+            Personalised for your <strong>{selectedProgram}</strong> route,
+            education background, and languages.
           </p>
         </div>
 
@@ -216,6 +251,51 @@ export function UniversityResults() {
           className={styles.resultsFlag}
         />
       </header>
+
+      <section className={linkStyles.profileSnapshot}>
+        <div>
+          <span className={linkStyles.snapshotIcon}>
+            <Languages size={18} aria-hidden="true" />
+          </span>
+          <p>
+            <small>LANGUAGE PROFILE</small>
+            <strong>
+              {profile.languages
+                .map(
+                  (language) =>
+                    `${language.code.toUpperCase()} ${language.level}`,
+                )
+                .join(" · ")}
+            </strong>
+          </p>
+        </div>
+
+        <div>
+          <span className={linkStyles.snapshotIcon}>
+            <FileText size={18} aria-hidden="true" />
+          </span>
+          <p>
+            <small>EDUCATION</small>
+            <strong>
+              {profile.educationStatus === "completed"
+                ? "Secondary school completed"
+                : profile.educationStatus === "final-year"
+                  ? "Currently in final year"
+                  : "Before final year"}
+            </strong>
+          </p>
+        </div>
+
+        <Link
+          href={`/explore/profile?${new URLSearchParams({
+            country: countryCode,
+            program: selectedProgram,
+          }).toString()}`}
+        >
+          Edit profile
+          <ArrowRight size={15} aria-hidden="true" />
+        </Link>
+      </section>
 
       <section className={styles.resultsToolbar}>
         <label className={styles.resultsSearch}>
@@ -267,10 +347,9 @@ export function UniversityResults() {
         <CheckCircle2 size={19} aria-hidden="true" />
 
         <p>
-          Verified matches have an official source confirming the
-          selected field. Other institutions remain visible, but
-          their {selectedProgram} programs have not been reviewed
-          yet.
+          Verified matches use published admissions rules and explain what
+          your profile meets, what is conditional, and what still needs
+          preparation. Other institutions remain visible but unverified.
         </p>
       </div>
 
@@ -287,11 +366,20 @@ export function UniversityResults() {
           .slice(0, visibleCount)
           .map((university, index) => {
             const isSaved = saved.has(university.id);
+            const firstMatch = university.matchingPrograms[0];
+            const displayName =
+              firstMatch?.program.universityName ?? university.name;
+            const universityParams = new URLSearchParams(
+              searchParams.toString(),
+            );
+
+            if (firstMatch) {
+              universityParams.set("programId", firstMatch.program.id);
+            }
+
             const universityHref = `/universities/${encodeURIComponent(
               university.id,
-            )}?${new URLSearchParams({
-              program: selectedProgram,
-            }).toString()}`;
+            )}?${universityParams.toString()}`;
 
             return (
               <article
@@ -301,11 +389,12 @@ export function UniversityResults() {
                 <Link
                   href={universityHref}
                   className={`${styles.universityVisual} ${linkStyles.universityVisualLink}`}
-                  aria-label={`Open ${university.name}`}
+                  aria-label={`Open ${displayName}`}
                 >
                   <UniversityImage
-                    name={university.name}
+                    name={displayName}
                     country={university.country}
+                    creditLinks={false}
                   />
 
                   <span className={styles.cardNumber}>
@@ -342,8 +431,8 @@ export function UniversityResults() {
                       type="button"
                       aria-label={
                         isSaved
-                          ? `Remove ${university.name} from saved`
-                          : `Save ${university.name}`
+                          ? `Remove ${displayName} from saved`
+                          : `Save ${displayName}`
                       }
                       aria-pressed={isSaved}
                       className={`${styles.saveButton} ${
@@ -375,39 +464,89 @@ export function UniversityResults() {
                       href={universityHref}
                       className={linkStyles.universityTitleLink}
                     >
-                      {university.name}
+                      {displayName}
                     </Link>
                   </h2>
 
                   {university.matchingPrograms.length > 0 ? (
                     <div className={styles.programMatches}>
                       {university.matchingPrograms.map(
-                        (program) => (
+                        (match) => {
+                          const programParams = new URLSearchParams(
+                            searchParams.toString(),
+                          );
+                          programParams.set(
+                            "programId",
+                            match.program.id,
+                          );
+                          const programHref = `/universities/${encodeURIComponent(
+                            university.id,
+                          )}?${programParams.toString()}`;
+
+                          return (
                           <div
-                            key={`${program.universityHost}-${program.programName}`}
+                            key={match.program.id}
+                            className={linkStyles.matchCard}
                           >
-                            <strong>
-                              {program.programName}
-                            </strong>
+                            <div className={linkStyles.matchHeading}>
+                              <div>
+                                <strong>{match.program.programName}</strong>
+                                <span>{match.program.localProgramName}</span>
+                              </div>
 
-                            <span>
-                              {program.degree} ·{" "}
-                              {program.languages.join(", ")}
-                            </span>
+                              <span
+                                className={`${linkStyles.matchStatus} ${
+                                  linkStyles[
+                                    `status${match.status
+                                      .split("-")
+                                      .map(
+                                        (part) =>
+                                          part[0].toUpperCase() + part.slice(1),
+                                      )
+                                      .join("")}`
+                                  ]
+                                }`}
+                              >
+                                {match.status === "strong"
+                                  ? "Strong fit"
+                                  : match.status === "conditional"
+                                    ? "Conditional fit"
+                                    : match.status === "preparation-required"
+                                      ? "Preparation needed"
+                                      : "More information"}
+                              </span>
+                            </div>
 
-                            <a
-                              href={program.sourceUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <p className={linkStyles.matchSummary}>
+                              {match.summary}
+                            </p>
+
+                            <div className={linkStyles.matchFacts}>
+                              <span>
+                                <CalendarDays size={14} aria-hidden="true" />
+                                Apply by 31 Mar 2027
+                              </span>
+                              <span>
+                                <Languages size={14} aria-hidden="true" />
+                                Slovak
+                              </span>
+                              <span>
+                                <FileText size={14} aria-hidden="true" />
+                                {match.requiredDocuments.length} relevant
+                                documents
+                              </span>
+                            </div>
+
+                            <Link
+                              href={programHref}
+                              className={linkStyles.routeLink}
                             >
-                              Official program source
-                              <ArrowUpRight
-                                size={14}
-                                aria-hidden="true"
-                              />
-                            </a>
+                              See my requirements
+                              <ArrowRight size={14} aria-hidden="true" />
+                            </Link>
                           </div>
-                        ),
+                          );
+                        },
                       )}
                     </div>
                   ) : (

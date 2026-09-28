@@ -1,15 +1,15 @@
 import { Suspense } from "react";
 
+import { ApplicantProfileForm } from "@/components/ApplicantProfileForm";
 import { Header } from "@/components/Header";
-import { UniversityResults } from "@/components/UniversityResults";
 
-export default function UniversityResultsPage() {
+export default function RouteProfilePage() {
   return (
     <main>
       <Header />
 
       <Suspense fallback={null}>
-        <UniversityResults mode="explore" />
+        <ApplicantProfileForm />
       </Suspense>
     </main>
   );

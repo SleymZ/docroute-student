@@ -1,15 +1,15 @@
 import { Suspense } from "react";
 
 import { Header } from "@/components/Header";
-import { UniversityResults } from "@/components/UniversityResults";
+import { RoutePreviewScreen } from "@/components/RoutePreviewScreen";
 
-export default function UniversityResultsPage() {
+export default function RoutePreviewPage() {
   return (
     <main>
       <Header />
 
       <Suspense fallback={null}>
-        <UniversityResults mode="explore" />
+        <RoutePreviewScreen />
       </Suspense>
     </main>
   );

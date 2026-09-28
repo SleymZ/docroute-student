@@ -37,6 +37,193 @@
     transform 180ms ease;
 }
 
+.profileSnapshot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 16px;
+  padding: 14px;
+  border: 1px solid #294b59;
+  border-radius: 16px;
+  background: rgba(10, 32, 43, 0.78);
+}
+
+.profileSnapshot > div {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.snapshotIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(121, 221, 239, 0.16);
+  border-radius: 10px;
+  background: rgba(121, 221, 239, 0.06);
+  color: #79ddef;
+}
+
+.profileSnapshot p,
+.profileSnapshot small,
+.profileSnapshot strong {
+  display: block;
+  min-width: 0;
+  margin: 0;
+}
+
+.profileSnapshot small {
+  margin-bottom: 4px;
+  color: #6f919f;
+  font-size: 8px;
+  letter-spacing: 0.13em;
+}
+
+.profileSnapshot strong {
+  overflow: hidden;
+  color: #dbe7ea;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileSnapshot > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid #365a69;
+  border-radius: 10px;
+  color: #8cdae7;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.directoryPrompt {
+  grid-template-columns: minmax(0, 1fr) auto;
+  border-color: rgba(255, 128, 103, 0.24);
+  background:
+    radial-gradient(
+      circle at 92% 0,
+      rgba(255, 128, 103, 0.1),
+      transparent 34%
+    ),
+    rgba(10, 32, 43, 0.78);
+}
+
+.directoryPrompt strong {
+  white-space: normal;
+}
+
+.directoryPrompt > a {
+  border-color: rgba(255, 128, 103, 0.34);
+  background: rgba(255, 128, 103, 0.08);
+  color: #ff9a82;
+}
+
+.matchCard {
+  padding: 15px;
+  border: 1px solid rgba(121, 221, 239, 0.15);
+  border-radius: 13px;
+  background: rgba(6, 24, 34, 0.52);
+}
+
+.matchCard + .matchCard {
+  margin-top: 9px;
+}
+
+.matchHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.matchHeading strong,
+.matchHeading span {
+  display: block;
+}
+
+.matchHeading strong {
+  color: #edf2f2;
+  font-size: 13px;
+}
+
+.matchHeading > div > span {
+  margin-top: 3px;
+  color: #7695a2;
+  font-size: 9px;
+}
+
+.matchStatus {
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.statusStrong {
+  background: rgba(117, 219, 169, 0.11);
+  color: #75dba9;
+}
+
+.statusConditional {
+  background: rgba(121, 221, 239, 0.1);
+  color: #79ddef;
+}
+
+.statusPreparationRequired,
+.statusMoreInformation {
+  background: rgba(239, 185, 120, 0.1);
+  color: #efb978;
+}
+
+.matchSummary {
+  margin: 11px 0 0;
+  color: #97b0ba;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.matchFacts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 12px;
+}
+
+.matchFacts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #b6c9d0;
+  font-size: 9px;
+}
+
+.matchFacts svg {
+  color: #ff9277;
+}
+
+.routeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: #7fdbe9;
+  font-size: 10px;
+  font-weight: 700;
+}
+
 @media (hover: hover) {
   .universityVisualLink:hover {
     filter: brightness(1.08);
@@ -50,11 +237,30 @@
     background: #ff9a82;
     transform: translateY(-1px);
   }
+
+  .profileSnapshot > a:hover,
+  .routeLink:hover {
+    color: #ffffff;
+  }
+}
+
+@media (max-width: 760px) {
+  .profileSnapshot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profileSnapshot > a {
+    width: 100%;
+  }
 }
 
 @media (max-width: 520px) {
   .profileLink {
     width: 100%;
+  }
+
+  .matchHeading {
+    flex-direction: column;
   }
 }
 
@@ -63,5 +269,20 @@
   .universityTitleLink,
   .profileLink {
     transition: none;
+  }
+}
+.profileLoader {
+  animation: profileSpin 900ms linear infinite;
+}
+
+@keyframes profileSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profileLoader {
+    animation: none;
   }
 }

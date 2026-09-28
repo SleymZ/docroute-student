@@ -9,6 +9,7 @@ type UniversityImageProps = {
   country: string;
   className?: string;
   showCredit?: boolean;
+  creditLinks?: boolean;
 };
 
 type UniversityMedia = {
@@ -55,6 +56,7 @@ export function UniversityImage({
   country,
   className = "",
   showCredit = false,
+  creditLinks = true,
 }: UniversityImageProps) {
   const [
     universityMedia,
@@ -78,11 +80,6 @@ export function UniversityImage({
 
   useEffect(() => {
     const controller = new AbortController();
-
-    setUniversityMedia(null);
-    setCountryMedia(null);
-    setFailedImageUrls([]);
-    setLoadedImageUrl(null);
 
     const universitySearchParams =
       new URLSearchParams({
@@ -158,10 +155,18 @@ export function UniversityImage({
      * Запросы выполняются параллельно.
      * Фото университета всегда имеет приоритет.
      */
-    void loadUniversityMedia();
-    void loadCountryMedia();
+    const timer = window.setTimeout(() => {
+      setUniversityMedia(null);
+      setCountryMedia(null);
+      setFailedImageUrls([]);
+      setLoadedImageUrl(null);
+
+      void loadUniversityMedia();
+      void loadCountryMedia();
+    }, 0);
 
     return () => {
+      window.clearTimeout(timer);
       controller.abort();
     };
   }, [name, country]);
@@ -315,15 +320,23 @@ export function UniversityImage({
       {shouldShowCredit &&
         activeMedia?.sourcePage && (
           <div className={styles.credit}>
-            <a
-              href={activeMedia.sourcePage}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {activeMedia.author
-                ? `Photo: ${activeMedia.author}`
-                : "Photo source"}
-            </a>
+            {creditLinks ? (
+              <a
+                href={activeMedia.sourcePage}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {activeMedia.author
+                  ? `Photo: ${activeMedia.author}`
+                  : "Photo source"}
+              </a>
+            ) : (
+              <span>
+                {activeMedia.author
+                  ? `Photo: ${activeMedia.author}`
+                  : "Photo source"}
+              </span>
+            )}
 
             {activeMedia.license && (
               <>
@@ -331,7 +344,7 @@ export function UniversityImage({
                   ·
                 </span>
 
-                {activeMedia.licenseUrl ? (
+                {activeMedia.licenseUrl && creditLinks ? (
                   <a
                     href={
                       activeMedia.licenseUrl

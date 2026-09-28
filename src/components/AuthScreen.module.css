@@ -670,6 +670,13 @@
     box-shadow 180ms ease;
 }
 
+.googleButton:disabled,
+.submitButton:disabled,
+.passwordLabel button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
 .prototypeMessage {
   margin: 0;
   padding: 10px 12px;
@@ -679,6 +686,12 @@
   color: #536d72;
   font-size: 9px;
   line-height: 1.5;
+}
+
+.prototypeMessage[data-error="true"] {
+  border-color: rgba(211, 91, 70, 0.28);
+  background: rgba(211, 91, 70, 0.08);
+  color: #a13f31;
 }
 
 .modePrompt {

@@ -73,6 +73,7 @@ export function JourneyRail() {
           return (
             <div
               key={step.id}
+              id={step.id === "residence" ? "residence" : undefined}
               className={`${styles.card} ${
                 isActive ? styles.activeCard : ""
               }`}

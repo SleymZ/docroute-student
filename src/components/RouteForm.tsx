@@ -423,7 +423,7 @@ export function RouteForm({
         type="submit"
         className="primary-button route-button"
       >
-        Preview my route
+        Build my route
         <ArrowRight size={18} aria-hidden="true" />
       </button>
 
