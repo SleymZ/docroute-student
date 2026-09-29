@@ -2,11 +2,15 @@ import {
   cefrLevels,
   type ApplicantLanguage,
   type ApplicantProfile,
-  type CurrentResidenceStatus,
   type EducationStatus,
   type GradeScale,
   type WaiverEvidence,
 } from "@/types/admission";
+import {
+  isDegreeLevel,
+  isStudyIntake,
+  normalizeCurrentResidenceStatus,
+} from "@/lib/profile-options";
 
 type SearchParamsReader = {
   get(name: string): string | null;
@@ -21,16 +25,6 @@ const educationStatuses = new Set<EducationStatus>([
 
 const gradeScales = new Set<GradeScale>([
   "slovak-1-5",
-  "other",
-]);
-
-const residenceStatuses = new Set<CurrentResidenceStatus>([
-  "outside-slovakia",
-  "slovak-residence",
-  "eu-residence",
-  "slovak-national-visa",
-  "visa-free",
-  "temporary-protection",
   "other",
 ]);
 
@@ -120,11 +114,15 @@ export function parseApplicantProfile(
     params.get("citizenship")?.toUpperCase() ?? "";
   const educationCountryCode =
     params.get("educationCountry")?.toUpperCase() ?? "";
+  const rawDegreeLevel = params.get("degree") ?? "bachelor";
+  const rawIntake = params.get("intake") ?? "2027/28";
 
   const rawEducationStatus = params.get("educationStatus");
   const rawGradeScale = params.get("gradeScale");
-  const rawResidenceStatus =
-    params.get("residenceStatus") ?? "outside-slovakia";
+  const residenceStatus = normalizeCurrentResidenceStatus(
+    params.get("residenceStatus") ??
+      "non-eu-passport-no-residence",
+  );
   const rawAverage = params.get("average");
 
   if (
@@ -132,9 +130,9 @@ export function parseApplicantProfile(
     !studyCategory ||
     !citizenshipCountryCode ||
     !educationCountryCode ||
-    !residenceStatuses.has(
-      rawResidenceStatus as CurrentResidenceStatus,
-    ) ||
+    !isDegreeLevel(rawDegreeLevel) ||
+    !isStudyIntake(rawIntake) ||
+    !residenceStatus ||
     !rawEducationStatus ||
     !educationStatuses.has(rawEducationStatus as EducationStatus) ||
     !rawGradeScale ||
@@ -164,12 +162,11 @@ export function parseApplicantProfile(
   return {
     destinationCountryCode,
     studyCategory,
-    degreeLevel: "bachelor",
-    intake: "2027/28",
+    degreeLevel: rawDegreeLevel,
+    intake: rawIntake,
     citizenshipCountryCode,
     educationCountryCode,
-    currentResidenceStatus:
-      rawResidenceStatus as CurrentResidenceStatus,
+    currentResidenceStatus: residenceStatus,
     educationStatus: rawEducationStatus as EducationStatus,
     gradeScale: rawGradeScale as GradeScale,
     penultimateYearAverage:

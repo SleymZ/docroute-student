@@ -25,14 +25,31 @@ export type EducationStatus =
 
 export type GradeScale = "slovak-1-5" | "other";
 
+export const degreeLevels = ["bachelor", "master"] as const;
+
+export type DegreeLevel = (typeof degreeLevels)[number];
+
+export const studyIntakes = [
+  "2027/28",
+  "2028/29",
+  "2029/30",
+] as const;
+
+export type StudyIntake = (typeof studyIntakes)[number];
+
+export const currentResidenceStatuses = [
+  "eu-eea-swiss-passport",
+  "non-eu-passport-no-residence",
+  "destination-residence",
+  "other-eu-residence",
+  "destination-national-visa",
+  "visa-free-entry",
+  "temporary-protection",
+  "other",
+] as const;
+
 export type CurrentResidenceStatus =
-  | "outside-slovakia"
-  | "slovak-residence"
-  | "eu-residence"
-  | "slovak-national-visa"
-  | "visa-free"
-  | "temporary-protection"
-  | "other";
+  (typeof currentResidenceStatuses)[number];
 
 export type WaiverEvidence =
   | "math-matura"
@@ -45,8 +62,8 @@ export type WaiverEvidence =
 export type ApplicantProfile = {
   destinationCountryCode: string;
   studyCategory: string;
-  degreeLevel: "bachelor";
-  intake: "2027/28";
+  degreeLevel: DegreeLevel;
+  intake: StudyIntake;
   citizenshipCountryCode: string;
   educationCountryCode: string;
   currentResidenceStatus: CurrentResidenceStatus;
@@ -98,8 +115,8 @@ export type AdmissionProgram = {
   category: string;
   programName: string;
   localProgramName: string;
-  degreeLevel: "bachelor";
-  intake: "2027/28";
+  degreeLevel: DegreeLevel;
+  intake: StudyIntake;
   durationYears: number;
   studyMode: "full-time";
   instructionLanguages: Array<{

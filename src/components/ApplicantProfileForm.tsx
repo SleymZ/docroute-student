@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,10 +9,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
-  BookOpen,
   Check,
   FileCheck2,
-  Globe2,
   GraduationCap,
   Languages,
   Plus,
@@ -21,8 +19,15 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { CountryPicker } from "@/components/CountryPicker";
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
+import {
+  formatDegreeLevel,
+  getResidenceStatusLabel,
+  isDegreeLevel,
+  isStudyIntake,
+} from "@/lib/profile-options";
 import { createProfileSearchParams } from "@/lib/profile-query";
 import { saveApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -32,10 +37,13 @@ import type {
   ApplicantProfile,
   CefrLevel,
   CurrentResidenceStatus,
+  DegreeLevel,
   EducationStatus,
   GradeScale,
+  StudyIntake,
   WaiverEvidence,
 } from "@/types/admission";
+import { degreeLevels, studyIntakes } from "@/types/admission";
 
 import styles from "./ApplicantProfileForm.module.css";
 
@@ -149,6 +157,8 @@ export function ApplicantProfileForm() {
 
   const countryCode = searchParams.get("country")?.toUpperCase() ?? "";
   const selectedProgram = searchParams.get("program") ?? "";
+  const requestedDegreeLevel = searchParams.get("degree") ?? "";
+  const requestedIntake = searchParams.get("intake") ?? "";
   const destination = getCountry(countryCode);
   const validProgram = programOptions.includes(selectedProgram);
 
@@ -158,6 +168,14 @@ export function ApplicantProfileForm() {
     useState<CurrentResidenceStatus | "">("");
   const [educationStatus, setEducationStatus] =
     useState<EducationStatus>("final-year");
+  const [degreeLevel, setDegreeLevel] = useState<DegreeLevel>(() =>
+    isDegreeLevel(requestedDegreeLevel)
+      ? requestedDegreeLevel
+      : "bachelor",
+  );
+  const [intake, setIntake] = useState<StudyIntake>(() =>
+    isStudyIntake(requestedIntake) ? requestedIntake : "2027/28",
+  );
   const [gradeScale, setGradeScale] =
     useState<GradeScale>("other");
   const [average, setAverage] = useState("");
@@ -174,15 +192,6 @@ export function ApplicantProfileForm() {
     Set<WaiverEvidence>
   >(() => new Set());
   const [error, setError] = useState("");
-
-  const selectedCitizenship = useMemo(
-    () => getCountry(citizenship),
-    [citizenship],
-  );
-  const selectedEducationCountry = useMemo(
-    () => getCountry(educationCountry),
-    [educationCountry],
-  );
 
   if (!destination || !validProgram) {
     return (
@@ -286,8 +295,8 @@ export function ApplicantProfileForm() {
     const profile: ApplicantProfile = {
       destinationCountryCode: countryCode,
       studyCategory: selectedProgram,
-      degreeLevel: "bachelor",
-      intake: "2027/28",
+      degreeLevel,
+      intake,
       citizenshipCountryCode: citizenship,
       educationCountryCode: educationCountry,
       currentResidenceStatus,
@@ -301,7 +310,8 @@ export function ApplicantProfileForm() {
         proof: language.proof,
         certificateName: language.certificateName,
       })),
-      waiverEvidence: [...waiverEvidence],
+      waiverEvidence:
+        degreeLevel === "bachelor" ? [...waiverEvidence] : [],
     };
 
     const profileParams = createProfileSearchParams(profile);
@@ -360,7 +370,9 @@ export function ApplicantProfileForm() {
           <div>
             <small>YOUR SEARCH</small>
             <strong>{destination.name}</strong>
-            <span>{selectedProgram} · Bachelor · 2027/28</span>
+            <span>
+              {selectedProgram} · {formatDegreeLevel(degreeLevel)} · {intake}
+            </span>
           </div>
         </aside>
       </header>
@@ -375,75 +387,67 @@ export function ApplicantProfileForm() {
               <small>01 · BACKGROUND</small>
               <h2>Your education route</h2>
               <p>
-                Citizenship and where you studied can change recognition and
-                language-proof rules.
+                Citizenship and where you earned your qualifying education can
+                change recognition and language-proof rules.
               </p>
             </div>
           </header>
 
           <div className={styles.fieldGrid}>
+            <CountryPicker
+              label="Citizenship"
+              value={citizenship}
+              options={countryOptions}
+              placeholder="Select citizenship"
+              onChange={setCitizenship}
+            />
+
+            <CountryPicker
+              label={
+                degreeLevel === "master"
+                  ? "Country of bachelor's education"
+                  : "Country of secondary education"
+              }
+              value={educationCountry}
+              options={countryOptions}
+              placeholder="Select education country"
+              onChange={setEducationCountry}
+            />
+
             <label className={styles.field}>
-              <span>Citizenship</span>
-              <div className={styles.countrySelect}>
-                {selectedCitizenship && citizenship !== "ZZ" ? (
-                  <Image
-                    src={`https://flagcdn.com/w40/${citizenship.toLowerCase()}.png`}
-                    alt=""
-                    width={22}
-                    height={16}
-                    unoptimized
-                  />
-                ) : (
-                  <Globe2 size={17} aria-hidden="true" />
-                )}
-                <select
-                  value={citizenship}
-                  onChange={(event) => setCitizenship(event.target.value)}
-                  required
-                >
-                  <option value="">Select citizenship</option>
-                  {countryOptions.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <span>Degree level</span>
+              <select
+                value={degreeLevel}
+                onChange={(event) =>
+                  setDegreeLevel(event.target.value as DegreeLevel)
+                }
+              >
+                {degreeLevels.map((level) => (
+                  <option key={level} value={level}>
+                    {formatDegreeLevel(level)} degree
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label className={styles.field}>
-              <span>Country of secondary education</span>
-              <div className={styles.countrySelect}>
-                {selectedEducationCountry && educationCountry !== "ZZ" ? (
-                  <Image
-                    src={`https://flagcdn.com/w40/${educationCountry.toLowerCase()}.png`}
-                    alt=""
-                    width={22}
-                    height={16}
-                    unoptimized
-                  />
-                ) : (
-                  <BookOpen size={17} aria-hidden="true" />
-                )}
-                <select
-                  value={educationCountry}
-                  onChange={(event) =>
-                    setEducationCountry(event.target.value)
-                  }
-                  required
-                >
-                  <option value="">Select education country</option>
-                  {countryOptions.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <span>Target intake</span>
+              <select
+                value={intake}
+                onChange={(event) =>
+                  setIntake(event.target.value as StudyIntake)
+                }
+              >
+                {studyIntakes.map((option) => (
+                  <option key={option} value={option}>
+                    Academic year {option}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label className={styles.field}>
-              <span>Current residence status</span>
+              <span>Passport and current residence status</span>
               <select
                 value={currentResidenceStatus}
                 onChange={(event) =>
@@ -454,38 +458,90 @@ export function ApplicantProfileForm() {
                 required
               >
                 <option value="">Select current residence status</option>
-                <option value="outside-slovakia">Outside Slovakia</option>
-                <option value="slovak-residence">Slovak residence permit</option>
-                <option value="eu-residence">Residence in another EU country</option>
-                <option value="slovak-national-visa">Slovak national visa</option>
-                <option value="visa-free">Visa-free stay</option>
-                <option value="temporary-protection">Temporary protection</option>
-                <option value="other">Other</option>
+                <option value="eu-eea-swiss-passport">
+                  {getResidenceStatusLabel(
+                    "eu-eea-swiss-passport",
+                    destination.name,
+                  )}
+                </option>
+                <option value="non-eu-passport-no-residence">
+                  {getResidenceStatusLabel(
+                    "non-eu-passport-no-residence",
+                    destination.name,
+                  )}
+                </option>
+                <option value="destination-residence">
+                  {getResidenceStatusLabel(
+                    "destination-residence",
+                    destination.name,
+                  )}
+                </option>
+                <option value="other-eu-residence">
+                  {getResidenceStatusLabel(
+                    "other-eu-residence",
+                    destination.name,
+                  )}
+                </option>
+                <option value="destination-national-visa">
+                  {getResidenceStatusLabel(
+                    "destination-national-visa",
+                    destination.name,
+                  )}
+                </option>
+                <option value="visa-free-entry">
+                  {getResidenceStatusLabel(
+                    "visa-free-entry",
+                    destination.name,
+                  )}
+                </option>
+                <option value="temporary-protection">
+                  {getResidenceStatusLabel(
+                    "temporary-protection",
+                    destination.name,
+                  )}
+                </option>
+                <option value="other">
+                  {getResidenceStatusLabel("other", destination.name)}
+                </option>
               </select>
             </label>
 
             <label className={styles.field}>
-              <span>Secondary-school status</span>
+              <span>
+                {degreeLevel === "master"
+                  ? "Bachelor's degree status"
+                  : "Secondary-school status"}
+              </span>
               <select
                 value={educationStatus}
                 onChange={(event) =>
                   setEducationStatus(event.target.value as EducationStatus)
                 }
               >
-                <option value="completed">Already graduated</option>
-                <option value="final-year">In my final year</option>
-                <option value="earlier-year">Not yet in my final year</option>
+                <option value="completed">
+                  {degreeLevel === "master"
+                    ? "Bachelor's degree completed"
+                    : "Already graduated"}
+                </option>
+                <option value="final-year">
+                  {degreeLevel === "master"
+                    ? "In the final year of my bachelor's"
+                    : "In my final year"}
+                </option>
+                <option value="earlier-year">
+                  {degreeLevel === "master"
+                    ? "Earlier in my bachelor's degree"
+                    : "Not yet in my final year"}
+                </option>
               </select>
             </label>
-
-            <label className={styles.field}>
-              <span>Target intake</span>
-              <div className={styles.readonlyField}>
-                <GraduationCap size={17} aria-hidden="true" />
-                Bachelor · 2027/28
-              </div>
-            </label>
           </div>
+
+          <p className={styles.routeDataNote}>
+            Level and intake are matched exactly. When no verified programme
+            exists for that route yet, DocRoute keeps it unverified instead of
+            reusing requirements from another degree or year.
+          </p>
         </section>
 
         <section className={styles.section}>
@@ -629,10 +685,15 @@ export function ApplicantProfileForm() {
             </span>
             <div>
               <small>03 · ACADEMIC EVIDENCE</small>
-              <h2>What can support your application?</h2>
+              <h2>
+                {degreeLevel === "master"
+                  ? "Add your current academic context"
+                  : "What can support your application?"}
+              </h2>
               <p>
-                Optional. We only use an item when an official university rule
-                confirms what it changes.
+                {degreeLevel === "master"
+                  ? "Master's evidence is programme-specific. We only request a document after verifying the official programme rule."
+                  : "Optional. We only use an item when an official university rule confirms what it changes."}
               </p>
             </div>
           </header>
@@ -652,7 +713,11 @@ export function ApplicantProfileForm() {
             </label>
 
             <label className={styles.field}>
-              <span>Penultimate-year average (optional)</span>
+              <span>
+                {degreeLevel === "master"
+                  ? "Current bachelor's average (optional)"
+                  : "Penultimate-year average (optional)"}
+              </span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -674,33 +739,47 @@ export function ApplicantProfileForm() {
             </p>
           )}
 
-          <div className={styles.waiverGrid}>
-            {waiverOptions.map((option) => {
-              const checked = waiverEvidence.has(option.value);
+          {degreeLevel === "bachelor" ? (
+            <div className={styles.waiverGrid}>
+              {waiverOptions.map((option) => {
+                const checked = waiverEvidence.has(option.value);
 
-              return (
-                <label
-                  key={option.value}
-                  className={`${styles.evidenceCard} ${
-                    checked ? styles.evidenceSelected : ""
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => toggleWaiver(option.value)}
-                  />
-                  <span className={styles.evidenceCheck}>
-                    <Check size={13} aria-hidden="true" />
-                  </span>
-                  <span>
-                    <strong>{option.label}</strong>
-                    <small>{option.description}</small>
-                  </span>
-                </label>
-              );
-            })}
-          </div>
+                return (
+                  <label
+                    key={option.value}
+                    className={`${styles.evidenceCard} ${
+                      checked ? styles.evidenceSelected : ""
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleWaiver(option.value)}
+                    />
+                    <span className={styles.evidenceCheck}>
+                      <Check size={13} aria-hidden="true" />
+                    </span>
+                    <span>
+                      <strong>{option.label}</strong>
+                      <small>{option.description}</small>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          ) : (
+            <div className={styles.masterEvidenceNotice}>
+              <GraduationCap size={19} aria-hidden="true" />
+              <p>
+                <strong>Undergraduate waiver options are hidden.</strong>
+                <span>
+                  Transcript, completed credits, prerequisite subjects and
+                  portfolio requirements will appear only for a verified
+                  master&apos;s programme.
+                </span>
+              </p>
+            </div>
+          )}
         </section>
 
         <footer className={styles.submitDock}>

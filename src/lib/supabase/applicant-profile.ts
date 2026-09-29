@@ -4,11 +4,15 @@ import {
   cefrLevels,
   type ApplicantLanguage,
   type ApplicantProfile,
-  type CurrentResidenceStatus,
   type EducationStatus,
   type GradeScale,
   type WaiverEvidence,
 } from "@/types/admission";
+import {
+  isDegreeLevel,
+  isStudyIntake,
+  normalizeCurrentResidenceStatus,
+} from "@/lib/profile-options";
 
 import type {
   Database,
@@ -28,17 +32,6 @@ const gradeScales = new Set<GradeScale>([
   "slovak-1-5",
   "other",
 ]);
-
-const residenceStatuses =
-  new Set<CurrentResidenceStatus>([
-    "outside-slovakia",
-    "slovak-residence",
-    "eu-residence",
-    "slovak-national-visa",
-    "visa-free",
-    "temporary-protection",
-    "other",
-  ]);
 
 const waiverEvidenceOptions =
   new Set<WaiverEvidence>([
@@ -84,12 +77,14 @@ function isApplicantLanguage(
 function rowToApplicantProfile(
   row: ApplicantProfileRow,
 ): ApplicantProfile | null {
+  const residenceStatus = normalizeCurrentResidenceStatus(
+    row.current_residence_status,
+  );
+
   if (
-    row.degree_level !== "bachelor" ||
-    row.intake !== "2027/28" ||
-    !residenceStatuses.has(
-      row.current_residence_status as CurrentResidenceStatus,
-    ) ||
+    !isDegreeLevel(row.degree_level) ||
+    !isStudyIntake(row.intake) ||
+    !residenceStatus ||
     !educationStatuses.has(
       row.education_status as EducationStatus,
     ) ||
@@ -123,9 +118,9 @@ function rowToApplicantProfile(
 
     studyCategory: row.study_category,
 
-    degreeLevel: "bachelor",
+    degreeLevel: row.degree_level,
 
-    intake: "2027/28",
+    intake: row.intake,
 
     citizenshipCountryCode:
       row.citizenship_country_code,
@@ -133,8 +128,7 @@ function rowToApplicantProfile(
     educationCountryCode:
       row.education_country_code,
 
-    currentResidenceStatus:
-      row.current_residence_status as CurrentResidenceStatus,
+    currentResidenceStatus: residenceStatus,
 
     educationStatus:
       row.education_status as EducationStatus,
@@ -236,7 +230,7 @@ export async function saveApplicantProfile(
         waiver_evidence:
           profile.waiverEvidence,
 
-        profile_version: 1,
+        profile_version: 2,
       },
       {
         onConflict: "user_id",

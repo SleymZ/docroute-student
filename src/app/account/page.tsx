@@ -13,6 +13,11 @@ import {
 
 import { AccountSignOut } from "@/components/AccountSignOut";
 import { Header } from "@/components/Header";
+import catalog from "@/data/universities.json";
+import {
+  formatDegreeLevel,
+  getResidenceStatusLabel,
+} from "@/lib/profile-options";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -58,11 +63,19 @@ export default async function AccountPage() {
   }
 
   const routeParams = profile
-    ? new URLSearchParams({
-        country: profile.destinationCountryCode,
-        program: profile.studyCategory,
-      })
-    : null;
+      ? new URLSearchParams({
+          country: profile.destinationCountryCode,
+          program: profile.studyCategory,
+          degree: profile.degreeLevel,
+          intake: profile.intake,
+        })
+      : null;
+  const destinationName = profile
+    ? (catalog.universities.find(
+        (university) =>
+          university.countryCode === profile.destinationCountryCode,
+      )?.country ?? profile.destinationCountryCode)
+    : "";
 
   return (
     <main>
@@ -142,13 +155,20 @@ export default async function AccountPage() {
                     <dd>{profile.educationCountryCode}</dd>
                   </div>
                   <div>
-                    <dt>School status</dt>
+                    <dt>
+                      {profile.degreeLevel === "master"
+                        ? "Bachelor's degree status"
+                        : "School status"}
+                    </dt>
                     <dd>{profile.educationStatus.replaceAll("-", " ")}</dd>
                   </div>
                   <div>
                     <dt>Current status</dt>
                     <dd>
-                      {profile.currentResidenceStatus.replaceAll("-", " ")}
+                      {getResidenceStatusLabel(
+                        profile.currentResidenceStatus,
+                        destinationName,
+                      )}
                     </dd>
                   </div>
                 </dl>
@@ -173,7 +193,10 @@ export default async function AccountPage() {
               <aside className={styles.routeCard}>
                 <p>CURRENT ROUTE</p>
                 <h2>{profile.studyCategory}</h2>
-                <strong>{profile.destinationCountryCode} · Bachelor</strong>
+                <strong>
+                  {profile.destinationCountryCode} ·{" "}
+                  {formatDegreeLevel(profile.degreeLevel)}
+                </strong>
                 <span>Intake {profile.intake}</span>
 
                 <Link

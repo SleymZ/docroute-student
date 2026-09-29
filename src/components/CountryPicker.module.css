@@ -1,0 +1,236 @@
+.root {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.label {
+  color: #a8bec8;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.trigger {
+  display: flex;
+  width: 100%;
+  min-height: 50px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 13px;
+  border: 1px solid #315260;
+  border-radius: 11px;
+  background:
+    linear-gradient(135deg, rgba(121, 221, 239, 0.035), transparent),
+    #0d2733;
+  color: #edf2f2;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.trigger[aria-expanded="true"] {
+  border-color: rgba(255, 139, 113, 0.7);
+  background-color: #102e3b;
+  box-shadow: 0 0 0 3px rgba(255, 128, 103, 0.08);
+}
+
+.selection {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 11px;
+}
+
+.selection > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selection > span[data-placeholder="true"] {
+  color: #718f9c;
+}
+
+.flag {
+  width: 25px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(224, 242, 246, 0.15);
+  border-radius: 3px;
+  object-fit: cover;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+}
+
+.globe {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(121, 221, 239, 0.15);
+  border-radius: 7px;
+  background: rgba(121, 221, 239, 0.06);
+  color: #76cad9;
+}
+
+.trigger > svg {
+  flex: 0 0 auto;
+  color: #7195a3;
+  transition: transform 160ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  z-index: 40;
+  overflow: hidden;
+  padding: 8px;
+  border: 1px solid #365967;
+  border-radius: 14px;
+  background: rgba(7, 25, 35, 0.98);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+}
+
+.searchField {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 11px;
+  border: 1px solid rgba(121, 221, 239, 0.17);
+  border-radius: 9px;
+  background: #0c2632;
+  color: #79ddef;
+}
+
+.searchField input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #edf2f2;
+  font: inherit;
+  font-size: 11px;
+}
+
+.searchField input::placeholder {
+  color: #607f8d;
+}
+
+.searchField input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.searchField button {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #7899a6;
+}
+
+.options {
+  display: grid;
+  max-height: 280px;
+  gap: 3px;
+  margin-top: 7px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #355765 transparent;
+  scrollbar-width: thin;
+}
+
+.option {
+  display: flex;
+  width: 100%;
+  min-height: 46px;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 9px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #dce7e9;
+  font: inherit;
+  text-align: left;
+}
+
+.option[aria-selected="true"] {
+  border-color: rgba(255, 139, 113, 0.28);
+  background: rgba(255, 128, 103, 0.09);
+}
+
+.optionName {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.optionName strong {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.optionName small {
+  color: #668895;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.check {
+  flex: 0 0 auto;
+  color: #ff9277;
+}
+
+.empty {
+  margin: 0;
+  padding: 22px 12px;
+  color: #7795a1;
+  font-size: 10px;
+  text-align: center;
+}
+
+@media (hover: hover) {
+  .trigger:hover {
+    border-color: #467080;
+  }
+
+  .option:hover {
+    background: rgba(121, 221, 239, 0.07);
+  }
+
+  .searchField button:hover {
+    background: rgba(121, 221, 239, 0.08);
+    color: #dcecef;
+  }
+}
+
+.trigger:focus-visible,
+.option:focus-visible,
+.searchField button:focus-visible {
+  outline: 2px solid #ff9277;
+  outline-offset: 2px;
+}

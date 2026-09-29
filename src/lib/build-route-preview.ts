@@ -30,10 +30,10 @@ function getSubmissionTask(profile: ApplicantProfile): RouteTask {
   const sourceIds = ["iom-study-residence-application"];
 
   switch (profile.currentResidenceStatus) {
-    case "slovak-residence":
-    case "eu-residence":
-    case "slovak-national-visa":
-    case "visa-free":
+    case "destination-residence":
+    case "other-eu-residence":
+    case "destination-national-visa":
+    case "visa-free-entry":
     case "temporary-protection":
       return {
         id: "residence-submission-place",
@@ -45,7 +45,7 @@ function getSubmissionTask(profile: ApplicantProfile): RouteTask {
         sourceIds,
       };
 
-    case "outside-slovakia":
+    case "non-eu-passport-no-residence":
       return {
         id: "residence-submission-place",
         title: "Plan an in-person embassy application",
@@ -53,6 +53,16 @@ function getSubmissionTask(profile: ApplicantProfile): RouteTask {
           "The usual route is the Slovak diplomatic mission accredited for your citizenship country or country of residence. An interview is part of the preliminary assessment.",
         status: "action",
         dueLabel: "After receiving the admission letter",
+        sourceIds,
+      };
+
+    case "eu-eea-swiss-passport":
+      return {
+        id: "residence-submission-place",
+        title: "Use the EU / EEA mobility route",
+        description:
+          "You reported an EU, EEA or Swiss passport. A third-country student residence application should not be reused for your route; confirm the local registration duties instead.",
+        status: "information",
         sourceIds,
       };
 
@@ -91,7 +101,10 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
     };
   }
 
-  if (euCountryCodes.has(profile.citizenshipCountryCode)) {
+  if (
+    profile.currentResidenceStatus === "eu-eea-swiss-passport" ||
+    euCountryCodes.has(profile.citizenshipCountryCode)
+  ) {
     return {
       id: "residence",
       number: "04",

@@ -26,6 +26,7 @@ import { verifiedPrograms } from "@/data/verified-programs";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { createProfileSearchParams } from "@/lib/profile-query";
 import { matchPrograms } from "@/lib/match-programs";
+import { formatDegreeLevel } from "@/lib/profile-options";
 import type { ProgramMatch } from "@/types/admission";
 
 import styles from "./ExploreCatalog.module.css";
@@ -296,8 +297,12 @@ export function UniversityResults({
           <p>
             {mode === "route" ? (
               <>
-                Personalised for your <strong>{selectedProgram}</strong> route,
-                education background, and languages.
+                Personalised for your{" "}
+                <strong>
+                  {formatDegreeLevel(profile!.degreeLevel)} {selectedProgram}
+                </strong>{" "}
+                route for {profile!.intake}, education background, and
+                languages.
               </>
             ) : (
               <>
@@ -344,11 +349,17 @@ export function UniversityResults({
           <p>
             <small>EDUCATION</small>
             <strong>
-              {profile.educationStatus === "completed"
-                ? "Secondary school completed"
-                : profile.educationStatus === "final-year"
-                  ? "Currently in final year"
-                  : "Before final year"}
+              {profile.degreeLevel === "master"
+                ? profile.educationStatus === "completed"
+                  ? "Bachelor's degree completed"
+                  : profile.educationStatus === "final-year"
+                    ? "Final year of bachelor's"
+                    : "Earlier in bachelor's degree"
+                : profile.educationStatus === "completed"
+                  ? "Secondary school completed"
+                  : profile.educationStatus === "final-year"
+                    ? "Currently in final year"
+                    : "Before final year"}
             </strong>
           </p>
         </div>
@@ -639,7 +650,11 @@ export function UniversityResults({
                     </div>
                   ) : (
                     <p className={styles.pendingText}>
-                      {university.verified
+                      {mode === "route" && profile
+                        ? `We have not yet verified a ${formatDegreeLevel(
+                            profile.degreeLevel,
+                          ).toLowerCase()} ${selectedProgram} programme here for the ${profile.intake} intake. The institution remains visible in the country directory.`
+                        : university.verified
                         ? `Published ${selectedProgram} program information is available. Build a route to see requirements for your profile.`
                         : `We have not yet verified whether this institution offers ${selectedProgram}. It is shown as part of the complete country directory.`}
                     </p>
