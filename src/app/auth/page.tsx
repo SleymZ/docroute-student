@@ -3,9 +3,13 @@ import type { Metadata } from "next";
 import { AuthScreen } from "@/components/AuthScreen";
 
 export const metadata: Metadata = {
-  title: "Account | DocRoute Student",
+  title: "Account",
   description:
     "Create your DocRoute account or return to your saved university application routes.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 type AuthPageProps = {

@@ -12,6 +12,15 @@ import type {
   RouteTask,
 } from "@/types/route-preview";
 
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T00:00:00Z`));
+}
+
 function admissionTaskStatus(
   status: "met" | "action" | "missing",
 ) {
@@ -209,6 +218,13 @@ export function buildRoutePreview(
   match: ProgramMatch,
 ): RoutePreview {
   const program = match.program;
+  const applicationDeadline = formatDate(program.application.deadline);
+  const admissionDate = formatDate(program.application.admissionDate);
+  const languageDeadline = formatDate(
+    program.languagePolicy.foreignApplicantTest.deadline,
+  );
+  const verifiedAt = formatDate(program.verifiedAt);
+  const programSourceIds = program.sources.map((source) => source.id);
   const applicationDocuments = match.requiredDocuments.filter(
     (document) => document.due === "application",
   );
@@ -234,13 +250,13 @@ export function buildRoutePreview(
       title: `Submit the ${program.programName} application`,
       description:
         "Prepare only the documents that apply to your profile and submit the electronic application before the faculty deadline.",
-      timing: "Deadline · 31 March 2027",
+      timing: `Deadline · ${applicationDeadline}`,
       tasks: applicationDocuments.map((document) => ({
         id: document.id,
         title: document.title,
         description: document.description,
         status: "action",
-        dueLabel: "By 31 March 2027",
+        dueLabel: `By ${applicationDeadline}`,
         sourceIds: document.sourceIds,
       })),
     },
@@ -251,7 +267,7 @@ export function buildRoutePreview(
       title: "Complete language and entrance requirements",
       description:
         "This stage changes directly with the languages and evidence in your applicant profile.",
-      timing: "Admission day · 3 June 2027",
+      timing: `Admission day · ${admissionDate}`,
       tasks: [
         ...(languageCheck
           ? [
@@ -260,8 +276,8 @@ export function buildRoutePreview(
                 title: languageCheck.label,
                 description: languageCheck.detail,
                 status: admissionTaskStatus(languageCheck.status),
-                dueLabel: "Complete by 3 June 2027",
-                sourceIds: ["fri-rules-2027"],
+                dueLabel: `Complete by ${languageDeadline}`,
+                sourceIds: programSourceIds,
               } satisfies RouteTask,
             ]
           : []),
@@ -278,8 +294,8 @@ export function buildRoutePreview(
                 dueLabel:
                   match.entranceRoute === "waived"
                     ? "Evidence with application"
-                    : "3 June 2027",
-                sourceIds: ["fri-rules-2027"],
+                    : admissionDate,
+                sourceIds: programSourceIds,
               } satisfies RouteTask,
             ]
           : []),
@@ -302,7 +318,7 @@ export function buildRoutePreview(
                 description: recognitionCheck.detail,
                 status: admissionTaskStatus(recognitionCheck.status),
                 dueLabel: "No later than enrolment",
-                sourceIds: ["fri-rules-2027"],
+                sourceIds: programSourceIds,
               } satisfies RouteTask,
             ]
           : []),
@@ -313,7 +329,7 @@ export function buildRoutePreview(
           status: "action" as const,
           dueLabel:
             document.due === "admission-day"
-              ? "On admission day"
+              ? `On ${admissionDate}`
               : "By enrolment",
           sourceIds: document.sourceIds,
         })),
@@ -324,7 +340,7 @@ export function buildRoutePreview(
             "This document closes the university stage and becomes the proof of purpose for a third-country student residence application.",
           status: "information",
           sourceIds: [
-            "fri-rules-2027",
+            ...programSourceIds,
             "iom-study-residence-application",
           ],
         },
@@ -346,6 +362,6 @@ export function buildRoutePreview(
       ...slovakiaResidenceRules.sources,
     ],
     disclaimer:
-      "This is a preparation route based on the profile you entered and sources checked on 27 September 2026. It is not an admission decision or legally binding immigration advice. Recheck every open task before submission.",
+      `This is a preparation route based on the profile you entered and university sources checked on ${verifiedAt}. It is not an admission decision or legally binding immigration advice. Recheck every open task before submission.`,
   };
 }

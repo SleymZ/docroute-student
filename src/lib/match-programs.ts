@@ -18,6 +18,15 @@ const levelRank: Record<CefrLevel, number> = {
   native: 7,
 };
 
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T00:00:00Z`));
+}
+
 function reachesLevel(
   language: ApplicantLanguage | undefined,
   minimum: CefrLevel,
@@ -117,6 +126,10 @@ export function matchProgram(
 ): ProgramMatch {
   const checks: MatchCheck[] = [];
   const nextActions: string[] = [];
+  const admissionDate = formatDate(program.application.admissionDate);
+  const languageDeadline = formatDate(
+    program.languagePolicy.foreignApplicantTest.deadline,
+  );
 
   if (profile.educationStatus === "completed") {
     checks.push({
@@ -146,7 +159,7 @@ export function matchProgram(
         "You are not yet in the final year. Admission remains a future route until secondary education can be completed for this intake.",
     });
     nextActions.push(
-      "Confirm that you can complete secondary education before the 2027/28 enrolment date.",
+      `Confirm that you can complete secondary education before the ${program.intake} enrolment date.`,
     );
   }
 
@@ -167,7 +180,7 @@ export function matchProgram(
           "This route requires Slovak at B1 or higher. None of the languages you marked for study currently meets that rule.",
       });
       nextActions.push(
-        "Reach Slovak B1 and register for the UNIZA language test by 3 June 2027.",
+        `Reach Slovak B1 and register for the required language test by ${languageDeadline}.`,
       );
     } else {
       checks.push({
@@ -180,7 +193,7 @@ export function matchProgram(
             : "Your reported Slovak level reaches B1. UNIZA must still confirm the submitted proof or test result.",
       });
       nextActions.push(
-        "Book the UNIZA Slovak test or ask the university to recognise your existing language proof by 3 June 2027.",
+        `Book the required Slovak test or ask the university to recognise your existing language proof by ${languageDeadline}.`,
       );
     }
   } else {
@@ -238,12 +251,12 @@ export function matchProgram(
     status: waiver ? "met" : "action",
     detail: waiver
       ? "Your profile contains at least one published route to admission without the entrance exam. The faculty will verify the evidence."
-      : "No verified waiver condition was found in your profile. You can still apply through the mathematics and logical-thinking entrance exam on 3 June 2027.",
+      : `No verified waiver condition was found in your profile. You can still apply through the mathematics and logical-thinking entrance exam on ${admissionDate}.`,
   });
 
   if (!waiver) {
     nextActions.push(
-      "Prepare for the 120-minute mathematics and logical-thinking entrance exam on 3 June 2027.",
+      `Prepare for the 120-minute mathematics and logical-thinking entrance exam on ${admissionDate}.`,
     );
   }
 

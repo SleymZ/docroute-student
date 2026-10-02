@@ -18,11 +18,12 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
+  CircleDashed,
   Code2,
-  FileText,
   Globe2,
   GraduationCap,
   Pill,
+  ShieldCheck,
   Smile,
   Stethoscope,
 } from "lucide-react";
@@ -40,6 +41,7 @@ type RouteFormProps = {
   documentCountry: string;
   destination: Destination;
   program: string;
+  routeAvailable: boolean;
   onDocumentCountryChange: (value: string) => void;
   onDestinationChange: (value: string) => void;
   onProgramChange: (value: string) => void;
@@ -377,6 +379,7 @@ export function RouteForm({
   documentCountry,
   destination,
   program,
+  routeAvailable,
   onDocumentCountryChange,
   onDestinationChange,
   onProgramChange,
@@ -423,14 +426,20 @@ export function RouteForm({
         type="submit"
         className="primary-button route-button"
       >
-        Build my route
+        {routeAvailable ? "Build my route" : "Explore universities"}
         <ArrowRight size={18} aria-hidden="true" />
       </button>
 
       <div className="trust-row">
         <span>
-          <FileText size={16} aria-hidden="true" />
-          Interactive demo · Sample data, not application guidance
+          {routeAvailable ? (
+            <ShieldCheck size={16} aria-hidden="true" />
+          ) : (
+            <CircleDashed size={16} aria-hidden="true" />
+          )}
+          {routeAvailable
+            ? "Verified route available · Official sources included"
+            : "Personalised route coverage in progress · Public directory available"}
         </span>
       </div>
     </form>

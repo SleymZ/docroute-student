@@ -33,6 +33,15 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./RoutePreviewScreen.module.css";
 
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T00:00:00Z`));
+}
+
 const statusMeta: Record<
   RouteTaskStatus,
   {
@@ -173,8 +182,8 @@ export function RoutePreviewScreen() {
             </p>
           </div>
           <Image
-            src="https://flagcdn.com/w80/sk.png"
-            alt="Slovakia flag"
+            src={`https://flagcdn.com/w80/${program.countryCode.toLowerCase()}.png`}
+            alt={`${program.country} flag`}
             width={36}
             height={26}
             unoptimized
@@ -187,14 +196,16 @@ export function RoutePreviewScreen() {
           <MapPin size={18} aria-hidden="true" />
           <div>
             <small>DESTINATION</small>
-            <strong>Žilina, Slovakia</strong>
+            <strong>
+              {program.city}, {program.country}
+            </strong>
           </div>
         </article>
         <article>
           <CalendarDays size={18} aria-hidden="true" />
           <div>
             <small>FIRST DEADLINE</small>
-            <strong>31 March 2027</strong>
+            <strong>{formatDate(program.application.deadline)}</strong>
           </div>
         </article>
         <article>

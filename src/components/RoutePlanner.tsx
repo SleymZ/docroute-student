@@ -8,6 +8,7 @@ import {
   destinationOptions,
   programOptions,
 } from "@/data/demo-destinations";
+import { verifiedPrograms } from "@/data/verified-programs";
 
 import type { Destination } from "@/types/destination";
 import { RouteForm } from "@/components/RouteForm";
@@ -32,7 +33,15 @@ export function RoutePlanner() {
   const [documentCountry, setDocumentCountry] = useState("Israel");
   const [destination, setDestination] =
     useState<Destination>("Slovakia");
-  const [program, setProgram] = useState("Medicine");
+  const [program, setProgram] = useState("Computer Science");
+
+  const destinationCountryCode =
+    destinationCountryCodes[destination];
+  const routeAvailable = verifiedPrograms.some(
+    (verifiedProgram) =>
+      verifiedProgram.countryCode === destinationCountryCode &&
+      verifiedProgram.category === program,
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -65,7 +74,7 @@ export function RoutePlanner() {
     event.preventDefault();
 
     const params = new URLSearchParams({
-      country: destinationCountryCodes[destination],
+      country: destinationCountryCode,
       program,
     });
     const educationCountry = educationCountryCodes[documentCountry];
@@ -74,7 +83,14 @@ export function RoutePlanner() {
       params.set("educationCountry", educationCountry);
     }
 
-    router.push(`/route/profile?${params.toString()}`);
+    router.push(
+      routeAvailable
+        ? `/route/profile?${params.toString()}`
+        : `/explore/universities?${new URLSearchParams({
+            country: destinationCountryCode,
+            program,
+          }).toString()}`,
+    );
   }
 
   function handleDocumentCountryChange(value: string) {
@@ -116,12 +132,12 @@ export function RoutePlanner() {
           documentCountry={documentCountry}
           destination={destination}
           program={program}
+          routeAvailable={routeAvailable}
           onDocumentCountryChange={handleDocumentCountryChange}
           onDestinationChange={handleDestinationChange}
           onProgramChange={handleProgramChange}
           onSubmit={handleSubmit}
         />
-
       </div>
 
       <EuropeMap

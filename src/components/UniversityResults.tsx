@@ -78,7 +78,9 @@ export function UniversityResults({
 
   const [query, setQuery] = useState("");
   const [scope, setScope] =
-    useState<"all" | "verified">("all");
+    useState<"all" | "verified">(() =>
+      mode === "route" ? "verified" : "all",
+    );
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
   const [saved, setSaved] = useState<Set<string>>(
@@ -258,6 +260,36 @@ export function UniversityResults({
           <ArrowLeft size={17} aria-hidden="true" />
           Back to Explore
         </Link>
+      </div>
+    );
+  }
+
+  if (mode === "route" && profile && profileMatches.length === 0) {
+    const profileParams = createProfileSearchParams(profile);
+    const directoryParams = new URLSearchParams({
+      country: countryCode,
+      program: selectedProgram,
+    });
+
+    return (
+      <div className={styles.invalidPage}>
+        <CircleDashed size={34} aria-hidden="true" />
+        <h1>No verified route matches this profile yet</h1>
+        <p>
+          Your profile is valid and remains saved. DocRoute only presents a
+          personalised match after the program, degree and intake have been
+          checked against an official university source.
+        </p>
+        <div className={linkStyles.coverageActions}>
+          <Link href={`/route/profile?${profileParams.toString()}`}>
+            Edit route choices
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+          <Link href={`/explore/universities?${directoryParams.toString()}`}>
+            Browse the public directory
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     );
   }

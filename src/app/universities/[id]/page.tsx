@@ -88,12 +88,12 @@ export async function generateMetadata({
 
   if (!university) {
     return {
-      title: "University not found | DocRoute",
+      title: "University not found",
     };
   }
 
   return {
-    title: `${university.name} | DocRoute`,
+    title: university.name,
     description: `Explore admission information and document requirements for ${university.name}.`,
   };
 }

@@ -1,0 +1,2 @@
+-- Historical placeholder kept because this migration version was already
+-- committed. The actual idempotent schema creation is in the next migration.

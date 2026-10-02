@@ -25,8 +25,12 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import styles from "./AccountPage.module.css";
 
 export const metadata: Metadata = {
-  title: "Applicant profile | DocRoute Student",
+  title: "Applicant profile",
   description: "Your saved applicant profile and current university route.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function AccountPage() {

@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DocRoute Student
 
-## Getting Started
+DocRoute Student is a source-linked university application and student
+residence route builder for Europe.
 
-First, run the development server:
+The public Explore area is a university directory. Personalised matching is
+kept separate in the **Build my route** flow and only labels a program as
+verified when its requirements have been checked against an official source.
+
+## Current verified coverage
+
+- Destination: Slovakia
+- Category: Computer Science
+- Degree: Bachelor
+- Intake: 2027/28
+- Institution: University of Žilina, Faculty of Management Science and
+  Informatics
+- Verified programs: 4
+
+Other institutions remain available in the public directory, with their
+verification status shown explicitly.
+
+## Local development
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Required public environment variables:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+NEXT_PUBLIC_SITE_URL
+```
 
-## Learn More
+## Supabase
 
-To learn more about Next.js, take a look at the following resources:
+Run the SQL migrations in filename order:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. `supabase/migrations/20260928120000_ensure_applicant_profiles.sql`
+2. `supabase/migrations/20260929070000_expand_applicant_profile_options.sql`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The earlier `20260927190000` migration is a historical placeholder and does
+not need to be pasted into the SQL editor.
 
-## Deploy on Vercel
+The profile table uses row-level security. Authenticated users can only read,
+create, update, or delete the profile whose `user_id` matches their Supabase
+identity.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+For authentication, add both local and deployed callback URLs to the Supabase
+redirect allow list:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+http://localhost:3000/auth/callback
+https://your-domain.example/auth/callback
+```
+
+## Quality checks
+
+```bash
+npm run lint
+npm run build
+```
+
+## Deployment
+
+The project is designed for Vercel. Connect the GitHub repository, configure
+the three environment variables for Preview and Production, run the Supabase
+migrations, and verify signup, login, profile saving, matching, and route
+preview on the deployed domain.
+
+DocRoute is a preparation tool, not an admission decision or legal advice.
+Every open requirement must be rechecked before submission.
