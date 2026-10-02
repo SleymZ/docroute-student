@@ -1,0 +1,1668 @@
+From 133b2956a7c9a19000b8ed4e6ac1bfd4364092fb Mon Sep 17 00:00:00 2001
+From: OpenAI Codex <codex@openai.com>
+Date: Tue, 29 Sep 2026 12:28:14 +0530
+Subject: [PATCH] Improve applicant profile choices and country picker
+
+---
+ src/app/account/page.tsx                      |  39 ++-
+ .../ApplicantProfileForm.module.css           |  80 +++--
+ src/components/ApplicantProfileForm.tsx       | 325 +++++++++++-------
+ src/components/CountryPicker.module.css       | 236 +++++++++++++
+ src/components/CountryPicker.tsx              | 243 +++++++++++++
+ src/components/UniversityResults.tsx          |  31 +-
+ src/lib/build-route-preview.ts                |  25 +-
+ src/lib/profile-options.ts                    |  68 ++++
+ src/lib/profile-query.ts                      |  37 +-
+ src/lib/supabase/applicant-profile.ts         |  40 +--
+ src/types/admission.ts                        |  39 ++-
+ ...70000_expand_applicant_profile_options.sql |  42 +++
+ 12 files changed, 976 insertions(+), 229 deletions(-)
+ create mode 100644 src/components/CountryPicker.module.css
+ create mode 100644 src/components/CountryPicker.tsx
+ create mode 100644 src/lib/profile-options.ts
+ create mode 100644 supabase/migrations/20260929070000_expand_applicant_profile_options.sql
+
+diff --git a/src/app/account/page.tsx b/src/app/account/page.tsx
+index 8d9694a..745815d 100644
+--- a/src/app/account/page.tsx
++++ b/src/app/account/page.tsx
+@@ -13,6 +13,11 @@ import {
+ 
+ import { AccountSignOut } from "@/components/AccountSignOut";
+ import { Header } from "@/components/Header";
++import catalog from "@/data/universities.json";
++import {
++  formatDegreeLevel,
++  getResidenceStatusLabel,
++} from "@/lib/profile-options";
+ import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
+ import { isSupabaseConfigured } from "@/lib/supabase/config";
+ import { createSupabaseServerClient } from "@/lib/supabase/server";
+@@ -58,11 +63,19 @@ export default async function AccountPage() {
+   }
+ 
+   const routeParams = profile
+-    ? new URLSearchParams({
+-        country: profile.destinationCountryCode,
+-        program: profile.studyCategory,
+-      })
+-    : null;
++      ? new URLSearchParams({
++          country: profile.destinationCountryCode,
++          program: profile.studyCategory,
++          degree: profile.degreeLevel,
++          intake: profile.intake,
++        })
++      : null;
++  const destinationName = profile
++    ? (catalog.universities.find(
++        (university) =>
++          university.countryCode === profile.destinationCountryCode,
++      )?.country ?? profile.destinationCountryCode)
++    : "";
+ 
+   return (
+     <main>
+@@ -142,13 +155,20 @@ export default async function AccountPage() {
+                     <dd>{profile.educationCountryCode}</dd>
+                   </div>
+                   <div>
+-                    <dt>School status</dt>
++                    <dt>
++                      {profile.degreeLevel === "master"
++                        ? "Bachelor's degree status"
++                        : "School status"}
++                    </dt>
+                     <dd>{profile.educationStatus.replaceAll("-", " ")}</dd>
+                   </div>
+                   <div>
+                     <dt>Current status</dt>
+                     <dd>
+-                      {profile.currentResidenceStatus.replaceAll("-", " ")}
++                      {getResidenceStatusLabel(
++                        profile.currentResidenceStatus,
++                        destinationName,
++                      )}
+                     </dd>
+                   </div>
+                 </dl>
+@@ -173,7 +193,10 @@ export default async function AccountPage() {
+               <aside className={styles.routeCard}>
+                 <p>CURRENT ROUTE</p>
+                 <h2>{profile.studyCategory}</h2>
+-                <strong>{profile.destinationCountryCode} · Bachelor</strong>
++                <strong>
++                  {profile.destinationCountryCode} ·{" "}
++                  {formatDegreeLevel(profile.degreeLevel)}
++                </strong>
+                 <span>Intake {profile.intake}</span>
+ 
+                 <Link
+diff --git a/src/components/ApplicantProfileForm.module.css b/src/components/ApplicantProfileForm.module.css
+index 08ba7c7..98f2bac 100644
+--- a/src/components/ApplicantProfileForm.module.css
++++ b/src/components/ApplicantProfileForm.module.css
+@@ -174,6 +174,7 @@
+ .gradeRow {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
++  align-items: start;
+   gap: 14px;
+ }
+ 
+@@ -190,9 +191,7 @@
+ }
+ 
+ .field select,
+-.field input,
+-.readonlyField,
+-.countrySelect {
++.field input {
+   width: 100%;
+   min-height: 48px;
+   border: 1px solid #315260;
+@@ -207,39 +206,28 @@
+   padding: 0 13px;
+ }
+ 
+-.field input::placeholder {
+-  color: #607f8d;
+-}
+-
+-.countrySelect {
+-  display: flex;
+-  align-items: center;
+-  gap: 10px;
+-  padding-left: 13px;
+-  color: #78cfe0;
++.field select {
++  color-scheme: dark;
+ }
+ 
+-.countrySelect img {
+-  width: 22px;
+-  height: 16px;
+-  object-fit: cover;
+-  border-radius: 2px;
++.field select option {
++  background: #0d2733;
++  color: #edf2f2;
+ }
+ 
+-.countrySelect select {
+-  min-width: 0;
+-  flex: 1;
+-  border: 0;
+-  background: transparent;
+-  padding-left: 0;
++.field input::placeholder {
++  color: #607f8d;
+ }
+ 
+-.readonlyField {
+-  display: flex;
+-  align-items: center;
+-  gap: 10px;
+-  padding: 0 13px;
+-  color: #a8c0ca;
++.routeDataNote {
++  max-width: 820px;
++  margin: 16px 0 0;
++  padding: 12px 14px;
++  border-left: 2px solid rgba(121, 221, 239, 0.7);
++  background: rgba(121, 221, 239, 0.045);
++  color: #88a6b2;
++  font-size: 10px;
++  line-height: 1.6;
+ }
+ 
+ .languageList {
+@@ -393,6 +381,38 @@
+   line-height: 1.5;
+ }
+ 
++.masterEvidenceNotice {
++  display: flex;
++  max-width: 800px;
++  align-items: flex-start;
++  gap: 12px;
++  margin-top: 20px;
++  padding: 16px;
++  border: 1px dashed rgba(121, 221, 239, 0.25);
++  border-radius: 12px;
++  background: rgba(121, 221, 239, 0.04);
++  color: #79ddef;
++}
++
++.masterEvidenceNotice p,
++.masterEvidenceNotice strong,
++.masterEvidenceNotice span {
++  display: block;
++  margin: 0;
++}
++
++.masterEvidenceNotice strong {
++  color: #e6eff0;
++  font-size: 11px;
++}
++
++.masterEvidenceNotice span {
++  margin-top: 5px;
++  color: #86a3af;
++  font-size: 9px;
++  line-height: 1.6;
++}
++
+ .submitDock {
+   display: flex;
+   align-items: center;
+diff --git a/src/components/ApplicantProfileForm.tsx b/src/components/ApplicantProfileForm.tsx
+index c003c17..cba2534 100644
+--- a/src/components/ApplicantProfileForm.tsx
++++ b/src/components/ApplicantProfileForm.tsx
+@@ -1,6 +1,6 @@
+ "use client";
+ 
+-import { useMemo, useRef, useState } from "react";
++import { useRef, useState } from "react";
+ import type { FormEvent } from "react";
+ import Image from "next/image";
+ import Link from "next/link";
+@@ -9,10 +9,8 @@ import { useRouter, useSearchParams } from "next/navigation";
+ import {
+   ArrowLeft,
+   ArrowRight,
+-  BookOpen,
+   Check,
+   FileCheck2,
+-  Globe2,
+   GraduationCap,
+   Languages,
+   Plus,
+@@ -21,8 +19,15 @@ import {
+   UserRound,
+ } from "lucide-react";
+ 
++import { CountryPicker } from "@/components/CountryPicker";
+ import catalog from "@/data/universities.json";
+ import { programOptions } from "@/data/demo-destinations";
++import {
++  formatDegreeLevel,
++  getResidenceStatusLabel,
++  isDegreeLevel,
++  isStudyIntake,
++} from "@/lib/profile-options";
+ import { createProfileSearchParams } from "@/lib/profile-query";
+ import { saveApplicantProfile } from "@/lib/supabase/applicant-profile";
+ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+@@ -32,10 +37,13 @@ import type {
+   ApplicantProfile,
+   CefrLevel,
+   CurrentResidenceStatus,
++  DegreeLevel,
+   EducationStatus,
+   GradeScale,
++  StudyIntake,
+   WaiverEvidence,
+ } from "@/types/admission";
++import { degreeLevels, studyIntakes } from "@/types/admission";
+ 
+ import styles from "./ApplicantProfileForm.module.css";
+ 
+@@ -149,6 +157,8 @@ export function ApplicantProfileForm() {
+ 
+   const countryCode = searchParams.get("country")?.toUpperCase() ?? "";
+   const selectedProgram = searchParams.get("program") ?? "";
++  const requestedDegreeLevel = searchParams.get("degree") ?? "";
++  const requestedIntake = searchParams.get("intake") ?? "";
+   const destination = getCountry(countryCode);
+   const validProgram = programOptions.includes(selectedProgram);
+ 
+@@ -158,6 +168,14 @@ export function ApplicantProfileForm() {
+     useState<CurrentResidenceStatus | "">("");
+   const [educationStatus, setEducationStatus] =
+     useState<EducationStatus>("final-year");
++  const [degreeLevel, setDegreeLevel] = useState<DegreeLevel>(() =>
++    isDegreeLevel(requestedDegreeLevel)
++      ? requestedDegreeLevel
++      : "bachelor",
++  );
++  const [intake, setIntake] = useState<StudyIntake>(() =>
++    isStudyIntake(requestedIntake) ? requestedIntake : "2027/28",
++  );
+   const [gradeScale, setGradeScale] =
+     useState<GradeScale>("other");
+   const [average, setAverage] = useState("");
+@@ -175,15 +193,6 @@ export function ApplicantProfileForm() {
+   >(() => new Set());
+   const [error, setError] = useState("");
+ 
+-  const selectedCitizenship = useMemo(
+-    () => getCountry(citizenship),
+-    [citizenship],
+-  );
+-  const selectedEducationCountry = useMemo(
+-    () => getCountry(educationCountry),
+-    [educationCountry],
+-  );
+-
+   if (!destination || !validProgram) {
+     return (
+       <div className={styles.invalidPage}>
+@@ -286,8 +295,8 @@ export function ApplicantProfileForm() {
+     const profile: ApplicantProfile = {
+       destinationCountryCode: countryCode,
+       studyCategory: selectedProgram,
+-      degreeLevel: "bachelor",
+-      intake: "2027/28",
++      degreeLevel,
++      intake,
+       citizenshipCountryCode: citizenship,
+       educationCountryCode: educationCountry,
+       currentResidenceStatus,
+@@ -301,7 +310,8 @@ export function ApplicantProfileForm() {
+         proof: language.proof,
+         certificateName: language.certificateName,
+       })),
+-      waiverEvidence: [...waiverEvidence],
++      waiverEvidence:
++        degreeLevel === "bachelor" ? [...waiverEvidence] : [],
+     };
+ 
+     const profileParams = createProfileSearchParams(profile);
+@@ -360,7 +370,9 @@ export function ApplicantProfileForm() {
+           <div>
+             <small>YOUR SEARCH</small>
+             <strong>{destination.name}</strong>
+-            <span>{selectedProgram} · Bachelor · 2027/28</span>
++            <span>
++              {selectedProgram} · {formatDegreeLevel(degreeLevel)} · {intake}
++            </span>
+           </div>
+         </aside>
+       </header>
+@@ -375,75 +387,67 @@ export function ApplicantProfileForm() {
+               <small>01 · BACKGROUND</small>
+               <h2>Your education route</h2>
+               <p>
+-                Citizenship and where you studied can change recognition and
+-                language-proof rules.
++                Citizenship and where you earned your qualifying education can
++                change recognition and language-proof rules.
+               </p>
+             </div>
+           </header>
+ 
+           <div className={styles.fieldGrid}>
++            <CountryPicker
++              label="Citizenship"
++              value={citizenship}
++              options={countryOptions}
++              placeholder="Select citizenship"
++              onChange={setCitizenship}
++            />
++
++            <CountryPicker
++              label={
++                degreeLevel === "master"
++                  ? "Country of bachelor's education"
++                  : "Country of secondary education"
++              }
++              value={educationCountry}
++              options={countryOptions}
++              placeholder="Select education country"
++              onChange={setEducationCountry}
++            />
++
+             <label className={styles.field}>
+-              <span>Citizenship</span>
+-              <div className={styles.countrySelect}>
+-                {selectedCitizenship && citizenship !== "ZZ" ? (
+-                  <Image
+-                    src={`https://flagcdn.com/w40/${citizenship.toLowerCase()}.png`}
+-                    alt=""
+-                    width={22}
+-                    height={16}
+-                    unoptimized
+-                  />
+-                ) : (
+-                  <Globe2 size={17} aria-hidden="true" />
+-                )}
+-                <select
+-                  value={citizenship}
+-                  onChange={(event) => setCitizenship(event.target.value)}
+-                  required
+-                >
+-                  <option value="">Select citizenship</option>
+-                  {countryOptions.map((country) => (
+-                    <option key={country.code} value={country.code}>
+-                      {country.name}
+-                    </option>
+-                  ))}
+-                </select>
+-              </div>
++              <span>Degree level</span>
++              <select
++                value={degreeLevel}
++                onChange={(event) =>
++                  setDegreeLevel(event.target.value as DegreeLevel)
++                }
++              >
++                {degreeLevels.map((level) => (
++                  <option key={level} value={level}>
++                    {formatDegreeLevel(level)} degree
++                  </option>
++                ))}
++              </select>
+             </label>
+ 
+             <label className={styles.field}>
+-              <span>Country of secondary education</span>
+-              <div className={styles.countrySelect}>
+-                {selectedEducationCountry && educationCountry !== "ZZ" ? (
+-                  <Image
+-                    src={`https://flagcdn.com/w40/${educationCountry.toLowerCase()}.png`}
+-                    alt=""
+-                    width={22}
+-                    height={16}
+-                    unoptimized
+-                  />
+-                ) : (
+-                  <BookOpen size={17} aria-hidden="true" />
+-                )}
+-                <select
+-                  value={educationCountry}
+-                  onChange={(event) =>
+-                    setEducationCountry(event.target.value)
+-                  }
+-                  required
+-                >
+-                  <option value="">Select education country</option>
+-                  {countryOptions.map((country) => (
+-                    <option key={country.code} value={country.code}>
+-                      {country.name}
+-                    </option>
+-                  ))}
+-                </select>
+-              </div>
++              <span>Target intake</span>
++              <select
++                value={intake}
++                onChange={(event) =>
++                  setIntake(event.target.value as StudyIntake)
++                }
++              >
++                {studyIntakes.map((option) => (
++                  <option key={option} value={option}>
++                    Academic year {option}
++                  </option>
++                ))}
++              </select>
+             </label>
+ 
+             <label className={styles.field}>
+-              <span>Current residence status</span>
++              <span>Passport and current residence status</span>
+               <select
+                 value={currentResidenceStatus}
+                 onChange={(event) =>
+@@ -454,38 +458,90 @@ export function ApplicantProfileForm() {
+                 required
+               >
+                 <option value="">Select current residence status</option>
+-                <option value="outside-slovakia">Outside Slovakia</option>
+-                <option value="slovak-residence">Slovak residence permit</option>
+-                <option value="eu-residence">Residence in another EU country</option>
+-                <option value="slovak-national-visa">Slovak national visa</option>
+-                <option value="visa-free">Visa-free stay</option>
+-                <option value="temporary-protection">Temporary protection</option>
+-                <option value="other">Other</option>
++                <option value="eu-eea-swiss-passport">
++                  {getResidenceStatusLabel(
++                    "eu-eea-swiss-passport",
++                    destination.name,
++                  )}
++                </option>
++                <option value="non-eu-passport-no-residence">
++                  {getResidenceStatusLabel(
++                    "non-eu-passport-no-residence",
++                    destination.name,
++                  )}
++                </option>
++                <option value="destination-residence">
++                  {getResidenceStatusLabel(
++                    "destination-residence",
++                    destination.name,
++                  )}
++                </option>
++                <option value="other-eu-residence">
++                  {getResidenceStatusLabel(
++                    "other-eu-residence",
++                    destination.name,
++                  )}
++                </option>
++                <option value="destination-national-visa">
++                  {getResidenceStatusLabel(
++                    "destination-national-visa",
++                    destination.name,
++                  )}
++                </option>
++                <option value="visa-free-entry">
++                  {getResidenceStatusLabel(
++                    "visa-free-entry",
++                    destination.name,
++                  )}
++                </option>
++                <option value="temporary-protection">
++                  {getResidenceStatusLabel(
++                    "temporary-protection",
++                    destination.name,
++                  )}
++                </option>
++                <option value="other">
++                  {getResidenceStatusLabel("other", destination.name)}
++                </option>
+               </select>
+             </label>
+ 
+             <label className={styles.field}>
+-              <span>Secondary-school status</span>
++              <span>
++                {degreeLevel === "master"
++                  ? "Bachelor's degree status"
++                  : "Secondary-school status"}
++              </span>
+               <select
+                 value={educationStatus}
+                 onChange={(event) =>
+                   setEducationStatus(event.target.value as EducationStatus)
+                 }
+               >
+-                <option value="completed">Already graduated</option>
+-                <option value="final-year">In my final year</option>
+-                <option value="earlier-year">Not yet in my final year</option>
++                <option value="completed">
++                  {degreeLevel === "master"
++                    ? "Bachelor's degree completed"
++                    : "Already graduated"}
++                </option>
++                <option value="final-year">
++                  {degreeLevel === "master"
++                    ? "In the final year of my bachelor's"
++                    : "In my final year"}
++                </option>
++                <option value="earlier-year">
++                  {degreeLevel === "master"
++                    ? "Earlier in my bachelor's degree"
++                    : "Not yet in my final year"}
++                </option>
+               </select>
+             </label>
+-
+-            <label className={styles.field}>
+-              <span>Target intake</span>
+-              <div className={styles.readonlyField}>
+-                <GraduationCap size={17} aria-hidden="true" />
+-                Bachelor · 2027/28
+-              </div>
+-            </label>
+           </div>
++
++          <p className={styles.routeDataNote}>
++            Level and intake are matched exactly. When no verified programme
++            exists for that route yet, DocRoute keeps it unverified instead of
++            reusing requirements from another degree or year.
++          </p>
+         </section>
+ 
+         <section className={styles.section}>
+@@ -629,10 +685,15 @@ export function ApplicantProfileForm() {
+             </span>
+             <div>
+               <small>03 · ACADEMIC EVIDENCE</small>
+-              <h2>What can support your application?</h2>
++              <h2>
++                {degreeLevel === "master"
++                  ? "Add your current academic context"
++                  : "What can support your application?"}
++              </h2>
+               <p>
+-                Optional. We only use an item when an official university rule
+-                confirms what it changes.
++                {degreeLevel === "master"
++                  ? "Master's evidence is programme-specific. We only request a document after verifying the official programme rule."
++                  : "Optional. We only use an item when an official university rule confirms what it changes."}
+               </p>
+             </div>
+           </header>
+@@ -652,7 +713,11 @@ export function ApplicantProfileForm() {
+             </label>
+ 
+             <label className={styles.field}>
+-              <span>Penultimate-year average (optional)</span>
++              <span>
++                {degreeLevel === "master"
++                  ? "Current bachelor's average (optional)"
++                  : "Penultimate-year average (optional)"}
++              </span>
+               <input
+                 type="number"
+                 inputMode="decimal"
+@@ -674,33 +739,47 @@ export function ApplicantProfileForm() {
+             </p>
+           )}
+ 
+-          <div className={styles.waiverGrid}>
+-            {waiverOptions.map((option) => {
+-              const checked = waiverEvidence.has(option.value);
+-
+-              return (
+-                <label
+-                  key={option.value}
+-                  className={`${styles.evidenceCard} ${
+-                    checked ? styles.evidenceSelected : ""
+-                  }`}
+-                >
+-                  <input
+-                    type="checkbox"
+-                    checked={checked}
+-                    onChange={() => toggleWaiver(option.value)}
+-                  />
+-                  <span className={styles.evidenceCheck}>
+-                    <Check size={13} aria-hidden="true" />
+-                  </span>
+-                  <span>
+-                    <strong>{option.label}</strong>
+-                    <small>{option.description}</small>
+-                  </span>
+-                </label>
+-              );
+-            })}
+-          </div>
++          {degreeLevel === "bachelor" ? (
++            <div className={styles.waiverGrid}>
++              {waiverOptions.map((option) => {
++                const checked = waiverEvidence.has(option.value);
++
++                return (
++                  <label
++                    key={option.value}
++                    className={`${styles.evidenceCard} ${
++                      checked ? styles.evidenceSelected : ""
++                    }`}
++                  >
++                    <input
++                      type="checkbox"
++                      checked={checked}
++                      onChange={() => toggleWaiver(option.value)}
++                    />
++                    <span className={styles.evidenceCheck}>
++                      <Check size={13} aria-hidden="true" />
++                    </span>
++                    <span>
++                      <strong>{option.label}</strong>
++                      <small>{option.description}</small>
++                    </span>
++                  </label>
++                );
++              })}
++            </div>
++          ) : (
++            <div className={styles.masterEvidenceNotice}>
++              <GraduationCap size={19} aria-hidden="true" />
++              <p>
++                <strong>Undergraduate waiver options are hidden.</strong>
++                <span>
++                  Transcript, completed credits, prerequisite subjects and
++                  portfolio requirements will appear only for a verified
++                  master&apos;s programme.
++                </span>
++              </p>
++            </div>
++          )}
+         </section>
+ 
+         <footer className={styles.submitDock}>
+diff --git a/src/components/CountryPicker.module.css b/src/components/CountryPicker.module.css
+new file mode 100644
+index 0000000..6adc908
+--- /dev/null
++++ b/src/components/CountryPicker.module.css
+@@ -0,0 +1,236 @@
++.root {
++  position: relative;
++  display: grid;
++  min-width: 0;
++  gap: 8px;
++}
++
++.label {
++  color: #a8bec8;
++  font-size: 10px;
++  letter-spacing: 0.04em;
++}
++
++.trigger {
++  display: flex;
++  width: 100%;
++  min-height: 50px;
++  align-items: center;
++  justify-content: space-between;
++  gap: 12px;
++  padding: 0 13px;
++  border: 1px solid #315260;
++  border-radius: 11px;
++  background:
++    linear-gradient(135deg, rgba(121, 221, 239, 0.035), transparent),
++    #0d2733;
++  color: #edf2f2;
++  font: inherit;
++  font-size: 12px;
++  text-align: left;
++  transition:
++    border-color 160ms ease,
++    background-color 160ms ease,
++    box-shadow 160ms ease;
++}
++
++.trigger[aria-expanded="true"] {
++  border-color: rgba(255, 139, 113, 0.7);
++  background-color: #102e3b;
++  box-shadow: 0 0 0 3px rgba(255, 128, 103, 0.08);
++}
++
++.selection {
++  display: flex;
++  min-width: 0;
++  align-items: center;
++  gap: 11px;
++}
++
++.selection > span:last-child {
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.selection > span[data-placeholder="true"] {
++  color: #718f9c;
++}
++
++.flag {
++  width: 25px;
++  height: 18px;
++  flex: 0 0 auto;
++  border: 1px solid rgba(224, 242, 246, 0.15);
++  border-radius: 3px;
++  object-fit: cover;
++  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
++}
++
++.globe {
++  display: grid;
++  width: 25px;
++  height: 25px;
++  flex: 0 0 auto;
++  place-items: center;
++  border: 1px solid rgba(121, 221, 239, 0.15);
++  border-radius: 7px;
++  background: rgba(121, 221, 239, 0.06);
++  color: #76cad9;
++}
++
++.trigger > svg {
++  flex: 0 0 auto;
++  color: #7195a3;
++  transition: transform 160ms ease;
++}
++
++.chevronOpen {
++  transform: rotate(180deg);
++}
++
++.popover {
++  position: absolute;
++  top: calc(100% + 8px);
++  right: 0;
++  left: 0;
++  z-index: 40;
++  overflow: hidden;
++  padding: 8px;
++  border: 1px solid #365967;
++  border-radius: 14px;
++  background: rgba(7, 25, 35, 0.98);
++  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
++  backdrop-filter: blur(20px);
++}
++
++.searchField {
++  display: flex;
++  min-height: 42px;
++  align-items: center;
++  gap: 9px;
++  padding: 0 11px;
++  border: 1px solid rgba(121, 221, 239, 0.17);
++  border-radius: 9px;
++  background: #0c2632;
++  color: #79ddef;
++}
++
++.searchField input {
++  min-width: 0;
++  flex: 1;
++  border: 0;
++  outline: 0;
++  background: transparent;
++  color: #edf2f2;
++  font: inherit;
++  font-size: 11px;
++}
++
++.searchField input::placeholder {
++  color: #607f8d;
++}
++
++.searchField input::-webkit-search-cancel-button {
++  display: none;
++}
++
++.searchField button {
++  display: grid;
++  width: 26px;
++  height: 26px;
++  place-items: center;
++  border: 0;
++  border-radius: 7px;
++  background: transparent;
++  color: #7899a6;
++}
++
++.options {
++  display: grid;
++  max-height: 280px;
++  gap: 3px;
++  margin-top: 7px;
++  overflow-y: auto;
++  overscroll-behavior: contain;
++  scrollbar-color: #355765 transparent;
++  scrollbar-width: thin;
++}
++
++.option {
++  display: flex;
++  width: 100%;
++  min-height: 46px;
++  align-items: center;
++  gap: 11px;
++  padding: 6px 9px;
++  border: 1px solid transparent;
++  border-radius: 9px;
++  background: transparent;
++  color: #dce7e9;
++  font: inherit;
++  text-align: left;
++}
++
++.option[aria-selected="true"] {
++  border-color: rgba(255, 139, 113, 0.28);
++  background: rgba(255, 128, 103, 0.09);
++}
++
++.optionName {
++  display: flex;
++  min-width: 0;
++  flex: 1;
++  align-items: baseline;
++  justify-content: space-between;
++  gap: 12px;
++}
++
++.optionName strong {
++  overflow: hidden;
++  font-size: 11px;
++  font-weight: 600;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++
++.optionName small {
++  color: #668895;
++  font-size: 8px;
++  letter-spacing: 0.12em;
++}
++
++.check {
++  flex: 0 0 auto;
++  color: #ff9277;
++}
++
++.empty {
++  margin: 0;
++  padding: 22px 12px;
++  color: #7795a1;
++  font-size: 10px;
++  text-align: center;
++}
++
++@media (hover: hover) {
++  .trigger:hover {
++    border-color: #467080;
++  }
++
++  .option:hover {
++    background: rgba(121, 221, 239, 0.07);
++  }
++
++  .searchField button:hover {
++    background: rgba(121, 221, 239, 0.08);
++    color: #dcecef;
++  }
++}
++
++.trigger:focus-visible,
++.option:focus-visible,
++.searchField button:focus-visible {
++  outline: 2px solid #ff9277;
++  outline-offset: 2px;
++}
+diff --git a/src/components/CountryPicker.tsx b/src/components/CountryPicker.tsx
+new file mode 100644
+index 0000000..ed4cea0
+--- /dev/null
++++ b/src/components/CountryPicker.tsx
+@@ -0,0 +1,243 @@
++"use client";
++
++import {
++  useEffect,
++  useId,
++  useMemo,
++  useRef,
++  useState,
++} from "react";
++import Image from "next/image";
++import {
++  Check,
++  ChevronDown,
++  Globe2,
++  Search,
++  X,
++} from "lucide-react";
++
++import styles from "./CountryPicker.module.css";
++
++export type CountryOption = {
++  code: string;
++  name: string;
++};
++
++type CountryPickerProps = {
++  label: string;
++  value: string;
++  options: readonly CountryOption[];
++  placeholder: string;
++  onChange: (countryCode: string) => void;
++};
++
++export function CountryPicker({
++  label,
++  value,
++  options,
++  placeholder,
++  onChange,
++}: CountryPickerProps) {
++  const labelId = useId();
++  const listboxId = useId();
++  const rootRef = useRef<HTMLDivElement>(null);
++  const triggerRef = useRef<HTMLButtonElement>(null);
++  const searchRef = useRef<HTMLInputElement>(null);
++  const [open, setOpen] = useState(false);
++  const [query, setQuery] = useState("");
++
++  const selectedCountry = options.find(
++    (country) => country.code === value,
++  );
++
++  const filteredOptions = useMemo(() => {
++    const normalizedQuery = query.trim().toLocaleLowerCase("en");
++
++    if (!normalizedQuery) {
++      return options;
++    }
++
++    return options.filter((country) =>
++      `${country.name} ${country.code}`
++        .toLocaleLowerCase("en")
++        .includes(normalizedQuery),
++    );
++  }, [options, query]);
++
++  useEffect(() => {
++    if (!open) {
++      return;
++    }
++
++    function closeOnOutsidePointer(event: PointerEvent) {
++      if (
++        rootRef.current &&
++        !rootRef.current.contains(event.target as Node)
++      ) {
++        setOpen(false);
++        setQuery("");
++      }
++    }
++
++    document.addEventListener("pointerdown", closeOnOutsidePointer);
++    searchRef.current?.focus();
++
++    return () => {
++      document.removeEventListener(
++        "pointerdown",
++        closeOnOutsidePointer,
++      );
++    };
++  }, [open]);
++
++  function closePicker(restoreFocus = false) {
++    setOpen(false);
++    setQuery("");
++
++    if (restoreFocus) {
++      requestAnimationFrame(() => triggerRef.current?.focus());
++    }
++  }
++
++  function selectCountry(countryCode: string) {
++    onChange(countryCode);
++    closePicker(true);
++  }
++
++  return (
++    <div
++      className={styles.root}
++      ref={rootRef}
++      onKeyDown={(event) => {
++        if (event.key === "Escape" && open) {
++          event.preventDefault();
++          closePicker(true);
++        }
++      }}
++    >
++      <span className={styles.label} id={labelId}>
++        {label}
++      </span>
++
++      <button
++        ref={triggerRef}
++        type="button"
++        className={styles.trigger}
++        aria-label={`${label}: ${selectedCountry?.name ?? placeholder}`}
++        aria-haspopup="listbox"
++        aria-expanded={open}
++        aria-controls={open ? listboxId : undefined}
++        onClick={() => setOpen((current) => !current)}
++      >
++        <span className={styles.selection}>
++          {selectedCountry && selectedCountry.code !== "ZZ" ? (
++            <Image
++              src={`https://flagcdn.com/w40/${selectedCountry.code.toLowerCase()}.png`}
++              alt=""
++              width={24}
++              height={18}
++              unoptimized
++              className={styles.flag}
++            />
++          ) : (
++            <span className={styles.globe}>
++              <Globe2 size={17} aria-hidden="true" />
++            </span>
++          )}
++
++          <span data-placeholder={!selectedCountry || undefined}>
++            {selectedCountry?.name ?? placeholder}
++          </span>
++        </span>
++
++        <ChevronDown
++          size={17}
++          aria-hidden="true"
++          className={open ? styles.chevronOpen : undefined}
++        />
++      </button>
++
++      {open && (
++        <div className={styles.popover}>
++          <div className={styles.searchField}>
++            <Search size={16} aria-hidden="true" />
++            <input
++              ref={searchRef}
++              type="search"
++              value={query}
++              placeholder="Search country or code"
++              aria-label={`Search ${label.toLowerCase()}`}
++              onChange={(event) => setQuery(event.target.value)}
++            />
++            {query && (
++              <button
++                type="button"
++                aria-label="Clear country search"
++                onClick={() => {
++                  setQuery("");
++                  searchRef.current?.focus();
++                }}
++              >
++                <X size={14} aria-hidden="true" />
++              </button>
++            )}
++          </div>
++
++          <div
++            className={styles.options}
++            id={listboxId}
++            role="listbox"
++            aria-labelledby={labelId}
++          >
++            {filteredOptions.length > 0 ? (
++              filteredOptions.map((country) => {
++                const selected = country.code === value;
++
++                return (
++                  <button
++                    key={country.code}
++                    type="button"
++                    role="option"
++                    aria-selected={selected}
++                    className={styles.option}
++                    onClick={() => selectCountry(country.code)}
++                  >
++                    {country.code !== "ZZ" ? (
++                      <Image
++                        src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
++                        alt=""
++                        width={25}
++                        height={18}
++                        unoptimized
++                        className={styles.flag}
++                      />
++                    ) : (
++                      <span className={styles.globe}>
++                        <Globe2 size={16} aria-hidden="true" />
++                      </span>
++                    )}
++
++                    <span className={styles.optionName}>
++                      <strong>{country.name}</strong>
++                      <small>{country.code}</small>
++                    </span>
++
++                    {selected && (
++                      <Check
++                        size={16}
++                        aria-hidden="true"
++                        className={styles.check}
++                      />
++                    )}
++                  </button>
++                );
++              })
++            ) : (
++              <p className={styles.empty}>No matching country</p>
++            )}
++          </div>
++        </div>
++      )}
++    </div>
++  );
++}
+diff --git a/src/components/UniversityResults.tsx b/src/components/UniversityResults.tsx
+index ca2a5f8..3ffdb9b 100644
+--- a/src/components/UniversityResults.tsx
++++ b/src/components/UniversityResults.tsx
+@@ -26,6 +26,7 @@ import { verifiedPrograms } from "@/data/verified-programs";
+ import { useApplicantProfile } from "@/hooks/useApplicantProfile";
+ import { createProfileSearchParams } from "@/lib/profile-query";
+ import { matchPrograms } from "@/lib/match-programs";
++import { formatDegreeLevel } from "@/lib/profile-options";
+ import type { ProgramMatch } from "@/types/admission";
+ 
+ import styles from "./ExploreCatalog.module.css";
+@@ -296,8 +297,12 @@ export function UniversityResults({
+           <p>
+             {mode === "route" ? (
+               <>
+-                Personalised for your <strong>{selectedProgram}</strong> route,
+-                education background, and languages.
++                Personalised for your{" "}
++                <strong>
++                  {formatDegreeLevel(profile!.degreeLevel)} {selectedProgram}
++                </strong>{" "}
++                route for {profile!.intake}, education background, and
++                languages.
+               </>
+             ) : (
+               <>
+@@ -344,11 +349,17 @@ export function UniversityResults({
+           <p>
+             <small>EDUCATION</small>
+             <strong>
+-              {profile.educationStatus === "completed"
+-                ? "Secondary school completed"
+-                : profile.educationStatus === "final-year"
+-                  ? "Currently in final year"
+-                  : "Before final year"}
++              {profile.degreeLevel === "master"
++                ? profile.educationStatus === "completed"
++                  ? "Bachelor's degree completed"
++                  : profile.educationStatus === "final-year"
++                    ? "Final year of bachelor's"
++                    : "Earlier in bachelor's degree"
++                : profile.educationStatus === "completed"
++                  ? "Secondary school completed"
++                  : profile.educationStatus === "final-year"
++                    ? "Currently in final year"
++                    : "Before final year"}
+             </strong>
+           </p>
+         </div>
+@@ -639,7 +650,11 @@ export function UniversityResults({
+                     </div>
+                   ) : (
+                     <p className={styles.pendingText}>
+-                      {university.verified
++                      {mode === "route" && profile
++                        ? `We have not yet verified a ${formatDegreeLevel(
++                            profile.degreeLevel,
++                          ).toLowerCase()} ${selectedProgram} programme here for the ${profile.intake} intake. The institution remains visible in the country directory.`
++                        : university.verified
+                         ? `Published ${selectedProgram} program information is available. Build a route to see requirements for your profile.`
+                         : `We have not yet verified whether this institution offers ${selectedProgram}. It is shown as part of the complete country directory.`}
+                     </p>
+diff --git a/src/lib/build-route-preview.ts b/src/lib/build-route-preview.ts
+index 152ce0d..89e0e49 100644
+--- a/src/lib/build-route-preview.ts
++++ b/src/lib/build-route-preview.ts
+@@ -30,10 +30,10 @@ function getSubmissionTask(profile: ApplicantProfile): RouteTask {
+   const sourceIds = ["iom-study-residence-application"];
+ 
+   switch (profile.currentResidenceStatus) {
+-    case "slovak-residence":
+-    case "eu-residence":
+-    case "slovak-national-visa":
+-    case "visa-free":
++    case "destination-residence":
++    case "other-eu-residence":
++    case "destination-national-visa":
++    case "visa-free-entry":
+     case "temporary-protection":
+       return {
+         id: "residence-submission-place",
+@@ -45,7 +45,7 @@ function getSubmissionTask(profile: ApplicantProfile): RouteTask {
+         sourceIds,
+       };
+ 
+-    case "outside-slovakia":
++    case "non-eu-passport-no-residence":
+       return {
+         id: "residence-submission-place",
+         title: "Plan an in-person embassy application",
+@@ -56,6 +56,16 @@ function getSubmissionTask(profile: ApplicantProfile): RouteTask {
+         sourceIds,
+       };
+ 
++    case "eu-eea-swiss-passport":
++      return {
++        id: "residence-submission-place",
++        title: "Use the EU / EEA mobility route",
++        description:
++          "You reported an EU, EEA or Swiss passport. A third-country student residence application should not be reused for your route; confirm the local registration duties instead.",
++        status: "information",
++        sourceIds,
++      };
++
+     case "other":
+       return {
+         id: "residence-submission-place",
+@@ -91,7 +101,10 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
+     };
+   }
+ 
+-  if (euCountryCodes.has(profile.citizenshipCountryCode)) {
++  if (
++    profile.currentResidenceStatus === "eu-eea-swiss-passport" ||
++    euCountryCodes.has(profile.citizenshipCountryCode)
++  ) {
+     return {
+       id: "residence",
+       number: "04",
+diff --git a/src/lib/profile-options.ts b/src/lib/profile-options.ts
+new file mode 100644
+index 0000000..a9c8635
+--- /dev/null
++++ b/src/lib/profile-options.ts
+@@ -0,0 +1,68 @@
++import {
++  currentResidenceStatuses,
++  degreeLevels,
++  studyIntakes,
++  type CurrentResidenceStatus,
++  type DegreeLevel,
++  type StudyIntake,
++} from "@/types/admission";
++
++const legacyResidenceStatuses: Record<string, CurrentResidenceStatus> = {
++  "outside-slovakia": "non-eu-passport-no-residence",
++  "slovak-residence": "destination-residence",
++  "eu-residence": "other-eu-residence",
++  "slovak-national-visa": "destination-national-visa",
++  "visa-free": "visa-free-entry",
++};
++
++export function isDegreeLevel(value: string): value is DegreeLevel {
++  return degreeLevels.includes(value as DegreeLevel);
++}
++
++export function isStudyIntake(value: string): value is StudyIntake {
++  return studyIntakes.includes(value as StudyIntake);
++}
++
++export function normalizeCurrentResidenceStatus(
++  value: string | null | undefined,
++): CurrentResidenceStatus | null {
++  if (!value) {
++    return null;
++  }
++
++  const normalized = legacyResidenceStatuses[value] ?? value;
++
++  return currentResidenceStatuses.includes(
++    normalized as CurrentResidenceStatus,
++  )
++    ? (normalized as CurrentResidenceStatus)
++    : null;
++}
++
++export function formatDegreeLevel(value: DegreeLevel) {
++  return value === "master" ? "Master's" : "Bachelor's";
++}
++
++export function getResidenceStatusLabel(
++  status: CurrentResidenceStatus,
++  destinationName: string,
++) {
++  switch (status) {
++    case "eu-eea-swiss-passport":
++      return "EU, EEA or Swiss passport";
++    case "non-eu-passport-no-residence":
++      return "Non-EU passport · no residence permit";
++    case "destination-residence":
++      return `Residence permit for ${destinationName}`;
++    case "other-eu-residence":
++      return "Residence permit in another EU / EEA country";
++    case "destination-national-visa":
++      return `National visa for ${destinationName}`;
++    case "visa-free-entry":
++      return `Visa-free stay in ${destinationName}`;
++    case "temporary-protection":
++      return "Temporary protection or equivalent status";
++    case "other":
++      return "Another status / not sure";
++  }
++}
+diff --git a/src/lib/profile-query.ts b/src/lib/profile-query.ts
+index a754362..7a02f99 100644
+--- a/src/lib/profile-query.ts
++++ b/src/lib/profile-query.ts
+@@ -2,11 +2,15 @@ import {
+   cefrLevels,
+   type ApplicantLanguage,
+   type ApplicantProfile,
+-  type CurrentResidenceStatus,
+   type EducationStatus,
+   type GradeScale,
+   type WaiverEvidence,
+ } from "@/types/admission";
++import {
++  isDegreeLevel,
++  isStudyIntake,
++  normalizeCurrentResidenceStatus,
++} from "@/lib/profile-options";
+ 
+ type SearchParamsReader = {
+   get(name: string): string | null;
+@@ -24,16 +28,6 @@ const gradeScales = new Set<GradeScale>([
+   "other",
+ ]);
+ 
+-const residenceStatuses = new Set<CurrentResidenceStatus>([
+-  "outside-slovakia",
+-  "slovak-residence",
+-  "eu-residence",
+-  "slovak-national-visa",
+-  "visa-free",
+-  "temporary-protection",
+-  "other",
+-]);
+-
+ const waiverEvidenceOptions = new Set<WaiverEvidence>([
+   "math-matura",
+   "scio-math-60",
+@@ -120,11 +114,15 @@ export function parseApplicantProfile(
+     params.get("citizenship")?.toUpperCase() ?? "";
+   const educationCountryCode =
+     params.get("educationCountry")?.toUpperCase() ?? "";
++  const rawDegreeLevel = params.get("degree") ?? "bachelor";
++  const rawIntake = params.get("intake") ?? "2027/28";
+ 
+   const rawEducationStatus = params.get("educationStatus");
+   const rawGradeScale = params.get("gradeScale");
+-  const rawResidenceStatus =
+-    params.get("residenceStatus") ?? "outside-slovakia";
++  const residenceStatus = normalizeCurrentResidenceStatus(
++    params.get("residenceStatus") ??
++      "non-eu-passport-no-residence",
++  );
+   const rawAverage = params.get("average");
+ 
+   if (
+@@ -132,9 +130,9 @@ export function parseApplicantProfile(
+     !studyCategory ||
+     !citizenshipCountryCode ||
+     !educationCountryCode ||
+-    !residenceStatuses.has(
+-      rawResidenceStatus as CurrentResidenceStatus,
+-    ) ||
++    !isDegreeLevel(rawDegreeLevel) ||
++    !isStudyIntake(rawIntake) ||
++    !residenceStatus ||
+     !rawEducationStatus ||
+     !educationStatuses.has(rawEducationStatus as EducationStatus) ||
+     !rawGradeScale ||
+@@ -164,12 +162,11 @@ export function parseApplicantProfile(
+   return {
+     destinationCountryCode,
+     studyCategory,
+-    degreeLevel: "bachelor",
+-    intake: "2027/28",
++    degreeLevel: rawDegreeLevel,
++    intake: rawIntake,
+     citizenshipCountryCode,
+     educationCountryCode,
+-    currentResidenceStatus:
+-      rawResidenceStatus as CurrentResidenceStatus,
++    currentResidenceStatus: residenceStatus,
+     educationStatus: rawEducationStatus as EducationStatus,
+     gradeScale: rawGradeScale as GradeScale,
+     penultimateYearAverage:
+diff --git a/src/lib/supabase/applicant-profile.ts b/src/lib/supabase/applicant-profile.ts
+index 90ea895..ece85b8 100644
+--- a/src/lib/supabase/applicant-profile.ts
++++ b/src/lib/supabase/applicant-profile.ts
+@@ -4,11 +4,15 @@ import {
+   cefrLevels,
+   type ApplicantLanguage,
+   type ApplicantProfile,
+-  type CurrentResidenceStatus,
+   type EducationStatus,
+   type GradeScale,
+   type WaiverEvidence,
+ } from "@/types/admission";
++import {
++  isDegreeLevel,
++  isStudyIntake,
++  normalizeCurrentResidenceStatus,
++} from "@/lib/profile-options";
+ 
+ import type {
+   Database,
+@@ -29,17 +33,6 @@ const gradeScales = new Set<GradeScale>([
+   "other",
+ ]);
+ 
+-const residenceStatuses =
+-  new Set<CurrentResidenceStatus>([
+-    "outside-slovakia",
+-    "slovak-residence",
+-    "eu-residence",
+-    "slovak-national-visa",
+-    "visa-free",
+-    "temporary-protection",
+-    "other",
+-  ]);
+-
+ const waiverEvidenceOptions =
+   new Set<WaiverEvidence>([
+     "math-matura",
+@@ -84,12 +77,14 @@ function isApplicantLanguage(
+ function rowToApplicantProfile(
+   row: ApplicantProfileRow,
+ ): ApplicantProfile | null {
++  const residenceStatus = normalizeCurrentResidenceStatus(
++    row.current_residence_status,
++  );
++
+   if (
+-    row.degree_level !== "bachelor" ||
+-    row.intake !== "2027/28" ||
+-    !residenceStatuses.has(
+-      row.current_residence_status as CurrentResidenceStatus,
+-    ) ||
++    !isDegreeLevel(row.degree_level) ||
++    !isStudyIntake(row.intake) ||
++    !residenceStatus ||
+     !educationStatuses.has(
+       row.education_status as EducationStatus,
+     ) ||
+@@ -123,9 +118,9 @@ function rowToApplicantProfile(
+ 
+     studyCategory: row.study_category,
+ 
+-    degreeLevel: "bachelor",
++    degreeLevel: row.degree_level,
+ 
+-    intake: "2027/28",
++    intake: row.intake,
+ 
+     citizenshipCountryCode:
+       row.citizenship_country_code,
+@@ -133,8 +128,7 @@ function rowToApplicantProfile(
+     educationCountryCode:
+       row.education_country_code,
+ 
+-    currentResidenceStatus:
+-      row.current_residence_status as CurrentResidenceStatus,
++    currentResidenceStatus: residenceStatus,
+ 
+     educationStatus:
+       row.education_status as EducationStatus,
+@@ -236,7 +230,7 @@ export async function saveApplicantProfile(
+         waiver_evidence:
+           profile.waiverEvidence,
+ 
+-        profile_version: 1,
++        profile_version: 2,
+       },
+       {
+         onConflict: "user_id",
+@@ -246,4 +240,4 @@ export async function saveApplicantProfile(
+   if (error) {
+     throw error;
+   }
+-}
+\ No newline at end of file
++}
+diff --git a/src/types/admission.ts b/src/types/admission.ts
+index 05a33d7..3d911ad 100644
+--- a/src/types/admission.ts
++++ b/src/types/admission.ts
+@@ -25,14 +25,31 @@ export type EducationStatus =
+ 
+ export type GradeScale = "slovak-1-5" | "other";
+ 
++export const degreeLevels = ["bachelor", "master"] as const;
++
++export type DegreeLevel = (typeof degreeLevels)[number];
++
++export const studyIntakes = [
++  "2027/28",
++  "2028/29",
++  "2029/30",
++] as const;
++
++export type StudyIntake = (typeof studyIntakes)[number];
++
++export const currentResidenceStatuses = [
++  "eu-eea-swiss-passport",
++  "non-eu-passport-no-residence",
++  "destination-residence",
++  "other-eu-residence",
++  "destination-national-visa",
++  "visa-free-entry",
++  "temporary-protection",
++  "other",
++] as const;
++
+ export type CurrentResidenceStatus =
+-  | "outside-slovakia"
+-  | "slovak-residence"
+-  | "eu-residence"
+-  | "slovak-national-visa"
+-  | "visa-free"
+-  | "temporary-protection"
+-  | "other";
++  (typeof currentResidenceStatuses)[number];
+ 
+ export type WaiverEvidence =
+   | "math-matura"
+@@ -45,8 +62,8 @@ export type WaiverEvidence =
+ export type ApplicantProfile = {
+   destinationCountryCode: string;
+   studyCategory: string;
+-  degreeLevel: "bachelor";
+-  intake: "2027/28";
++  degreeLevel: DegreeLevel;
++  intake: StudyIntake;
+   citizenshipCountryCode: string;
+   educationCountryCode: string;
+   currentResidenceStatus: CurrentResidenceStatus;
+@@ -98,8 +115,8 @@ export type AdmissionProgram = {
+   category: string;
+   programName: string;
+   localProgramName: string;
+-  degreeLevel: "bachelor";
+-  intake: "2027/28";
++  degreeLevel: DegreeLevel;
++  intake: StudyIntake;
+   durationYears: number;
+   studyMode: "full-time";
+   instructionLanguages: Array<{
+diff --git a/supabase/migrations/20260929070000_expand_applicant_profile_options.sql b/supabase/migrations/20260929070000_expand_applicant_profile_options.sql
+new file mode 100644
+index 0000000..95105b3
+--- /dev/null
++++ b/supabase/migrations/20260929070000_expand_applicant_profile_options.sql
+@@ -0,0 +1,42 @@
++alter table public.applicant_profiles
++  drop constraint if exists applicant_profiles_degree_level_check;
++
++alter table public.applicant_profiles
++  drop constraint if exists applicant_profiles_intake_check;
++
++alter table public.applicant_profiles
++  drop constraint if exists applicant_profiles_current_residence_status_check;
++
++update public.applicant_profiles
++set current_residence_status = case current_residence_status
++  when 'outside-slovakia' then 'non-eu-passport-no-residence'
++  when 'slovak-residence' then 'destination-residence'
++  when 'eu-residence' then 'other-eu-residence'
++  when 'slovak-national-visa' then 'destination-national-visa'
++  when 'visa-free' then 'visa-free-entry'
++  else current_residence_status
++end,
++profile_version = greatest(profile_version, 2);
++
++alter table public.applicant_profiles
++  add constraint applicant_profiles_degree_level_check
++  check (degree_level in ('bachelor', 'master'));
++
++alter table public.applicant_profiles
++  add constraint applicant_profiles_intake_check
++  check (intake in ('2027/28', '2028/29', '2029/30'));
++
++alter table public.applicant_profiles
++  add constraint applicant_profiles_current_residence_status_check
++  check (
++    current_residence_status in (
++      'eu-eea-swiss-passport',
++      'non-eu-passport-no-residence',
++      'destination-residence',
++      'other-eu-residence',
++      'destination-national-visa',
++      'visa-free-entry',
++      'temporary-protection',
++      'other'
++    )
++  );
+-- 
+2.51.1
+
