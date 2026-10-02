@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 
 import { findVerifiedProgram } from "@/data/verified-programs";
+import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { buildRoutePreview } from "@/lib/build-route-preview";
 import { matchProgram } from "@/lib/match-programs";
 import { parseApplicantProfile } from "@/lib/profile-query";
@@ -93,9 +94,12 @@ export function RoutePreviewScreen() {
       matchProgram(profile, program),
     );
   }, [profile, program]);
-  const [completedTasks, setCompletedTasks] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const routeKey =
+    route && program
+      ? `${program.id}:${route.version}`
+      : null;
+  const routeProgress = useRouteProgress(routeKey);
+  const completedTasks = routeProgress.values;
 
   if (!profile || !program || !route) {
     return (
@@ -131,20 +135,6 @@ export function RoutePreviewScreen() {
   const progress = actionableTasks.length
     ? Math.round((completedCount / actionableTasks.length) * 100)
     : 100;
-
-  function toggleTask(taskId: string) {
-    setCompletedTasks((current) => {
-      const next = new Set(current);
-
-      if (next.has(taskId)) {
-        next.delete(taskId);
-      } else {
-        next.add(taskId);
-      }
-
-      return next;
-    });
-  }
 
   return (
     <div className={styles.page}>
@@ -294,7 +284,9 @@ export function RoutePreviewScreen() {
                                 : `Mark ${task.title} as complete`
                             }
                             aria-pressed={completed}
-                            onClick={() => toggleTask(task.id)}
+                            onClick={() =>
+                              routeProgress.toggle(task.id)
+                            }
                           >
                             {completed ? (
                               <Check size={16} aria-hidden="true" />
@@ -378,6 +370,22 @@ export function RoutePreviewScreen() {
           <p className={styles.eyebrow}>ROUTE CONTROL</p>
           <h2>{progress}% prepared</h2>
 
+          <p
+            className={styles.memoryStatus}
+            data-error={routeProgress.error ? "true" : undefined}
+            role={routeProgress.error ? "status" : undefined}
+          >
+            {routeProgress.loading
+              ? "Loading your progress…"
+              : routeProgress.error
+                ? "Sync is unavailable. Progress is still saved on this device."
+                : routeProgress.syncing
+                  ? "Saving progress…"
+                  : routeProgress.signedIn
+                    ? "Progress syncs with your DocRoute account."
+                    : "Progress is saved on this device."}
+          </p>
+
           <div className={styles.progressRing}>
             <svg viewBox="0 0 120 120" aria-hidden="true">
               <circle cx="60" cy="60" r="52" />
@@ -418,7 +426,9 @@ export function RoutePreviewScreen() {
             <CalendarDays size={19} aria-hidden="true" />
             <div>
               <small>NEXT FIXED DEADLINE</small>
-              <strong>31 March 2027</strong>
+              <strong>
+                {formatDate(program.application.deadline)}
+              </strong>
               <span>University application</span>
             </div>
           </div>

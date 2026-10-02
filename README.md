@@ -44,13 +44,15 @@ Run the SQL migrations in filename order:
 
 1. `supabase/migrations/20260928120000_ensure_applicant_profiles.sql`
 2. `supabase/migrations/20260929070000_expand_applicant_profile_options.sql`
+3. `supabase/migrations/20261002121500_create_user_memory.sql`
 
 The earlier `20260927190000` migration is a historical placeholder and does
 not need to be pasted into the SQL editor.
 
-The profile table uses row-level security. Authenticated users can only read,
-create, update, or delete the profile whose `user_id` matches their Supabase
-identity.
+The profile, saved-university, and route-progress tables use row-level
+security. Authenticated users can only access rows whose `user_id` matches
+their Supabase identity. Guests can still save bookmarks and route progress
+in their browser; those choices are merged into their account after login.
 
 For authentication, add both local and deployed callback URLs to the Supabase
 redirect allow list:

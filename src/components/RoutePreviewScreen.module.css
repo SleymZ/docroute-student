@@ -472,6 +472,31 @@
   letter-spacing: -0.045em;
 }
 
+.memoryStatus {
+  margin: 9px 0 0;
+  color: #7695a2;
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.memoryStatus::before {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 6px 1px 0;
+  border-radius: 50%;
+  background: #75dba9;
+  content: "";
+}
+
+.memoryStatus[data-error="true"] {
+  color: #d7a487;
+}
+
+.memoryStatus[data-error="true"]::before {
+  background: #ff9277;
+}
+
 .progressRing {
   position: relative;
   display: grid;

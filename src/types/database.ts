@@ -66,6 +66,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      saved_universities: {
+        Row: {
+          user_id: string;
+          university_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          university_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          university_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      route_task_progress: {
+        Row: {
+          user_id: string;
+          route_key: string;
+          task_id: string;
+          completed_at: string;
+        };
+        Insert: {
+          user_id: string;
+          route_key: string;
+          task_id: string;
+          completed_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          route_key?: string;
+          task_id?: string;
+          completed_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

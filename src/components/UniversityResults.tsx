@@ -24,6 +24,7 @@ import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
+import { useSavedUniversities } from "@/hooks/useSavedUniversities";
 import { createProfileSearchParams } from "@/lib/profile-query";
 import { matchPrograms } from "@/lib/match-programs";
 import { formatDegreeLevel } from "@/lib/profile-options";
@@ -83,9 +84,8 @@ export function UniversityResults({
     );
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
-  const [saved, setSaved] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const savedMemory = useSavedUniversities();
+  const saved = savedMemory.values;
 
   const validProgram =
     programOptions.includes(selectedProgram);
@@ -192,20 +192,6 @@ export function UniversityResults({
         : verifiedCatalogHosts.has(host);
     },
   ).length;
-
-  function toggleSaved(id: string) {
-    setSaved((current) => {
-      const next = new Set(current);
-
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-
-      return next;
-    });
-  }
 
   if (mode === "route" && profileState.loading) {
     return (
@@ -430,6 +416,22 @@ export function UniversityResults({
         </section>
       )}
 
+      <p
+        className={linkStyles.memoryStatus}
+        data-error={savedMemory.error ? "true" : undefined}
+        role={savedMemory.error ? "status" : undefined}
+      >
+        {savedMemory.loading
+          ? "Loading saved universities…"
+          : savedMemory.error
+            ? "Account sync is temporarily unavailable. Your bookmarks are still saved on this device."
+            : savedMemory.syncing
+              ? "Saving your bookmarks…"
+              : savedMemory.signedIn
+                ? "Bookmarks sync with your DocRoute account."
+                : "Bookmarks are saved on this device. Log in to sync them across devices."}
+      </p>
+
       <section className={styles.resultsToolbar}>
         <label className={styles.resultsSearch}>
           <Search size={18} aria-hidden="true" />
@@ -570,7 +572,7 @@ export function UniversityResults({
                         isSaved ? styles.saved : ""
                       }`}
                       onClick={() =>
-                        toggleSaved(university.id)
+                        savedMemory.toggle(university.id)
                       }
                     >
                       <Bookmark
