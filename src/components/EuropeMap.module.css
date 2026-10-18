@@ -614,8 +614,10 @@
   right: 14px;
   bottom: 14px;
   z-index: 6;
+  display: flex;
+  flex-direction: column;
   width: min(340px, 31%);
-  overflow-y: auto;
+  overflow: hidden;
   padding: 19px;
   border: 1px solid rgba(135, 188, 207, 0.23);
   border-radius: 20px;
@@ -642,6 +644,16 @@
     country-details-enter
     360ms
     cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.countryDetailsContent {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 5px;
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(112, 174, 197, 0.36)
+    transparent;
 }
 
 .cardTopline {
@@ -832,6 +844,7 @@
   justify-content: space-between;
   gap: 12px;
   min-height: 44px;
+  flex-shrink: 0;
   margin-top: 14px;
   padding: 0 14px;
   border-radius: 12px;
@@ -976,6 +989,11 @@
     width: auto;
     margin-top: 12px;
     overflow: visible;
+  }
+
+  .countryDetailsContent {
+    overflow: visible;
+    padding-right: 0;
   }
 
   .countryFacts {
