@@ -1,5 +1,6 @@
 import {
   cefrLevels,
+  waiverEvidenceOptions,
   type ApplicantLanguage,
   type ApplicantProfile,
   type EducationStatus,
@@ -23,19 +24,7 @@ const educationStatuses = new Set<EducationStatus>([
   "earlier-year",
 ]);
 
-const gradeScales = new Set<GradeScale>([
-  "slovak-1-5",
-  "other",
-]);
-
-const waiverEvidenceOptions = new Set<WaiverEvidence>([
-  "math-matura",
-  "scio-math-60",
-  "scio-general-70",
-  "ccna",
-  "fri-course",
-  "olympiad",
-]);
+const gradeScales = new Set<GradeScale>(["slovak-1-5", "other"]);
 
 function serializeLanguage(language: ApplicantLanguage) {
   return [
@@ -48,13 +37,15 @@ function serializeLanguage(language: ApplicantLanguage) {
 }
 
 function parseLanguage(value: string): ApplicantLanguage | null {
-  const [code, level, willing, proof, encodedName = ""] =
-    value.split("|");
+  const [code, level, willing, proof, encodedName = ""] = value.split("|");
 
   if (
     !code ||
     !cefrLevels.includes(level as ApplicantLanguage["level"]) ||
-    !["none", "school", "certificate"].includes(proof)
+    !/^(?:[a-z]{2}|other)$/.test(code) ||
+    !["0", "1"].includes(willing) ||
+    !["none", "school", "certificate", "uniza-test"].includes(proof) ||
+    (proof === "uniza-test" && code !== "sk")
   ) {
     return null;
   }
@@ -72,7 +63,7 @@ function parseLanguage(value: string): ApplicantLanguage | null {
     level: level as ApplicantLanguage["level"],
     willingToStudyIn: willing === "1",
     proof: proof as ApplicantLanguage["proof"],
-    certificateName: certificateName || undefined,
+    ...(certificateName ? { certificateName } : {}),
   };
 }
 
@@ -107,11 +98,9 @@ export function createProfileSearchParams(profile: ApplicantProfile) {
 export function parseApplicantProfile(
   params: SearchParamsReader,
 ): ApplicantProfile | null {
-  const destinationCountryCode =
-    params.get("country")?.toUpperCase() ?? "";
+  const destinationCountryCode = params.get("country")?.toUpperCase() ?? "";
   const studyCategory = params.get("program")?.trim() ?? "";
-  const citizenshipCountryCode =
-    params.get("citizenship")?.toUpperCase() ?? "";
+  const citizenshipCountryCode = params.get("citizenship")?.toUpperCase() ?? "";
   const educationCountryCode =
     params.get("educationCountry")?.toUpperCase() ?? "";
   const rawDegreeLevel = params.get("degree") ?? "bachelor";
@@ -120,8 +109,7 @@ export function parseApplicantProfile(
   const rawEducationStatus = params.get("educationStatus");
   const rawGradeScale = params.get("gradeScale");
   const residenceStatus = normalizeCurrentResidenceStatus(
-    params.get("residenceStatus") ??
-      "non-eu-passport-no-residence",
+    params.get("residenceStatus") ?? "non-eu-passport-no-residence",
   );
   const rawAverage = params.get("average");
 
@@ -130,6 +118,11 @@ export function parseApplicantProfile(
     !studyCategory ||
     !citizenshipCountryCode ||
     !educationCountryCode ||
+    ![
+      destinationCountryCode,
+      citizenshipCountryCode,
+      educationCountryCode,
+    ].every((code) => /^[A-Z]{2}$/.test(code)) ||
     !isDegreeLevel(rawDegreeLevel) ||
     !isStudyIntake(rawIntake) ||
     !residenceStatus ||
@@ -144,19 +137,33 @@ export function parseApplicantProfile(
   const languages = params
     .getAll("lang")
     .map(parseLanguage)
-    .filter(
-      (language): language is ApplicantLanguage => language !== null,
-    );
+    .filter((language): language is ApplicantLanguage => language !== null);
 
   if (languages.length === 0) {
     return null;
   }
 
   const average = rawAverage ? Number(rawAverage) : undefined;
+  if (
+    average !== undefined &&
+    (!Number.isFinite(average) ||
+      average <= 0 ||
+      (rawGradeScale === "slovak-1-5" && (average < 1 || average > 5)))
+  ) {
+    return null;
+  }
+
+  if (
+    new Set(languages.map((language) => language.code)).size !==
+    languages.length
+  ) {
+    return null;
+  }
+
   const waiverEvidence = params
     .getAll("waiver")
     .filter((value): value is WaiverEvidence =>
-      waiverEvidenceOptions.has(value as WaiverEvidence),
+      waiverEvidenceOptions.includes(value as WaiverEvidence),
     );
 
   return {
@@ -170,10 +177,24 @@ export function parseApplicantProfile(
     educationStatus: rawEducationStatus as EducationStatus,
     gradeScale: rawGradeScale as GradeScale,
     penultimateYearAverage:
-      average !== undefined && Number.isFinite(average)
-        ? average
-        : undefined,
+      average !== undefined && Number.isFinite(average) ? average : undefined,
     languages,
     waiverEvidence,
   };
+}
+
+// Stable opaque namespace for checklist progress, not an auth or privacy boundary.
+export function getProfileProgressId(profile: ApplicantProfile) {
+  const canonical = createProfileSearchParams({
+    ...profile,
+    languages: [...profile.languages].sort((a, b) =>
+      a.code.localeCompare(b.code, "en"),
+    ),
+    waiverEvidence: [...profile.waiverEvidence].sort(),
+  }).toString();
+  let hash = 2166136261;
+  for (let index = 0; index < canonical.length; index += 1) {
+    hash = Math.imul(hash ^ canonical.charCodeAt(index), 16777619);
+  }
+  return (hash >>> 0).toString(36);
 }

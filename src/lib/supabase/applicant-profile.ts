@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import {
   cefrLevels,
+  waiverEvidenceOptions,
   type ApplicantLanguage,
   type ApplicantProfile,
   type EducationStatus,
@@ -18,6 +19,7 @@ import type {
   Database,
   Json,
 } from "@/types/database";
+import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
 
 type ApplicantProfileRow =
   Database["public"]["Tables"]["applicant_profiles"]["Row"];
@@ -32,16 +34,6 @@ const gradeScales = new Set<GradeScale>([
   "slovak-1-5",
   "other",
 ]);
-
-const waiverEvidenceOptions =
-  new Set<WaiverEvidence>([
-    "math-matura",
-    "scio-math-60",
-    "scio-general-70",
-    "ccna",
-    "fri-course",
-    "olympiad",
-  ]);
 
 function isRecord(
   value: unknown,
@@ -66,9 +58,10 @@ function isApplicantLanguage(
         value.level as ApplicantLanguage["level"],
       ) &&
       typeof value.willingToStudyIn === "boolean" &&
-      ["none", "school", "certificate"].includes(
+      ["none", "school", "certificate", "uniza-test"].includes(
         String(value.proof),
       ) &&
+      (value.proof !== "uniza-test" || value.code === "sk") &&
       (value.certificateName === undefined ||
         typeof value.certificateName === "string"),
   );
@@ -103,7 +96,7 @@ function rowToApplicantProfile(
   const waiverEvidence = row.waiver_evidence.filter(
     (value): value is WaiverEvidence =>
       typeof value === "string" &&
-      waiverEvidenceOptions.has(
+      waiverEvidenceOptions.includes(
         value as WaiverEvidence,
       ),
   );
@@ -112,7 +105,7 @@ function rowToApplicantProfile(
     return null;
   }
 
-  return {
+  const profile: ApplicantProfile = {
     destinationCountryCode:
       row.destination_country_code,
 
@@ -143,6 +136,7 @@ function rowToApplicantProfile(
 
     waiverEvidence,
   };
+  return parseApplicantProfile(createProfileSearchParams(profile));
 }
 
 function languagesToJson(

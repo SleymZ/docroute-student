@@ -230,7 +230,8 @@
 }
 
 .statusPreparationRequired,
-.statusMoreInformation {
+.statusMoreInformation,
+.statusUnavailable {
   background: rgba(239, 185, 120, 0.1);
   color: #efb978;
 }

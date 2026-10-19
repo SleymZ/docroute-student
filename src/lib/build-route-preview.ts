@@ -4,6 +4,7 @@ import {
 } from "@/data/slovakia-residence";
 import type {
   ApplicantProfile,
+  MatchCheck,
   ProgramMatch,
 } from "@/types/admission";
 import type {
@@ -11,6 +12,7 @@ import type {
   RouteStage,
   RouteTask,
 } from "@/types/route-preview";
+import { matchesStudyChoice } from "@/lib/match-programs";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -22,13 +24,13 @@ function formatDate(value: string) {
 }
 
 function admissionTaskStatus(
-  status: "met" | "action" | "missing",
+  status: MatchCheck["status"],
 ) {
   if (status === "met") {
     return "ready" as const;
   }
 
-  if (status === "missing") {
+  if (status === "missing" || status === "unknown") {
     return "attention" as const;
   }
 
@@ -216,7 +218,8 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
 export function buildRoutePreview(
   profile: ApplicantProfile,
   match: ProgramMatch,
-): RoutePreview {
+): RoutePreview | null {
+  if (!match.canBuildRoute || !matchesStudyChoice(profile, match.program)) return null;
   const program = match.program;
   const applicationDeadline = formatDate(program.application.deadline);
   const admissionDate = formatDate(program.application.admissionDate);
@@ -229,8 +232,10 @@ export function buildRoutePreview(
     (document) => document.due === "application",
   );
   const laterDocuments = match.requiredDocuments.filter(
-    (document) => document.due !== "application",
+    (document) => document.due === "enrolment",
   );
+  const admissionDocuments = match.requiredDocuments.filter((document) => document.due === "admission-day");
+  const studyLanguageCheck = match.checks.find((check) => check.id === "study-language");
 
   const languageCheck = match.checks.find(
     (check) => check.id === "language",
@@ -254,8 +259,8 @@ export function buildRoutePreview(
       tasks: applicationDocuments.map((document) => ({
         id: document.id,
         title: document.title,
-        description: document.description,
-        status: "action",
+        description: document.conditional ? `Only if this entrance route is confirmed: ${document.description}` : document.description,
+        status: document.conditional ? "attention" : "action",
         dueLabel: `By ${applicationDeadline}`,
         sourceIds: document.sourceIds,
       })),
@@ -269,6 +274,13 @@ export function buildRoutePreview(
         "This stage changes directly with the languages and evidence in your applicant profile.",
       timing: `Admission day · ${admissionDate}`,
       tasks: [
+        ...(studyLanguageCheck ? [{
+          id: "route-study-language",
+          title: studyLanguageCheck.label,
+          description: studyLanguageCheck.detail,
+          status: admissionTaskStatus(studyLanguageCheck.status),
+          sourceIds: studyLanguageCheck.sourceIds,
+        } satisfies RouteTask] : []),
         ...(languageCheck
           ? [
               {
@@ -276,8 +288,9 @@ export function buildRoutePreview(
                 title: languageCheck.label,
                 description: languageCheck.detail,
                 status: admissionTaskStatus(languageCheck.status),
-                dueLabel: `Complete by ${languageDeadline}`,
-                sourceIds: programSourceIds,
+                dueLabel: program.languagePolicy.foreignApplicantTest.exemptCitizenshipCountryCodes.includes(profile.citizenshipCountryCode)
+                  ? "Confirm before enrolment" : `Complete by ${languageDeadline}`,
+                sourceIds: languageCheck.sourceIds,
               } satisfies RouteTask,
             ]
           : []),
@@ -288,17 +301,29 @@ export function buildRoutePreview(
                 title:
                   match.entranceRoute === "waived"
                     ? "Submit entrance-exam waiver evidence"
-                    : "Take the mathematics and logical-thinking exam",
+                    : match.entranceRoute === "needs-information"
+                      ? "Clarify waiver evidence; prepare an exam fallback"
+                      : "Take the mathematics and logical-thinking exam",
                 description: entranceCheck.detail,
                 status: admissionTaskStatus(entranceCheck.status),
                 dueLabel:
                   match.entranceRoute === "waived"
                     ? "Evidence with application"
-                    : admissionDate,
+                    : match.entranceRoute === "needs-information"
+                      ? "Clarify before application; exam fallback on " + admissionDate
+                      : admissionDate,
                 sourceIds: programSourceIds,
               } satisfies RouteTask,
             ]
           : []),
+        ...admissionDocuments.map((document) => ({
+          id: `admission-${document.id}`,
+          title: document.title,
+          description: document.conditional ? `Only if this entrance route is confirmed: ${document.description}` : document.description,
+          status: document.conditional ? "attention" as const : "action" as const,
+          dueLabel: `By ${admissionDate}`,
+          sourceIds: document.sourceIds,
+        })),
       ],
     },
     {
@@ -310,7 +335,7 @@ export function buildRoutePreview(
         "Finish qualification recognition and provide documents that can legally be supplied after the application.",
       timing: "After the admission decision",
       tasks: [
-        ...(recognitionCheck
+        ...(recognitionCheck && !laterDocuments.some((document) => document.appliesWhen === "foreign-education")
           ? [
               {
                 id: "route-recognition",
@@ -325,12 +350,9 @@ export function buildRoutePreview(
         ...laterDocuments.map((document) => ({
           id: `later-${document.id}`,
           title: document.title,
-          description: document.description,
+          description: document.conditional ? `Only if this entrance route is confirmed: ${document.description}` : document.description,
           status: "action" as const,
-          dueLabel:
-            document.due === "admission-day"
-              ? `On ${admissionDate}`
-              : "By enrolment",
+          dueLabel: "By enrolment",
           sourceIds: document.sourceIds,
         })),
         {
@@ -350,7 +372,7 @@ export function buildRoutePreview(
   ];
 
   return {
-    version: `route-${program.intake}-${slovakiaResidenceRules.effectiveFrom}`,
+    version: `route-${program.intake}-${slovakiaResidenceRules.effectiveFrom}-admissions-${program.verifiedAt}-v2`,
     generatedFor: profile,
     match,
     stages,

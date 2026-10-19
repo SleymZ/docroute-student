@@ -22,10 +22,12 @@ import {
 } from "lucide-react";
 
 import { UniversityImage } from "@/components/UniversityImage";
+import { AdmissionSources } from "@/components/AdmissionSources";
 import catalog from "@/data/universities.json";
 import { findVerifiedProgram } from "@/data/verified-programs";
-import { matchProgram } from "@/lib/match-programs";
-import { parseApplicantProfile } from "@/lib/profile-query";
+import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
+import { getAdmissionDate } from "@/lib/admission-date";
+import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -120,7 +122,7 @@ export default async function UniversityPage({
     requestedProgram?.universityId === university.id
       ? requestedProgram
       : null;
-  let profile = parseApplicantProfile(queryParams);
+  let profile = flow === "route" ? parseApplicantProfile(queryParams) : null;
 
   if (!profile && flow === "route" && isSupabaseConfigured()) {
     const supabase = await createSupabaseServerClient();
@@ -135,20 +137,24 @@ export default async function UniversityPage({
 
   const match =
     verifiedProgram && profile
-      ? matchProgram(profile, verifiedProgram)
+      ? matchProgram(profile, verifiedProgram, getAdmissionDate())
       : null;
 
-  const resultsParams = new URLSearchParams(queryParams);
+  const resultsParams = profile ? createProfileSearchParams(profile) : new URLSearchParams(queryParams);
+  resultsParams.set("flow", flow);
   resultsParams.delete("programId");
 
-  const resultsHref = selectedProgram
+  const resultsHref = resultsParams.get("program")
     ? `/${flow}/universities?${resultsParams.toString()}`
     : "/explore";
-  const previewHref = `/route/preview?${queryParams.toString()}`;
+  const previewParams = new URLSearchParams(resultsParams);
+  if (verifiedProgram) previewParams.set("programId", verifiedProgram.id);
+  const previewHref = `/route/preview?${previewParams.toString()}`;
   const buildRouteHref = `/route/profile?${new URLSearchParams({
     country: university.countryCode,
     program:
       verifiedProgram?.category ?? selectedProgram ?? "",
+    ...(verifiedProgram ? { degree: verifiedProgram.degreeLevel, intake: verifiedProgram.intake } : {}),
   }).toString()}`;
 
   const displayName =
@@ -157,13 +163,7 @@ export default async function UniversityPage({
     verifiedProgram?.city ?? university.region ?? "Location not specified";
 
   const statusLabel = match
-    ? match.status === "strong"
-      ? "Strong verified fit"
-      : match.status === "conditional"
-        ? "Conditional fit"
-        : match.status === "preparation-required"
-          ? "Preparation needed"
-          : "More information needed"
+    ? matchStatusLabels[match.status]
     : verifiedProgram
       ? "Official program information"
       : "Verification pending";
@@ -233,14 +233,14 @@ export default async function UniversityPage({
           )}
 
           <div className={styles.heroActions}>
-            {match && (
+            {match?.canBuildRoute && (
               <Link href={previewHref} className={styles.primaryAction}>
                 Preview my route
                 <ArrowRight size={17} aria-hidden="true" />
               </Link>
             )}
 
-            {verifiedProgram && !match && (
+            {verifiedProgram && !match?.canBuildRoute && (
               <Link href={buildRouteHref} className={styles.primaryAction}>
                 Build my route
                 <ArrowRight size={17} aria-hidden="true" />
@@ -355,7 +355,7 @@ export default async function UniversityPage({
             <>
               <div className={styles.matchSummary}>
                 <span>
-                  {match.status === "preparation-required" ? (
+                  {match.status === "preparation-required" || match.status === "unavailable" || match.status === "more-information" ? (
                     <AlertCircle size={23} aria-hidden="true" />
                   ) : (
                     <CheckCircle2 size={23} aria-hidden="true" />
@@ -403,6 +403,24 @@ export default async function UniversityPage({
 
               <section className={styles.detailSection}>
                 <div className={styles.detailHeading}>
+                  <p className={styles.eyebrow}>MINIMUM REQUIREMENTS</p>
+                  <h3>Published entry conditions</h3>
+                </div>
+                <div className={styles.checkList}>
+                  {verifiedProgram.minimumRequirements.map((requirement) => (
+                    <article key={requirement.id}>
+                      <div>
+                        <strong>{requirement.title}</strong>
+                        <p>{requirement.description}</p>
+                        <AdmissionSources sourceIds={requirement.sourceIds} sources={verifiedProgram.sources} />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className={styles.detailSection}>
+                <div className={styles.detailHeading}>
                   <p className={styles.eyebrow}>PROFILE CHECK</p>
                   <h3>How your profile compares</h3>
                 </div>
@@ -430,6 +448,7 @@ export default async function UniversityPage({
                       <div>
                         <strong>{check.label}</strong>
                         <p>{check.detail}</p>
+                        <AdmissionSources sourceIds={check.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                     </article>
                   ))}
@@ -453,6 +472,8 @@ export default async function UniversityPage({
                       <div>
                         <strong>{document.title}</strong>
                         <p>{document.description}</p>
+                        {document.conditional && <p>Conditional: only if this entrance route is confirmed.</p>}
+                        <AdmissionSources sourceIds={document.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                       <small>
                         {document.due === "application"
@@ -463,6 +484,17 @@ export default async function UniversityPage({
                       </small>
                     </li>
                   ))}
+                </ol>
+                {!match.canBuildRoute && <p>No personalised document checklist is generated for an incompatible or closed route.</p>}
+              </section>
+
+              <section className={styles.detailSection}>
+                <div className={styles.detailHeading}>
+                  <p className={styles.eyebrow}>WHAT TO DO NEXT</p>
+                  <h3>Your next actions</h3>
+                </div>
+                <ol>
+                  {match.nextActions.map((action) => <li key={action}>{action}</li>)}
                 </ol>
               </section>
 
@@ -563,6 +595,7 @@ export default async function UniversityPage({
                       <div>
                         <strong>{requirement.title}</strong>
                         <p>{requirement.description}</p>
+                        <AdmissionSources sourceIds={requirement.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                     </article>
                   ))}
@@ -586,6 +619,7 @@ export default async function UniversityPage({
                       <div>
                         <strong>{document.title}</strong>
                         <p>{document.description}</p>
+                        <AdmissionSources sourceIds={document.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                       <small>
                         {document.due === "application"

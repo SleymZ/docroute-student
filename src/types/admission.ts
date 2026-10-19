@@ -14,7 +14,7 @@ export type ApplicantLanguage = {
   code: string;
   level: CefrLevel;
   willingToStudyIn: boolean;
-  proof: "none" | "school" | "certificate";
+  proof: "none" | "school" | "certificate" | "uniza-test";
   certificateName?: string;
 };
 
@@ -53,11 +53,24 @@ export type CurrentResidenceStatus =
 
 export type WaiverEvidence =
   | "math-matura"
+  | "math-matura-60"
   | "scio-math-60"
   | "scio-general-70"
   | "ccna"
   | "fri-course"
-  | "olympiad";
+  | "olympiad"
+  | "regional-olympiad";
+
+export const waiverEvidenceOptions: readonly WaiverEvidence[] = [
+  "math-matura", // Legacy profiles: no percentile was collected.
+  "math-matura-60",
+  "scio-math-60",
+  "scio-general-70",
+  "ccna",
+  "fri-course",
+  "olympiad", // Legacy profiles: competition scope was unspecified.
+  "regional-olympiad",
+];
 
 export type ApplicantProfile = {
   destinationCountryCode: string;
@@ -90,10 +103,13 @@ export type ApplicationDocument = {
     | "always"
     | "foreign-education"
     | "graduated-earlier"
+    | "graduating-this-year"
     | "waiver-claim"
-    | "entrance-exam";
+    | "entrance-exam"
+    | "foreign-language-test";
   due: "application" | "admission-day" | "enrolment";
   sourceIds: string[];
+  conditional?: boolean;
 };
 
 export type AdmissionRequirement = {
@@ -105,6 +121,7 @@ export type AdmissionRequirement = {
 
 export type AdmissionProgram = {
   id: string;
+  admissionPolicy: string;
   universityId: string;
   universityHost: string;
   universityName: string;
@@ -149,13 +166,15 @@ export type MatchStatus =
   | "strong"
   | "conditional"
   | "preparation-required"
-  | "more-information";
+  | "more-information"
+  | "unavailable";
 
 export type MatchCheck = {
   id: string;
   label: string;
-  status: "met" | "action" | "missing";
+  status: "met" | "action" | "missing" | "unknown";
   detail: string;
+  sourceIds: string[];
 };
 
 export type ProgramMatch = {
@@ -166,4 +185,6 @@ export type ProgramMatch = {
   requiredDocuments: ApplicationDocument[];
   nextActions: string[];
   entranceRoute: "waived" | "exam" | "needs-information";
+  canBuildRoute: boolean;
+  evaluatedOn: string;
 };

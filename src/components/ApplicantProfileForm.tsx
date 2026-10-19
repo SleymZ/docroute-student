@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
+import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
 import {
@@ -115,9 +116,9 @@ const waiverOptions: Array<{
   description: string;
 }> = [
   {
-    value: "math-matura",
-    label: "Mathematics final exam",
-    description: "External mathematics maturita or equivalent evidence",
+    value: "math-matura-60",
+    label: "External mathematics maturita 60+",
+    description: "Slovak external mathematics maturita percentile of at least 60, not just a completed exam",
   },
   {
     value: "scio-math-60",
@@ -140,9 +141,9 @@ const waiverOptions: Array<{
     description: "Completed specialist course organised by the faculty",
   },
   {
-    value: "olympiad",
-    label: "Relevant competition",
-    description: "Published olympiad or national competition result",
+    value: "regional-olympiad",
+    label: "Qualifying olympiad result",
+    description: "Successful regional mathematics, physics or informatics olympiad solver, or second round of Mladý účtovník during secondary school",
   },
 ];
 
@@ -151,35 +152,54 @@ function getCountry(code: string) {
 }
 
 export function ApplicantProfileForm() {
+  const searchParams = useSearchParams();
+  const profileState = useApplicantProfile(searchParams, {
+    destinationCountryCode: searchParams.get("country") ?? undefined,
+    studyCategory: searchParams.get("program") ?? undefined,
+  });
+
+  if (profileState.loading) {
+    return <div className={styles.invalidPage} role="status">Loading your applicant profile…</div>;
+  }
+
+  return <ApplicantProfileFields
+    key={`${searchParams.toString()}:${profileState.profile ? createProfileSearchParams(profileState.profile).toString() : "new"}`}
+    initialProfile={profileState.profile}
+  />;
+}
+
+function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantProfile | null }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextLanguageId = useRef(2);
 
-  const countryCode = searchParams.get("country")?.toUpperCase() ?? "";
-  const selectedProgram = searchParams.get("program") ?? "";
+  const countryCode = searchParams.get("country")?.toUpperCase() || initialProfile?.destinationCountryCode || "";
+  const selectedProgram = searchParams.get("program") || initialProfile?.studyCategory || "";
   const requestedDegreeLevel = searchParams.get("degree") ?? "";
   const requestedIntake = searchParams.get("intake") ?? "";
   const destination = getCountry(countryCode);
   const validProgram = programOptions.includes(selectedProgram);
 
-  const [citizenship, setCitizenship] = useState("");
-  const [educationCountry, setEducationCountry] = useState("");
+  const [citizenship, setCitizenship] = useState(initialProfile?.citizenshipCountryCode ?? "");
+  const [educationCountry, setEducationCountry] = useState(initialProfile?.educationCountryCode ?? "");
   const [currentResidenceStatus, setCurrentResidenceStatus] =
-    useState<CurrentResidenceStatus | "">("");
+    useState<CurrentResidenceStatus | "">(initialProfile?.currentResidenceStatus ?? "");
   const [educationStatus, setEducationStatus] =
-    useState<EducationStatus>("final-year");
+    useState<EducationStatus>(initialProfile?.educationStatus ?? "final-year");
   const [degreeLevel, setDegreeLevel] = useState<DegreeLevel>(() =>
     isDegreeLevel(requestedDegreeLevel)
       ? requestedDegreeLevel
-      : "bachelor",
+      : initialProfile?.degreeLevel ?? "bachelor",
   );
   const [intake, setIntake] = useState<StudyIntake>(() =>
-    isStudyIntake(requestedIntake) ? requestedIntake : "2027/28",
+    isStudyIntake(requestedIntake) ? requestedIntake : initialProfile?.intake ?? "2027/28",
   );
   const [gradeScale, setGradeScale] =
-    useState<GradeScale>("other");
-  const [average, setAverage] = useState("");
-  const [languages, setLanguages] = useState<LanguageRow[]>([
+    useState<GradeScale>(initialProfile?.gradeScale ?? "other");
+  const [average, setAverage] = useState(initialProfile?.penultimateYearAverage?.toString() ?? "");
+  const [languages, setLanguages] = useState<LanguageRow[]>(() => initialProfile
+    ? initialProfile.languages.map((language, index) => ({ ...language, id: `saved-language-${index}` }))
+    : [
     {
       id: "language-1",
       code: "en",
@@ -190,7 +210,7 @@ export function ApplicantProfileForm() {
   ]);
   const [waiverEvidence, setWaiverEvidence] = useState<
     Set<WaiverEvidence>
-  >(() => new Set());
+  >(() => new Set(initialProfile?.waiverEvidence ?? []));
   const [error, setError] = useState("");
 
   if (!destination || !validProgram) {
@@ -286,9 +306,10 @@ export function ApplicantProfileForm() {
 
     if (
       numericAverage !== undefined &&
-      (!Number.isFinite(numericAverage) || numericAverage <= 0)
+      (!Number.isFinite(numericAverage) || numericAverage <= 0 ||
+        (gradeScale === "slovak-1-5" && (numericAverage < 1 || numericAverage > 5)))
     ) {
-      setError("Enter a valid grade average or leave it blank.");
+      setError("Enter a valid grade average (1–5 on the Slovak scale) or leave it blank.");
       return;
     }
 
@@ -574,6 +595,7 @@ export function ApplicantProfileForm() {
                     onChange={(event) =>
                       updateLanguage(language.id, {
                         code: event.target.value,
+                        ...(language.proof === "uniza-test" ? { proof: "none" as const } : {}),
                       })
                     }
                     required
@@ -620,6 +642,9 @@ export function ApplicantProfileForm() {
                     <option value="none">No proof yet</option>
                     <option value="school">School record</option>
                     <option value="certificate">Certificate or test</option>
+                    {language.code === "sk" && (
+                      <option value="uniza-test">UNIZA Slovak test · B1+ · grade A, B or C</option>
+                    )}
                   </select>
                 </label>
 
@@ -721,7 +746,8 @@ export function ApplicantProfileForm() {
               <input
                 type="number"
                 inputMode="decimal"
-                min="0"
+                min={gradeScale === "slovak-1-5" ? "1" : "0.01"}
+                max={gradeScale === "slovak-1-5" ? "5" : undefined}
                 step="0.01"
                 value={average}
                 placeholder={
@@ -740,6 +766,23 @@ export function ApplicantProfileForm() {
           )}
 
           {degreeLevel === "bachelor" ? (
+            <>
+            {waiverEvidence.has("math-matura") || waiverEvidence.has("olympiad") ? (
+              <div>
+                <p className={styles.scaleNotice}>
+                  Your older evidence needs clarification. Re-select a qualifying result below;
+                  a completed maths exam or unspecified competition alone does not confirm a waiver.
+                </p>
+                <button type="button" className={styles.addLanguage} onClick={() => {
+                  setWaiverEvidence((current) => {
+                    const next = new Set(current);
+                    next.delete("math-matura");
+                    next.delete("olympiad");
+                    return next;
+                  });
+                }}>Remove unspecified older evidence</button>
+              </div>
+            ) : null}
             <div className={styles.waiverGrid}>
               {waiverOptions.map((option) => {
                 const checked = waiverEvidence.has(option.value);
@@ -754,7 +797,16 @@ export function ApplicantProfileForm() {
                     <input
                       type="checkbox"
                       checked={checked}
-                      onChange={() => toggleWaiver(option.value)}
+                      onChange={() => {
+                        toggleWaiver(option.value);
+                        if (option.value === "math-matura-60" || option.value === "regional-olympiad") {
+                          setWaiverEvidence((current) => {
+                            const next = new Set(current);
+                            next.delete(option.value === "math-matura-60" ? "math-matura" : "olympiad");
+                            return next;
+                          });
+                        }
+                      }}
                     />
                     <span className={styles.evidenceCheck}>
                       <Check size={13} aria-hidden="true" />
@@ -767,6 +819,7 @@ export function ApplicantProfileForm() {
                 );
               })}
             </div>
+            </>
           ) : (
             <div className={styles.masterEvidenceNotice}>
               <GraduationCap size={19} aria-hidden="true" />

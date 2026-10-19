@@ -10,6 +10,7 @@ const applicationUrl =
   "https://vzdelavanie.uniza.sk/prijimacky/index.php";
 
 const sharedProgram = {
+  admissionPolicy: "uniza-fri-bachelor-2027",
   universityId: "b8b5a2e3a15148e5b4a1",
   universityHost: "uniza.sk",
   universityName: "University of Žilina",
@@ -43,10 +44,19 @@ const sharedProgram = {
       exemptCitizenshipCountryCodes: ["SK", "CZ"],
       deadline: "2027-06-03",
       note:
-        "The university may recognise an already completed Slovak language test; final acceptance must be confirmed by UNIZA.",
+        "Only a previously passed Slovak test administered by UNIZA's Institute of Lifelong Learning, at B1 or higher with grade A, B or C, is explicitly recognised by these rules. A school record or an unrelated certificate is not an automatic exemption.",
     },
   },
   documents: [
+    {
+      id: "graduation-certificate-later",
+      title: "Final secondary-school graduation certificate",
+      description:
+        "If you are graduating this school year, provide your final graduation certificate by enrolment. A waiver does not remove this requirement.",
+      appliesWhen: "graduating-this-year" as const,
+      due: "enrolment" as const,
+      sourceIds: ["fri-rules-2027"],
+    },
     {
       id: "signed-application",
       title: "Signed electronic application",
@@ -103,15 +113,38 @@ const sharedProgram = {
     },
     {
       id: "exam-identity-and-certificate",
-      title: "ID and graduation certificate for the entrance exam",
+      title: "Identity document for the entrance exam",
       description:
         "Bring an identity document and the graduation certificate to the entrance exam; the certificate can be supplied by enrolment if it is not yet available.",
       appliesWhen: "entrance-exam" as const,
       due: "admission-day" as const,
       sourceIds: ["fri-rules-2027"],
     },
+    {
+      id: "uniza-language-result",
+      title: "UNIZA Slovak language test result",
+      description:
+        "For foreign applicants other than Czech applicants: pass the UNIZA Slovak test at B1 or higher with grade A, B or C by 3 June 2027. An earlier qualifying UNIZA test is recognised; the test may be taken only once in the admission calendar year.",
+      appliesWhen: "foreign-language-test" as const,
+      due: "admission-day" as const,
+      sourceIds: ["fri-rules-2027"],
+    },
   ],
   minimumRequirements: [
+    {
+      id: "waiver-thresholds",
+      title: "Published exam-waiver thresholds",
+      description:
+        "One qualifying route is enough: external mathematics maturita or SCIO Mathematics percentile 60+, SCIO general aptitude percentile 70+, penultimate-year average at most 1.70, CCNA or higher, or a completed FRI specialist course with an average at most 2.00. Competition routes have specific subject, round and result conditions; a generic participation certificate is not enough.",
+      sourceIds: ["fri-rules-2027"],
+    },
+    {
+      id: "exam-ranking",
+      title: "Exam admission is capacity-ranked",
+      description:
+        "The mathematics and logical-thinking test lasts 120 minutes and awards up to 50 points. Admission is ranked by results up to the faculty's capacity; the rules do not promise admission for a fixed minimum score.",
+      sourceIds: ["fri-rules-2027"],
+    },
     {
       id: "secondary-education",
       title: "Completed secondary education",
@@ -149,7 +182,7 @@ const sharedProgram = {
       publisher:
         "Faculty of Management Science and Informatics, University of Žilina",
       url: admissionsRules,
-      checkedAt: "2026-09-27",
+      checkedAt: "2026-10-19",
     },
     {
       id: "fri-admissions-page",
@@ -157,10 +190,10 @@ const sharedProgram = {
       publisher:
         "Faculty of Management Science and Informatics, University of Žilina",
       url: admissionsPage,
-      checkedAt: "2026-09-27",
+      checkedAt: "2026-10-19",
     },
   ],
-  verifiedAt: "2026-09-27",
+  verifiedAt: "2026-10-19",
 };
 
 const programs = [
