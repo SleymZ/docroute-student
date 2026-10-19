@@ -773,6 +773,11 @@ export function EuropeMap({
         >
           <div
             className={
+              styles.countryDetailsContent
+            }
+          >
+          <div
+            className={
               styles.cardTopline
             }
           >
@@ -987,6 +992,7 @@ export function EuropeMap({
                   : "This country is explorable, but it is not yet included in the verified route builder."}
               </span>
             </p>
+          </div>
           </div>
 
           {universitiesHref ? (

@@ -138,6 +138,30 @@ export function usePersistentUserSet({
       try {
         const supabase = createSupabaseBrowserClient();
         const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          throw sessionError;
+        }
+
+        if (
+          cancelled ||
+          generationRef.current !== generation
+        ) {
+          return;
+        }
+
+        // Guests keep using local storage. Checking the session first
+        // avoids treating Supabase's expected missing-session response as
+        // a sync failure while authenticated users are still verified below.
+        if (!session) {
+          setLoading(false);
+          return;
+        }
+
+        const {
           data: { user },
           error: userError,
         } = await supabase.auth.getUser();
