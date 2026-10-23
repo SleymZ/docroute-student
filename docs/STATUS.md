@@ -5,14 +5,27 @@ what was actually checked, not plans presented as done.
 
 ## What the product is
 
-DocRoute helps a person move to a European country with one personal,
-source-linked route. Today the only purpose with a route is **study**; the
-home form shows Work, Family and Business as "coming soon" without routes.
+DocRoute (renamed from "DocRoute Student" on 2026-10-23) helps a person
+move to a European country with one personal, source-linked route. It serves
+three groups:
+
+- students who need a university matched to their profile;
+- people moving from abroad who need to know which documents they need and
+  by when (deadline planner);
+- students already in Europe looking for requirements and deadlines
+  (Explore).
+
+Today the only purpose with a route is **study**; the home form shows Work,
+Family and Business as "coming soon" without routes.
 
 - **Explore** is a public university directory (no account needed).
 - **Build my route** collects an applicant profile, matches it against
   verified programs and builds a Preview Route (application → admission →
   enrolment → residence) with progress tracking.
+- **Deadline planner** (Preview Route): the person enters a move date and
+  gets dates for the residence steps (file ≥ 90 days before, criminal-record
+  window, apostille/translation, arrival report within 3 working days).
+  The date is kept in the URL as `move=YYYY-MM-DD`.
 - The university always makes the admission decision. DocRoute never shows
   admission percentages or reuses rules from another field, degree or year.
 
@@ -39,6 +52,15 @@ evidence that a program exists or of its requirements.
 On the home map only Slovakia is highlighted, because it is the only
 verified destination.
 
+## Code structure for residence
+
+- `src/lib/residence/slovakia.ts`: shared Slovak residence steps plus a
+  purpose definition (`studyPurpose`). A new purpose (work, family, business)
+  is a new definition there, after its rules are verified.
+- `src/lib/residence/deadlines.ts`: pure date calculations for the planner
+  (UTC, weekends skipped, public holidays not included; dates formatted by
+  hand to avoid ICU differences between server and browser).
+
 ## Residence sources (rechecked 2026-10-23)
 
 - Requirements cite the IOM Migration Information Centre pages updated in
@@ -62,10 +84,13 @@ verified destination.
   on phones; Arial Black rendering of 800-weight text replaced with 700.
 - Account page redesign (PR #4); unverified university pages point to the
   verified route (PR #3).
+- PR #5: map fades into the page and highlights only Slovakia; move-purpose
+  foundation; residence recheck; rename to DocRoute; residence code split
+  into shared steps and purposes; deadline planner.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (83 tests on 2026-10-23).
+- Unit tests: `npm test` (91 tests on 2026-10-23).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -91,6 +116,11 @@ module loader; ESLint and `test:ssr` were not run there.
    because Preview URLs are not in the Supabase redirect allow list.
 6. Accessibility: the university image container uses `role="img"` while
    containing credit links on the university page.
+7. **Planner limits**: Slovak public holidays are not counted; steps that
+   start at card collection (insurance, medical report) are relative, not
+   dated. The planner uses the maximum 90-day decision period.
+8. The production domain is still `docroute-student.vercel.app`; renaming
+   the Vercel project/domain is a separate decision.
 
 ## Next steps
 
