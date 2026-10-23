@@ -26,10 +26,12 @@ import {
 } from "lucide-react";
 
 import { findVerifiedProgram } from "@/data/verified-programs";
+import { AdmissionSources } from "@/components/AdmissionSources";
+import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { buildRoutePreview } from "@/lib/build-route-preview";
-import { matchProgram } from "@/lib/match-programs";
-import { parseApplicantProfile } from "@/lib/profile-query";
+import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
+import { createProfileSearchParams, getProfileProgressId } from "@/lib/profile-query";
 import type { RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./RoutePreviewScreen.module.css";
@@ -72,16 +74,16 @@ const statusMeta: Record<
   },
 };
 
-export function RoutePreviewScreen() {
+// "ready" means the profile already meets the condition (e.g. recognition
+// does not apply), so it is neither an open action nor something to tick.
+function isActionable(status: RouteTaskStatus) {
+  return status === "action" || status === "attention";
+}
+
+export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   const searchParams = useSearchParams();
-  const profileKey = searchParams.toString();
-  const profile = useMemo(
-    () =>
-      parseApplicantProfile(
-        new URLSearchParams(profileKey),
-      ),
-    [profileKey],
-  );
+  const profileState = useApplicantProfile(searchParams);
+  const profile = profileState.profile;
   const programId = searchParams.get("programId");
   const program = findVerifiedProgram(programId);
   const route = useMemo(() => {
@@ -91,42 +93,49 @@ export function RoutePreviewScreen() {
 
     return buildRoutePreview(
       profile,
-      matchProgram(profile, program),
+      matchProgram(profile, program, asOfDate),
     );
-  }, [profile, program]);
+  }, [profile, program, asOfDate]);
   const routeKey =
     route && program
-      ? `${program.id}:${route.version}`
+      ? `${program.id}:${route.version}:${getProfileProgressId(route.generatedFor)}`
       : null;
   const routeProgress = useRouteProgress(routeKey);
   const completedTasks = routeProgress.values;
+
+  if (profileState.loading) {
+    return <div className={styles.invalidPage} role="status">Loading your saved profile…</div>;
+  }
 
   if (!profile || !program || !route) {
     return (
       <div className={styles.invalidPage}>
         <Route size={36} aria-hidden="true" />
-        <h1>Your route needs a verified program</h1>
+        <h1>Your route needs a compatible, current program</h1>
         <p>
-          Complete the applicant profile and open one of the verified
-          university programs first.
+          Select a verified program for your exact destination, subject, degree and intake.
+          A closed deadline or a different intake cannot be used to build an active route.
         </p>
-        <Link href="/explore">
+        <Link href={profile ? `/route/universities?${createProfileSearchParams(profile).toString()}` : "/explore"}>
           <ArrowLeft size={17} aria-hidden="true" />
-          Return to Explore
+          {profile ? "Return to your options" : "Return to Explore"}
         </Link>
       </div>
     );
   }
 
-  const universityParams = new URLSearchParams(searchParams.toString());
+  const universityParams = createProfileSearchParams(profile);
+  universityParams.set("flow", "route");
+  universityParams.set("programId", program.id);
   const universityHref = `/universities/${encodeURIComponent(
     program.universityId,
   )}?${universityParams.toString()}`;
+  // Changing the profile changes the progress namespace, so earlier ticks
+  // are not carried into a route built for different data.
+  const editProfileHref = `/route/profile?${createProfileSearchParams(profile).toString()}`;
   const actionableTasks = route.stages.flatMap((stage) =>
     stage.tasks.filter(
-      (task) =>
-        task.status !== "information" &&
-        task.status !== "not-applicable",
+      (task) => isActionable(task.status),
     ),
   );
   const completedCount = actionableTasks.filter((task) =>
@@ -158,6 +167,7 @@ export function RoutePreviewScreen() {
             conditions, enrolment, and the residence stage that applies to
             your citizenship and current status.
           </p>
+          <p role="status">{matchStatusLabels[route.match.status]} — {route.match.summary}</p>
         </div>
 
         <div className={styles.heroRoute}>
@@ -218,9 +228,7 @@ export function RoutePreviewScreen() {
         <div className={styles.timeline}>
           {route.stages.map((stage) => {
             const stageActionable = stage.tasks.filter(
-              (task) =>
-                task.status !== "information" &&
-                task.status !== "not-applicable",
+              (task) => isActionable(task.status),
             );
             const stageCompleted = stageActionable.filter((task) =>
               completedTasks.has(task.id),
@@ -262,9 +270,7 @@ export function RoutePreviewScreen() {
                     {stage.tasks.map((task) => {
                       const meta = statusMeta[task.status];
                       const StatusIcon = meta.icon;
-                      const canComplete =
-                        task.status !== "information" &&
-                        task.status !== "not-applicable";
+                      const canComplete = isActionable(task.status);
                       const completed = completedTasks.has(task.id);
 
                       return (
@@ -321,6 +327,7 @@ export function RoutePreviewScreen() {
                                 {task.dueLabel}
                               </small>
                             )}
+                            <AdmissionSources sourceIds={task.sourceIds} sources={route.sources} />
                           </div>
                         </article>
                       );
@@ -445,6 +452,11 @@ export function RoutePreviewScreen() {
 
           <Link href={universityHref} className={styles.editRoute}>
             Review requirements
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+
+          <Link href={editProfileHref} className={styles.editRoute}>
+            Edit my profile
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
 

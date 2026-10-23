@@ -31,7 +31,13 @@ export async function updateSupabaseSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getClaims();
+  try {
+    // Refreshes an expiring session cookie. A paused or unreachable
+    // Supabase project must not turn every page into an error.
+    await supabase.auth.getClaims();
+  } catch (error) {
+    console.error("Could not refresh the Supabase session:", error);
+  }
 
   return response;
 }

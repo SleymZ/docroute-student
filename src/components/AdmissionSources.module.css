@@ -1,0 +1,18 @@
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.sources a {
+  color: #80c6d4;
+  text-underline-offset: 3px;
+}
+
+.sources a:hover,
+.sources a:focus-visible {
+  color: #e3f4f7;
+}

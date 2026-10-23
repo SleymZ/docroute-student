@@ -66,7 +66,9 @@ https://your-domain.example/auth/callback
 
 ```bash
 npm run lint
+npm test
 npm run build
+npm run test:ssr
 ```
 
 ## Deployment
@@ -78,3 +80,30 @@ preview on the deployed domain.
 
 DocRoute is a preparation tool, not an admission decision or legal advice.
 Every open requirement must be rechecked before submission.
+
+## Admission matching policy
+
+The first implemented policy is FRI UNIZA bachelor-level Computer Science
+for 2027/28 (four programmes at one faculty, not complete Slovak coverage).
+Rules and the electronic-application instructions were rechecked on 2026-10-19.
+The policy source is linked beside requirements and documents in the UI.
+
+- Destination, subject, degree and intake must all match exactly. A rule from
+  another year or degree cannot generate a personalised checklist.
+- A server-supplied date in the Europe/Bratislava timezone is used for deadline
+  checks, so SSR and client hydration use the same snapshot.
+- Known languages, willingness to study in them and accepted language proof
+  are separate checks. An unrelated certificate does not satisfy the specific
+  UNIZA test rule.
+- Old `math-matura` / `olympiad` profile entries remain readable but require
+  clarification. New evidence options state the actual percentile/round.
+- A self-reported waiver is a possible admission route, not a faculty decision.
+  A foreign grade scale is not automatically converted into a Slovak average.
+- A final-year applicant still needs a final graduation certificate even when
+  an entrance-exam waiver is claimed. Conditional documents are labelled.
+- Preview rejects incompatible or expired routes and stores progress separately
+  when the profile changes.
+
+This update uses the existing JSON profile fields; no additional SQL migration
+is needed. Immigration guidance is a separate data set and is not re-verified
+by this admissions update.

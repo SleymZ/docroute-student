@@ -22,10 +22,12 @@ import {
 } from "lucide-react";
 
 import { UniversityImage } from "@/components/UniversityImage";
+import { AdmissionSources } from "@/components/AdmissionSources";
 import catalog from "@/data/universities.json";
-import { findVerifiedProgram } from "@/data/verified-programs";
-import { matchProgram } from "@/lib/match-programs";
-import { parseApplicantProfile } from "@/lib/profile-query";
+import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
+import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
+import { getAdmissionDate } from "@/lib/admission-date";
+import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -82,8 +84,10 @@ function formatDate(value: string) {
 
 export async function generateMetadata({
   params,
-}: Pick<UniversityPageProps, "params">): Promise<Metadata> {
+  searchParams,
+}: UniversityPageProps): Promise<Metadata> {
   const { id } = await params;
+  const query = await searchParams;
   const university = findUniversity(id);
 
   if (!university) {
@@ -92,9 +96,24 @@ export async function generateMetadata({
     };
   }
 
+  // Query strings can carry a personal profile (citizenship, languages,
+  // residence status). Only the plain university page is indexable.
+  const personalised = Object.keys(query).length > 0;
+  // Catalog names come from an imported list and can be inaccurate
+  // ("University of Zilinska"); verified program data has the official name.
+  const name =
+    verifiedPrograms.find((program) => program.universityId === university.id)
+      ?.universityName ?? university.name;
+
   return {
-    title: university.name,
-    description: `Explore admission information and document requirements for ${university.name}.`,
+    title: name,
+    description: `Explore admission information and document requirements for ${name}.`,
+    alternates: {
+      canonical: `/universities/${encodeURIComponent(university.id)}`,
+    },
+    ...(personalised
+      ? { robots: { index: false, follow: false } }
+      : {}),
   };
 }
 
@@ -120,7 +139,7 @@ export default async function UniversityPage({
     requestedProgram?.universityId === university.id
       ? requestedProgram
       : null;
-  let profile = parseApplicantProfile(queryParams);
+  let profile = flow === "route" ? parseApplicantProfile(queryParams) : null;
 
   if (!profile && flow === "route" && isSupabaseConfigured()) {
     const supabase = await createSupabaseServerClient();
@@ -135,35 +154,47 @@ export default async function UniversityPage({
 
   const match =
     verifiedProgram && profile
-      ? matchProgram(profile, verifiedProgram)
+      ? matchProgram(profile, verifiedProgram, getAdmissionDate())
       : null;
 
-  const resultsParams = new URLSearchParams(queryParams);
+  const resultsParams = profile ? createProfileSearchParams(profile) : new URLSearchParams(queryParams);
+  resultsParams.set("flow", flow);
   resultsParams.delete("programId");
 
-  const resultsHref = selectedProgram
+  const resultsHref = resultsParams.get("program")
     ? `/${flow}/universities?${resultsParams.toString()}`
     : "/explore";
-  const previewHref = `/route/preview?${queryParams.toString()}`;
+  const previewParams = new URLSearchParams(resultsParams);
+  if (verifiedProgram) previewParams.set("programId", verifiedProgram.id);
+  const previewHref = `/route/preview?${previewParams.toString()}`;
   const buildRouteHref = `/route/profile?${new URLSearchParams({
     country: university.countryCode,
     program:
       verifiedProgram?.category ?? selectedProgram ?? "",
+    ...(verifiedProgram ? { degree: verifiedProgram.degreeLevel, intake: verifiedProgram.intake } : {}),
   }).toString()}`;
+  const editProfileHref = `/route/profile?${resultsParams.toString()}`;
+
+  // A match can exist with canBuildRoute: false (passed deadline, incompatible
+  // profile, unsupported policy). Every Preview entry point uses this one rule;
+  // otherwise people with a profile are sent back to edit it without losing data.
+  const canOpenPreview = Boolean(verifiedProgram && match?.canBuildRoute);
+  const routeAction = canOpenPreview
+    ? { href: previewHref, heroLabel: "Preview my route", panelLabel: "Open Preview Route" }
+    : profile
+      ? { href: editProfileHref, heroLabel: "Edit my profile", panelLabel: "Edit my profile" }
+      : { href: buildRouteHref, heroLabel: "Build my route", panelLabel: "Build my route" };
 
   const displayName =
-    verifiedProgram?.universityName ?? university.name;
+    verifiedProgram?.universityName ??
+    verifiedPrograms.find((program) => program.universityId === university.id)
+      ?.universityName ??
+    university.name;
   const displayRegion =
     verifiedProgram?.city ?? university.region ?? "Location not specified";
 
   const statusLabel = match
-    ? match.status === "strong"
-      ? "Strong verified fit"
-      : match.status === "conditional"
-        ? "Conditional fit"
-        : match.status === "preparation-required"
-          ? "Preparation needed"
-          : "More information needed"
+    ? matchStatusLabels[match.status]
     : verifiedProgram
       ? "Official program information"
       : "Verification pending";
@@ -233,16 +264,9 @@ export default async function UniversityPage({
           )}
 
           <div className={styles.heroActions}>
-            {match && (
-              <Link href={previewHref} className={styles.primaryAction}>
-                Preview my route
-                <ArrowRight size={17} aria-hidden="true" />
-              </Link>
-            )}
-
-            {verifiedProgram && !match && (
-              <Link href={buildRouteHref} className={styles.primaryAction}>
-                Build my route
+            {verifiedProgram && (
+              <Link href={routeAction.href} className={styles.primaryAction}>
+                {routeAction.heroLabel}
                 <ArrowRight size={17} aria-hidden="true" />
               </Link>
             )}
@@ -355,7 +379,7 @@ export default async function UniversityPage({
             <>
               <div className={styles.matchSummary}>
                 <span>
-                  {match.status === "preparation-required" ? (
+                  {match.status === "preparation-required" || match.status === "unavailable" || match.status === "more-information" ? (
                     <AlertCircle size={23} aria-hidden="true" />
                   ) : (
                     <CheckCircle2 size={23} aria-hidden="true" />
@@ -403,6 +427,24 @@ export default async function UniversityPage({
 
               <section className={styles.detailSection}>
                 <div className={styles.detailHeading}>
+                  <p className={styles.eyebrow}>MINIMUM REQUIREMENTS</p>
+                  <h3>Published entry conditions</h3>
+                </div>
+                <div className={styles.checkList}>
+                  {verifiedProgram.minimumRequirements.map((requirement) => (
+                    <article key={requirement.id}>
+                      <div>
+                        <strong>{requirement.title}</strong>
+                        <p>{requirement.description}</p>
+                        <AdmissionSources sourceIds={requirement.sourceIds} sources={verifiedProgram.sources} />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className={styles.detailSection}>
+                <div className={styles.detailHeading}>
                   <p className={styles.eyebrow}>PROFILE CHECK</p>
                   <h3>How your profile compares</h3>
                 </div>
@@ -430,6 +472,7 @@ export default async function UniversityPage({
                       <div>
                         <strong>{check.label}</strong>
                         <p>{check.detail}</p>
+                        <AdmissionSources sourceIds={check.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                     </article>
                   ))}
@@ -453,6 +496,8 @@ export default async function UniversityPage({
                       <div>
                         <strong>{document.title}</strong>
                         <p>{document.description}</p>
+                        {document.conditional && <p>Conditional: only if this entrance route is confirmed.</p>}
+                        <AdmissionSources sourceIds={document.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                       <small>
                         {document.due === "application"
@@ -463,6 +508,17 @@ export default async function UniversityPage({
                       </small>
                     </li>
                   ))}
+                </ol>
+                {!match.canBuildRoute && <p>No personalised document checklist is generated for an incompatible or closed route.</p>}
+              </section>
+
+              <section className={styles.detailSection}>
+                <div className={styles.detailHeading}>
+                  <p className={styles.eyebrow}>WHAT TO DO NEXT</p>
+                  <h3>Your next actions</h3>
+                </div>
+                <ol>
+                  {match.nextActions.map((action) => <li key={action}>{action}</li>)}
                 </ol>
               </section>
 
@@ -563,6 +619,7 @@ export default async function UniversityPage({
                       <div>
                         <strong>{requirement.title}</strong>
                         <p>{requirement.description}</p>
+                        <AdmissionSources sourceIds={requirement.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                     </article>
                   ))}
@@ -586,6 +643,7 @@ export default async function UniversityPage({
                       <div>
                         <strong>{document.title}</strong>
                         <p>{document.description}</p>
+                        <AdmissionSources sourceIds={document.sourceIds} sources={verifiedProgram.sources} />
                       </div>
                       <small>
                         {document.due === "application"
@@ -714,10 +772,10 @@ export default async function UniversityPage({
 
           {verifiedProgram && (
             <Link
-              href={match ? previewHref : buildRouteHref}
+              href={routeAction.href}
               className={styles.routeApply}
             >
-              {match ? "Open Preview Route" : "Build my route"}
+              {routeAction.panelLabel}
               <ArrowRight size={17} aria-hidden="true" />
             </Link>
           )}

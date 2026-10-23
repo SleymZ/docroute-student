@@ -1,13 +1,8 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { safeNextPath } from "@/lib/safe-next-path";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-function safeNextPath(value: string | null) {
-  return value?.startsWith("/") && !value.startsWith("//")
-    ? value
-    : "/explore";
-}
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);

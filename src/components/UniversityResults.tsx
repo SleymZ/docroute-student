@@ -26,7 +26,7 @@ import { verifiedPrograms } from "@/data/verified-programs";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { useSavedUniversities } from "@/hooks/useSavedUniversities";
 import { createProfileSearchParams } from "@/lib/profile-query";
-import { matchPrograms } from "@/lib/match-programs";
+import { matchPrograms, matchStatusLabels } from "@/lib/match-programs";
 import { formatDegreeLevel } from "@/lib/profile-options";
 import type { ProgramMatch } from "@/types/admission";
 
@@ -37,6 +37,7 @@ const PAGE_SIZE = 8;
 
 type UniversityResultsProps = {
   mode?: "explore" | "route";
+  asOfDate?: string;
 };
 
 function normalize(value: string) {
@@ -57,6 +58,7 @@ function getWebsiteHost(website: string) {
 
 export function UniversityResults({
   mode = "explore",
+  asOfDate = "",
 }: UniversityResultsProps) {
   const searchParams = useSearchParams();
   const requestedCountryCode =
@@ -79,8 +81,8 @@ export function UniversityResults({
 
   const [query, setQuery] = useState("");
   const [scope, setScope] =
-    useState<"all" | "verified">(() =>
-      mode === "route" ? "verified" : "all",
+    useState<"all" | "verified" | "current">(() =>
+      mode === "route" ? "current" : "all",
     );
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
@@ -118,8 +120,8 @@ export function UniversityResults({
 
   const profileMatches = useMemo(
     () =>
-      profile ? matchPrograms(profile, verifiedPrograms) : [],
-    [profile],
+      profile ? matchPrograms(profile, verifiedPrograms, asOfDate) : [],
+    [profile, asOfDate],
   );
 
   const verifiedByHost = useMemo(() => {
@@ -142,8 +144,9 @@ export function UniversityResults({
     return countryUniversities
       .map((university) => {
         const host = getWebsiteHost(university.website);
-        const matchingPrograms =
-          verifiedByHost.get(host) ?? [];
+        const matchingPrograms = (verifiedByHost.get(host) ?? []).filter(
+          (match) => scope !== "current" || match.status === "strong" || match.status === "conditional",
+        );
 
         return {
           ...university,
@@ -155,7 +158,7 @@ export function UniversityResults({
         };
       })
       .filter((university) => {
-        if (scope === "verified" && !university.verified) {
+        if (scope !== "all" && !university.verified) {
           return false;
         }
 
@@ -192,6 +195,12 @@ export function UniversityResults({
         : verifiedCatalogHosts.has(host);
     },
   ).length;
+  const currentCount = countryUniversities.filter((university) =>
+    verifiedByHost.get(getWebsiteHost(university.website))?.some(
+      (match) => match.status === "strong" || match.status === "conditional",
+    ),
+  ).length;
+  const noCurrentOptions = mode === "route" && scope === "current" && currentCount === 0;
 
   if (mode === "route" && profileState.loading) {
     return (
@@ -324,8 +333,8 @@ export function UniversityResults({
               </>
             ) : (
               <>
-                Explore universities offering <strong>{selectedProgram}</strong>
-                .
+                Browse the country directory for <strong>{selectedProgram}</strong>.
+                Subject availability is only confirmed where official program data is available.
               </>
             )}
           </p>
@@ -453,14 +462,14 @@ export function UniversityResults({
         >
           <button
             type="button"
-            aria-pressed={scope === "all"}
+            aria-pressed={scope === (mode === "route" ? "current" : "all")}
             onClick={() => {
-              setScope("all");
+              setScope(mode === "route" ? "current" : "all");
               setVisibleCount(PAGE_SIZE);
             }}
           >
-            All institutions
-            <span>{countryUniversities.length}</span>
+            {mode === "route" ? "Current profile options" : "All institutions"}
+            <span>{mode === "route" ? currentCount : countryUniversities.length}</span>
           </button>
 
           <button
@@ -472,7 +481,7 @@ export function UniversityResults({
               setVisibleCount(PAGE_SIZE);
             }}
           >
-            Verified matches
+            {mode === "route" ? "All verified options" : "Verified program data"}
             <span>{verifiedCount}</span>
           </button>
         </div>
@@ -483,7 +492,7 @@ export function UniversityResults({
 
         <p>
           {mode === "route"
-            ? "Verified matches use published admissions rules and explain what your profile meets, what is conditional, and what still needs preparation. Other institutions remain visible but unverified."
+            ? `Coverage: ${profileMatches.length} verified programs at ${verifiedByHost.size} faculty/university for your exact subject, degree and intake. Current profile options exclude known education/language gaps and unresolved evidence. All verified options also shows preparation routes and closed deadlines. Checked as of ${asOfDate}; admission is never guaranteed.`
             : "Verified program information is based on published admissions rules. Other institutions remain visible in the complete country directory."}
         </p>
       </div>
@@ -502,12 +511,18 @@ export function UniversityResults({
           .map((university, index) => {
             const isSaved = saved.has(university.id);
             const firstMatch = university.matchingPrograms[0];
+            const directoryProgram = mode === "explore" ? verifiedPrograms.find(
+              (program) => program.universityHost === getWebsiteHost(university.website) &&
+                program.countryCode === countryCode && program.category === selectedProgram,
+            ) : undefined;
             const displayName =
               firstMatch?.program.universityName ?? university.name;
             const universityParams = new URLSearchParams(resultsParams);
 
             if (firstMatch) {
               universityParams.set("programId", firstMatch.program.id);
+            } else if (directoryProgram) {
+              universityParams.set("programId", directoryProgram.id);
             }
 
             const universityHref = `/universities/${encodeURIComponent(
@@ -606,7 +621,7 @@ export function UniversityResults({
                       {university.matchingPrograms.map(
                         (match) => {
                           const programParams = new URLSearchParams(
-                            searchParams.toString(),
+                            resultsParams.toString(),
                           );
                           programParams.set(
                             "programId",
@@ -640,28 +655,29 @@ export function UniversityResults({
                                   ]
                                 }`}
                               >
-                                {match.status === "strong"
-                                  ? "Strong fit"
-                                  : match.status === "conditional"
-                                    ? "Conditional fit"
-                                    : match.status === "preparation-required"
-                                      ? "Preparation needed"
-                                      : "More information"}
+                                {matchStatusLabels[match.status]}
                               </span>
                             </div>
 
                             <p className={linkStyles.matchSummary}>
                               {match.summary}
                             </p>
+                            {match.checks.filter((check) => check.status === "missing" || check.status === "unknown").map((check) => (
+                              <p key={check.id} className={linkStyles.matchSummary}>
+                                <strong>{check.label}:</strong> {check.detail}
+                              </p>
+                            ))}
 
                             <div className={linkStyles.matchFacts}>
                               <span>
                                 <CalendarDays size={14} aria-hidden="true" />
-                                Apply by 31 Mar 2027
+                                Apply by {new Intl.DateTimeFormat("en-GB", {
+                                  day: "numeric", month: "short", year: "numeric", timeZone: "UTC",
+                                }).format(new Date(`${match.program.application.deadline}T00:00:00Z`))}
                               </span>
                               <span>
                                 <Languages size={14} aria-hidden="true" />
-                                Slovak
+                                {match.program.instructionLanguages.map((language) => language.name).join(", ")}
                               </span>
                               <span>
                                 <FileText size={14} aria-hidden="true" />
@@ -674,7 +690,7 @@ export function UniversityResults({
                               href={programHref}
                               className={linkStyles.routeLink}
                             >
-                              See my requirements
+                                {match.canBuildRoute ? "See my requirements" : "Review availability"}
                               <ArrowRight size={14} aria-hidden="true" />
                             </Link>
                           </div>
@@ -729,8 +745,13 @@ export function UniversityResults({
 
       {universityResults.length === 0 && (
         <div className={styles.noResults}>
-          <h2>No universities found</h2>
-          <p>Try changing the search or result type.</p>
+          <h2>{noCurrentOptions ? "No current profile options yet" : "No universities found"}</h2>
+          <p>{noCurrentOptions ? "Your choices are saved. Review verified preparation options to see exactly what is missing; this does not mean there are no other programs in the country." : "Try changing the search or result type."}</p>
+          {noCurrentOptions && (
+            <button type="button" className={styles.loadMore} onClick={() => setScope("verified")}>
+              Show preparation and clarification options
+            </button>
+          )}
         </div>
       )}
 

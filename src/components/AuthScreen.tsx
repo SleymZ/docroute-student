@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import styles from "./AuthScreen.module.css";
+import { safeNextPath } from "@/lib/safe-next-path";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -54,12 +55,6 @@ const routeStages = [
     completed: false,
   },
 ];
-
-function safeNextPath(value?: string) {
-  return value?.startsWith("/") && !value.startsWith("//")
-    ? value
-    : "/explore";
-}
 
 export function AuthScreen({
   initialMode,
