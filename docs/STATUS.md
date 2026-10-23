@@ -15,9 +15,16 @@ three groups:
 - students already in Europe looking for requirements and deadlines
   (Explore).
 
-Today the only purpose with a route is **study**; the home form shows Work,
-Family and Business as "coming soon" without routes.
+Purposes with a route today: **study** and **work** (Slovakia). The home
+form shows Family and Business as "coming soon" without routes.
 
+- **Work route** (`/route/work`, "Work" on the home form): six questions
+  (citizenship, current status, job offer, Slovak diploma, EU Blue Card
+  conditions, shortage occupation) pick the procedure — single permit, EU
+  Blue Card or Slovak-graduate exemption — and build four stages: job offer
+  → work authorisation (employer + Labour Office) → residence application →
+  duties after approval. Includes progress ticks and a start-date deadline
+  planner. Answers live in the URL (page is noindex); no account needed.
 - **Explore** is a public university directory (no account needed).
 - **How it works** (`/how-it-works`, the header button) explains the four
   steps, the three labels (verified / rules awaiting approval / review
@@ -48,6 +55,7 @@ Family and Business as "coming soon" without routes.
 | Admission | Slovakia · Computer Science · Bachelor · 2027/28 · UNIZA FRI, 4 programs (`src/data/verified-programs.ts`) | 2026-10-19 |
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
 | Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed only; no match, checklist or route | 2026-10-23 |
+| Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | EU/EEA/Swiss residence | Not verified; route says so and shows no checklist | — |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
 
@@ -81,11 +89,46 @@ pending entry; a test fails if both exist.
 Other Slovak computing faculties checked on 2026-10-23 (STU FIIT, TUKE FEI)
 still publish only their 2026/27 rules.
 
+## Work route sources and limits (checked 2026-10-23)
+
+- IOM Migration Information Centre: "Temporary residence – employment" and
+  "Single permit" (both updated 11 August 2026), "EU Blue Card" (15 July
+  2026), "How to document the purpose of residence" (11 August 2026),
+  "Reporting a vacancy" (19 July 2024), and the July 2026 amendment news.
+  Act No. 404/2011 is the legal basis; its paragraphs were not checked one
+  by one.
+- Numbers used: fee €250; card €10/€39; decision up to 60 days (single
+  permit), 30 days (shortage occupation, Blue Card), 90 days (Slovak
+  graduates); vacancy reported ≥20 working days before the confirmation
+  request (by the request day for shortage occupations with <45% foreign
+  staff, and for the Blue Card); file within 180 days of the confirmation;
+  documents ≤90 days old; accommodation ≥6 months; missing documents within
+  15 days (+15); entry within 180 days of approval; report arrival within 3
+  working days; insurance 3 working days and medical report 30 days after
+  the card; unemployment notice 7 working days; protection period 3/6
+  months (single permit), 60 days (graduates).
+- Not dated on purpose: the Labour Office's processing time is not
+  published, so the planner shows the vacancy report as a "no later than"
+  limit only.
+- Known gaps: the Blue Card salary threshold in euros is not given by the
+  guidance (the route asks to confirm it with the employer); Blue Card
+  job-loss rules are not described in the checked guidance; work permits
+  (e.g. sailors), seasonal work, intra-corporate transfers and job-seeking
+  residence are not covered. "Documents issued in" on the home form only
+  pre-fills citizenship; the person can change it.
+- The amendment dropped the sworn ownership statement as accommodation
+  proof while the employment page still lists an owner affidavit, so the
+  route names examples and asks to recheck.
+
 ## Code structure for residence
 
 - `src/lib/residence/slovakia.ts`: shared Slovak residence steps plus a
-  purpose definition (`studyPurpose`). A new purpose (work, family, business)
-  is a new definition there, after its rules are verified.
+  purpose definition (`studyPurpose`), and `residenceGateStage` (Slovak /
+  EU-EEA-Swiss / contradictory profiles), shared with work.
+- `src/lib/residence/slovakia-work.ts`: the work route builder; answers
+  parsing in `src/lib/work-profile.ts`; `planWorkResidenceDeadlines` in
+  `deadlines.ts`. `RouteStageList` renders the work route's stages (the
+  study preview still has its own copy of that markup).
 - `src/lib/residence/deadlines.ts`: pure date calculations for the planner
   (UTC, weekends skipped, public holidays not included; dates formatted by
   hand to avoid ICU differences between server and browser).
@@ -113,6 +156,9 @@ still publish only their 2026/27 rules.
   on phones; Arial Black rendering of 800-weight text replaced with 700.
 - Account page redesign (PR #4); unverified university pages point to the
   verified route (PR #3).
+- PR #7: work route for Slovakia (single permit, EU Blue Card, Slovak
+  graduates) with questionnaire, progress and start-date planner; "Work"
+  selectable on the home form.
 - PR #6: Comenius FMFI computing programs listed as "coming soon"; separate
   How it works page behind the header button.
 - PR #5: map fades into the page and highlights only Slovakia; move-purpose
@@ -121,7 +167,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (96 tests on 2026-10-23).
+- Unit tests: `npm test` (111 tests on 2026-10-23).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -162,5 +208,8 @@ module loader; ESLint and `test:ssr` were not run there.
 3. Verify the EU/EEA/Swiss registration route for Slovakia.
 4. Add the next verified faculty or program only with its own official
    sources (STU FIIT and TUKE FEI once their 2027/28 rules are out).
-5. Define the first non-study purpose (e.g. work) for Slovakia with
-   official sources before enabling it in the form.
+5. Work route: cross-check key paragraphs of Act 404/2011 (and the
+   Employment Services Act for the 20-working-day rule) on Slov-Lex;
+   consider seasonal work and the Blue Card salary amount.
+6. Define family or business purposes for Slovakia with official sources
+   before enabling them in the form.
