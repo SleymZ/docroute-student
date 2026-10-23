@@ -116,6 +116,7 @@ try {
   const blockedDetail = await html(
     `/universities/b8b5a2e3a15148e5b4a1?${blockedDetailParams}`,
   );
+  assert.ok(blockedDetail.includes('content="noindex, nofollow"'));
   assert.ok(!blockedDetail.includes('href="/route/preview'));
   assert.ok(!blockedDetail.includes("Open Preview Route"));
   assert.ok(!blockedDetail.includes("Preview my route"));

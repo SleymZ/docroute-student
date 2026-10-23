@@ -84,8 +84,10 @@ function formatDate(value: string) {
 
 export async function generateMetadata({
   params,
-}: Pick<UniversityPageProps, "params">): Promise<Metadata> {
+  searchParams,
+}: UniversityPageProps): Promise<Metadata> {
   const { id } = await params;
+  const query = await searchParams;
   const university = findUniversity(id);
 
   if (!university) {
@@ -94,9 +96,19 @@ export async function generateMetadata({
     };
   }
 
+  // Query strings can carry a personal profile (citizenship, languages,
+  // residence status). Only the plain university page is indexable.
+  const personalised = Object.keys(query).length > 0;
+
   return {
     title: university.name,
     description: `Explore admission information and document requirements for ${university.name}.`,
+    alternates: {
+      canonical: `/universities/${encodeURIComponent(university.id)}`,
+    },
+    ...(personalised
+      ? { robots: { index: false, follow: false } }
+      : {}),
   };
 }
 
