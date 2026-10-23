@@ -16,6 +16,8 @@ import Image from "next/image";
 
 import {
   ArrowRight,
+  BriefcaseBusiness,
+  Building2,
   Check,
   ChevronDown,
   CircleDashed,
@@ -26,6 +28,7 @@ import {
   ShieldCheck,
   Smile,
   Stethoscope,
+  UsersRound,
 } from "lucide-react";
 
 import {
@@ -34,6 +37,8 @@ import {
   programOptions,
 } from "@/data/demo-destinations";
 
+import { movePurposes } from "@/data/move-purposes";
+import type { MovePurpose } from "@/data/move-purposes";
 import type { Destination } from "@/types/destination";
 import styles from "./RouteForm.module.css";
 
@@ -375,6 +380,59 @@ function VisualSelect({
   );
 }
 
+const purposeIcons: Record<MovePurpose, typeof GraduationCap> = {
+  study: GraduationCap,
+  work: BriefcaseBusiness,
+  family: UsersRound,
+  business: Building2,
+};
+
+// Only study is selectable for now; the other purposes show the planned
+// scope without pretending a route exists.
+function PurposeSelector() {
+  const labelId = useId();
+
+  return (
+    <div className={styles.purposeRow}>
+      <span id={labelId} className={styles.label}>
+        Moving for
+      </span>
+      <div
+        className={styles.purposeOptions}
+        role="radiogroup"
+        aria-labelledby={labelId}
+      >
+        {movePurposes.map((purpose) => {
+          const Icon = purposeIcons[purpose.id];
+          const selected = purpose.id === "study";
+
+          return (
+            <button
+              key={purpose.id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              aria-disabled={!purpose.available}
+              tabIndex={selected ? 0 : -1}
+              title={purpose.available ? undefined : "Coming soon"}
+              className={`${styles.purpose} ${
+                selected ? styles.purposeSelected : ""
+              }`}
+              onClick={(event) => event.preventDefault()}
+            >
+              <Icon size={14} strokeWidth={1.8} aria-hidden="true" />
+              {purpose.label}
+              {!purpose.available && (
+                <span className={styles.purposeSoon}>Soon</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function RouteForm({
   documentCountry,
   destination,
@@ -387,6 +445,8 @@ export function RouteForm({
 }: RouteFormProps) {
   return (
     <form className="route-form" onSubmit={onSubmit}>
+      <PurposeSelector />
+
       <div className="form-grid">
         <VisualSelect
           label="Documents issued in"
