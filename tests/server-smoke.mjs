@@ -131,6 +131,15 @@ try {
     assert.equal(editLink.searchParams.getAll("lang").length, 3);
   }
 
+  // Opening UNIZA from an unverified field must point to its verified route.
+  const medicineDetail = await html(
+    "/universities/b8b5a2e3a15148e5b4a1?country=SK&program=Medicine&flow=explore",
+  );
+  assert.ok(medicineDetail.includes("Medicine requirements here are not verified yet."));
+  assert.ok(medicineDetail.includes("Build my Computer Science route"));
+  assert.ok(medicineDetail.includes("Žilina"));
+  assert.ok(!medicineDetail.includes("Location not specified"));
+
   const openDetail = await html(links[0]);
   const previewLinks = [
     ...openDetail.matchAll(/<a[^>]+href="(\/route\/preview[^"]*)"/g),
