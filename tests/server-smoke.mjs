@@ -84,6 +84,7 @@ try {
   const preview = await html(`/route/preview?${linked.searchParams}`);
   assert.ok(preview.includes("Complete language and entrance requirements"));
   assert.ok(preview.includes("Final secondary-school graduation certificate"));
+  assert.match(preview, /<a[^>]+href="\/route\/profile\?[^"]*lang=[^"]*"[^>]*>Edit my profile/);
 
   const onlyEnglish = new URLSearchParams(params);
   onlyEnglish.delete("lang");

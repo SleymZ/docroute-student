@@ -124,6 +124,9 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   const universityHref = `/universities/${encodeURIComponent(
     program.universityId,
   )}?${universityParams.toString()}`;
+  // Changing the profile changes the progress namespace, so earlier ticks
+  // are not carried into a route built for different data.
+  const editProfileHref = `/route/profile?${createProfileSearchParams(profile).toString()}`;
   const actionableTasks = route.stages.flatMap((stage) =>
     stage.tasks.filter(
       (task) =>
@@ -449,6 +452,11 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
 
           <Link href={universityHref} className={styles.editRoute}>
             Review requirements
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+
+          <Link href={editProfileHref} className={styles.editRoute}>
+            Edit my profile
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
 

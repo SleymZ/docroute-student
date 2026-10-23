@@ -340,7 +340,11 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
         level: language.level,
         willingToStudyIn: language.willingToStudyIn,
         proof: language.proof,
-        certificateName: language.certificateName,
+        // The name field is only shown for certificates; drop a stale value
+        // left over from switching proof type.
+        ...(language.proof === "certificate" && language.certificateName?.trim()
+          ? { certificateName: language.certificateName.trim() }
+          : {}),
       })),
       waiverEvidence:
         degreeLevel === "bachelor" ? [...waiverEvidence] : [],
