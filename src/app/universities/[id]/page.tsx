@@ -156,6 +156,17 @@ export default async function UniversityPage({
       verifiedProgram?.category ?? selectedProgram ?? "",
     ...(verifiedProgram ? { degree: verifiedProgram.degreeLevel, intake: verifiedProgram.intake } : {}),
   }).toString()}`;
+  const editProfileHref = `/route/profile?${resultsParams.toString()}`;
+
+  // A match can exist with canBuildRoute: false (passed deadline, incompatible
+  // profile, unsupported policy). Every Preview entry point uses this one rule;
+  // otherwise people with a profile are sent back to edit it without losing data.
+  const canOpenPreview = Boolean(verifiedProgram && match?.canBuildRoute);
+  const routeAction = canOpenPreview
+    ? { href: previewHref, heroLabel: "Preview my route", panelLabel: "Open Preview Route" }
+    : profile
+      ? { href: editProfileHref, heroLabel: "Edit my profile", panelLabel: "Edit my profile" }
+      : { href: buildRouteHref, heroLabel: "Build my route", panelLabel: "Build my route" };
 
   const displayName =
     verifiedProgram?.universityName ?? university.name;
@@ -233,16 +244,9 @@ export default async function UniversityPage({
           )}
 
           <div className={styles.heroActions}>
-            {match?.canBuildRoute && (
-              <Link href={previewHref} className={styles.primaryAction}>
-                Preview my route
-                <ArrowRight size={17} aria-hidden="true" />
-              </Link>
-            )}
-
-            {verifiedProgram && !match?.canBuildRoute && (
-              <Link href={buildRouteHref} className={styles.primaryAction}>
-                Build my route
+            {verifiedProgram && (
+              <Link href={routeAction.href} className={styles.primaryAction}>
+                {routeAction.heroLabel}
                 <ArrowRight size={17} aria-hidden="true" />
               </Link>
             )}
@@ -748,10 +752,10 @@ export default async function UniversityPage({
 
           {verifiedProgram && (
             <Link
-              href={match ? previewHref : buildRouteHref}
+              href={routeAction.href}
               className={styles.routeApply}
             >
-              {match ? "Open Preview Route" : "Build my route"}
+              {routeAction.panelLabel}
               <ArrowRight size={17} aria-hidden="true" />
             </Link>
           )}

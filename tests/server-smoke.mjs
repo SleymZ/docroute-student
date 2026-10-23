@@ -108,8 +108,35 @@ try {
       )
     ).includes("Your route needs a compatible, current program"),
   );
+  // A non-null match with canBuildRoute: false must not expose any Preview link
+  // (hero or sidebar); it sends people to edit a profile that keeps their data.
+  const blockedDetailParams = new URLSearchParams(master);
+  blockedDetailParams.set("flow", "route");
+  blockedDetailParams.set("programId", "uniza-fri-informatics-bsc-2027");
+  const blockedDetail = await html(
+    `/universities/b8b5a2e3a15148e5b4a1?${blockedDetailParams}`,
+  );
+  assert.ok(!blockedDetail.includes('href="/route/preview'));
+  assert.ok(!blockedDetail.includes("Open Preview Route"));
+  assert.ok(!blockedDetail.includes("Preview my route"));
+  const editLinks = [
+    ...blockedDetail.matchAll(/<a[^>]+href="(\/route\/profile[^"]*)"[^>]*>Edit my profile/g),
+  ].map((match) => new URL(match[1].replaceAll("&amp;", "&"), base));
+  assert.equal(editLinks.length, 2);
+  for (const editLink of editLinks) {
+    assert.equal(editLink.searchParams.get("degree"), "master");
+    assert.equal(editLink.searchParams.get("citizenship"), "IL");
+    assert.equal(editLink.searchParams.getAll("lang").length, 3);
+  }
+
+  const openDetail = await html(links[0]);
+  const previewLinks = [
+    ...openDetail.matchAll(/<a[^>]+href="(\/route\/preview[^"]*)"/g),
+  ];
+  assert.equal(previewLinks.length, 2);
+
   console.log(
-    "PASS: production SSR results → sourced requirements → preview; four profile-preserving links; English-only gaps, unsupported degree and mismatched-preview guards.",
+    "PASS: production SSR results → sourced requirements → preview; four profile-preserving links; English-only gaps, unsupported degree and mismatched-preview guards; university page gates every Preview link on canBuildRoute.",
   );
 } finally {
   server.kill("SIGTERM");
