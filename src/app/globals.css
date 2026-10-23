@@ -52,10 +52,6 @@ body {
   min-height: 100vh;
   min-height: 100svh;
   margin: 0;
-  /* Decorative backgrounds bleed past the page gutters (e.g. Explore's
-     atlas lines). Clip them at the viewport so phones cannot scroll the
-     page sideways; unlike hidden, clip keeps position: sticky working. */
-  overflow-x: clip;
 
   background:
     radial-gradient(
@@ -74,6 +70,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Decorative backgrounds bleed past the page gutters (e.g. Explore's atlas
+   lines). Clip them so phones cannot scroll pages sideways. Set on <main>,
+   not <body>: body overflow is moved to the viewport and stops clipping.
+   Unlike hidden, clip keeps position: sticky working. */
+main {
+  overflow-x: clip;
 }
 
 button,
