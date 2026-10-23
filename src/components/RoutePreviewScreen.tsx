@@ -74,6 +74,12 @@ const statusMeta: Record<
   },
 };
 
+// "ready" means the profile already meets the condition (e.g. recognition
+// does not apply), so it is neither an open action nor something to tick.
+function isActionable(status: RouteTaskStatus) {
+  return status === "action" || status === "attention";
+}
+
 export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   const searchParams = useSearchParams();
   const profileState = useApplicantProfile(searchParams);
@@ -129,9 +135,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   const editProfileHref = `/route/profile?${createProfileSearchParams(profile).toString()}`;
   const actionableTasks = route.stages.flatMap((stage) =>
     stage.tasks.filter(
-      (task) =>
-        task.status !== "information" &&
-        task.status !== "not-applicable",
+      (task) => isActionable(task.status),
     ),
   );
   const completedCount = actionableTasks.filter((task) =>
@@ -224,9 +228,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
         <div className={styles.timeline}>
           {route.stages.map((stage) => {
             const stageActionable = stage.tasks.filter(
-              (task) =>
-                task.status !== "information" &&
-                task.status !== "not-applicable",
+              (task) => isActionable(task.status),
             );
             const stageCompleted = stageActionable.filter((task) =>
               completedTasks.has(task.id),
@@ -268,9 +270,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                     {stage.tasks.map((task) => {
                       const meta = statusMeta[task.status];
                       const StatusIcon = meta.icon;
-                      const canComplete =
-                        task.status !== "information" &&
-                        task.status !== "not-applicable";
+                      const canComplete = isActionable(task.status);
                       const completed = completedTasks.has(task.id);
 
                       return (
