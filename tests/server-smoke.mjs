@@ -146,6 +146,28 @@ try {
   assert.ok(medicineDetail.includes("Žilina"));
   assert.ok(!medicineDetail.includes("Location not specified"));
 
+  // Comenius is listed as coming soon: visible, but never a route or checklist.
+  assert.ok(results.includes("Comenius University Bratislava"));
+  assert.ok(results.includes("Rules awaiting approval"));
+  const comenius = await html(
+    "/universities/79e938c73e40ae20dfe7?country=SK&program=Computer%20Science&flow=explore",
+  );
+  for (const text of ["Rules awaiting approval", "Applied Informatics", "Bratislava"]) {
+    assert.ok(comenius.includes(text), text);
+  }
+  assert.ok(!comenius.includes('href="/route/preview'));
+  assert.ok(!comenius.includes("Documents that apply to you"));
+
+  const howItWorks = await html("/how-it-works");
+  for (const text of [
+    "What happens when you build a route",
+    "Rules awaiting approval",
+    "University of Žilina",
+  ]) {
+    assert.ok(howItWorks.includes(text), text);
+  }
+  assert.ok(howItWorks.includes('href="/how-it-works"'));
+
   const openDetail = await html(links[0]);
   const previewLinks = [
     ...openDetail.matchAll(/<a[^>]+href="(\/route\/preview[^"]*)"/g),
@@ -153,7 +175,7 @@ try {
   assert.equal(previewLinks.length, 2);
 
   console.log(
-    "PASS: production SSR results → sourced requirements → preview; four profile-preserving links; English-only gaps, unsupported degree and mismatched-preview guards; university page gates every Preview link on canBuildRoute.",
+    "PASS: production SSR results → sourced requirements → preview; four profile-preserving links; English-only gaps, unsupported degree and mismatched-preview guards; university page gates every Preview link on canBuildRoute; coming-soon programs and How it works render.",
   );
 } finally {
   server.kill("SIGTERM");
