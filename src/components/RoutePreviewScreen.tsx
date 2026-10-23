@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
   AlertCircle,
@@ -27,11 +27,18 @@ import {
 
 import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
+import { MovePlanner } from "@/components/MovePlanner";
+import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { buildRoutePreview } from "@/lib/build-route-preview";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { createProfileSearchParams, getProfileProgressId } from "@/lib/profile-query";
+import { addDays, isIsoDate, planStudyResidenceDeadlines } from "@/lib/residence/deadlines";
+import {
+  residenceFilingPlace,
+  usesThirdCountryResidence,
+} from "@/lib/residence/slovakia";
 import type { RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./RoutePreviewScreen.module.css";
@@ -82,6 +89,8 @@ function isActionable(status: RouteTaskStatus) {
 
 export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const profileState = useApplicantProfile(searchParams);
   const profile = profileState.profile;
   const programId = searchParams.get("programId");
@@ -102,6 +111,47 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
       : null;
   const routeProgress = useRouteProgress(routeKey);
   const completedTasks = routeProgress.values;
+
+  // The move date lives in the URL so it survives reloads, can be shared and
+  // renders the same on the server and in the browser.
+  const rawMoveDate = searchParams.get("move") ?? "";
+  const moveDate = isIsoDate(rawMoveDate) ? rawMoveDate : "";
+  const thirdCountry = profile ? usesThirdCountryResidence(profile) : false;
+  const deadlinePlan = useMemo(() => {
+    if (!profile || !program || !route || !thirdCountry || !moveDate) {
+      return null;
+    }
+
+    return planStudyResidenceDeadlines({
+      moveDate,
+      today: asOfDate,
+      filing: residenceFilingPlace(profile.currentResidenceStatus),
+      applicationDeadline: program.application.deadline,
+      admissionDate: program.application.admissionDate,
+      processingDays: slovakiaResidenceRules.processingTimeDays,
+    });
+  }, [profile, program, route, thirdCountry, moveDate, asOfDate]);
+  const datedTaskLabels = new Map(
+    (deadlinePlan?.items ?? [])
+      .filter((item) => item.taskId)
+      .map((item) => [
+        item.taskId as string,
+        // That task bundles several duties; only the arrival report is dated.
+        item.taskId === "post-card-duties"
+          ? `Report arrival ${item.dateLabel.replace(/^By /, "by ")}`
+          : item.dateLabel,
+      ]),
+  );
+
+  function changeMoveDate(value: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (isIsoDate(value)) {
+      params.set("move", value);
+    } else {
+      params.delete("move");
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }
 
   if (profileState.loading) {
     return <div className={styles.invalidPage} role="status">Loading your saved profile…</div>;
@@ -226,6 +276,18 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
 
       <div className={styles.layout}>
         <div className={styles.timeline}>
+          <MovePlanner
+            moveDate={moveDate}
+            minDate={addDays(asOfDate, 1)}
+            plan={deadlinePlan}
+            unavailableReason={
+              thirdCountry
+                ? null
+                : "Your profile does not use the third-country student residence procedure, so there are no residence deadlines to plan. See the residence stage below."
+            }
+            onMoveDateChange={changeMoveDate}
+          />
+
           {route.stages.map((stage) => {
             const stageActionable = stage.tasks.filter(
               (task) => isActionable(task.status),
@@ -321,10 +383,10 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                               </span>
                             </div>
                             <p>{task.description}</p>
-                            {task.dueLabel && (
+                            {(datedTaskLabels.get(task.id) ?? task.dueLabel) && (
                               <small>
                                 <CalendarDays size={13} aria-hidden="true" />
-                                {task.dueLabel}
+                                {datedTaskLabels.get(task.id) ?? task.dueLabel}
                               </small>
                             )}
                             <AdmissionSources sourceIds={task.sourceIds} sources={route.sources} />

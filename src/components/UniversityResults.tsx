@@ -24,6 +24,7 @@ import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
+import { formatPlanDate } from "@/lib/residence/deadlines";
 import { useSavedUniversities } from "@/hooks/useSavedUniversities";
 import { createProfileSearchParams } from "@/lib/profile-query";
 import { matchPrograms, matchStatusLabels } from "@/lib/match-programs";
@@ -671,9 +672,7 @@ export function UniversityResults({
                             <div className={linkStyles.matchFacts}>
                               <span>
                                 <CalendarDays size={14} aria-hidden="true" />
-                                Apply by {new Intl.DateTimeFormat("en-GB", {
-                                  day: "numeric", month: "short", year: "numeric", timeZone: "UTC",
-                                }).format(new Date(`${match.program.application.deadline}T00:00:00Z`))}
+                                Apply by {formatPlanDate(match.program.application.deadline)}
                               </span>
                               <span>
                                 <Languages size={14} aria-hidden="true" />

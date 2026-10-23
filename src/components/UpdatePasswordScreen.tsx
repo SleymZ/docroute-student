@@ -54,7 +54,7 @@ export function UpdatePasswordScreen() {
           <span>
             <Route size={22} aria-hidden="true" />
           </span>
-          DocRoute Student
+          DocRoute
         </Link>
 
         <span className={styles.icon}>
