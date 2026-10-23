@@ -255,7 +255,9 @@ export function EuropeMap({
         destinationPoints[country],
       zoom: details.zoom,
       destination: country,
-      highlighted: true,
+      // Follow the map's verified highlight instead of treating every
+      // searchable destination as featured.
+      highlighted: mapCountry?.highlighted ?? false,
     });
 
     internalDestinationRef.current =

@@ -311,23 +311,14 @@
   transition: opacity 500ms ease;
 }
 
-.mapViewport::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  box-shadow:
-    inset 25px 0 30px -25px rgba(5, 20, 29, 0.95),
-    inset -25px 0 30px -25px rgba(5, 20, 29, 0.95),
-    inset 0 22px 28px -25px rgba(5, 20, 29, 0.9),
-    inset 0 -24px 30px -25px rgba(5, 20, 29, 0.95);
-}
-
 .zoomedViewport::before {
   opacity: 1;
 }
 
+/* The map dissolves into the page instead of ending at a hard rectangle:
+   a wide fade on the left (next to the hero text) and bottom (above the
+   journey rail), a shorter one at the top and right. Masking only the SVG
+   keeps controls and the country panel fully opaque. */
 .map {
   position: relative;
   z-index: 1;
@@ -336,6 +327,14 @@
   height: 100%;
   overflow: hidden;
   shape-rendering: geometricPrecision;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 18%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 80%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 18%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 80%, transparent 100%);
+  mask-composite: intersect;
 }
 
 .mapScene,

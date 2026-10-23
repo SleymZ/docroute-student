@@ -43,9 +43,9 @@ const projection = geoMercator()
 const pathGenerator = geoPath(projection);
 
 /*
- * Only these destinations currently have verified route data.
- * Germany is highlighted below, but it is not connected to
- * Destination until its route data is added.
+ * Destinations known to the home route form. Only Slovakia is
+ * highlighted (verified); the others stay selectable without a
+ * featured highlight until their route data is verified.
  */
 const destinationById: Partial<Record<string, Destination>> = {
   "703": "Slovakia",
@@ -56,14 +56,12 @@ const destinationById: Partial<Record<string, Destination>> = {
 
 /*
  * Featured countries stay highlighted even while another
- * European country is being explored.
+ * European country is being explored. Only Slovakia has a
+ * verified route today; other countries return here once their
+ * official rules are collected.
  */
 const highlightedCountryIds = new Set([
   "703", // Slovakia
-  "203", // Czechia
-  "642", // Romania
-  "100", // Bulgaria
-  "276", // Germany
 ]);
 
 /*
