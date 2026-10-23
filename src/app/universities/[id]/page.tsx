@@ -24,7 +24,7 @@ import {
 import { UniversityImage } from "@/components/UniversityImage";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import catalog from "@/data/universities.json";
-import { findVerifiedProgram } from "@/data/verified-programs";
+import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
 import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
@@ -99,10 +99,15 @@ export async function generateMetadata({
   // Query strings can carry a personal profile (citizenship, languages,
   // residence status). Only the plain university page is indexable.
   const personalised = Object.keys(query).length > 0;
+  // Catalog names come from an imported list and can be inaccurate
+  // ("University of Zilinska"); verified program data has the official name.
+  const name =
+    verifiedPrograms.find((program) => program.universityId === university.id)
+      ?.universityName ?? university.name;
 
   return {
-    title: university.name,
-    description: `Explore admission information and document requirements for ${university.name}.`,
+    title: name,
+    description: `Explore admission information and document requirements for ${name}.`,
     alternates: {
       canonical: `/universities/${encodeURIComponent(university.id)}`,
     },
@@ -181,7 +186,10 @@ export default async function UniversityPage({
       : { href: buildRouteHref, heroLabel: "Build my route", panelLabel: "Build my route" };
 
   const displayName =
-    verifiedProgram?.universityName ?? university.name;
+    verifiedProgram?.universityName ??
+    verifiedPrograms.find((program) => program.universityId === university.id)
+      ?.universityName ??
+    university.name;
   const displayRegion =
     verifiedProgram?.city ?? university.region ?? "Location not specified";
 
