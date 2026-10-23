@@ -148,16 +148,17 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
           description:
             "DocRoute will not reuse the non-EU checklist for an EU, EEA or Swiss citizen. Until this route is verified, confirm registration duties with the Slovak authorities.",
           status: "attention",
-          sourceIds: ["sk-ministry-foreigners-agenda"],
+          sourceIds: ["sk-act-404-2011"],
         },
       ],
     };
   }
 
   const commonSources = [
-    "sk-ministry-foreigners-agenda",
+    "sk-act-404-2011",
     "iom-study-residence-application",
   ];
+  const rules = slovakiaResidenceRules;
 
   return {
     id: "residence",
@@ -166,7 +167,7 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
     title: "Apply for temporary residence for study",
     description:
       "This stage begins only after the university issues an admission document that proves the purpose of residence.",
-    timing: "Start after admission · decision within up to 90 days",
+    timing: `Start after admission · decision within up to ${rules.processingTimeDays} days`,
     tasks: [
       getSubmissionTask(profile),
       {
@@ -181,25 +182,25 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
         id: "residence-purpose",
         title: "University admission document",
         description:
-          "Use the university admission letter or confirmation as proof of the purpose of residence.",
+          "Use the university's confirmation of admission as proof of the purpose of residence.",
         status: "action",
         dueLabel: "Available only after admission",
-        sourceIds: commonSources,
+        sourceIds: ["iom-study-residence"],
       },
       {
         id: "criminal-record",
         title: "Criminal-record documents",
         description:
-          "Prepare a record from the citizenship country and, where applicable, countries where you lived for more than 90 days during six consecutive months in the previous three years. Country-specific exceptions must be checked.",
+          "Prepare a record from your citizenship country and from every country where you lived for more than 90 days during six consecutive months in the last three years. A record is not needed from an EU member state that shares conviction data with Slovakia.",
         status: "action",
-        dueLabel: "Generally no older than 90 days",
-        sourceIds: ["iom-study-residence-application"],
+        dueLabel: "No older than 90 days when filed",
+        sourceIds: ["iom-study-residence-application", "iom-study-residence"],
       },
       {
         id: "authentication-translation",
         title: "Authenticate and translate foreign documents",
         description:
-          "Foreign official documents generally need an apostille or superlegalisation and an official Slovak or Czech translation, unless a treaty exception applies.",
+          "Foreign official documents need an apostille, or consular superlegalisation where neither the Apostille Convention nor a legal-assistance treaty applies. Add an official Slovak or Czech translation; a translation made abroad must be confirmed by a Slovak embassy or consulate (not needed for translations made in the Czech Republic).",
         status: "action",
         dueLabel: "Before the residence appointment",
         sourceIds: ["iom-study-residence-application"],
@@ -215,7 +216,7 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
       {
         id: "residence-card-fee",
         title: "Choose residence-card delivery speed",
-        description: `Current guidance lists €${slovakiaResidenceRules.residenceCardFeesEur.standard} for issuance within 30 days or €${slovakiaResidenceRules.residenceCardFeesEur.expedited} within two business days.`,
+        description: `Current guidance lists €${rules.residenceCardFeesEur.standard} for delivery within 30 days or €${rules.residenceCardFeesEur.expedited} within two business days. No separate application fee is listed for study.`,
         status: "action",
         sourceIds: ["iom-study-residence-application"],
       },
@@ -223,10 +224,17 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
         id: "post-card-duties",
         title: "Complete post-approval duties",
         description:
-          "If applying abroad, enter Slovakia within 180 days of approval. Report the beginning of residence within three working days and check the medical-report and insurance duties that apply to your exact student status.",
+          "If applying abroad, enter Slovakia within 180 days of approval and report the start of residence to the Foreign Police within 3 working days of arrival. Take out health insurance within 3 working days of collecting the card (students do not have to submit the proof). Within 30 days of collecting the card, submit a medical report no older than 30 days; students are not exempt.",
         status: "action",
         dueLabel: "Immediately after approval and card collection",
         sourceIds: ["iom-study-residence-application"],
+      },
+      {
+        id: "student-residence-limits",
+        title: "Length of residence and work while studying",
+        description: `Residence for study can be granted for the expected length of studies, up to ${rules.maxInitialYears} years at first. University students may work up to ${rules.universityStudentWorkHoursPerMonth} hours per month without changing the purpose of residence.`,
+        status: "information",
+        sourceIds: ["iom-study-residence"],
       },
     ],
   };

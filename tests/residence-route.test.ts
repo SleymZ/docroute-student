@@ -117,3 +117,15 @@ test("only clear contradictions are reported", () => {
   assert.ok(findResidenceStatusConflict("IN", "eu-eea-swiss-passport"));
   assert.ok(findResidenceStatusConflict("CH", "non-eu-passport-no-residence"));
 });
+
+test("third-country student residence uses the rechecked 2026 details", () => {
+  const stage = residenceStage({ citizenshipCountryCode: "IL" });
+  const task = (id: string) => stage.tasks.find((item) => item.id === id);
+
+  assert.match(task("criminal-record")!.description, /EU member state that shares conviction data/);
+  assert.match(task("authentication-translation")!.description, /confirmed by a Slovak embassy or consulate/);
+  assert.match(task("post-card-duties")!.description, /medical report no older than 30 days/);
+  assert.match(task("student-residence-limits")!.description, /up to 6 years/);
+  assert.match(task("student-residence-limits")!.description, /80 hours per month/);
+  assert.ok(!stage.tasks.some((item) => item.sourceIds.includes("sk-ministry-foreigners-agenda")));
+});
