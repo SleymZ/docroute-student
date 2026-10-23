@@ -2,9 +2,11 @@ import {
   currentResidenceStatuses,
   degreeLevels,
   studyIntakes,
+  type ApplicantLanguage,
   type CurrentResidenceStatus,
   type DegreeLevel,
   type StudyIntake,
+  type WaiverEvidence,
 } from "@/types/admission";
 
 const legacyResidenceStatuses: Record<string, CurrentResidenceStatus> = {
@@ -53,6 +55,31 @@ export function findResidenceStatusConflict(
 
   return null;
 }
+
+// Labels shared by the profile form and the account page.
+export const waiverEvidenceLabels: Record<WaiverEvidence, string> = {
+  "math-matura": "Mathematics maturita (percentile not given)",
+  "math-matura-60": "External mathematics maturita 60+",
+  "scio-math-60": "SCIO Mathematics 60+",
+  "scio-general-70": "SCIO General 70+",
+  ccna: "CCNA or higher",
+  "fri-course": "FRI preparatory course",
+  olympiad: "Competition (scope not given)",
+  "regional-olympiad": "Qualifying olympiad result",
+};
+
+// Older saved profiles may hold evidence that is too vague to confirm a waiver.
+export const legacyWaiverEvidence: ReadonlySet<WaiverEvidence> = new Set([
+  "math-matura",
+  "olympiad",
+]);
+
+export const languageProofLabels: Record<ApplicantLanguage["proof"], string> = {
+  none: "No proof yet",
+  school: "School record",
+  certificate: "Certificate or test",
+  "uniza-test": "UNIZA Slovak test",
+};
 
 export function isDegreeLevel(value: string): value is DegreeLevel {
   return degreeLevels.includes(value as DegreeLevel);

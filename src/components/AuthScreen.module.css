@@ -465,7 +465,7 @@
   margin: 0 0 10px;
   color: #dc624d;
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.17em;
 }
 
@@ -661,7 +661,7 @@
   color: #101c20;
   font: inherit;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   box-shadow: 0 14px 30px rgba(213, 82, 60, 0.2);
   transition:
