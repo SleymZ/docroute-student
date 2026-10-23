@@ -182,7 +182,13 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
   const validProgram = programOptions.includes(selectedProgram);
 
   const [citizenship, setCitizenship] = useState(initialProfile?.citizenshipCountryCode ?? "");
-  const [educationCountry, setEducationCountry] = useState(initialProfile?.educationCountryCode ?? "");
+  // The home page route form passes "Documents issued in" as educationCountry;
+  // use it when there is no saved profile yet.
+  const requestedEducationCountry = searchParams.get("educationCountry")?.toUpperCase() ?? "";
+  const [educationCountry, setEducationCountry] = useState(
+    initialProfile?.educationCountryCode ??
+      (getCountry(requestedEducationCountry) ? requestedEducationCountry : ""),
+  );
   const [currentResidenceStatus, setCurrentResidenceStatus] =
     useState<CurrentResidenceStatus | "">(initialProfile?.currentResidenceStatus ?? "");
   const [educationStatus, setEducationStatus] =
