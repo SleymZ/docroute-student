@@ -19,6 +19,11 @@ Today the only purpose with a route is **study**; the home form shows Work,
 Family and Business as "coming soon" without routes.
 
 - **Explore** is a public university directory (no account needed).
+- **How it works** (`/how-it-works`, the header button) explains the four
+  steps, the three labels (verified / rules awaiting approval / review
+  pending), the match statuses, the sourcing rules and current coverage.
+  Coverage on that page is computed from the data files, so it stays in
+  sync.
 - **Build my route** collects an applicant profile, matches it against
   verified programs and builds a Preview Route (application → admission →
   enrolment → residence) with progress tracking.
@@ -42,6 +47,7 @@ Family and Business as "coming soon" without routes.
 | --- | --- | --- |
 | Admission | Slovakia · Computer Science · Bachelor · 2027/28 · UNIZA FRI, 4 programs (`src/data/verified-programs.ts`) | 2026-10-19 |
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
+| Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed only; no match, checklist or route | 2026-10-23 |
 | EU/EEA/Swiss residence | Not verified; route says so and shows no checklist | — |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
 
@@ -51,6 +57,29 @@ evidence that a program exists or of its requirements.
 
 On the home map only Slovakia is highlighted, because it is the only
 verified destination.
+
+## "Coming soon" programs
+
+`src/data/pending-programs.ts` lists programs whose rules for the intake are
+announced but not yet approved and published. They appear on results pages
+(a "Coming soon" block), on the university page and on How it works, with
+the label "Rules awaiting approval". They never go through `matchProgram`
+and must not carry thresholds, dates or fees from a draft or another year.
+
+Comenius FMFI status (checked 2026-10-23): the 2027/28 bachelor conditions
+were item 4 of the Academic Senate session of 19 October 2026 as a draft
+("návrh uznesenia"). No resolution was published, and the draft has two
+different versions of Art. 2 (3)–(5) (which math tests are accepted; the
+second also allows English-language tests such as SAT). The fee and
+foreign-qualification recognition are not in the draft. The faculty's
+applications page still shows 2026/27. When the approved 2027/28 rules
+appear on https://fmph.uniba.sk/prihlasky/, move the group into
+`verified-programs.ts` with its own matching policy (percentile/grade/
+competition criteria differ completely from UNIZA's) and delete the
+pending entry; a test fails if both exist.
+
+Other Slovak computing faculties checked on 2026-10-23 (STU FIIT, TUKE FEI)
+still publish only their 2026/27 rules.
 
 ## Code structure for residence
 
@@ -84,13 +113,15 @@ verified destination.
   on phones; Arial Black rendering of 800-weight text replaced with 700.
 - Account page redesign (PR #4); unverified university pages point to the
   verified route (PR #3).
+- PR #6: Comenius FMFI computing programs listed as "coming soon"; separate
+  How it works page behind the header button.
 - PR #5: map fades into the page and highlights only Slovakia; move-purpose
   foundation; residence recheck; rename to DocRoute; residence code split
   into shared steps and purposes; deadline planner.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (91 tests on 2026-10-23).
+- Unit tests: `npm test` (96 tests on 2026-10-23).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -124,9 +155,12 @@ module loader; ESLint and `test:ssr` were not run there.
 
 ## Next steps
 
-1. Resolve open questions 1–3 against the official UNIZA rules.
-2. Verify the EU/EEA/Swiss registration route for Slovakia.
-3. Add the next verified faculty or program only with its own official
-   sources.
-4. Define the first non-study purpose (e.g. work) for Slovakia with
+1. Watch https://fmph.uniba.sk/prihlasky/ for the approved Comenius FMFI
+   2027/28 rules; then verify and add the four programs with their own
+   matching policy.
+2. Resolve open questions 1–3 against the official UNIZA rules.
+3. Verify the EU/EEA/Swiss registration route for Slovakia.
+4. Add the next verified faculty or program only with its own official
+   sources (STU FIIT and TUKE FEI once their 2027/28 rules are out).
+5. Define the first non-study purpose (e.g. work) for Slovakia with
    official sources before enabling it in the form.

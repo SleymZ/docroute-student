@@ -28,7 +28,7 @@ const navigation = [
   },
   {
     label: "How it works",
-    href: "/#how-it-works",
+    href: "/how-it-works",
     icon: Signpost,
   },
 ];

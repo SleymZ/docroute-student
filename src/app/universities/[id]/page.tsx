@@ -23,6 +23,8 @@ import {
 
 import { UniversityImage } from "@/components/UniversityImage";
 import { AdmissionSources } from "@/components/AdmissionSources";
+import { PendingPrograms } from "@/components/PendingPrograms";
+import { findPendingProgramGroups } from "@/data/pending-programs";
 import catalog from "@/data/universities.json";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
@@ -104,7 +106,10 @@ export async function generateMetadata({
   // ("University of Zilinska"); verified program data has the official name.
   const name =
     verifiedPrograms.find((program) => program.universityId === university.id)
-      ?.universityName ?? university.name;
+      ?.universityName ??
+    findPendingProgramGroups({ universityId: university.id })[0]
+      ?.universityName ??
+    university.name;
 
   return {
     title: name,
@@ -189,13 +194,24 @@ export default async function UniversityPage({
   const universityPrograms = verifiedPrograms.filter(
     (program) => program.universityId === university.id,
   );
+  // Announced programs without approved rules for the intake. They are shown
+  // as "coming soon" only; they never produce a match or a route.
+  const pendingGroups = verifiedProgram
+    ? []
+    : findPendingProgramGroups({ universityId: university.id });
+  const pendingProgramCount = pendingGroups.reduce(
+    (count, group) => count + group.programs.length,
+    0,
+  );
   const displayName =
     verifiedProgram?.universityName ??
     universityPrograms[0]?.universityName ??
+    pendingGroups[0]?.universityName ??
     university.name;
   const displayRegion =
     verifiedProgram?.city ??
     universityPrograms[0]?.city ??
+    pendingGroups[0]?.city ??
     university.region ??
     "Location not specified";
 
@@ -233,7 +249,9 @@ export default async function UniversityPage({
     ? matchStatusLabels[match.status]
     : verifiedProgram
       ? "Official program information"
-      : "Verification pending";
+      : pendingGroups.length > 0
+        ? "Rules awaiting approval"
+        : "Verification pending";
 
   return (
     <main className={styles.page}>
@@ -296,7 +314,9 @@ export default async function UniversityPage({
             <p className={styles.heroDescription}>
               {availableRoute
                 ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatDegreeLevel(availableRoute.degreeLevel)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}).`
-                : "Explore available study information and build a verified route from university application to student residence."}
+                : pendingGroups.length > 0
+                  ? `${pendingGroups[0].faculty}: ${pendingProgramCount} ${pendingGroups[0].category} programs for ${pendingGroups[0].intake} are coming soon. A personalised route opens once the approved admission rules are published.`
+                  : "Explore available study information and build a verified route from university application to student residence."}
             </p>
           )}
 
@@ -391,7 +411,9 @@ export default async function UniversityPage({
             <p>
               {verifiedProgram
                 ? `Official rules checked ${formatDate(verifiedProgram.verifiedAt)}`
-                : "Admissions verification in progress"}
+                : pendingGroups.length > 0
+                  ? `Status checked ${formatDate(pendingGroups[0].checkedAt)}`
+                  : "Admissions verification in progress"}
             </p>
           </div>
         </article>
@@ -736,13 +758,19 @@ export default async function UniversityPage({
                 </span>
 
                 <div>
-                  <h3>We are reviewing the official requirements</h3>
+                  <h3>
+                    {pendingGroups.length > 0
+                      ? "Waiting for the approved admission rules"
+                      : "We are reviewing the official requirements"}
+                  </h3>
                   <p>
                     Document requirements will only appear here after they
                     have been checked against an official university source.
                   </p>
                 </div>
               </div>
+
+              <PendingPrograms groups={pendingGroups} heading="Programs coming soon" />
 
               <div className={styles.requirementPreview}>
                 <div>

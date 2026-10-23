@@ -19,9 +19,11 @@ import {
   Search,
 } from "lucide-react";
 
+import { PendingPrograms } from "./PendingPrograms";
 import { UniversityImage } from "./UniversityImage";
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
+import { findPendingProgramGroups } from "@/data/pending-programs";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -107,6 +109,25 @@ export function UniversityResults({
     [countryCode, selectedProgram],
   );
 
+  // Programs whose approved rules for the intake are not published yet.
+  // In the route flow they must also match the exact degree and intake.
+  const pendingGroups = useMemo(
+    () =>
+      findPendingProgramGroups({
+        countryCode,
+        category: selectedProgram,
+        ...(mode === "route" && profile
+          ? { degreeLevel: profile.degreeLevel, intake: profile.intake }
+          : {}),
+      }),
+    [countryCode, selectedProgram, mode, profile],
+  );
+
+  const pendingHosts = useMemo(
+    () => new Set(pendingGroups.map((group) => group.universityHost)),
+    [pendingGroups],
+  );
+
   const countryUniversities = useMemo(
     () =>
       catalog.universities.filter(
@@ -152,6 +173,7 @@ export function UniversityResults({
         return {
           ...university,
           matchingPrograms,
+          pending: pendingHosts.has(host),
           verified:
             mode === "route"
               ? matchingPrograms.length > 0
@@ -176,16 +198,27 @@ export function UniversityResults({
       .sort(
         (a, b) =>
           Number(b.verified) - Number(a.verified) ||
+          Number(b.pending) - Number(a.pending) ||
           a.name.localeCompare(b.name),
       );
   }, [
     countryUniversities,
     mode,
+    pendingHosts,
     query,
     scope,
     verifiedByHost,
     verifiedCatalogHosts,
   ]);
+
+  const pendingUniversityHref = (universityId: string) => {
+    const params = profile
+      ? createProfileSearchParams(profile)
+      : new URLSearchParams({ country: countryCode, program: selectedProgram });
+    params.set("flow", mode);
+    params.delete("programId");
+    return `/universities/${encodeURIComponent(universityId)}?${params.toString()}`;
+  };
 
   const verifiedCount = countryUniversities.filter(
     (university) => {
@@ -276,6 +309,10 @@ export function UniversityResults({
           personalised match after the program, degree and intake have been
           checked against an official university source.
         </p>
+        <PendingPrograms
+          groups={pendingGroups}
+          universityHref={(group) => pendingUniversityHref(group.universityId)}
+        />
         <div className={linkStyles.coverageActions}>
           <Link href={`/route/profile?${profileParams.toString()}`}>
             Edit route choices
@@ -498,6 +535,11 @@ export function UniversityResults({
         </p>
       </div>
 
+      <PendingPrograms
+        groups={pendingGroups}
+        universityHref={(group) => pendingUniversityHref(group.universityId)}
+      />
+
       <div className={styles.resultMeta} role="status">
         Showing {Math.min(visibleCount, universityResults.length)}{" "}
         of {universityResults.length}
@@ -569,6 +611,10 @@ export function UniversityResults({
                           aria-hidden="true"
                         />
                         Program verified
+                      </span>
+                    ) : university.pending ? (
+                      <span className={styles.pendingBadge}>
+                        Rules awaiting approval
                       </span>
                     ) : (
                       <span className={styles.pendingBadge}>
@@ -699,7 +745,9 @@ export function UniversityResults({
                     </div>
                   ) : (
                     <p className={styles.pendingText}>
-                      {mode === "route" && profile
+                      {university.pending
+                        ? `${selectedProgram} programs here are listed as coming soon: the approved admission rules for the next intake are not published yet, so no personalised requirements are shown.`
+                        : mode === "route" && profile
                         ? `We have not yet verified a ${formatDegreeLevel(
                             profile.degreeLevel,
                           ).toLowerCase()} ${selectedProgram} programme here for the ${profile.intake} intake. The institution remains visible in the country directory.`

@@ -22,6 +22,10 @@ verified when its requirements have been checked against an official source.
   Informatics
 - Verified programs: 4
 
+Coming soon (listed, not verified): Comenius University Bratislava, Faculty
+of Mathematics, Physics and Informatics — four computing programs whose
+2027/28 rules are awaiting approval. They never produce a personalised route.
+
 Other institutions remain available in the public directory, with their
 verification status shown explicitly.
 
