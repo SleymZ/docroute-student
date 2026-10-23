@@ -27,6 +27,7 @@ import catalog from "@/data/universities.json";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
+import { formatDegreeLevel } from "@/lib/profile-options";
 import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -185,13 +186,48 @@ export default async function UniversityPage({
       ? { href: editProfileHref, heroLabel: "Edit my profile", panelLabel: "Edit my profile" }
       : { href: buildRouteHref, heroLabel: "Build my route", panelLabel: "Build my route" };
 
+  const universityPrograms = verifiedPrograms.filter(
+    (program) => program.universityId === university.id,
+  );
   const displayName =
     verifiedProgram?.universityName ??
-    verifiedPrograms.find((program) => program.universityId === university.id)
-      ?.universityName ??
+    universityPrograms[0]?.universityName ??
     university.name;
   const displayRegion =
-    verifiedProgram?.city ?? university.region ?? "Location not specified";
+    verifiedProgram?.city ??
+    universityPrograms[0]?.city ??
+    university.region ??
+    "Location not specified";
+
+  // When this page is opened for a field without verified rules (e.g.
+  // Medicine) but the university has a verified route in another field,
+  // point to that route instead of leaving only "Verification pending".
+  const availableRoute = verifiedProgram
+    ? null
+    : universityPrograms.find(
+        (program) => program.category === selectedProgram,
+      ) ?? universityPrograms[0] ?? null;
+  const selectedFieldUnverified = Boolean(
+    availableRoute &&
+      selectedProgram &&
+      availableRoute.category !== selectedProgram,
+  );
+  const availableRouteHref = availableRoute
+    ? `/route/profile?${new URLSearchParams({
+        country: availableRoute.countryCode,
+        program: availableRoute.category,
+        degree: availableRoute.degreeLevel,
+        intake: availableRoute.intake,
+      }).toString()}`
+    : null;
+  const availableRouteProgramCount = availableRoute
+    ? universityPrograms.filter(
+        (program) =>
+          program.category === availableRoute.category &&
+          program.degreeLevel === availableRoute.degreeLevel &&
+          program.intake === availableRoute.intake,
+      ).length
+    : 0;
 
   const statusLabel = match
     ? matchStatusLabels[match.status]
@@ -258,8 +294,9 @@ export default async function UniversityPage({
             </div>
           ) : (
             <p className={styles.heroDescription}>
-              Explore available study information and build a verified route
-              from university application to student residence.
+              {availableRoute
+                ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatDegreeLevel(availableRoute.degreeLevel)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}).`
+                : "Explore available study information and build a verified route from university application to student residence."}
             </p>
           )}
 
@@ -267,6 +304,13 @@ export default async function UniversityPage({
             {verifiedProgram && (
               <Link href={routeAction.href} className={styles.primaryAction}>
                 {routeAction.heroLabel}
+                <ArrowRight size={17} aria-hidden="true" />
+              </Link>
+            )}
+
+            {availableRoute && availableRouteHref && (
+              <Link href={availableRouteHref} className={styles.primaryAction}>
+                Build my {availableRoute.category} route
                 <ArrowRight size={17} aria-hidden="true" />
               </Link>
             )}
@@ -288,7 +332,7 @@ export default async function UniversityPage({
               target="_blank"
               rel="noopener noreferrer"
               className={
-                verifiedProgram
+                verifiedProgram || availableRoute
                   ? styles.secondaryAction
                   : styles.primaryAction
               }
