@@ -1,0 +1,225 @@
+.planner {
+  margin: 0 0 17px 62px;
+  padding: clamp(22px, 3vw, 30px);
+  border: 1px solid rgba(255, 128, 103, 0.28);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255, 128, 103, 0.09), transparent 34%),
+    linear-gradient(145deg, #0d2733, #081c27);
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #ff9a82;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+}
+
+.header h2 {
+  margin: 10px 0 0;
+  color: #f5f3ee;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.header p {
+  max-width: 560px;
+  margin: 8px 0 0;
+  color: #93adb8;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.dateField {
+  display: grid;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.dateField span {
+  color: #a6bdca;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dateField input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(132, 184, 206, 0.3);
+  border-radius: 10px;
+  background: #102431;
+  color: #f5f3ee;
+  font: inherit;
+  font-size: 13px;
+  color-scheme: dark;
+}
+
+.dateField input:focus-visible {
+  outline: 2px solid #79ddef;
+  outline-offset: 2px;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 20px 0 0;
+  color: #8aa4af;
+  font-size: 12px;
+}
+
+.warnings {
+  display: grid;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.warnings li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 191, 115, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 191, 115, 0.06);
+  color: #ffd29e;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.items {
+  display: grid;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.items li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #2b4c5a;
+  border-radius: 13px;
+  background: rgba(5, 23, 32, 0.5);
+}
+
+.icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(121, 221, 239, 0.22);
+  border-radius: 10px;
+  color: #79ddef;
+}
+
+.items li[data-tone="soon"] .icon {
+  border-color: rgba(255, 191, 115, 0.35);
+  color: #ffbf73;
+}
+
+.items li[data-tone="late"] {
+  border-color: rgba(255, 128, 103, 0.35);
+}
+
+.items li[data-tone="late"] .icon {
+  border-color: rgba(255, 128, 103, 0.45);
+  color: #ff8b72;
+}
+
+.items li[data-tone="info"] .icon {
+  color: #8aa4af;
+}
+
+.copy strong {
+  display: block;
+  color: #e9f0ef;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.copy p {
+  margin: 3px 0 0;
+  color: #85a1ac;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.when {
+  text-align: right;
+}
+
+.when strong {
+  display: block;
+  color: #f5f3ee;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.when small {
+  display: block;
+  margin-top: 3px;
+  color: #7c98a3;
+  font-size: 10px;
+}
+
+.items li[data-tone="late"] .when strong {
+  color: #ff9a82;
+}
+
+.items li[data-tone="soon"] .when strong {
+  color: #ffcf96;
+}
+
+.footnote {
+  margin: 14px 0 0;
+  color: #6f8b96;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+/* Matches the preview timeline: the stage rail disappears at 660px. */
+@media (max-width: 660px) {
+  .planner {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .items li {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .when {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .when strong {
+    white-space: normal;
+  }
+}

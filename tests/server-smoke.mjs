@@ -85,6 +85,12 @@ try {
   assert.ok(preview.includes("Complete language and entrance requirements"));
   assert.ok(preview.includes("Final secondary-school graduation certificate"));
   assert.match(preview, /<a[^>]+href="\/route\/profile\?[^"]*lang=[^"]*"[^>]*>Edit my profile/);
+  assert.ok(preview.includes("Plan backwards from your move date"));
+
+  // A move date in the URL is rendered as dated residence steps on the server.
+  const planned = await html(`/route/preview?${linked.searchParams}&move=2027-09-15`);
+  assert.ok(planned.includes("File at the Foreign Police in Slovakia"));
+  assert.ok(planned.includes("By 17 Jun 2027"));
 
   const onlyEnglish = new URLSearchParams(params);
   onlyEnglish.delete("lang");
