@@ -328,6 +328,10 @@ a svg {
   gap: 8px;
 }
 
+.form-grid.form-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .form-grid label {
   display: flex;
   flex-direction: column;
@@ -549,7 +553,8 @@ a svg {
     padding: 16px;
   }
 
-  .form-grid {
+  .form-grid,
+  .form-grid.form-grid-two {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }

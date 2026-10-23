@@ -1,4 +1,5 @@
 import type { ResidenceFiling } from "@/lib/residence/slovakia";
+import type { WorkAuthorisationRoute } from "@/lib/work-profile";
 
 // Turns a planned move date into dated steps for Slovak temporary residence
 // for study. Only rules that give a fixed period are dated; steps that
@@ -24,6 +25,9 @@ export type StudyDeadlinePlan = {
   items: DeadlineItem[];
   warnings: string[];
 };
+
+// Same shape for every purpose; the study name is kept for existing code.
+export type ResidenceDeadlinePlan = StudyDeadlinePlan;
 
 type PlanInput = {
   moveDate: string;
@@ -68,6 +72,18 @@ export function addWorkingDays(value: string, days: number) {
     date.setUTCDate(date.getUTCDate() + 1);
     const weekday = date.getUTCDay();
     if (weekday !== 0 && weekday !== 6) added += 1;
+  }
+  return toIso(date);
+}
+
+// Monday–Friday only, counting backwards (public holidays not included).
+export function subtractWorkingDays(value: string, days: number) {
+  const date = toDate(value);
+  let removed = 0;
+  while (removed < days) {
+    date.setUTCDate(date.getUTCDate() - 1);
+    const weekday = date.getUTCDay();
+    if (weekday !== 0 && weekday !== 6) removed += 1;
   }
   return toIso(date);
 }
@@ -202,6 +218,163 @@ export function planStudyResidenceDeadlines({
       title: "Submit a medical report",
       dateLabel: "30 days after collecting the card",
       detail: "The report must be no older than 30 days. Students are not exempt.",
+      tone: "info",
+    },
+  );
+
+  return { moveDate, latestFilingDate, items, warnings };
+}
+
+type WorkPlanInput = {
+  moveDate: string;
+  today: string;
+  filing: ResidenceFiling;
+  route: WorkAuthorisationRoute;
+  processingDays: number;
+  hasJobOffer: boolean;
+  shortageOccupation: "yes" | "no" | "unsure";
+  vacancyReportWorkingDays: number;
+  fileWithinDaysOfConfirmation: number;
+  documentMaxAgeDays: number;
+  reportWorkingDays: number;
+  soonDays?: number;
+};
+
+// Work route: the move date is the day you need to be living and working in
+// Slovakia. The Labour Office has no published processing time, so the
+// employer's steps are given as "no later than" limits, never as a schedule.
+export function planWorkResidenceDeadlines({
+  moveDate,
+  today,
+  filing,
+  route,
+  processingDays,
+  hasJobOffer,
+  shortageOccupation,
+  vacancyReportWorkingDays,
+  fileWithinDaysOfConfirmation,
+  documentMaxAgeDays,
+  reportWorkingDays,
+  soonDays = 30,
+}: WorkPlanInput): ResidenceDeadlinePlan | null {
+  if (!isIsoDate(moveDate) || !isIsoDate(today) || moveDate <= today) {
+    return null;
+  }
+
+  const latestFilingDate = addDays(moveDate, -processingDays);
+  const recordEarliest = addDays(latestFilingDate, -documentMaxAgeDays);
+  const warnings: string[] = [];
+
+  if (latestFilingDate < today) {
+    warnings.push(
+      `To have a decision by ${formatPlanDate(moveDate)}, the residence application would have had to be filed by ${formatPlanDate(latestFilingDate)}. The authority may decide sooner, but up to ${processingDays} days is allowed; consider a later start date.`,
+    );
+  }
+
+  if (!hasJobOffer) {
+    warnings.push(
+      "You do not have a job offer yet. Every date below assumes an employer is found in time to complete its steps first.",
+    );
+  }
+
+  if (filing === "unclear") {
+    warnings.push(
+      "Your current status does not map to one filing place. Confirm with the Foreign Police or the embassy where you may apply before relying on these dates.",
+    );
+  }
+
+  const items: DeadlineItem[] = [];
+
+  if (route !== "slovak-graduate") {
+    const examined = route === "single-permit" && shortageOccupation !== "yes";
+    if (examined) {
+      // The confirmation request itself must come before filing, so the
+      // report is due at least N working days before the latest filing day.
+      const reportBy = subtractWorkingDays(latestFilingDate, vacancyReportWorkingDays);
+      items.push({
+        id: "vacancy-report",
+        taskId: "vacancy-report",
+        title: "Employer reports the vacancy",
+        date: reportBy,
+        dateLabel: `No later than ${formatPlanDate(reportBy)}`,
+        detail: `At least ${vacancyReportWorkingDays} working days before the confirmation request. The Labour Office's own processing time comes on top and is not published, so in practice this has to happen earlier.`,
+        tone: toneFor(reportBy, today, soonDays),
+      });
+    }
+
+    const confirmationEarliest = addDays(latestFilingDate, -fileWithinDaysOfConfirmation);
+    items.push({
+      id: "labour-office-confirmation",
+      taskId: route === "blue-card" ? "blue-card-confirmation" : "labour-office-confirmation",
+      title: "Labour Office confirmation issued",
+      date: latestFilingDate,
+      dateLabel: `Before ${formatPlanDate(latestFilingDate)}`,
+      detail: `You must file within ${fileWithinDaysOfConfirmation} days of the confirmation. If you file on the latest date, a confirmation issued before ${formatPlanDate(confirmationEarliest)} would already be too old.`,
+      tone: toneFor(latestFilingDate, today, soonDays),
+    });
+  }
+
+  items.push(
+    {
+      id: "criminal-record",
+      taskId: "criminal-record",
+      title: "Request criminal-record documents",
+      date: recordEarliest,
+      dateLabel: `${formatPlanDate(recordEarliest)} – ${formatPlanDate(latestFilingDate)}`,
+      detail: `They must be no older than ${documentMaxAgeDays} days on the day you file. Requesting them earlier risks them expiring.`,
+      tone: toneFor(latestFilingDate, today, soonDays),
+    },
+    {
+      id: "accommodation",
+      taskId: "accommodation",
+      title: "Arrange proof of accommodation",
+      date: recordEarliest,
+      dateLabel: `${formatPlanDate(recordEarliest)} – ${formatPlanDate(latestFilingDate)}`,
+      detail: `The document must also be no older than ${documentMaxAgeDays} days when you file.`,
+      tone: toneFor(latestFilingDate, today, soonDays),
+    },
+    {
+      id: "residence-filing",
+      taskId: "residence-submission-place",
+      title:
+        filing === "in-country"
+          ? "File at the Foreign Police in Slovakia"
+          : filing === "abroad"
+            ? "File at the Slovak embassy"
+            : "File the residence application",
+      date: latestFilingDate,
+      dateLabel: `By ${formatPlanDate(latestFilingDate)}`,
+      detail: `The decision can take up to ${processingDays} days.`,
+      tone: toneFor(latestFilingDate, today, soonDays),
+    },
+  );
+
+  if (filing !== "in-country") {
+    const reportBy = addWorkingDays(moveDate, reportWorkingDays);
+    items.push({
+      id: "report-arrival",
+      taskId: "post-card-duties",
+      title: "Report the start of residence",
+      date: reportBy,
+      dateLabel: `By ${formatPlanDate(reportBy)}`,
+      detail: `Within ${reportWorkingDays} working days of arriving on ${formatPlanDate(moveDate)} (weekends skipped; public holidays are not counted here).`,
+      tone: "info",
+    });
+  }
+
+  items.push(
+    {
+      id: "health-insurance",
+      title: "Take out health insurance",
+      dateLabel: "3 working days after receiving the card",
+      detail: "Counts from the day you receive the residence card.",
+      tone: "info",
+    },
+    {
+      id: "medical-report",
+      title: "Submit a medical report",
+      dateLabel: "30 days after receiving the card",
+      detail: "The report must be no older than 30 days.",
       tone: "info",
     },
   );

@@ -10,14 +10,16 @@ import {
   Info,
 } from "lucide-react";
 
-import type { DeadlineTone, StudyDeadlinePlan } from "@/lib/residence/deadlines";
+import type { DeadlineTone, ResidenceDeadlinePlan } from "@/lib/residence/deadlines";
 
 import styles from "./MovePlanner.module.css";
 
 type MovePlannerProps = {
   moveDate: string;
   minDate: string;
-  plan: StudyDeadlinePlan | null;
+  plan: ResidenceDeadlinePlan | null;
+  description?: string;
+  dateLabel?: string;
   // Explains why dates cannot be planned (EU citizen, Slovak citizen,
   // contradictory profile); null when the third-country route applies.
   unavailableReason: string | null;
@@ -46,6 +48,8 @@ export function MovePlanner({
   plan,
   unavailableReason,
   onMoveDateChange,
+  description = "Enter the date you need to be living in Slovakia, for example the start of studies. DocRoute calculates when each residence step has to be done.",
+  dateLabel = "Move date",
 }: MovePlannerProps) {
   const inputId = useId();
 
@@ -55,15 +59,11 @@ export function MovePlanner({
         <div>
           <p className={styles.eyebrow}>DEADLINE PLANNER</p>
           <h2 id={`${inputId}-title`}>Plan backwards from your move date</h2>
-          <p>
-            Enter the date you need to be living in Slovakia, for example the
-            start of studies. DocRoute calculates when each residence step has
-            to be done.
-          </p>
+          <p>{description}</p>
         </div>
 
         <label className={styles.dateField} htmlFor={inputId}>
-          <span>Move date</span>
+          <span>{dateLabel}</span>
           <input
             id={inputId}
             type="date"

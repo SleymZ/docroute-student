@@ -167,24 +167,44 @@ const sharedSteps = {
   },
 } satisfies Record<string, RouteTask>;
 
+export type ResidenceGateProfile = Pick<
+  ApplicantProfile,
+  "citizenshipCountryCode" | "currentResidenceStatus"
+>;
+
+type GateOptions = {
+  purpose: "study" | "work";
+  stageNumber: string;
+};
+
 // Cases that do not use the third-country procedure, or where the profile
 // is contradictory. Returns null when the third-country route applies.
-function gateStage(profile: ApplicantProfile): RouteStage | null {
+export function residenceGateStage(
+  profile: ResidenceGateProfile,
+  { purpose, stageNumber }: GateOptions = { purpose: "study", stageNumber: "04" },
+): RouteStage | null {
   if (profile.citizenshipCountryCode === "SK") {
     return {
       id: "residence",
-      number: "04",
+      number: stageNumber,
       eyebrow: "ARRIVAL STATUS",
       title: "No foreign residence permit route",
       description:
-        "You reported Slovak citizenship, so the third-country student residence route does not apply.",
+        purpose === "work"
+          ? "You reported Slovak citizenship, so you can work in Slovakia without a residence permit for employment."
+          : "You reported Slovak citizenship, so the third-country student residence route does not apply.",
       timing: "Not applicable",
       tasks: [
         {
           id: "slovak-citizen-residence",
-          title: "Student residence permit not required",
+          title:
+            purpose === "work"
+              ? "Work residence permit not required"
+              : "Student residence permit not required",
           description:
-            "Continue with university enrolment and the ordinary arrival checklist.",
+            purpose === "work"
+              ? "Agree the employment directly with your employer."
+              : "Continue with university enrolment and the ordinary arrival checklist.",
           status: "not-applicable",
           sourceIds: [],
         },
@@ -200,7 +220,7 @@ function gateStage(profile: ApplicantProfile): RouteStage | null {
   if (statusConflict) {
     return {
       id: "residence",
-      number: "04",
+      number: stageNumber,
       eyebrow: "RESIDENCE STATUS",
       title: "Check your citizenship and current status",
       description:
@@ -221,7 +241,7 @@ function gateStage(profile: ApplicantProfile): RouteStage | null {
   if (isEuEeaSwissCitizen(profile.citizenshipCountryCode)) {
     return {
       id: "residence",
-      number: "04",
+      number: stageNumber,
       eyebrow: "EU / EEA / SWISS MOBILITY",
       title: "EU, EEA or Swiss citizen registration route",
       description:
@@ -244,15 +264,15 @@ function gateStage(profile: ApplicantProfile): RouteStage | null {
 }
 
 // True when the third-country temporary residence procedure applies.
-export function usesThirdCountryResidence(profile: ApplicantProfile) {
-  return gateStage(profile) === null;
+export function usesThirdCountryResidence(profile: ResidenceGateProfile) {
+  return residenceGateStage(profile) === null;
 }
 
 export function buildSlovakiaResidenceStage(
   profile: ApplicantProfile,
   purpose: ResidencePurpose = studyPurpose,
 ): RouteStage {
-  const gate = gateStage(profile);
+  const gate = residenceGateStage(profile);
   if (gate) return gate;
 
   return {

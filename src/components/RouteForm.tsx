@@ -43,6 +43,8 @@ import type { Destination } from "@/types/destination";
 import styles from "./RouteForm.module.css";
 
 type RouteFormProps = {
+  purpose: MovePurpose;
+  onPurposeChange: (value: MovePurpose) => void;
   documentCountry: string;
   destination: Destination;
   program: string;
@@ -387,10 +389,29 @@ const purposeIcons: Record<MovePurpose, typeof GraduationCap> = {
   business: Building2,
 };
 
-// Only study is selectable for now; the other purposes show the planned
+// Study and work are selectable; family and business show the planned
 // scope without pretending a route exists.
-function PurposeSelector() {
+function PurposeSelector({
+  value,
+  onChange,
+}: {
+  value: MovePurpose;
+  onChange: (value: MovePurpose) => void;
+}) {
   const labelId = useId();
+  const available = movePurposes.filter((purpose) => purpose.available);
+
+  function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) {
+      return;
+    }
+    event.preventDefault();
+    const index = available.findIndex((purpose) => purpose.id === value);
+    const step = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1;
+    const next = available[(index + step + available.length) % available.length];
+    onChange(next.id);
+    document.getElementById(`${labelId}-${next.id}`)?.focus();
+  }
 
   return (
     <div className={styles.purposeRow}>
@@ -404,11 +425,12 @@ function PurposeSelector() {
       >
         {movePurposes.map((purpose) => {
           const Icon = purposeIcons[purpose.id];
-          const selected = purpose.id === "study";
+          const selected = purpose.id === value;
 
           return (
             <button
               key={purpose.id}
+              id={`${labelId}-${purpose.id}`}
               type="button"
               role="radio"
               aria-checked={selected}
@@ -422,7 +444,11 @@ function PurposeSelector() {
               ]
                 .filter(Boolean)
                 .join(" ")}
-              onClick={(event) => event.preventDefault()}
+              onKeyDown={handleKeyDown}
+              onClick={(event) => {
+                event.preventDefault();
+                if (purpose.available) onChange(purpose.id);
+              }}
             >
               <Icon size={14} strokeWidth={1.8} aria-hidden="true" />
               {purpose.label}
@@ -434,13 +460,19 @@ function PurposeSelector() {
         })}
       </div>
       <p className={styles.purposeNote}>
-        Work, family and business routes are coming soon.
+        {movePurposes
+          .filter((purpose) => !purpose.available)
+          .map((purpose) => purpose.label)
+          .join(" and ")}{" "}
+        routes are coming soon.
       </p>
     </div>
   );
 }
 
 export function RouteForm({
+  purpose,
+  onPurposeChange,
   documentCountry,
   destination,
   program,
@@ -452,9 +484,9 @@ export function RouteForm({
 }: RouteFormProps) {
   return (
     <form className="route-form" onSubmit={onSubmit}>
-      <PurposeSelector />
+      <PurposeSelector value={purpose} onChange={onPurposeChange} />
 
-      <div className="form-grid">
+      <div className={purpose === "work" ? "form-grid form-grid-two" : "form-grid"}>
         <VisualSelect
           label="Documents issued in"
           name="documentCountry"
@@ -467,7 +499,7 @@ export function RouteForm({
         />
 
         <VisualSelect
-          label="I want to study in"
+          label={purpose === "work" ? "I want to work in" : "I want to study in"}
           name="destination"
           value={destination}
           options={destinationOptions}
@@ -477,23 +509,32 @@ export function RouteForm({
           )}
         />
 
-        <VisualSelect
-          label="Program"
-          name="program"
-          value={program}
-          options={programOptions}
-          onChange={onProgramChange}
-          renderIcon={(item) => (
-            <ProgramIcon program={item} />
-          )}
-        />
+        {purpose === "study" && (
+          <VisualSelect
+            label="Program"
+            name="program"
+            value={program}
+            options={programOptions}
+            onChange={onProgramChange}
+            renderIcon={(item) => (
+              <ProgramIcon program={item} />
+            )}
+          />
+        )}
       </div>
 
       <button
         type="submit"
         className="primary-button route-button"
+        disabled={purpose === "work" && !routeAvailable}
       >
-        {routeAvailable ? "Build my route" : "Explore universities"}
+        {purpose === "work"
+          ? routeAvailable
+            ? "Build my work route"
+            : "Work route not verified yet"
+          : routeAvailable
+            ? "Build my route"
+            : "Explore universities"}
         <ArrowRight size={18} aria-hidden="true" />
       </button>
 
@@ -506,7 +547,9 @@ export function RouteForm({
           )}
           {routeAvailable
             ? "Verified route available · Official sources included"
-            : "Personalised route coverage in progress · Public directory available"}
+            : purpose === "work"
+              ? "Work routes are verified for Slovakia only so far"
+              : "Personalised route coverage in progress · Public directory available"}
         </span>
       </div>
     </form>
