@@ -415,20 +415,27 @@ function PurposeSelector() {
               aria-disabled={!purpose.available}
               tabIndex={selected ? 0 : -1}
               title={purpose.available ? undefined : "Coming soon"}
-              className={`${styles.purpose} ${
-                selected ? styles.purposeSelected : ""
-              }`}
+              className={[
+                styles.purpose,
+                selected ? styles.purposeSelected : "",
+                purpose.available ? "" : styles.purposeSoon,
+              ]
+                .filter(Boolean)
+                .join(" ")}
               onClick={(event) => event.preventDefault()}
             >
               <Icon size={14} strokeWidth={1.8} aria-hidden="true" />
               {purpose.label}
               {!purpose.available && (
-                <span className={styles.purposeSoon}>Soon</span>
+                <span className={styles.srOnly}>, coming soon</span>
               )}
             </button>
           );
         })}
       </div>
+      <p className={styles.purposeNote}>
+        Work, family and business routes are coming soon.
+      </p>
     </div>
   );
 }
