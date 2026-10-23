@@ -384,7 +384,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
             ) : (
               "The non-EU work residence procedure does not apply to you. "
             )}
-            For a {citizenshipName} citizen with{" "}
+            For a citizen of {citizenshipName} with{" "}
             {statusPhrases[profile.currentResidenceStatus]}.
           </p>
         </div>
