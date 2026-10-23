@@ -21,6 +21,7 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { AccountBackdrop } from "./AccountBackdrop";
 import { AccountSignOut } from "@/components/AccountSignOut";
 import { Header } from "@/components/Header";
 import catalog from "@/data/universities.json";
@@ -182,6 +183,7 @@ export default async function AccountPage() {
       <main>
         <Header />
         <div className={styles.page}>
+          <AccountBackdrop />
           <header className={styles.hero}>
             <div>
               <p className={styles.eyebrow}>PERSONAL WORKSPACE</p>
@@ -291,6 +293,7 @@ export default async function AccountPage() {
       <Header />
 
       <div className={styles.page}>
+        <AccountBackdrop />
         <header className={styles.hero}>
           <div>
             <p className={styles.eyebrow}>PERSONAL WORKSPACE</p>

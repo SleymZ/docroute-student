@@ -3,26 +3,72 @@
 
 .page {
   position: relative;
+  isolation: isolate;
   width: min(1480px, calc(100% - 48px));
   margin: 0 auto;
   padding: 44px 0 76px;
   color: #eaf1f1;
 }
 
-/* Route-grid backdrop, matching the other workspace pages. */
+/* ---------- Backdrop ----------
+   Layers, back to front: colour glows, a fading grid, then the route SVG.
+   Everything bleeds into the gutters; <main> clips it at the viewport. */
+
 .page::before {
   position: absolute;
-  z-index: -1;
-  inset: 0 -40px;
+  z-index: -3;
+  inset: -60px -12vw 0;
   background:
-    linear-gradient(rgba(121, 221, 239, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(121, 221, 239, 0.03) 1px, transparent 1px),
-    radial-gradient(circle at 78% 8%, rgba(42, 127, 151, 0.16), transparent 34%),
-    radial-gradient(circle at 12% 70%, rgba(255, 128, 103, 0.06), transparent 30%);
-  background-size: 48px 48px, 48px 48px, auto, auto;
-  mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent);
+    radial-gradient(ellipse 38% 30% at 12% 6%, rgba(48, 148, 173, 0.18), transparent 70%),
+    radial-gradient(ellipse 30% 26% at 86% 4%, rgba(255, 128, 103, 0.12), transparent 70%),
+    radial-gradient(ellipse 34% 28% at 62% 44%, rgba(31, 103, 122, 0.14), transparent 70%),
+    radial-gradient(ellipse 30% 24% at 6% 62%, rgba(255, 128, 103, 0.07), transparent 70%),
+    radial-gradient(ellipse 36% 26% at 92% 88%, rgba(121, 221, 239, 0.08), transparent 70%);
   content: "";
   pointer-events: none;
+}
+
+.page::after {
+  position: absolute;
+  z-index: -2;
+  inset: -60px -12vw 0;
+  background:
+    linear-gradient(rgba(121, 221, 239, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(121, 221, 239, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 22%, #000, transparent 85%);
+  content: "";
+  pointer-events: none;
+}
+
+.backdrop {
+  position: absolute;
+  z-index: -1;
+  inset: -60px -12vw 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.backdrop svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.backdropRoute {
+  animation: routeFlow 14s linear infinite;
+}
+
+@keyframes routeFlow {
+  to {
+    stroke-dashoffset: -180;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdropRoute {
+    animation: none;
+  }
 }
 
 .eyebrow {
