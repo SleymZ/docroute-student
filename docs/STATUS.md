@@ -156,14 +156,30 @@ still publish only their 2026/27 rules.
   on phones; Arial Black rendering of 800-weight text replaced with 700.
 - Account page redesign (PR #4); unverified university pages point to the
   verified route (PR #3).
-- PR #7: work route for Slovakia (single permit, EU Blue Card, Slovak
-  graduates) with questionnaire, progress and start-date planner; "Work"
-  selectable on the home form.
-- PR #6: Comenius FMFI computing programs listed as "coming soon"; separate
-  How it works page behind the header button.
+- PR #7 (merged 2026-10-23): work route for Slovakia (single permit, EU
+  Blue Card, Slovak graduates) with questionnaire, progress and start-date
+  planner; "Work" selectable on the home form. The route page was
+  redesigned after owner feedback: compact header with a plain summary,
+  horizontal route strip (one date per stage, vertical on phones),
+  checklist rows instead of cards, one warning block, sticky side panel
+  (start date, key dates, progress), minimum text size 12px. Checked in the
+  browser on the Preview at desktop and 375px width.
+- PR #6 (merged 2026-10-23): Comenius FMFI computing programs listed as
+  "coming soon"; separate How it works page behind the header button.
 - PR #5: map fades into the page and highlights only Slovakia; move-purpose
   foundation; residence recheck; rename to DocRoute; residence code split
   into shared steps and purposes; deadline planner.
+
+## Working agreement with the owner
+
+- The owner is not a programmer; talk in Russian and explain any action
+  they must take step by step.
+- Work in a branch with a PR; check tests and the Vercel Preview (open it
+  in the built-in browser; Previews need a Vercel login), then send the
+  owner the direct Preview link. Merge into `main` only after the owner
+  says «мержим».
+- Facts in routes come only from official sources with a check date; no
+  rules borrowed from another year, field, degree or purpose.
 
 ## How changes are verified
 
