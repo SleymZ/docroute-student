@@ -24,6 +24,7 @@ import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
 import {
+  findResidenceStatusConflict,
   formatDegreeLevel,
   getResidenceStatusLabel,
   isDegreeLevel,
@@ -289,6 +290,16 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
       setError(
         "Select your citizenship, education country, and current residence status.",
       );
+      return;
+    }
+
+    const statusConflict = findResidenceStatusConflict(
+      citizenship,
+      currentResidenceStatus,
+    );
+
+    if (statusConflict) {
+      setError(statusConflict);
       return;
     }
 

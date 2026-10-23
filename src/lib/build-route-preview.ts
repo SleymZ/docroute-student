@@ -1,7 +1,8 @@
+import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import {
-  euCountryCodes,
-  slovakiaResidenceRules,
-} from "@/data/slovakia-residence";
+  findResidenceStatusConflict,
+  isEuEeaSwissCitizen,
+} from "@/lib/profile-options";
 import type {
   ApplicantProfile,
   MatchCheck,
@@ -67,16 +68,9 @@ function getSubmissionTask(profile: ApplicantProfile): RouteTask {
         sourceIds,
       };
 
+    // Third-country citizens only reach this point; an EU, EEA or Swiss
+    // passport status for them is a contradiction handled before this task.
     case "eu-eea-swiss-passport":
-      return {
-        id: "residence-submission-place",
-        title: "Use the EU / EEA mobility route",
-        description:
-          "You reported an EU, EEA or Swiss passport. A third-country student residence application should not be reused for your route; confirm the local registration duties instead.",
-        status: "information",
-        sourceIds,
-      };
-
     case "other":
       return {
         id: "residence-submission-place",
@@ -112,24 +106,47 @@ function buildResidenceStage(profile: ApplicantProfile): RouteStage {
     };
   }
 
-  if (
-    profile.currentResidenceStatus === "eu-eea-swiss-passport" ||
-    euCountryCodes.has(profile.citizenshipCountryCode)
-  ) {
+  const statusConflict = findResidenceStatusConflict(
+    profile.citizenshipCountryCode,
+    profile.currentResidenceStatus,
+  );
+
+  if (statusConflict) {
     return {
       id: "residence",
       number: "04",
-      eyebrow: "EU MOBILITY",
-      title: "EU citizen registration route",
+      eyebrow: "RESIDENCE STATUS",
+      title: "Check your citizenship and current status",
       description:
-        "The third-country temporary residence procedure does not apply. The EU registration route has not yet been verified in this first data release.",
+        "Your profile contains a citizenship and residence status that contradict each other, so DocRoute does not choose a residence route for you.",
+      timing: "Update your profile",
+      tasks: [
+        {
+          id: "residence-status-conflict",
+          title: "Citizenship and residence status do not match",
+          description: statusConflict,
+          status: "attention",
+          sourceIds: [],
+        },
+      ],
+    };
+  }
+
+  if (isEuEeaSwissCitizen(profile.citizenshipCountryCode)) {
+    return {
+      id: "residence",
+      number: "04",
+      eyebrow: "EU / EEA / SWISS MOBILITY",
+      title: "EU, EEA or Swiss citizen registration route",
+      description:
+        "The third-country temporary residence procedure does not apply. The EU, EEA and Swiss registration route has not yet been verified in this first data release.",
       timing: "Verification pending",
       tasks: [
         {
           id: "eu-route-pending",
           title: "Current rules still need source verification",
           description:
-            "DocRoute will not reuse the non-EU checklist for an EU citizen. Until the EU route is verified, confirm registration duties with the Slovak authorities.",
+            "DocRoute will not reuse the non-EU checklist for an EU, EEA or Swiss citizen. Until this route is verified, confirm registration duties with the Slovak authorities.",
           status: "attention",
           sourceIds: ["sk-ministry-foreigners-agenda"],
         },
