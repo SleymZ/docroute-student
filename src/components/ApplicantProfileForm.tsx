@@ -29,6 +29,7 @@ import {
   getResidenceStatusLabel,
   isDegreeLevel,
   isStudyIntake,
+  waiverEvidenceLabels,
 } from "@/lib/profile-options";
 import { createProfileSearchParams } from "@/lib/profile-query";
 import { saveApplicantProfile } from "@/lib/supabase/applicant-profile";
@@ -118,32 +119,32 @@ const waiverOptions: Array<{
 }> = [
   {
     value: "math-matura-60",
-    label: "External mathematics maturita 60+",
+    label: waiverEvidenceLabels["math-matura-60"],
     description: "Slovak external mathematics maturita percentile of at least 60, not just a completed exam",
   },
   {
     value: "scio-math-60",
-    label: "SCIO Mathematics 60+",
+    label: waiverEvidenceLabels["scio-math-60"],
     description: "NPS Mathematics percentile of at least 60",
   },
   {
     value: "scio-general-70",
-    label: "SCIO General 70+",
+    label: waiverEvidenceLabels["scio-general-70"],
     description: "General study aptitude percentile of at least 70",
   },
   {
     value: "ccna",
-    label: "CCNA or higher",
+    label: waiverEvidenceLabels["ccna"],
     description: "Official networking industry certificate",
   },
   {
     value: "fri-course",
-    label: "FRI preparatory course",
+    label: waiverEvidenceLabels["fri-course"],
     description: "Completed specialist course organised by the faculty",
   },
   {
     value: "regional-olympiad",
-    label: "Qualifying olympiad result",
+    label: waiverEvidenceLabels["regional-olympiad"],
     description: "Successful regional mathematics, physics or informatics olympiad solver, or second round of Mladý účtovník during secondary school",
   },
 ];
