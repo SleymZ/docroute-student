@@ -15,6 +15,7 @@ import {
   removeStoredSet,
   writeStoredSet,
 } from "@/lib/user-memory-storage";
+import { planUserSetSync } from "@/lib/user-set-sync";
 import type { Database } from "@/types/database";
 
 export type UserSetAdapter = {
@@ -209,38 +210,25 @@ export function usePersistentUserSet({
             activeScope,
           ),
         );
-        const latestCachedValues = readStoredSet(userKey);
-        const latestGuestValues = readStoredSet(guestKey);
-        const mergedValues = mergeSets(
+        const {
+          merged: mergedValues,
+          toAdd,
+          toRemove,
+        } = planUserSetSync(
           remoteValues,
-          latestCachedValues,
-          latestGuestValues,
+          readStoredSet(guestKey),
+          localOverridesRef.current,
         );
-
-        for (const [value, shouldExist] of
-          localOverridesRef.current) {
-          if (shouldExist) {
-            mergedValues.add(value);
-          } else {
-            mergedValues.delete(value);
-          }
-        }
 
         await adapter.addMany(
           supabase,
           user.id,
           activeScope,
-          [...mergedValues],
+          toAdd,
         );
 
-        const locallyRemovedValues = [
-          ...localOverridesRef.current,
-        ]
-          .filter(([, shouldExist]) => !shouldExist)
-          .map(([value]) => value);
-
         await Promise.all(
-          locallyRemovedValues.map((value) =>
+          toRemove.map((value) =>
             adapter.remove(
               supabase,
               user.id,
