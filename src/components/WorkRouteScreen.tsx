@@ -2,30 +2,31 @@
 
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
-  BriefcaseBusiness,
   CalendarDays,
+  Check,
   ExternalLink,
-  FileCheck2,
-  Flag,
-  MapPin,
-  ShieldCheck,
+  Info,
 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
-import { MovePlanner } from "@/components/MovePlanner";
-import { RouteStageList, isActionableTask } from "@/components/RouteStageList";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { slovakiaWorkRules } from "@/data/slovakia-work";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { getResidenceStatusLabel } from "@/lib/profile-options";
-import { addDays, isIsoDate, planWorkResidenceDeadlines } from "@/lib/residence/deadlines";
+import {
+  addDays,
+  formatPlanDate,
+  isIsoDate,
+  planWorkResidenceDeadlines,
+  type DeadlineTone,
+} from "@/lib/residence/deadlines";
 import { buildSlovakiaWorkRoute, workRouteLabels } from "@/lib/residence/slovakia-work";
 import {
   createWorkProfileSearchParams,
@@ -36,9 +37,25 @@ import {
   type YesNoUnsure,
 } from "@/lib/work-profile";
 import { currentResidenceStatuses, type CurrentResidenceStatus } from "@/types/admission";
+import type { RouteTaskStatus } from "@/types/route-preview";
 
-import routeStyles from "./RoutePreviewScreen.module.css";
 import styles from "./WorkRouteScreen.module.css";
+
+function isActionableTask(status: RouteTaskStatus) {
+  return status === "action" || status === "attention";
+}
+
+// How the summary line describes the current status.
+const statusPhrases: Record<CurrentResidenceStatus, string> = {
+  "eu-eea-swiss-passport": "an EU, EEA or Swiss passport",
+  "non-eu-passport-no-residence": "no residence permit yet",
+  "destination-residence": "a Slovak residence permit",
+  "other-eu-residence": "a residence permit in another EU / EEA country",
+  "destination-national-visa": "a Slovak national visa",
+  "visa-free-entry": "a visa-free stay in Slovakia",
+  "temporary-protection": "temporary protection",
+  other: "another status",
+};
 
 type ChoiceOption<T extends string> = { value: T; label: string };
 
@@ -279,21 +296,18 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
   if (!profile || !route || editing) {
     const initial = new URLSearchParams(searchParams.toString());
     return (
-      <div className={routeStyles.page}>
-        <nav className={routeStyles.breadcrumb}>
+      <div className={styles.page}>
+        <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <Link href="/?purpose=work#route-builder">
-            <ArrowLeft size={16} aria-hidden="true" />
+            <ArrowLeft size={15} aria-hidden="true" />
             Home
           </Link>
-          <span>/</span>
-          <strong>Work route</strong>
+          <span aria-hidden="true">/</span>
+          <span>Work route</span>
         </nav>
 
         <section className={styles.intro}>
-          <p className={routeStyles.eyebrow}>WORK IN SLOVAKIA</p>
-          <h1>
-            Your route to <span>working in Slovakia</span>
-          </h1>
+          <h1>Working in Slovakia</h1>
           <p>
             Six questions decide which official procedure applies: the single
             permit, the EU Blue Card, or the exemption for Slovak graduates.
@@ -320,209 +334,266 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
   const citizenshipName =
     applicantCountryOptions.find((country) => country.code === profile.citizenshipCountryCode)
       ?.name ?? profile.citizenshipCountryCode;
-  const officialSourceCount = route.sources.filter(
-    (source) => source.authority === "official",
-  ).length;
+  const planItem = (id: string) => plan?.items.find((item) => item.id === id);
+
+  // One date (or timing hint) per stage for the route strip.
+  function stageWhen(stageId: string): { label: string; tone?: DeadlineTone } {
+    if (stageId === "job") {
+      const report = planItem("vacancy-report");
+      if (report) return { label: `Employer acts by ${report.dateLabel.replace(/^No later than /, "")}`, tone: report.tone };
+      return { label: profile!.jobOffer === "yes" ? "Now" : "Find an employer" };
+    }
+    if (stageId === "authorisation") {
+      const confirmation = planItem("labour-office-confirmation");
+      if (confirmation) return { label: confirmation.dateLabel, tone: confirmation.tone };
+      return { label: route!.authorisation === "slovak-graduate" ? "Before filing" : "Employer + Labour Office" };
+    }
+    if (stageId === "residence-application") {
+      const filing = planItem("residence-filing");
+      if (filing) return { label: `File ${filing.dateLabel.replace(/^By /, "by ")}`, tone: filing.tone };
+      return { label: `Decided within ${route!.processingDays} days` };
+    }
+    if (stageId === "after-approval") {
+      return { label: moveDate ? `From ${formatPlanDate(moveDate)}` : "After the decision" };
+    }
+    return { label: "" };
+  }
+
+  const procedure = route.authorisation ? workRouteLabels[route.authorisation] : null;
 
   return (
-    <div className={routeStyles.page}>
-      <nav className={routeStyles.breadcrumb}>
+    <div className={styles.page}>
+      <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <Link href="/?purpose=work#route-builder">
-          <ArrowLeft size={16} aria-hidden="true" />
+          <ArrowLeft size={15} aria-hidden="true" />
           Home
         </Link>
-        <span>/</span>
-        <strong>Work route</strong>
+        <span aria-hidden="true">/</span>
+        <span>Work route</span>
       </nav>
 
-      <header className={routeStyles.hero}>
-        <div className={routeStyles.heroCopy}>
-          <p className={routeStyles.eyebrow}>JOB OFFER TO ARRIVAL</p>
-          <h1>
-            Your route to <span>working in Slovakia</span>
-          </h1>
-          <p>
-            {route.authorisation
-              ? `Based on your answers, the procedure is the ${workRouteLabels[route.authorisation].toLowerCase()} route. Each step lists who does it, when, and the official guidance it comes from.`
-              : "Your answers show that the non-EU work residence procedure does not apply to you. See the details below."}
+      <header className={styles.head}>
+        <div>
+          <h1>Working in Slovakia</h1>
+          <p className={styles.summary}>
+            {procedure ? (
+              <>
+                <strong>{procedure}</strong>
+                {route.processingDays ? `, decided within ${route.processingDays} days. ` : ". "}
+              </>
+            ) : (
+              "The non-EU work residence procedure does not apply to you. "
+            )}
+            For a {citizenshipName} citizen with{" "}
+            {statusPhrases[profile.currentResidenceStatus]}.
           </p>
         </div>
-
-        <div className={routeStyles.heroRoute}>
-          <span className={routeStyles.routePoint}>
-            <BriefcaseBusiness size={20} aria-hidden="true" />
-          </span>
-          <div>
-            <small>PROCEDURE</small>
-            <strong>
-              {route.authorisation ? workRouteLabels[route.authorisation] : "Not applicable"}
-            </strong>
-            <p>
-              {route.processingDays
-                ? `Decision within up to ${route.processingDays} days`
-                : "No third-country procedure"}
-            </p>
-          </div>
-          <Image
-            src="https://flagcdn.com/w80/sk.png"
-            alt="Slovakia flag"
-            width={36}
-            height={26}
-            unoptimized
-          />
-        </div>
+        <Link href={editHref} className={styles.editLink}>
+          Edit answers
+        </Link>
       </header>
 
-      <section className={routeStyles.routeFacts}>
-        <article>
-          <MapPin size={18} aria-hidden="true" />
-          <div>
-            <small>DESTINATION</small>
-            <strong>Slovakia</strong>
-          </div>
-        </article>
-        <article>
-          <Flag size={18} aria-hidden="true" />
-          <div>
-            <small>CITIZENSHIP</small>
-            <strong>{citizenshipName}</strong>
-          </div>
-        </article>
-        <article>
-          <CalendarDays size={18} aria-hidden="true" />
-          <div>
-            <small>CURRENT STATUS</small>
-            <strong>{getResidenceStatusLabel(profile.currentResidenceStatus, "Slovakia")}</strong>
-          </div>
-        </article>
-        <article>
-          <ShieldCheck size={18} aria-hidden="true" />
-          <div>
-            <small>RULES CHECKED</small>
-            <strong>{slovakiaWorkRules.checkedAt}</strong>
-          </div>
-        </article>
-      </section>
-
-      <div className={routeStyles.layout}>
-        <div className={routeStyles.timeline}>
-          <MovePlanner
-            moveDate={moveDate}
-            minDate={addDays(asOfDate, 1)}
-            plan={plan}
-            unavailableReason={
-              route.authorisation
-                ? null
-                : "Your answers do not use the non-EU work residence procedure, so there are no residence deadlines to plan."
-            }
-            onMoveDateChange={changeMoveDate}
-            dateLabel="Start date"
-            description="Enter the date you need to be living and working in Slovakia. DocRoute counts back from it using the published maximum periods."
-          />
-
-          <RouteStageList
-            stages={route.stages}
-            sources={route.sources}
-            completed={completed}
-            datedLabels={datedLabels}
-            onToggle={(taskId) => routeProgress.toggle(taskId)}
-          />
-
-          <section className={routeStyles.sources}>
-            <header>
-              <FileCheck2 size={21} aria-hidden="true" />
-              <div>
-                <p className={routeStyles.eyebrow}>SOURCE REGISTER</p>
-                <h2>Rules used in this route</h2>
-              </div>
-            </header>
-
-            <div>
-              {route.sources.map((source) => (
-                <a href={source.url} target="_blank" rel="noopener noreferrer" key={source.id}>
-                  <span>
-                    <small>
-                      {source.authority === "official" ? "OFFICIAL SOURCE" : "AUTHORITATIVE GUIDANCE"}
-                    </small>
-                    <strong>{source.title}</strong>
-                    <p>
-                      {source.publisher} · checked {source.checkedAt}
-                    </p>
+      {route.authorisation && (
+        <ol className={styles.strip} aria-label="Route stages">
+          {route.stages.map((stage, index) => {
+            const tasks = stage.tasks.filter((task) => isActionableTask(task.status));
+            const done = tasks.filter((task) => completed.has(task.id)).length;
+            const when = stageWhen(stage.id);
+            const complete = tasks.length > 0 && done === tasks.length;
+            return (
+              <li key={stage.id} data-complete={complete || undefined}>
+                <a href={`#stage-${stage.id}`}>
+                  <span className={styles.stop} aria-hidden="true">
+                    {complete ? <Check size={13} /> : index + 1}
                   </span>
-                  <ExternalLink size={16} aria-hidden="true" />
+                  <strong>{stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
+                  <span className={styles.when} data-tone={when.tone}>
+                    {when.label}
+                  </span>
+                  {tasks.length > 0 && (
+                    <small>
+                      {done} of {tasks.length} done
+                    </small>
+                  )}
                 </a>
-              ))}
-            </div>
-          </section>
-        </div>
+              </li>
+            );
+          })}
+        </ol>
+      )}
 
-        <aside className={routeStyles.controlPanel}>
-          <p className={routeStyles.eyebrow}>ROUTE CONTROL</p>
-          <h2>{progress}% prepared</h2>
-
-          <p
-            className={routeStyles.memoryStatus}
-            data-error={routeProgress.error ? "true" : undefined}
-            role={routeProgress.error ? "status" : undefined}
-          >
-            {routeProgress.loading
-              ? "Loading your progress…"
-              : routeProgress.error
-                ? "Sync is unavailable. Progress is still saved on this device."
-                : routeProgress.syncing
-                  ? "Saving progress…"
-                  : routeProgress.signedIn
-                    ? "Progress syncs with your DocRoute account."
-                    : "Progress is saved on this device."}
-          </p>
-
-          <div className={routeStyles.progressRing}>
-            <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r="52" />
-              <circle
-                cx="60"
-                cy="60"
-                r="52"
-                pathLength="100"
-                style={{ strokeDashoffset: 100 - progress }}
-              />
-            </svg>
-            <strong>{completedCount}</strong>
-            <span>of {actionable.length}</span>
-          </div>
-
-          <div className={routeStyles.controlStats}>
-            <div>
-              <span>Stages</span>
-              <strong>{route.stages.length}</strong>
-            </div>
-            <div>
-              <span>Open actions</span>
-              <strong>{actionable.length - completedCount}</strong>
-            </div>
-            <div>
-              <span>Official sources</span>
-              <strong>{officialSourceCount}</strong>
-            </div>
-          </div>
-
-          {plan && (
-            <div className={routeStyles.controlDeadline}>
-              <CalendarDays size={19} aria-hidden="true" />
-              <div>
-                <small>LATEST FILING DATE</small>
-                <strong>{plan.items.find((item) => item.id === "residence-filing")?.dateLabel}</strong>
-                <span>Residence application</span>
-              </div>
+      <div className={styles.layout}>
+        <div className={styles.main}>
+          {plan && plan.warnings.length > 0 && (
+            <div className={styles.notice} role="status">
+              <AlertTriangle size={17} aria-hidden="true" />
+              <ul>
+                {plan.warnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
             </div>
           )}
 
-          <Link href={editHref} className={routeStyles.editRoute}>
-            Edit my answers
-            <ArrowRight size={16} aria-hidden="true" />
-          </Link>
+          {route.stages.map((stage, index) => (
+            <section
+              key={stage.id}
+              id={`stage-${stage.id}`}
+              className={styles.stage}
+              aria-labelledby={`stage-${stage.id}-title`}
+            >
+              <header className={styles.stageHead}>
+                <span className={styles.stageNumber} aria-hidden="true">
+                  {route.authorisation ? index + 1 : <Info size={15} />}
+                </span>
+                <div>
+                  <h2 id={`stage-${stage.id}-title`}>{stage.title}</h2>
+                  <p>{stage.description}</p>
+                </div>
+              </header>
 
-          <p className={routeStyles.disclaimer}>{route.disclaimer}</p>
+              <ul className={styles.tasks}>
+                {stage.tasks.map((task) => {
+                  const canTick = isActionableTask(task.status);
+                  const done = completed.has(task.id);
+                  const due = datedLabels.get(task.id) ?? task.dueLabel;
+                  const dueTone = plan?.items.find((item) => item.taskId === task.id)?.tone;
+                  return (
+                    <li
+                      key={task.id}
+                      className={styles.task}
+                      data-status={task.status}
+                      data-done={done || undefined}
+                    >
+                      {canTick ? (
+                        <button
+                          type="button"
+                          className={styles.tick}
+                          aria-pressed={done}
+                          aria-label={done ? `Mark ${task.title} as not done` : `Mark ${task.title} as done`}
+                          onClick={() => routeProgress.toggle(task.id)}
+                        >
+                          {done && <Check size={14} aria-hidden="true" />}
+                        </button>
+                      ) : (
+                        <span className={styles.infoMark} aria-hidden="true">
+                          <Info size={14} />
+                        </span>
+                      )}
+                      <div className={styles.taskBody}>
+                        <div className={styles.taskTitle}>
+                          <h3>{task.title}</h3>
+                          {task.status === "attention" && (
+                            <span className={styles.flag}>Needs attention</span>
+                          )}
+                        </div>
+                        <p>{task.description}</p>
+                        <div className={styles.taskMeta}>
+                          {due && (
+                            <span className={styles.due} data-tone={dueTone}>
+                              <CalendarDays size={13} aria-hidden="true" />
+                              {due}
+                            </span>
+                          )}
+                          {route.sources
+                            .filter((source) => task.sourceIds.includes(source.id))
+                            .map((source) => (
+                              <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer">
+                                {source.title}
+                              </a>
+                            ))}
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ))}
+
+          <section className={styles.sourceList} aria-labelledby="work-sources">
+            <h2 id="work-sources">Sources</h2>
+            <ul>
+              {route.sources.map((source) => (
+                <li key={source.id}>
+                  <a href={source.url} target="_blank" rel="noopener noreferrer">
+                    {source.title}
+                    <ExternalLink size={13} aria-hidden="true" />
+                  </a>
+                  <span>
+                    {source.publisher}
+                    {source.authority === "official" ? " (official)" : ""}, checked{" "}
+                    {formatPlanDate(source.checkedAt)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className={styles.disclaimer}>{route.disclaimer}</p>
+          </section>
+        </div>
+
+        <aside className={styles.side} aria-label="Dates and progress">
+          {route.authorisation ? (
+            <>
+              <label className={styles.dateField}>
+                <span>When do you start work?</span>
+                <input
+                  type="date"
+                  value={moveDate}
+                  min={addDays(asOfDate, 1)}
+                  onChange={(event) => changeMoveDate(event.target.value)}
+                />
+              </label>
+              {!plan && (
+                <p className={styles.sideHint}>
+                  Pick a date to see when each step has to happen. Dates use the
+                  published maximum periods.
+                </p>
+              )}
+
+              {plan && (
+                <ol className={styles.keyDates}>
+                  {plan.items.map((item) => (
+                    <li key={item.id} data-tone={item.tone}>
+                      <span>{item.title}</span>
+                      <strong>{item.dateLabel}</strong>
+                    </li>
+                  ))}
+                </ol>
+              )}
+              {plan && (
+                <p className={styles.sideHint}>
+                  Labour Office time is not published and public holidays are not
+                  counted, so leave a margin.
+                </p>
+              )}
+            </>
+          ) : (
+            <p className={styles.sideHint}>No residence deadlines to plan for your answers.</p>
+          )}
+
+          <div className={styles.progress}>
+            <div className={styles.progressLine}>
+              <span>
+                {completedCount} of {actionable.length} steps done
+              </span>
+              <strong>{progress}%</strong>
+            </div>
+            <div className={styles.bar} aria-hidden="true">
+              <span style={{ width: `${progress}%` }} />
+            </div>
+            <p className={styles.sync} data-error={routeProgress.error ? "true" : undefined}>
+              {routeProgress.loading
+                ? "Loading your progress…"
+                : routeProgress.error
+                  ? "Sync is unavailable. Progress is still saved on this device."
+                  : routeProgress.syncing
+                    ? "Saving progress…"
+                    : routeProgress.signedIn
+                      ? "Progress syncs with your account."
+                      : "Progress is saved on this device."}
+            </p>
+          </div>
         </aside>
       </div>
     </div>

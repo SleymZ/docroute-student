@@ -127,8 +127,8 @@ still publish only their 2026/27 rules.
   EU-EEA-Swiss / contradictory profiles), shared with work.
 - `src/lib/residence/slovakia-work.ts`: the work route builder; answers
   parsing in `src/lib/work-profile.ts`; `planWorkResidenceDeadlines` in
-  `deadlines.ts`. `RouteStageList` renders the work route's stages (the
-  study preview still has its own copy of that markup).
+  `deadlines.ts`. `WorkRouteScreen` has its own layout (route strip,
+  checklist rows, sticky date panel), separate from the study preview.
 - `src/lib/residence/deadlines.ts`: pure date calculations for the planner
   (UTC, weekends skipped, public holidays not included; dates formatted by
   hand to avoid ICU differences between server and browser).
