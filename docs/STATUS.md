@@ -1,4 +1,4 @@
-# DocRoute Student — project status
+# DocRoute — project status
 
 Last updated: 2026-10-23. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.

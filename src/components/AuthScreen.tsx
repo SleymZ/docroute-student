@@ -250,7 +250,7 @@ export function AuthScreen({
 
             <span>
               <strong>DocRoute</strong>
-              <small>STUDENT</small>
+              <small>EUROPE</small>
             </span>
           </Link>
 
@@ -349,7 +349,7 @@ export function AuthScreen({
             <span className={styles.mobileBrandMark}>
               <Route size={21} aria-hidden="true" />
             </span>
-            <strong>DocRoute Student</strong>
+            <strong>DocRoute</strong>
           </Link>
 
           <div className={styles.securityLabel}>

@@ -18,32 +18,34 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "DocRoute Student | University applications mapped",
-    template: "%s | DocRoute Student",
+    default: "DocRoute | Your move to Europe, mapped",
+    template: "%s | DocRoute",
   },
   description:
-    "Explore European universities and build a source-linked route from application documents to student residence.",
-  applicationName: "DocRoute Student",
+    "Find European universities, the documents you need and the deadlines for each one, with a source-linked route from application to residence permit.",
+  applicationName: "DocRoute",
   keywords: [
     "European universities",
     "university application",
     "admission documents",
     "student residence",
     "study in Europe",
+    "move to Europe",
+    "residence permit",
   ],
   openGraph: {
     type: "website",
-    siteName: "DocRoute Student",
-    title: "DocRoute Student",
+    siteName: "DocRoute",
+    title: "DocRoute",
     description:
-      "One source-linked route from university application to student residence.",
+      "One source-linked route from university application to residence permit, with deadlines for every document.",
     url: "/",
   },
   twitter: {
     card: "summary",
-    title: "DocRoute Student",
+    title: "DocRoute",
     description:
-      "One source-linked route from university application to student residence.",
+      "One source-linked route from university application to residence permit, with deadlines for every document.",
   },
   robots: {
     index: true,

@@ -114,18 +114,18 @@ export function RoutePlanner() {
   return (
     <section className="hero" id="route-builder">
       <div className="hero-copy">
-        <p className="eyebrow">Admission → Residence</p>
+        <p className="eyebrow">Documents → Deadlines → Residence</p>
 
         <h1>
-          Your route to study
+          Your move
           <br />
-          in Europe, <span>mapped.</span>
+          to Europe, <span>mapped.</span>
         </h1>
 
         <p className="hero-description">
-          Plan your university applications and the documents
-          you’ll need along the way — from admission to student
-          residence.
+          Find the right university, see which documents you need
+          and get the deadlines for each one — from application to
+          residence permit.
         </p>
 
         <RouteForm

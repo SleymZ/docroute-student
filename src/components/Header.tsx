@@ -39,7 +39,7 @@ export function Header() {
       <Link
         href="/"
         className={styles.brand}
-        aria-label="DocRoute Student — home"
+        aria-label="DocRoute — home"
       >
         <span className={styles.brandMark}>
           <Route
@@ -51,7 +51,7 @@ export function Header() {
 
         <span className={styles.brandText}>
           <span className={styles.brandName}>DocRoute</span>
-          <span className={styles.brandCaption}>STUDENT</span>
+          <span className={styles.brandCaption}>EUROPE</span>
         </span>
       </Link>
 
