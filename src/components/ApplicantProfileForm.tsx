@@ -21,7 +21,7 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
-import catalog from "@/data/universities.json";
+import { applicantCountryOptions } from "@/data/applicant-countries";
 import { programOptions } from "@/data/demo-destinations";
 import {
   findResidenceStatusConflict,
@@ -75,42 +75,7 @@ const languageOptions = [
   { code: "other", name: "Another language" },
 ];
 
-const applicantCountries = [
-  ["IL", "Israel"],
-  ["IN", "India"],
-  ["US", "United States"],
-  ["CA", "Canada"],
-  ["AU", "Australia"],
-  ["AE", "United Arab Emirates"],
-  ["KZ", "Kazakhstan"],
-  ["UZ", "Uzbekistan"],
-  ["CN", "China"],
-  ["JP", "Japan"],
-  ["KR", "South Korea"],
-  ["PK", "Pakistan"],
-  ["BD", "Bangladesh"],
-  ["NP", "Nepal"],
-  ["LK", "Sri Lanka"],
-  ["EG", "Egypt"],
-  ["MA", "Morocco"],
-  ["NG", "Nigeria"],
-  ["ZA", "South Africa"],
-  ["BR", "Brazil"],
-  ["MX", "Mexico"],
-  ["ZZ", "Other country"],
-] as const;
-
-const countryOptions = [
-  ...new Map([
-    ...catalog.universities.map(
-      (university) =>
-        [university.countryCode, university.country] as const,
-    ),
-    ...applicantCountries,
-  ]).entries(),
-]
-  .map(([code, name]) => ({ code, name }))
-  .sort((a, b) => a.name.localeCompare(b.name, "en"));
+const countryOptions = applicantCountryOptions;
 
 const waiverOptions: Array<{
   value: WaiverEvidence;

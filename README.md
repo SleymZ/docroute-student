@@ -4,9 +4,10 @@ DocRoute helps people move to Europe with one source-linked route: find a
 university (for students), see which documents are needed and get a deadline
 for each one, from application to residence permit.
 
-Study is the first supported purpose. Work, family and business are planned
-and appear in the home form as "coming soon" until their official rules are
-verified.
+Study and work are supported for Slovakia. The work route covers non-EU
+citizens: single permit, EU Blue Card and Slovak graduates, from the job offer
+to duties after arrival. Family and business are planned and appear in the home
+form as "coming soon" until their official rules are verified.
 
 The public Explore area is a university directory. Personalised matching is
 kept separate in the **Build my route** flow and only labels a program as

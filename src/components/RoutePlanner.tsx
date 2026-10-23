@@ -9,6 +9,7 @@ import {
   programOptions,
 } from "@/data/demo-destinations";
 import { verifiedPrograms } from "@/data/verified-programs";
+import type { MovePurpose } from "@/data/move-purposes";
 
 import type { Destination } from "@/types/destination";
 import { RouteForm } from "@/components/RouteForm";
@@ -28,8 +29,12 @@ const educationCountryCodes: Record<string, string> = {
   "United Kingdom": "GB",
 };
 
+// Only Slovakia has a verified work route (third-country citizens).
+const workRouteCountries = new Set(["SK"]);
+
 export function RoutePlanner() {
   const router = useRouter();
+  const [purpose, setPurpose] = useState<MovePurpose>("study");
   const [documentCountry, setDocumentCountry] = useState("Israel");
   const [destination, setDestination] =
     useState<Destination>("Slovakia");
@@ -37,17 +42,23 @@ export function RoutePlanner() {
 
   const destinationCountryCode =
     destinationCountryCodes[destination];
-  const routeAvailable = verifiedPrograms.some(
-    (verifiedProgram) =>
-      verifiedProgram.countryCode === destinationCountryCode &&
-      verifiedProgram.category === program,
-  );
+  const routeAvailable =
+    purpose === "work"
+      ? workRouteCountries.has(destinationCountryCode)
+      : verifiedPrograms.some(
+          (verifiedProgram) =>
+            verifiedProgram.countryCode === destinationCountryCode &&
+            verifiedProgram.category === program,
+        );
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const params = new URLSearchParams(window.location.search);
 
       const requestedDestination = params.get("destination");
+      if (params.get("purpose") === "work") {
+        setPurpose("work");
+      }
       const requestedProgram = params.get("program");
 
       const validDestination = destinationOptions.find(
@@ -72,6 +83,15 @@ export function RoutePlanner() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (purpose === "work") {
+      if (!routeAvailable) return;
+      const workParams = new URLSearchParams({ country: destinationCountryCode });
+      const citizenship = educationCountryCodes[documentCountry];
+      if (citizenship) workParams.set("citizenship", citizenship);
+      router.push(`/route/work?${workParams.toString()}`);
+      return;
+    }
 
     const params = new URLSearchParams({
       country: destinationCountryCode,
@@ -129,6 +149,8 @@ export function RoutePlanner() {
         </p>
 
         <RouteForm
+          purpose={purpose}
+          onPurposeChange={setPurpose}
           documentCountry={documentCountry}
           destination={destination}
           program={program}

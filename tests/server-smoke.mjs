@@ -168,6 +168,41 @@ try {
   }
   assert.ok(howItWorks.includes('href="/how-it-works"'));
 
+  // Work route: questionnaire without answers, full route with answers.
+  const workForm = await html("/route/work?country=SK&citizenship=UA");
+  assert.ok(workForm.includes("Build my work route"));
+  assert.ok(workForm.includes('content="noindex, nofollow"'));
+  const workParams = new URLSearchParams({
+    country: "SK",
+    citizenship: "UA",
+    residenceStatus: "non-eu-passport-no-residence",
+    offer: "yes",
+    skGraduate: "no",
+    blueCard: "unsure",
+    shortage: "no",
+  });
+  const work = await html(`/route/work?${workParams}&move=2027-05-03`);
+  for (const text of [
+    "Single permit: Labour Office confirmation",
+    "Employer reports the vacancy",
+    "No later than 4 Feb 2027",
+    "You may qualify for an EU Blue Card instead",
+    "Apply in person at a Slovak embassy",
+  ]) {
+    assert.ok(work.includes(text), text);
+  }
+  const graduateParams = new URLSearchParams(workParams);
+  graduateParams.set("skGraduate", "yes");
+  const graduate = await html(`/route/work?${graduateParams}`);
+  assert.ok(graduate.includes("No work permit or vacancy confirmation"));
+  assert.ok(!graduate.includes("Employer reports the vacancy"));
+  const euParams = new URLSearchParams(workParams);
+  euParams.set("citizenship", "DE");
+  euParams.set("residenceStatus", "eu-eea-swiss-passport");
+  const eu = await html(`/route/work?${euParams}`);
+  assert.ok(eu.includes("EU, EEA or Swiss citizen registration route"));
+  assert.ok(!eu.includes("Criminal-record documents"));
+
   const openDetail = await html(links[0]);
   const previewLinks = [
     ...openDetail.matchAll(/<a[^>]+href="(\/route\/preview[^"]*)"/g),
@@ -175,7 +210,7 @@ try {
   assert.equal(previewLinks.length, 2);
 
   console.log(
-    "PASS: production SSR results → sourced requirements → preview; four profile-preserving links; English-only gaps, unsupported degree and mismatched-preview guards; university page gates every Preview link on canBuildRoute; coming-soon programs and How it works render.",
+    "PASS: production SSR results → sourced requirements → preview; four profile-preserving links; English-only gaps, unsupported degree and mismatched-preview guards; university page gates every Preview link on canBuildRoute; coming-soon programs, How it works and the work route render.",
   );
 } finally {
   server.kill("SIGTERM");

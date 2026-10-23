@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
+  BriefcaseBusiness,
   CalendarClock,
   CircleDashed,
   Clock3,
@@ -21,6 +22,7 @@ import { Header } from "@/components/Header";
 import { movePurposes } from "@/data/move-purposes";
 import { pendingProgramGroups } from "@/data/pending-programs";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
+import { slovakiaWorkRules } from "@/data/slovakia-work";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { matchStatusLabels } from "@/lib/match-programs";
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -128,6 +130,9 @@ export default function HowItWorksPage() {
       });
     }
   }
+  const availablePurposes = movePurposes
+    .filter((purpose) => purpose.available)
+    .map((purpose) => purpose.label);
   const comingPurposes = movePurposes
     .filter((purpose) => !purpose.available)
     .map((purpose) => purpose.label);
@@ -143,9 +148,9 @@ export default function HowItWorksPage() {
             One route from application to arrival, built from official rules.
           </h1>
           <p className={styles.lead}>
-            Moving to study in Europe means following several sets of rules at
-            once: the university&apos;s, the recognition office&apos;s and the
-            immigration authority&apos;s. DocRoute puts the parts that apply to
+            Moving to Europe to study or work means following several sets of
+            rules at once: the university&apos;s or the employer&apos;s, the
+            labour office&apos;s and the immigration authority&apos;s. DocRoute puts the parts that apply to
             you in order, with a source and a deadline for each step.
           </p>
           <div className={styles.heroActions}>
@@ -185,6 +190,28 @@ export default function HowItWorksPage() {
             profile. A personal route needs a profile; as a guest it is kept in
             your browser, and after you log in it syncs with your account.
           </p>
+
+          <div className={styles.workNote}>
+            <span className={styles.icon}>
+              <BriefcaseBusiness size={20} aria-hidden="true" />
+            </span>
+            <div>
+              <h3>Moving for work instead?</h3>
+              <p>
+                Choose <strong>Work</strong> on the home page. Six questions
+                (citizenship, current status, job offer, Slovak diploma, EU Blue
+                Card conditions, shortage occupation) decide the official
+                procedure: the single permit, the EU Blue Card or the exemption
+                for Slovak graduates. You get the employer&apos;s steps, your
+                residence application and deadlines counted back from your start
+                date.
+              </p>
+              <Link href="/route/work?country=SK" className={styles.inlineLink}>
+                Start a work route
+                <ArrowRight size={15} aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
         </section>
 
         <section className={styles.section} aria-labelledby="verified-heading">
@@ -330,6 +357,18 @@ export default function HowItWorksPage() {
                   </small>
                 </li>
                 <li>
+                  <strong>
+                    {slovakiaWorkRules.jurisdiction}: temporary residence for
+                    employment
+                  </strong>
+                  <span>
+                    Single permit, EU Blue Card and Slovak graduates, for
+                    citizens of countries outside the EU, EEA and Switzerland.
+                    Includes the start-date deadline planner.
+                  </span>
+                  <small>Checked {formatPlanDate(slovakiaWorkRules.checkedAt)}</small>
+                </li>
+                <li>
                   <strong>EU, EEA and Swiss citizens</strong>
                   <span>
                     Registration rules are not verified yet; the route says so
@@ -343,8 +382,8 @@ export default function HowItWorksPage() {
               <h3>Reasons for moving</h3>
               <ul>
                 <li>
-                  <strong>Study</strong>
-                  <span>Available now.</span>
+                  <strong>{availablePurposes.join(", ")}</strong>
+                  <span>Available now, for Slovakia.</span>
                 </li>
                 <li>
                   <strong>{comingPurposes.join(", ")}</strong>

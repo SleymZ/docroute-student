@@ -186,6 +186,51 @@
   line-height: 1.6;
 }
 
+.workNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 860px;
+  margin-top: 22px;
+  padding: 18px;
+  border: 1px solid rgba(255, 128, 103, 0.24);
+  border-radius: 16px;
+  background: rgba(10, 32, 43, 0.6);
+}
+
+.workNote h3 {
+  margin: 0;
+  color: #f5f3ee;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.workNote p {
+  margin: 6px 0 0;
+  color: #aec3ce;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.workNote strong {
+  color: #ffb3a1;
+}
+
+.inlineLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  color: #8cdae7;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.inlineLink:hover {
+  text-decoration: underline;
+}
+
 /* Labels */
 
 .labels {
