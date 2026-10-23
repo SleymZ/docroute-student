@@ -101,3 +101,9 @@ test("missing, invalid or past move dates produce no plan", () => {
     );
   }
 });
+
+test("plan dates are formatted without locale-dependent month names", async () => {
+  const { formatPlanDate } = await import("../src/lib/residence/deadlines");
+  assert.equal(formatPlanDate("2027-09-20"), "20 Sep 2027");
+  assert.equal(formatPlanDate("2027-06-07"), "7 Jun 2027");
+});

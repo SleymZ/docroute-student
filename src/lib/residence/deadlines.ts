@@ -76,13 +76,16 @@ function daysBetween(from: string, to: string) {
   return Math.round((toDate(to).getTime() - toDate(from).getTime()) / 86_400_000);
 }
 
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+// Formatted by hand: Intl month abbreviations differ between ICU versions
+// ("Sep" vs "Sept"), which would make server and browser HTML disagree.
 export function formatPlanDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(toDate(value));
+  const [year, month, day] = value.split("-").map(Number);
+  return `${day} ${MONTHS[month - 1]} ${year}`;
 }
 
 function toneFor(date: string, today: string, soonDays: number): DeadlineTone {

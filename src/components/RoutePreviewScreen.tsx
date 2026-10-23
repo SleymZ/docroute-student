@@ -138,7 +138,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
         item.taskId as string,
         // That task bundles several duties; only the arrival report is dated.
         item.taskId === "post-card-duties"
-          ? `Report arrival ${item.dateLabel.toLowerCase()}`
+          ? `Report arrival ${item.dateLabel.replace(/^By /, "by ")}`
           : item.dateLabel,
       ]),
   );
