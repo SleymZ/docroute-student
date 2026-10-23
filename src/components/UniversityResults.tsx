@@ -558,8 +558,15 @@ export function UniversityResults({
               (program) => program.universityHost === getWebsiteHost(university.website) &&
                 program.countryCode === countryCode && program.category === selectedProgram,
             ) : undefined;
+            // Catalog names come from an imported list and can be inaccurate
+            // ("University of Zilinska"); prefer the name from checked data.
             const displayName =
-              firstMatch?.program.universityName ?? university.name;
+              firstMatch?.program.universityName ??
+              directoryProgram?.universityName ??
+              pendingGroups.find(
+                (group) => group.universityId === university.id,
+              )?.universityName ??
+              university.name;
             const universityParams = new URLSearchParams(resultsParams);
 
             if (firstMatch) {

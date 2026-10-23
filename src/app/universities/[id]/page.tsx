@@ -395,7 +395,9 @@ export default async function UniversityPage({
             <p>
               {verifiedProgram
                 ? `Bachelor · ${verifiedProgram.durationYears} years · full-time`
-                : "Program availability requires verification"}
+                : pendingGroups.length > 0
+                  ? `${pendingProgramCount} programs listed for ${pendingGroups[0].intake}`
+                  : "Program availability requires verification"}
             </p>
           </div>
         </article>
