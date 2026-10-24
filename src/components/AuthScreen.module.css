@@ -103,7 +103,7 @@
   flex: 0 0 auto;
   border: 1px solid light-dark(rgba(210, 93, 66, 0.34), rgba(255, 134, 105, 0.34));
   background: light-dark(rgba(245, 111, 87, 0.08), rgba(255, 120, 95, 0.08));
-  color: light-dark(#a93722, #ff856d);
+  color: light-dark(#c44a33, #ff856d);
 }
 
 .brandMark {
@@ -248,7 +248,7 @@
   padding: 6px 8px;
   border: 1px solid light-dark(rgba(212, 91, 65, 0.18), rgba(255, 130, 102, 0.18));
   border-radius: 7px;
-  color: light-dark(#9e432d, #ff9a81);
+  color: light-dark(#b8563e, #ff9a81);
   font-size: 8px;
   letter-spacing: 0.12em;
 }
@@ -293,7 +293,7 @@
 
 .stageComplete {
   border-color: light-dark(rgba(47, 156, 111, 0.43), rgba(116, 219, 170, 0.43));
-  color: light-dark(#0a764d, #7ce2af);
+  color: light-dark(#248c5f, #7ce2af);
 }
 
 .checkMark {
@@ -342,7 +342,7 @@
   gap: 9px;
   padding-top: 17px;
   border-top: 1px solid light-dark(rgba(62, 106, 119, 0.14), rgba(131, 190, 207, 0.14));
-  color: light-dark(#01764c, #7de0ae);
+  color: light-dark(#208c5f, #7de0ae);
   font-size: 9px;
 }
 
@@ -365,7 +365,7 @@
 }
 
 .storyFooter svg {
-  color: light-dark(#0a764d, #7ce2af);
+  color: light-dark(#248c5f, #7ce2af);
 }
 
 .authPanel {

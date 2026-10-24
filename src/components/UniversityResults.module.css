@@ -125,7 +125,7 @@
 .directoryPrompt > a {
   border-color: light-dark(rgba(213, 90, 67, 0.34), rgba(255, 128, 103, 0.34));
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#9e432e, #ff9a82);
+  color: light-dark(#b8563f, #ff9a82);
 }
 
 .memoryStatus {
@@ -173,7 +173,7 @@
 .coverageActions > a:first-child {
   border-color: light-dark(rgba(213, 90, 67, 0.38), rgba(255, 128, 103, 0.38));
   background: light-dark(rgba(241, 115, 91, 0.09), rgba(255, 128, 103, 0.09));
-  color: light-dark(#9e432e, #ff9a82);
+  color: light-dark(#b8563f, #ff9a82);
 }
 
 .matchCard {
@@ -221,7 +221,7 @@
 
 .statusStrong {
   background: light-dark(rgba(78, 181, 133, 0.11), rgba(117, 219, 169, 0.11));
-  color: light-dark(#0c764f, #75dba9);
+  color: light-dark(#258c61, #75dba9);
 }
 
 .statusConditional {
@@ -233,7 +233,7 @@
 .statusMoreInformation,
 .statusUnavailable {
   background: light-dark(rgba(199, 147, 82, 0.1), rgba(239, 185, 120, 0.1));
-  color: light-dark(#87570d, #efb978);
+  color: light-dark(#9f6b23, #efb978);
 }
 
 .matchSummary {
@@ -260,7 +260,7 @@
 }
 
 .matchFacts svg {
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .routeLink {
@@ -279,7 +279,7 @@
   }
 
   .universityTitleLink:hover {
-    color: light-dark(#a23f27, #ff9277);
+    color: light-dark(#bc5238, #ff9277);
   }
 
   .profileLink:hover {

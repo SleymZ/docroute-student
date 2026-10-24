@@ -213,7 +213,7 @@
 }
 
 .workNote strong {
-  color: light-dark(#904e3f, #ffb3a1);
+  color: light-dark(#a96151, #ffb3a1);
 }
 
 .inlineLink {
@@ -265,12 +265,12 @@
 
 .badgeVerified {
   background: light-dark(rgba(71, 183, 129, 0.1), rgba(119, 228, 172, 0.1));
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
 }
 
 .badgeComing {
   background: light-dark(rgba(193, 152, 55, 0.1), rgba(243, 200, 107, 0.1));
-  color: light-dark(#7d5e0a, #f3c86b);
+  color: light-dark(#937221, #f3c86b);
 }
 
 .badgePending {

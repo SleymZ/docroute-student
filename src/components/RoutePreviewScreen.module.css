@@ -67,7 +67,7 @@
 }
 
 .heroCopy h1 span {
-  color: light-dark(#ab341e, #ff8067);
+  color: light-dark(#c6472f, #ff8067);
 }
 
 .heroCopy > p:last-child {
@@ -98,7 +98,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.22), rgba(255, 128, 103, 0.22));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.09), rgba(255, 128, 103, 0.09));
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .heroRoute small,
@@ -150,7 +150,7 @@
   border: 1px solid light-dark(#89a5b2, #294a58);
   border-radius: 14px;
   background: light-dark(rgba(243, 250, 254, 0.82), rgba(11, 35, 46, 0.82));
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .routeFacts small,
@@ -265,7 +265,7 @@
   border: 1px solid light-dark(rgba(203, 99, 74, 0.18), rgba(255, 146, 119, 0.18));
   border-radius: 999px;
   background: light-dark(rgba(241, 115, 91, 0.06), rgba(255, 128, 103, 0.06));
-  color: light-dark(#8f4f3c, #e9a18c);
+  color: light-dark(#a8624d, #e9a18c);
   font-size: 8px;
 }
 
@@ -321,7 +321,7 @@
 .taskToggle[aria-pressed="true"] {
   border-color: light-dark(#309c6e, #75dba9);
   background: light-dark(rgba(78, 181, 133, 0.12), rgba(117, 219, 169, 0.12));
-  color: light-dark(#0c764f, #75dba9);
+  color: light-dark(#258c61, #75dba9);
 }
 
 .taskToggle:disabled {
@@ -352,7 +352,7 @@
 
 .statusReady {
   background: light-dark(rgba(78, 181, 133, 0.1), rgba(117, 219, 169, 0.1));
-  color: light-dark(#0c764f, #75dba9);
+  color: light-dark(#258c61, #75dba9);
 }
 
 .statusAction {
@@ -362,7 +362,7 @@
 
 .statusAttention {
   background: light-dark(rgba(231, 124, 95, 0.09), rgba(255, 145, 116, 0.09));
-  color: light-dark(#a33e23, #ff9174);
+  color: light-dark(#be5134, #ff9174);
 }
 
 .statusInformation,
@@ -399,7 +399,7 @@
   display: flex;
   align-items: center;
   gap: 13px;
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .sources h2 {
@@ -436,7 +436,7 @@
 }
 
 .sources small {
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
   font-size: 7px;
   letter-spacing: 0.11em;
 }
@@ -589,7 +589,7 @@
   border: 1px solid light-dark(rgba(203, 99, 74, 0.18), rgba(255, 146, 119, 0.18));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.055), rgba(255, 128, 103, 0.055));
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .controlDeadline small,
@@ -672,7 +672,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 @media (hover: hover) {

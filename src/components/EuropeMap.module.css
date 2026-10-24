@@ -84,7 +84,7 @@
   border: 1px solid light-dark(rgba(193, 108, 73, 0.16), rgba(255, 164, 128, 0.16));
   border-radius: 11px;
   background: light-dark(rgba(228, 127, 88, 0.08), rgba(255, 151, 112, 0.08));
-  color: light-dark(#954c2e, #f5a383);
+  color: light-dark(#ae5f3f, #f5a383);
 }
 
 .searchField input {
@@ -234,7 +234,7 @@
 
 .selectedBadge {
   margin-left: auto;
-  color: light-dark(#a0412b, #ff967d);
+  color: light-dark(#ba543c, #ff967d);
   font-size: 11px;
 }
 
@@ -361,7 +361,7 @@
   border-radius: 999px;
   background:
     light-dark(rgba(228, 127, 88, 0.08), rgba(255, 151, 112, 0.08));
-  color: light-dark(#944c30, #ffad8f);
+  color: light-dark(#ad5f41, #ffad8f);
   font-size: 8px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -388,7 +388,7 @@
 .pendingCoverage > svg {
   flex-shrink: 0;
   margin-top: 1px;
-  color: light-dark(#9f422b, #ff997e);
+  color: light-dark(#b9553c, #ff997e);
 }
 
 .pendingCoverage strong {
@@ -406,7 +406,7 @@
 }
 
 .pendingVerification {
-  color: light-dark(#944c34, #f0a085);
+  color: light-dark(#ad5f45, #f0a085);
 }
 
 .disabledButton {
@@ -688,7 +688,7 @@
   border: 1px solid light-dark(rgba(25, 157, 120, 0.19), rgba(118, 232, 191, 0.19));
   border-radius: 999px;
   background: light-dark(rgba(31, 186, 134, 0.07), rgba(61, 204, 151, 0.07));
-  color: light-dark(#057556, #70e5ba);
+  color: light-dark(#228b69, #70e5ba);
   font-size: 9px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -717,7 +717,7 @@
 }
 
 .capital svg {
-  color: light-dark(#a43d24, #ff8e73);
+  color: light-dark(#bf5035, #ff8e73);
 }
 
 .countryDescription {
@@ -794,7 +794,7 @@
 }
 
 .interestHeader svg {
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .countryInterest strong {
@@ -810,7 +810,7 @@
   align-items: flex-start;
   gap: 9px;
   margin-top: 11px;
-  color: light-dark(#107557, #6fe0b6);
+  color: light-dark(#278b6a, #6fe0b6);
 }
 
 .verificationNote > svg {

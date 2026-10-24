@@ -17,7 +17,7 @@
 
 .eyebrow {
   margin: 0;
-  color: light-dark(#9e432e, #ff9a82);
+  color: light-dark(#b8563f, #ff9a82);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.17em;
@@ -130,7 +130,7 @@
 
 .items li[data-tone="soon"] .icon {
   border-color: light-dark(rgba(179, 120, 39, 0.35), rgba(255, 191, 115, 0.35));
-  color: light-dark(#895603, #ffbf73);
+  color: light-dark(#a16a1d, #ffbf73);
 }
 
 .items li[data-tone="late"] {
@@ -139,7 +139,7 @@
 
 .items li[data-tone="late"] .icon {
   border-color: light-dark(rgba(213, 90, 67, 0.45), rgba(255, 128, 103, 0.45));
-  color: light-dark(#a63a25, #ff8b72);
+  color: light-dark(#c14d36, #ff8b72);
 }
 
 .items li[data-tone="info"] .icon {
@@ -180,11 +180,11 @@
 }
 
 .items li[data-tone="late"] .when strong {
-  color: light-dark(#9e432e, #ff9a82);
+  color: light-dark(#b8563f, #ff9a82);
 }
 
 .items li[data-tone="soon"] .when strong {
-  color: light-dark(#835920, #ffcf96);
+  color: light-dark(#9b6d32, #ffcf96);
 }
 
 .footnote {

@@ -68,7 +68,7 @@
 }
 
 .hero h1 span {
-  color: light-dark(#ab341e, #ff8067);
+  color: light-dark(#c6472f, #ff8067);
 }
 
 .hero > div > p:last-child {
@@ -152,7 +152,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.22), rgba(255, 128, 103, 0.22));
   border-radius: 13px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .sectionHeader h2 {
@@ -252,7 +252,7 @@
 
 .languageNumber {
   align-self: center;
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
   font-size: 9px;
   letter-spacing: 0.12em;
 }
@@ -449,7 +449,7 @@
 .accountSync[data-state="error"] .syncIcon {
   border-color: light-dark(rgba(213, 90, 67, 0.25), rgba(255, 128, 103, 0.25));
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .accountSync > div {
@@ -500,7 +500,7 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  color: light-dark(#0c764f, #75dba9);
+  color: light-dark(#258c61, #75dba9);
 }
 
 .submitDock p,
@@ -547,7 +547,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.38), rgba(255, 128, 103, 0.38));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#944c3a, #ffac98);
+  color: light-dark(#ad5f4b, #ffac98);
   font-size: 11px;
 }
 
@@ -587,7 +587,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.32), rgba(255, 128, 103, 0.32));
   border-radius: 17px;
   background: light-dark(rgba(241, 115, 91, 0.09), rgba(255, 128, 103, 0.09));
-  color: light-dark(#a43d25, #ff8e74);
+  color: light-dark(#be5036, #ff8e74);
 }
 
 .invalidEyebrow {
@@ -643,7 +643,7 @@
 
   .removeLanguage:not(:disabled):hover {
     border-color: light-dark(#d55a43, #ff8067);
-    color: light-dark(#a23f27, #ff9277);
+    color: light-dark(#bc5238, #ff9277);
   }
 }
 

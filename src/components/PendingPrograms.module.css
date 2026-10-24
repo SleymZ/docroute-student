@@ -25,12 +25,12 @@
   border: 1px solid light-dark(rgba(168, 127, 20, 0.2), rgba(243, 200, 107, 0.2));
   border-radius: 10px;
   background: light-dark(rgba(193, 152, 55, 0.07), rgba(243, 200, 107, 0.07));
-  color: light-dark(#7d5e0a, #f3c86b);
+  color: light-dark(#937221, #f3c86b);
 }
 
 .eyebrow {
   margin: 0 0 4px;
-  color: light-dark(#7d5e0a, #f3c86b);
+  color: light-dark(#937221, #f3c86b);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -81,7 +81,7 @@
   padding: 5px 9px;
   border-radius: 999px;
   background: light-dark(rgba(193, 152, 55, 0.1), rgba(243, 200, 107, 0.1));
-  color: light-dark(#7d5e0a, #f3c86b) !important;
+  color: light-dark(#937221, #f3c86b) !important;
   font-size: 10px !important;
 }
 

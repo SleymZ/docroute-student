@@ -98,7 +98,7 @@
 }
 
 .programIcon {
-  color: light-dark(#954c2e, #f5a383);
+  color: light-dark(#ae5f3f, #f5a383);
 }
 
 /* ===== Выпадающий список ===== */
@@ -175,7 +175,7 @@
 .check {
   flex-shrink: 0;
   margin-left: 6px;
-  color: light-dark(#954c2e, #f5a383);
+  color: light-dark(#ae5f3f, #f5a383);
 }
 
 @media (hover: hover) {
@@ -263,7 +263,7 @@
 .purposeSelected {
   border-color: light-dark(rgba(213, 90, 67, 0.55), rgba(255, 128, 103, 0.55));
   background: light-dark(rgba(241, 115, 91, 0.1), rgba(255, 128, 103, 0.1));
-  color: light-dark(#904e3f, #ffb3a1);
+  color: light-dark(#a96151, #ffb3a1);
 }
 
 .purposeSoon {

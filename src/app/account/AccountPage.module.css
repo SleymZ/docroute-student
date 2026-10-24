@@ -72,7 +72,7 @@
 }
 
 .hero h1 span {
-  color: light-dark(#ab341e, #ff8067);
+  color: light-dark(#c6472f, #ff8067);
 }
 
 .heroLead {
@@ -104,7 +104,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.28), rgba(255, 128, 103, 0.28));
   border-radius: 13px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#a53c25, #ff8d73);
+  color: light-dark(#bf4f36, #ff8d73);
 }
 
 .identityCard small,
@@ -176,11 +176,11 @@
 }
 
 .statusStrip article[data-tone="ok"] {
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
 }
 
 .statusStrip article[data-tone="warn"] {
-  color: light-dark(#895603, #ffbf73);
+  color: light-dark(#a16a1d, #ffbf73);
 }
 
 .statusStrip article + article {
@@ -256,7 +256,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.26), rgba(255, 128, 103, 0.26));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.07), rgba(255, 128, 103, 0.07));
-  color: light-dark(#a53b26, #ff8c73);
+  color: light-dark(#c04e37, #ff8c73);
 }
 
 .profileDetails {
@@ -307,7 +307,7 @@
   padding: 3px 7px;
   border: 1px solid light-dark(rgba(179, 120, 39, 0.26), rgba(255, 191, 115, 0.26));
   border-radius: 999px;
-  color: light-dark(#835920, #ffcf96);
+  color: light-dark(#9b6d32, #ffcf96);
   font-size: 9px;
 }
 
@@ -369,7 +369,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.3), rgba(255, 128, 103, 0.3));
   border-radius: 999px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#984835, #ffa58f);
+  color: light-dark(#b25b46, #ffa58f);
   font-size: 11px;
   font-weight: 700;
   text-align: center;
@@ -389,7 +389,7 @@
 }
 
 .studyFlag[data-on] {
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
 }
 
 .chipList {
@@ -411,7 +411,7 @@
 .chipList span[data-legacy] {
   border-color: light-dark(rgba(179, 120, 39, 0.3), rgba(255, 191, 115, 0.3));
   background: light-dark(rgba(205, 144, 67, 0.06), rgba(255, 191, 115, 0.06));
-  color: light-dark(#835920, #ffcf96);
+  color: light-dark(#9b6d32, #ffcf96);
 }
 
 .mutedNote {
@@ -526,19 +526,19 @@
 .stageList li[data-state="done"] .stageIcon {
   border-color: light-dark(rgba(38, 157, 106, 0.35), rgba(119, 228, 172, 0.35));
   background: light-dark(rgba(71, 183, 129, 0.08), rgba(119, 228, 172, 0.08));
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
 }
 
 .stageList li[data-state="active"] .stageIcon {
   border-color: light-dark(rgba(213, 90, 67, 0.4), rgba(255, 128, 103, 0.4));
   background: light-dark(rgba(241, 115, 91, 0.12), rgba(255, 128, 103, 0.12));
-  color: light-dark(#a63a25, #ff8b72);
+  color: light-dark(#c14d36, #ff8b72);
 }
 
 .stageList li[data-state="blocked"] .stageIcon {
   border-color: light-dark(rgba(179, 120, 39, 0.35), rgba(255, 191, 115, 0.35));
   background: light-dark(rgba(205, 144, 67, 0.08), rgba(255, 191, 115, 0.08));
-  color: light-dark(#895603, #ffbf73);
+  color: light-dark(#a16a1d, #ffbf73);
 }
 
 .stageList li[data-state="upcoming"] {
@@ -589,13 +589,13 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
   font-size: 12px;
   font-weight: 600;
 }
 
 .coverageBox[data-tone="warn"] > p {
-  color: light-dark(#895603, #ffbf73);
+  color: light-dark(#a16a1d, #ffbf73);
 }
 
 .coverageBox > span {
@@ -635,13 +635,13 @@
 
 .coverageBox em[data-status="strong"] {
   background: light-dark(rgba(71, 183, 129, 0.12), rgba(119, 228, 172, 0.12));
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
 }
 
 .coverageBox em[data-status="preparation-required"],
 .coverageBox em[data-status="unavailable"] {
   background: light-dark(rgba(205, 144, 67, 0.1), rgba(255, 191, 115, 0.1));
-  color: light-dark(#835920, #ffcf96);
+  color: light-dark(#9b6d32, #ffcf96);
 }
 
 .routeActions {

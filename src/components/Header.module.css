@@ -56,7 +56,7 @@
     ),
     light-dark(#f4f9fd, #10212b);
 
-  color: light-dark(#a1402a, #ff947b);
+  color: light-dark(#bb533b, #ff947b);
 
   box-shadow: inset 0 1px 0 light-dark(rgba(255, 222, 199, 0.06), rgba(255, 222, 199, 0.06));
 }
@@ -127,7 +127,7 @@
 
 .navLink svg {
   flex-shrink: 0;
-  color: light-dark(#994828, #f49a78);
+  color: light-dark(#b35b39, #f49a78);
   transition: color 180ms ease;
 }
 

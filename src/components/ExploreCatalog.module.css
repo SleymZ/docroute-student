@@ -24,7 +24,7 @@
 }
 
 .resultsHeader h1 span {
-  color: light-dark(#ab341e, #ff8067);
+  color: light-dark(#c6472f, #ff8067);
 }
 
 .resultsHeader > div > p:last-child {
@@ -92,7 +92,7 @@
   border: 1px solid light-dark(#84a0ad, #315261);
   border-radius: 12px;
   background: light-dark(#f3faff, #0e2532);
-  color: light-dark(#954c2e, #f5a383);
+  color: light-dark(#ae5f3f, #f5a383);
 }
 
 .resultsSearch input {
@@ -141,7 +141,7 @@
 }
 
 .scopeTabs span {
-  color: light-dark(#954c2e, #f5a383);
+  color: light-dark(#ae5f3f, #f5a383);
 }
 
 .verificationNotice {
@@ -158,7 +158,7 @@
 
 .verificationNotice svg {
   flex-shrink: 0;
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
 }
 
 .verificationNotice p {
@@ -254,7 +254,7 @@
 
 .verifiedBadge {
   background: light-dark(rgba(71, 183, 129, 0.09), rgba(119, 228, 172, 0.09));
-  color: light-dark(#0a764c, #77e4ac);
+  color: light-dark(#248c5e, #77e4ac);
 }
 
 .pendingBadge {
@@ -277,7 +277,7 @@
 .saveButton.saved {
   border-color: light-dark(rgba(203, 99, 74, 0.4), rgba(255, 146, 119, 0.4));
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#a23f27, #ff9277);
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .location {
