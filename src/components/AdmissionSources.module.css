@@ -8,11 +8,11 @@
 }
 
 .sources a {
-  color: #80c6d4;
+  color: light-dark(#367d8a, #80c6d4);
   text-underline-offset: 3px;
 }
 
 .sources a:hover,
 .sources a:focus-visible {
-  color: #e3f4f7;
+  color: light-dark(#192628, #e3f4f7);
 }

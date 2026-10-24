@@ -5,21 +5,24 @@
    ======================================== */
 
 :root {
-  color-scheme: dark;
+  /* Theme: follows the system by default. The header toggle stores an
+     explicit choice and sets data-theme on <html> (see ThemeScript). Every
+     colour is written as light-dark(<light>, <dark>). */
+  color-scheme: light dark;
 
-  --background: #07121b;
-  --foreground: #f5f3ee;
+  --background: light-dark(#eef2f4, #07121b);
+  --foreground: light-dark(#22211d, #f5f3ee);
 
-  --panel: #0b1b27;
-  --panel-light: #102633;
-  --border: rgba(132, 184, 206, 0.25);
+  --panel: light-dark(#ffffff, #0b1b27);
+  --panel-light: light-dark(#f7fafb, #102633);
+  --border: light-dark(rgba(62, 113, 133, 0.25), rgba(132, 184, 206, 0.25));
 
-  --text: #f5f3ee;
-  --muted: #a6bdca;
-  --cyan: #79ddef;
-  --coral: #ff795f;
-  --coral-hover: #ff927b;
-  --green: #77e4ac;
+  --text: light-dark(#22211d, #f5f3ee);
+  --muted: light-dark(#4c616c, #a6bdca);
+  --cyan: light-dark(#0f8597, #79ddef);
+  --coral: light-dark(#e0583d, #ff795f);
+  --coral-hover: light-dark(#cc4b32, #ff927b);
+  --green: light-dark(#1c9764, #77e4ac);
 
   --page-gutter: 24px;
   --header-height: 72px;
@@ -34,6 +37,14 @@
 
   --radius: 16px;
   --transition: 180ms ease;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 *,
@@ -56,12 +67,12 @@ body {
   background:
     radial-gradient(
       ellipse at 75% 32%,
-      rgba(31, 103, 122, 0.18),
+      light-dark(rgba(162, 208, 223, 0.18), rgba(31, 103, 122, 0.18)),
       transparent 58%
     ),
     radial-gradient(
       ellipse at 8% 85%,
-      rgba(113, 66, 65, 0.07),
+      light-dark(rgba(237, 197, 195, 0.07), rgba(113, 66, 65, 0.07)),
       transparent 45%
     ),
     var(--background);
@@ -115,8 +126,8 @@ a svg {
 }
 
 ::selection {
-  background: rgba(121, 221, 239, 0.25);
-  color: #ffffff;
+  background: light-dark(rgba(72, 175, 192, 0.25), rgba(121, 221, 239, 0.25));
+  color: light-dark(#161616, #ffffff);
 }
 
 :where(a, button, input, select, textarea):focus-visible {
@@ -164,7 +175,7 @@ a svg {
 
   border: 1px solid var(--border);
   border-radius: 11px;
-  background: rgba(16, 38, 51, 0.55);
+  background: light-dark(rgba(244, 251, 255, 0.55), rgba(16, 38, 51, 0.55));
   color: var(--coral);
 }
 
@@ -222,24 +233,24 @@ a svg {
 
 .primary-button {
   background: var(--coral);
-  color: #101820;
-  box-shadow: 0 6px 20px rgba(255, 121, 95, 0.1);
+  color: light-dark(#101820, #101820);
+  box-shadow: 0 6px 20px light-dark(rgba(238, 105, 80, 0.1), rgba(255, 121, 95, 0.1));
 }
 
 .secondary-button {
   border-color: var(--border);
-  background: rgba(11, 27, 39, 0.5);
+  background: light-dark(rgba(242, 247, 252, 0.5), rgba(11, 27, 39, 0.5));
   color: var(--text);
 }
 
 @media (hover: hover) {
   .primary-button:not(:disabled):hover {
     background: var(--coral-hover);
-    box-shadow: 0 8px 24px rgba(255, 121, 95, 0.17);
+    box-shadow: 0 8px 24px light-dark(rgba(238, 105, 80, 0.17), rgba(255, 121, 95, 0.17));
   }
 
   .secondary-button:not(:disabled):hover {
-    border-color: rgba(132, 184, 206, 0.5);
+    border-color: light-dark(rgba(68, 107, 123, 0.5), rgba(132, 184, 206, 0.5));
     background: var(--panel-light);
   }
 }
@@ -316,8 +327,8 @@ a svg {
 
   background: linear-gradient(
     145deg,
-    rgba(16, 36, 48, 0.94),
-    rgba(9, 24, 35, 0.94)
+    light-dark(rgba(244, 250, 254, 0.94), rgba(16, 36, 48, 0.94)),
+    light-dark(rgba(241, 246, 250, 0.94), rgba(9, 24, 35, 0.94))
   );
 }
 
@@ -355,7 +366,7 @@ a svg {
   border: 1px solid var(--border);
   border-radius: 9px;
 
-  background: #102431;
+  background: light-dark(#f4fafe, #102431);
   color: var(--text);
   font-size: 13px;
   font-weight: 400;
@@ -369,7 +380,7 @@ a svg {
 }
 
 .form-grid select:hover {
-  border-color: rgba(132, 184, 206, 0.5);
+  border-color: light-dark(rgba(68, 107, 123, 0.5), rgba(132, 184, 206, 0.5));
 }
 
 .form-grid select:focus-visible {
@@ -426,9 +437,9 @@ a svg {
   margin-top: 14px;
   padding: 14px;
 
-  border: 1px solid rgba(119, 228, 172, 0.25);
+  border: 1px solid light-dark(rgba(38, 157, 106, 0.25), rgba(119, 228, 172, 0.25));
   border-radius: 12px;
-  background: rgba(119, 228, 172, 0.05);
+  background: light-dark(rgba(71, 183, 129, 0.05), rgba(119, 228, 172, 0.05));
 
   font-size: 13px;
   line-height: 1.5;
@@ -602,22 +613,22 @@ a svg {
 
   background:
     linear-gradient(
-      rgba(121, 221, 239, 0.055) 1px,
+      light-dark(rgba(72, 175, 192, 0.055), rgba(121, 221, 239, 0.055)) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(121, 221, 239, 0.055) 1px,
+      light-dark(rgba(72, 175, 192, 0.055), rgba(121, 221, 239, 0.055)) 1px,
       transparent 1px
     ),
     radial-gradient(
       ellipse at 28% 20%,
-      rgba(52, 139, 164, 0.13),
+      light-dark(rgba(52, 139, 164, 0.13), rgba(52, 139, 164, 0.13)),
       transparent 60%
     ),
     radial-gradient(
       ellipse at 80% 65%,
-      rgba(42, 116, 140, 0.1),
+      light-dark(rgba(42, 116, 140, 0.1), rgba(42, 116, 140, 0.1)),
       transparent 55%
     );
 
@@ -656,7 +667,7 @@ a svg {
     ellipse at 72% -25%,
     transparent 0,
     transparent 78px,
-    rgba(121, 221, 239, 0.085) 79px,
+    light-dark(rgba(72, 175, 192, 0.085), rgba(121, 221, 239, 0.085)) 79px,
     transparent 80px,
     transparent 125px
   );
@@ -664,14 +675,14 @@ a svg {
   -webkit-mask-image: radial-gradient(
     ellipse at 38% 25%,
     black 10%,
-    rgba(0, 0, 0, 0.5) 55%,
+    light-dark(rgba(238, 238, 238, 0.5), rgba(0, 0, 0, 0.5)) 55%,
     transparent 85%
   );
 
   mask-image: radial-gradient(
     ellipse at 38% 25%,
     black 10%,
-    rgba(0, 0, 0, 0.5) 55%,
+    light-dark(rgba(238, 238, 238, 0.5), rgba(0, 0, 0, 0.5)) 55%,
     transparent 85%
   );
 }

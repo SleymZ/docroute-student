@@ -11,6 +11,7 @@ import {
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import styles from "./Header.module.css";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function AuthNavigation() {
   const [signedIn, setSignedIn] = useState(false);
@@ -43,6 +44,8 @@ export function AuthNavigation() {
 
   return (
     <div className={styles.actions}>
+      <ThemeToggle />
+
       {signedIn ? (
         <Link href="/account" className={styles.login}>
           <CircleUserRound size={17} aria-hidden="true" />
