@@ -27,8 +27,8 @@
   min-height: 42px;
   padding: 0 16px;
   border-radius: 10px;
-  background: #ff8067;
-  color: #071821;
+  background: light-dark(#f1735b, #ff8067);
+  color: light-dark(#071821, #071821);
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
@@ -44,9 +44,9 @@
   gap: 12px;
   margin: 18px 0 16px;
   padding: 14px;
-  border: 1px solid #294b59;
+  border: 1px solid light-dark(#88a5b2, #294b59);
   border-radius: 16px;
-  background: rgba(10, 32, 43, 0.78);
+  background: light-dark(rgba(242, 249, 253, 0.78), rgba(10, 32, 43, 0.78));
 }
 
 .profileSnapshot > div {
@@ -62,10 +62,10 @@
   flex: 0 0 auto;
   width: 38px;
   height: 38px;
-  border: 1px solid rgba(121, 221, 239, 0.16);
+  border: 1px solid light-dark(rgba(40, 150, 167, 0.16), rgba(121, 221, 239, 0.16));
   border-radius: 10px;
-  background: rgba(121, 221, 239, 0.06);
-  color: #79ddef;
+  background: light-dark(rgba(72, 175, 192, 0.06), rgba(121, 221, 239, 0.06));
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .profileSnapshot p,
@@ -78,14 +78,14 @@
 
 .profileSnapshot small {
   margin-bottom: 4px;
-  color: #6f919f;
+  color: light-dark(#486976, #6f919f);
   font-size: 8px;
   letter-spacing: 0.13em;
 }
 
 .profileSnapshot strong {
   overflow: hidden;
-  color: #dbe7ea;
+  color: light-dark(#273133, #dbe7ea);
   font-size: 11px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -99,23 +99,23 @@
   gap: 7px;
   min-height: 40px;
   padding: 0 13px;
-  border: 1px solid #365a69;
+  border: 1px solid light-dark(#7e9ca9, #365a69);
   border-radius: 10px;
-  color: #8cdae7;
+  color: light-dark(#1a6f7b, #8cdae7);
   font-size: 10px;
   font-weight: 600;
 }
 
 .directoryPrompt {
   grid-template-columns: minmax(0, 1fr) auto;
-  border-color: rgba(255, 128, 103, 0.24);
+  border-color: light-dark(rgba(213, 90, 67, 0.24), rgba(255, 128, 103, 0.24));
   background:
     radial-gradient(
       circle at 92% 0,
-      rgba(255, 128, 103, 0.1),
+      light-dark(rgba(241, 115, 91, 0.1), rgba(255, 128, 103, 0.1)),
       transparent 34%
     ),
-    rgba(10, 32, 43, 0.78);
+    light-dark(rgba(242, 249, 253, 0.78), rgba(10, 32, 43, 0.78));
 }
 
 .directoryPrompt strong {
@@ -123,14 +123,14 @@
 }
 
 .directoryPrompt > a {
-  border-color: rgba(255, 128, 103, 0.34);
-  background: rgba(255, 128, 103, 0.08);
-  color: #ff9a82;
+  border-color: light-dark(rgba(213, 90, 67, 0.34), rgba(255, 128, 103, 0.34));
+  background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
+  color: light-dark(#b8563f, #ff9a82);
 }
 
 .memoryStatus {
   margin: -3px 2px 14px;
-  color: #708f9b;
+  color: light-dark(#4b6874, #708f9b);
   font-size: 9px;
   line-height: 1.5;
 }
@@ -141,16 +141,16 @@
   height: 5px;
   margin: 0 7px 1px 0;
   border-radius: 50%;
-  background: #75dba9;
+  background: light-dark(#4eb585, #75dba9);
   content: "";
 }
 
 .memoryStatus[data-error="true"] {
-  color: #d7a487;
+  color: light-dark(#85573c, #d7a487);
 }
 
 .memoryStatus[data-error="true"]::before {
-  background: #ff9277;
+  background: light-dark(#e67c62, #ff9277);
 }
 
 .coverageActions {
@@ -164,23 +164,23 @@
 .coverageActions > a {
   min-height: 42px;
   padding: 0 14px;
-  border: 1px solid #365a69;
+  border: 1px solid light-dark(#7e9ca9, #365a69);
   border-radius: 10px;
-  background: rgba(121, 221, 239, 0.05);
+  background: light-dark(rgba(72, 175, 192, 0.05), rgba(121, 221, 239, 0.05));
   text-decoration: none;
 }
 
 .coverageActions > a:first-child {
-  border-color: rgba(255, 128, 103, 0.38);
-  background: rgba(255, 128, 103, 0.09);
-  color: #ff9a82;
+  border-color: light-dark(rgba(213, 90, 67, 0.38), rgba(255, 128, 103, 0.38));
+  background: light-dark(rgba(241, 115, 91, 0.09), rgba(255, 128, 103, 0.09));
+  color: light-dark(#b8563f, #ff9a82);
 }
 
 .matchCard {
   padding: 15px;
-  border: 1px solid rgba(121, 221, 239, 0.15);
+  border: 1px solid light-dark(rgba(40, 150, 167, 0.15), rgba(121, 221, 239, 0.15));
   border-radius: 13px;
-  background: rgba(6, 24, 34, 0.52);
+  background: light-dark(rgba(241, 246, 250, 0.52), rgba(6, 24, 34, 0.52));
 }
 
 .matchCard + .matchCard {
@@ -200,13 +200,13 @@
 }
 
 .matchHeading strong {
-  color: #edf2f2;
+  color: light-dark(#202424, #edf2f2);
   font-size: 13px;
 }
 
 .matchHeading > div > span {
   margin-top: 3px;
-  color: #7695a2;
+  color: light-dark(#4b6874, #7695a2);
   font-size: 9px;
 }
 
@@ -220,25 +220,25 @@
 }
 
 .statusStrong {
-  background: rgba(117, 219, 169, 0.11);
-  color: #75dba9;
+  background: light-dark(rgba(78, 181, 133, 0.11), rgba(117, 219, 169, 0.11));
+  color: light-dark(#157048, #75dba9);
 }
 
 .statusConditional {
-  background: rgba(121, 221, 239, 0.1);
-  color: #79ddef;
+  background: light-dark(rgba(72, 175, 192, 0.1), rgba(121, 221, 239, 0.1));
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .statusPreparationRequired,
 .statusMoreInformation,
 .statusUnavailable {
-  background: rgba(239, 185, 120, 0.1);
-  color: #efb978;
+  background: light-dark(rgba(199, 147, 82, 0.1), rgba(239, 185, 120, 0.1));
+  color: light-dark(#855d14, #efb978);
 }
 
 .matchSummary {
   margin: 11px 0 0;
-  color: #97b0ba;
+  color: light-dark(#506870, #97b0ba);
   font-size: 10px;
   line-height: 1.6;
 }
@@ -255,12 +255,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #b6c9d0;
+  color: light-dark(#425359, #b6c9d0);
   font-size: 9px;
 }
 
 .matchFacts svg {
-  color: #ff9277;
+  color: light-dark(#bc5238, #ff9277);
 }
 
 .routeLink {
@@ -268,7 +268,7 @@
   align-items: center;
   gap: 7px;
   margin-top: 13px;
-  color: #7fdbe9;
+  color: light-dark(#02707d, #7fdbe9);
   font-size: 10px;
   font-weight: 700;
 }
@@ -279,17 +279,17 @@
   }
 
   .universityTitleLink:hover {
-    color: #ff9277;
+    color: light-dark(#bc5238, #ff9277);
   }
 
   .profileLink:hover {
-    background: #ff9a82;
+    background: light-dark(#e17f68, #ff9a82);
     transform: translateY(-1px);
   }
 
   .profileSnapshot > a:hover,
   .routeLink:hover {
-    color: #ffffff;
+    color: light-dark(#161616, #ffffff);
   }
 }
 

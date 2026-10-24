@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import styles from "./AuthScreen.module.css";
+import { ThemeToggle } from "./ThemeToggle";
 import { safeNextPath } from "@/lib/safe-next-path";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -254,10 +255,14 @@ export function AuthScreen({
             </span>
           </Link>
 
-          <Link href="/" className={styles.homeLink}>
-            <ArrowLeft size={16} aria-hidden="true" />
-            Back to homepage
-          </Link>
+          <div className={styles.storyActions}>
+            <Link href="/" className={styles.homeLink}>
+              <ArrowLeft size={16} aria-hidden="true" />
+              Back to homepage
+            </Link>
+
+            <ThemeToggle />
+          </div>
         </header>
 
         <div className={styles.storyContent}>

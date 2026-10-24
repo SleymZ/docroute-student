@@ -1,7 +1,7 @@
 .section {
   margin-top: 28px;
   padding: 26px 0 0;
-  border-top: 1px solid rgba(136, 188, 211, 0.15);
+  border-top: 1px solid light-dark(rgba(66, 105, 121, 0.15), rgba(136, 188, 211, 0.15));
 }
 
 .heading {
@@ -14,7 +14,7 @@
 
 .eyebrow {
   margin: 0 0 10px;
-  color: #67d9ed;
+  color: light-dark(#10707d, #67d9ed);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -22,7 +22,7 @@
 
 .heading h2 {
   margin: 0;
-  color: #f5f3ee;
+  color: light-dark(#22211d, #f5f3ee);
   font-size: clamp(22px, 2vw, 30px);
   font-weight: 600;
   letter-spacing: -0.035em;
@@ -30,7 +30,7 @@
 
 .intro {
   margin: 0;
-  color: #a6bcc8;
+  color: light-dark(#4e626c, #a6bcc8);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -45,10 +45,10 @@
 .card {
   min-width: 0;
   overflow: hidden;
-  border: 1px solid rgba(122, 179, 202, 0.26);
+  border: 1px solid light-dark(rgba(68, 110, 127, 0.26), rgba(122, 179, 202, 0.26));
   border-radius: 18px;
-  background: linear-gradient(145deg, #102631, #0a1823);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  background: linear-gradient(145deg, light-dark(#f4fbfe, #102631), light-dark(#f2f6fa, #0a1823));
+  box-shadow: 0 12px 30px light-dark(rgba(24, 52, 66, 0.054), rgba(0, 0, 0, 0.12));
   transition:
     border-color 180ms ease,
     transform 180ms ease,
@@ -57,12 +57,12 @@
 
 .card:hover {
   transform: translateY(-3px);
-  border-color: rgba(103, 217, 237, 0.65);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+  border-color: light-dark(rgba(5, 151, 170, 0.65), rgba(103, 217, 237, 0.65));
+  box-shadow: 0 16px 36px light-dark(rgba(24, 52, 66, 0.09), rgba(0, 0, 0, 0.2));
 }
 
 .activeCard {
-  border-color: #ff8069;
+  border-color: light-dark(#d55a45, #ff8069);
 }
 
 .cardButton {
@@ -80,7 +80,7 @@
 }
 
 .cardButton:focus-visible {
-  outline: 2px solid #67d9ed;
+  outline: 2px solid light-dark(#0597aa, #67d9ed);
   outline-offset: -5px;
   border-radius: 17px;
 }
@@ -98,21 +98,21 @@
   place-items: center;
   width: 48px;
   height: 48px;
-  border: 1px solid rgba(103, 217, 237, 0.35);
+  border: 1px solid light-dark(rgba(5, 151, 170, 0.35), rgba(103, 217, 237, 0.35));
   border-radius: 14px;
-  background: rgba(103, 217, 237, 0.08);
-  color: #67d9ed;
+  background: light-dark(rgba(55, 176, 196, 0.08), rgba(103, 217, 237, 0.08));
+  color: light-dark(#10707d, #67d9ed);
 }
 
 .number {
-  color: #8baab9;
+  color: light-dark(#4b6876, #8baab9);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.12em;
 }
 
 .title {
-  color: #f5f3ee;
+  color: light-dark(#22211d, #f5f3ee);
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -121,7 +121,7 @@
 .description {
   margin-top: 10px;
   margin-bottom: 22px;
-  color: #aec3ce;
+  color: light-dark(#475963, #aec3ce);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -133,24 +133,24 @@
   gap: 12px;
   width: 100%;
   margin-top: auto;
-  color: #78e1ef;
+  color: light-dark(#02717b, #78e1ef);
   font-size: 14px;
   font-weight: 600;
 }
 
 .activeCard .action {
-  color: #ff947e;
+  color: light-dark(#bb533e, #ff947e);
 }
 
 .details {
   margin: 0 24px;
   padding: 18px 0 22px;
-  border-top: 1px solid rgba(136, 188, 211, 0.18);
+  border-top: 1px solid light-dark(rgba(66, 105, 121, 0.18), rgba(136, 188, 211, 0.18));
 }
 
 .details p {
   margin: 0;
-  color: #c1d1da;
+  color: light-dark(#3b4850, #c1d1da);
   font-size: 14px;
   line-height: 1.7;
 }
@@ -158,7 +158,7 @@
 .details span {
   display: block;
   margin-top: 14px;
-  color: #91aab8;
+  color: light-dark(#506774, #91aab8);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -197,9 +197,9 @@
   gap: 24px;
   margin-top: 28px;
   padding: 24px;
-  border: 1px solid #294352;
+  border: 1px solid light-dark(#91a8b6, #294352);
   border-radius: 20px;
-  background: #091923;
+  background: light-dark(#f1f7fa, #091923);
 }
 
 .heading {
@@ -236,14 +236,14 @@
 
 .card:hover {
   transform: none;
-  border-color: #345260;
-  background: #102633;
+  border-color: light-dark(#869fac, #345260);
+  background: light-dark(#f4fbff, #102633);
   box-shadow: none;
 }
 
 .activeCard {
-  border-color: #b76f5e;
-  background: #102633;
+  border-color: light-dark(#b76f5e, #b76f5e);
+  background: light-dark(#f4fbff, #102633);
 }
 
 .cardButton {
@@ -295,7 +295,7 @@
   }
 
   .card {
-    border-color: #294352;
+    border-color: light-dark(#91a8b6, #294352);
   }
 
   .cardButton {
@@ -311,7 +311,7 @@
   margin-top: 16px;
   padding: 14px 20px;
   border-radius: 18px;
-  background: rgba(9, 27, 37, 0.65);
+  background: light-dark(rgba(242, 247, 251, 0.65), rgba(9, 27, 37, 0.65));
 }
 
 .heading {

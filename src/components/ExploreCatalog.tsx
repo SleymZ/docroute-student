@@ -1,16 +1,13 @@
 "use client";
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
 
 import {
   ArrowRight,
+  BadgeCheck,
   Check,
   Code2,
   Compass,
@@ -26,6 +23,7 @@ import {
 
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
+import { verifiedPrograms } from "@/data/verified-programs";
 
 import styles from "./ExploreCatalog.module.css";
 
@@ -35,65 +33,17 @@ type CountryOption = {
   universityCount: number;
 };
 
-const featuredCountryCodes = [
-  "SK",
-  "CZ",
-  "RO",
-  "BG",
-];
-
 const europeanCountryCodes = new Set([
-  "AL",
-  "AD",
-  "AM",
-  "AT",
-  "AZ",
-  "BY",
-  "BE",
-  "BA",
-  "BG",
-  "HR",
-  "CY",
-  "CZ",
-  "DK",
-  "EE",
-  "FI",
-  "FR",
-  "GE",
-  "DE",
-  "GR",
-  "HU",
-  "IS",
-  "IE",
-  "IT",
-  "XK",
-  "LV",
-  "LI",
-  "LT",
-  "LU",
-  "MT",
-  "MD",
-  "MC",
-  "ME",
-  "NL",
-  "MK",
-  "NO",
-  "PL",
-  "PT",
-  "RO",
-  "RU",
-  "SM",
-  "RS",
-  "SK",
-  "SI",
-  "ES",
-  "SE",
-  "CH",
-  "TR",
-  "UA",
-  "GB",
-  "VA",
+  "AL", "AD", "AM", "AT", "AZ", "BY", "BE", "BA", "BG", "HR",
+  "CY", "CZ", "DK", "EE", "FI", "FR", "GE", "DE", "GR", "HU",
+  "IS", "IE", "IT", "XK", "LV", "LI", "LT", "LU", "MT", "MD",
+  "MC", "ME", "NL", "MK", "NO", "PL", "PT", "RO", "RU", "SM",
+  "RS", "SK", "SI", "ES", "SE", "CH", "TR", "UA", "GB", "VA",
 ]);
+
+/* Lists grow with coverage; a search box appears once a list is longer
+   than this, and the list scrolls inside its panel. */
+const SEARCH_THRESHOLD = 6;
 
 const countryCounts =
   catalog.universities.reduce<Record<string, number>>(
@@ -114,534 +64,413 @@ const countryOptions: CountryOption[] = [
     ]),
   ).entries(),
 ]
-  .filter(([code]) =>
-    europeanCountryCodes.has(code),
-  )
+  .filter(([code]) => europeanCountryCodes.has(code))
   .map(([code, name]) => ({
     code,
     name,
     universityCount: countryCounts[code] ?? 0,
   }))
-  .sort((a, b) =>
-    a.name.localeCompare(b.name, "en"),
-  );
+  .sort((a, b) => a.name.localeCompare(b.name, "en"));
 
-const featuredCountries = featuredCountryCodes
-  .map((code) =>
-    countryOptions.find(
-      (country) => country.code === code,
+/* Verified coverage comes from the program data, so new verified
+   programs show up here without touching this component. */
+const verifiedCountryCodes = new Set(
+  verifiedPrograms.map((program) => program.countryCode),
+);
+
+function verifiedCountriesFor(field: string) {
+  return countryOptions.filter((country) =>
+    verifiedPrograms.some(
+      (program) =>
+        program.category === field &&
+        program.countryCode === country.code,
     ),
-  )
-  .filter(
-    (country): country is CountryOption =>
-      country !== undefined,
   );
+}
 
-const programMeta = {
+const programMeta: Record<
+  string,
+  {
+    icon: typeof Stethoscope;
+    description: string;
+  }
+> = {
   Medicine: {
     icon: Stethoscope,
-    code: "MED",
     description: "Medical and health sciences",
   },
 
   Dentistry: {
     icon: Smile,
-    code: "DEN",
     description: "Dental medicine and oral health",
   },
 
   Pharmacy: {
     icon: Pill,
-    code: "PHA",
     description: "Pharmaceutical sciences",
   },
 
   "Computer Science": {
     icon: Code2,
-    code: "CS",
     description: "Computing, software and informatics",
   },
 };
 
-export function ExploreCatalog() {
-  const [countryCode, setCountryCode] =
-    useState("");
+function flagSrc(code: string) {
+  return `https://flagcdn.com/w80/${code.toLowerCase()}.png`;
+}
 
-  const [program, setProgram] = useState(
-    programOptions[0],
+function matches(text: string, query: string) {
+  return text.toLowerCase().includes(query.trim().toLowerCase());
+}
+
+function SearchBox({
+  value,
+  onChange,
+  placeholder,
+  label,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  label: string;
+}) {
+  return (
+    <label className={styles.atlasSearch}>
+      <Search size={17} aria-hidden="true" />
+
+      <input
+        type="search"
+        aria-label={label}
+        placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+
+      {value && (
+        <button
+          type="button"
+          aria-label="Clear search"
+          onClick={() => onChange("")}
+        >
+          <X size={15} aria-hidden="true" />
+        </button>
+      )}
+    </label>
+  );
+}
+
+export function ExploreCatalog() {
+  const [countryCode, setCountryCode] = useState("");
+  const [program, setProgram] = useState(programOptions[0]);
+  const [countrySearch, setCountrySearch] = useState("");
+  const [programSearch, setProgramSearch] = useState("");
+
+  const selectedCountry = countryOptions.find(
+    (country) => country.code === countryCode,
   );
 
-  const [
-    countryPickerOpen,
-    setCountryPickerOpen,
-  ] = useState(false);
-
-  const [countrySearch, setCountrySearch] =
-    useState("");
-
-  const selectedCountry =
-    countryOptions.find(
-      (country) =>
-        country.code === countryCode,
+  const countryGroups = useMemo(() => {
+    const visible = countryOptions.filter((country) =>
+      matches(country.name, countrySearch),
     );
 
-  const filteredCountries = useMemo(() => {
-    const query = countrySearch
-      .trim()
-      .toLowerCase();
-
-    if (!query) {
-      return countryOptions;
-    }
-
-    return countryOptions.filter((country) =>
-      country.name
-        .toLowerCase()
-        .includes(query),
-    );
+    return [
+      {
+        title: "Verified routes",
+        countries: visible.filter((country) =>
+          verifiedCountryCodes.has(country.code),
+        ),
+      },
+      {
+        title: countrySearch ? "Other matches" : "All destinations",
+        countries: visible.filter(
+          (country) => !verifiedCountryCodes.has(country.code),
+        ),
+      },
+    ].filter((group) => group.countries.length > 0);
   }, [countrySearch]);
 
+  const visiblePrograms = useMemo(
+    () =>
+      programOptions.filter(
+        (option) =>
+          matches(option, programSearch) ||
+          matches(programMeta[option]?.description ?? "", programSearch),
+      ),
+    [programSearch],
+  );
+
+  const selectionVerified = Boolean(
+    selectedCountry &&
+      verifiedPrograms.some(
+        (item) =>
+          item.countryCode === selectedCountry.code &&
+          item.category === program,
+      ),
+  );
+
   const resultsHref = selectedCountry
-    ? `/explore/universities?${new URLSearchParams(
-        {
-          country: selectedCountry.code,
-          program,
-        },
-      ).toString()}`
+    ? `/explore/universities?${new URLSearchParams({
+        country: selectedCountry.code,
+        program,
+      }).toString()}`
     : null;
-
-  useEffect(() => {
-    if (!countryPickerOpen) {
-      return;
-    }
-
-    const previousOverflow =
-      document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-
-    function handleKeyDown(
-      event: KeyboardEvent,
-    ) {
-      if (event.key === "Escape") {
-        setCountryPickerOpen(false);
-      }
-    }
-
-    window.addEventListener(
-      "keydown",
-      handleKeyDown,
-    );
-
-    return () => {
-      document.body.style.overflow =
-        previousOverflow;
-
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown,
-      );
-    };
-  }, [countryPickerOpen]);
-
-  function selectCountry(code: string) {
-    setCountryCode(code);
-    setCountryPickerOpen(false);
-    setCountrySearch("");
-  }
 
   return (
     <div className={styles.atlasPage}>
+      <div className={styles.atlasBackdrop} aria-hidden="true" />
+
       <header className={styles.atlasHero}>
         <div className={styles.atlasHeroCopy}>
           <div className={styles.atlasKicker}>
-            <Compass
-              size={15}
-              aria-hidden="true"
-            />
-
-            <span>
-              STUDY ATLAS / EUROPE
-            </span>
+            <Compass size={15} aria-hidden="true" />
+            <span>STUDY ATLAS / EUROPE</span>
           </div>
 
           <h1>
-            Build a shortlist that{" "}
-            <span>actually fits.</span>
+            Build a shortlist that <span>actually fits.</span>
           </h1>
 
           <p>
-            Explore Europe by destination and
-            field. Turn an interesting university
-            into a clear admission route.
+            Pick a destination and a field. We show every institution in
+            the catalog and mark the programs whose admission rules are
+            verified from official sources.
           </p>
         </div>
 
-        <div className={styles.atlasStats}>
+        <dl className={styles.atlasStats}>
           <div>
-            <strong>
-              {countryOptions.length}
-            </strong>
-
-            <span>destinations</span>
+            <dt>destinations</dt>
+            <dd>{countryOptions.length}</dd>
           </div>
 
           <div>
-            <strong>
-              {catalog.universities.length}
-            </strong>
-
-            <span>institutions</span>
+            <dt>institutions</dt>
+            <dd>{catalog.universities.length}</dd>
           </div>
 
           <div>
-            <strong>
-              {programOptions.length}
-            </strong>
-
-            <span>study fields</span>
+            <dt>study fields</dt>
+            <dd>{programOptions.length}</dd>
           </div>
-        </div>
+        </dl>
       </header>
 
       <div className={styles.atlasWorkspace}>
         <section
-          className={`${styles.atlasDeck} ${styles.destinationDeck}`}
+          className={styles.atlasDeck}
+          aria-labelledby="atlas-destination-title"
         >
           <header className={styles.atlasDeckHeader}>
             <div>
-              <span
-                className={styles.atlasStep}
-              >
-                01
-              </span>
-
-              <p>DESTINATION LAYER</p>
-
-              <h2>
+              <span className={styles.atlasStep}>01 · DESTINATION</span>
+              <h2 id="atlas-destination-title">
                 Where do you want to study?
               </h2>
             </div>
 
-            <span
-              className={styles.atlasDeckIcon}
-            >
-              <MapPin
-                size={22}
-                aria-hidden="true"
-              />
+            <span className={styles.atlasDeckIcon}>
+              <MapPin size={20} aria-hidden="true" />
             </span>
           </header>
 
-          <div
-            className={styles.atlasCountryGrid}
-          >
-            {featuredCountries.map(
-              (country) => {
-                const selected =
-                  country.code === countryCode;
+          {countryOptions.length > SEARCH_THRESHOLD && (
+            <SearchBox
+              value={countrySearch}
+              onChange={setCountrySearch}
+              label="Search destinations"
+              placeholder={`Search ${countryOptions.length} countries`}
+            />
+          )}
 
-                return (
-                  <button
-                    key={country.code}
-                    type="button"
-                    aria-pressed={selected}
-                    className={`${
-                      styles.atlasCountryCard
-                    } ${
-                      selected
-                        ? styles.atlasCountrySelected
-                        : ""
-                    }`}
-                    onClick={() =>
-                      selectCountry(country.code)
-                    }
-                  >
-                    <span
-                      className={
-                        styles.atlasCountryFlag
-                      }
-                    >
-                      <Image
-                        src={`https://flagcdn.com/w80/${country.code.toLowerCase()}.png`}
-                        alt=""
-                        width={42}
-                        height={30}
-                        unoptimized
-                      />
-                    </span>
+          <div className={styles.atlasList}>
+            {countryGroups.map((group) => (
+              <div key={group.title} className={styles.atlasGroup}>
+                <p className={styles.atlasGroupTitle}>{group.title}</p>
 
-                    <span
-                      className={
-                        styles.atlasCountryInfo
-                      }
-                    >
-                      <strong>
-                        {country.name}
-                      </strong>
+                <div className={styles.atlasCountryList}>
+                  {group.countries.map((country) => {
+                    const selected = country.code === countryCode;
+                    const verified = verifiedCountryCodes.has(country.code);
 
-                      <small>
-                        {country.universityCount}{" "}
-                        institutions
-                      </small>
-                    </span>
-
-                    <span
-                      className={
-                        styles.atlasCountryCode
-                      }
-                    >
-                      {country.code}
-                    </span>
-
-                    {selected && (
-                      <span
-                        className={
-                          styles.atlasSelectedMark
-                        }
+                    return (
+                      <button
+                        key={country.code}
+                        type="button"
+                        aria-pressed={selected}
+                        className={styles.atlasCountryRow}
+                        onClick={() => setCountryCode(country.code)}
                       >
-                        <Check
-                          size={14}
-                          aria-hidden="true"
+                        <Image
+                          src={flagSrc(country.code)}
+                          alt=""
+                          width={32}
+                          height={23}
+                          unoptimized
+                          className={styles.atlasFlag}
                         />
-                      </span>
-                    )}
-                  </button>
-                );
-              },
+
+                        <span className={styles.atlasRowText}>
+                          <strong>{country.name}</strong>
+                          <small>
+                            {country.universityCount} institutions
+                          </small>
+                        </span>
+
+                        {verified && (
+                          <span className={styles.atlasBadge}>
+                            <BadgeCheck size={13} aria-hidden="true" />
+                            Verified
+                          </span>
+                        )}
+
+                        <span
+                          className={styles.atlasCheck}
+                          aria-hidden="true"
+                        >
+                          {selected && <Check size={13} />}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+
+            {countryGroups.length === 0 && (
+              <p className={styles.atlasEmpty}>
+                No country matches “{countrySearch.trim()}”.
+              </p>
             )}
           </div>
-
-          <button
-            type="button"
-            className={
-              styles.atlasAllCountries
-            }
-            onClick={() =>
-              setCountryPickerOpen(true)
-            }
-          >
-            <span
-              className={styles.atlasGlobe}
-            >
-              {selectedCountry ? (
-                <Image
-                  src={`https://flagcdn.com/w80/${selectedCountry.code.toLowerCase()}.png`}
-                  alt=""
-                  width={36}
-                  height={26}
-                  unoptimized
-                />
-              ) : (
-                <Globe2
-                  size={21}
-                  aria-hidden="true"
-                />
-              )}
-            </span>
-
-            <span>
-              <strong>
-                {selectedCountry
-                  ? selectedCountry.name
-                  : "Open the European atlas"}
-              </strong>
-
-              <small>
-                {selectedCountry
-                  ? "Current destination · click to change"
-                  : `Browse ${countryOptions.length} available destinations`}
-              </small>
-            </span>
-
-            <ArrowRight
-              size={18}
-              aria-hidden="true"
-            />
-          </button>
         </section>
 
         <section
-          className={`${styles.atlasDeck} ${styles.programDeck}`}
+          className={styles.atlasDeck}
+          aria-labelledby="atlas-field-title"
         >
           <header className={styles.atlasDeckHeader}>
             <div>
-              <span
-                className={styles.atlasStep}
-              >
-                02
-              </span>
-
-              <p>STUDY LENS</p>
-
-              <h2>
-                What do you want to study?
-              </h2>
+              <span className={styles.atlasStep}>02 · STUDY FIELD</span>
+              <h2 id="atlas-field-title">What do you want to study?</h2>
             </div>
 
-            <span
-              className={styles.atlasDeckIcon}
-            >
-              <GraduationCap
-                size={23}
-                aria-hidden="true"
-              />
+            <span className={styles.atlasDeckIcon}>
+              <GraduationCap size={21} aria-hidden="true" />
             </span>
           </header>
 
-          <div
-            className={styles.atlasProgramGrid}
-          >
-            {programOptions.map(
-              (option, index) => {
-                const meta =
-                  programMeta[
-                    option as keyof typeof programMeta
-                  ];
+          {programOptions.length > SEARCH_THRESHOLD && (
+            <SearchBox
+              value={programSearch}
+              onChange={setProgramSearch}
+              label="Search study fields"
+              placeholder={`Search ${programOptions.length} fields`}
+            />
+          )}
 
-                const Icon =
-                  meta?.icon ??
-                  GraduationCap;
-
-                const selected =
-                  option === program;
+          <div className={styles.atlasList}>
+            <div className={styles.atlasProgramGrid}>
+              {visiblePrograms.map((option) => {
+                const meta = programMeta[option];
+                const Icon = meta?.icon ?? GraduationCap;
+                const selected = option === program;
+                const verifiedIn = verifiedCountriesFor(option);
 
                 return (
                   <button
                     key={option}
                     type="button"
                     aria-pressed={selected}
-                    className={`${
-                      styles.atlasProgramCard
-                    } ${
-                      selected
-                        ? styles.atlasProgramSelected
-                        : ""
-                    }`}
-                    onClick={() =>
-                      setProgram(option)
-                    }
+                    className={styles.atlasProgramTile}
+                    onClick={() => setProgram(option)}
                   >
-                    <span
-                      className={
-                        styles.atlasProgramNumber
-                      }
-                    >
-                      {String(index + 1).padStart(
-                        2,
-                        "0",
+                    <span className={styles.atlasProgramIcon}>
+                      <Icon size={19} aria-hidden="true" />
+                    </span>
+
+                    <span className={styles.atlasRowText}>
+                      <strong>{option}</strong>
+                      <small>
+                        {meta?.description ?? "University programs"}
+                      </small>
+
+                      {verifiedIn.length > 0 && (
+                        <span className={styles.atlasBadge}>
+                          <BadgeCheck size={13} aria-hidden="true" />
+                          Verified in{" "}
+                          {verifiedIn.map((country) => country.name).join(", ")}
+                        </span>
                       )}
                     </span>
 
                     <span
-                      className={
-                        styles.atlasProgramIcon
-                      }
+                      className={styles.atlasCheck}
+                      aria-hidden="true"
                     >
-                      <Icon
-                        size={22}
-                        aria-hidden="true"
-                      />
+                      {selected && <Check size={13} />}
                     </span>
-
-                    <span
-                      className={
-                        styles.atlasProgramInfo
-                      }
-                    >
-                      <small>
-                        {meta?.code ??
-                          "FIELD"}
-                      </small>
-
-                      <strong>
-                        {option}
-                      </strong>
-
-                      <p>
-                        {meta?.description ??
-                          "University programs"}
-                      </p>
-                    </span>
-
-                    {selected && (
-                      <span
-                        className={
-                          styles.atlasProgramCheck
-                        }
-                      >
-                        <Check
-                          size={14}
-                          aria-hidden="true"
-                        />
-                      </span>
-                    )}
                   </button>
                 );
-              },
+              })}
+            </div>
+
+            {visiblePrograms.length === 0 && (
+              <p className={styles.atlasEmpty}>
+                No field matches “{programSearch.trim()}”.
+              </p>
             )}
           </div>
+
+          <p className={styles.atlasDeckNote}>
+            <BadgeCheck size={15} aria-hidden="true" />
+            <span>
+              A field is marked verified only after its admission rules are
+              checked against the university&apos;s official sources.{" "}
+              <Link href="/how-it-works">How we check</Link>
+            </span>
+          </p>
         </section>
       </div>
 
       <section
         className={styles.atlasRouteDock}
-        aria-label="Selected university route"
+        aria-label="Your selection"
       >
         <div className={styles.atlasRouteSegment}>
-          <span
-            className={styles.atlasRouteLabel}
-          >
-            DESTINATION
-          </span>
+          <span className={styles.atlasRouteLabel}>DESTINATION</span>
 
-          <div
-            className={styles.atlasRouteValue}
-          >
+          <div className={styles.atlasRouteValue}>
             {selectedCountry ? (
               <Image
-                src={`https://flagcdn.com/w80/${selectedCountry.code.toLowerCase()}.png`}
+                src={flagSrc(selectedCountry.code)}
                 alt=""
-                width={29}
-                height={21}
+                width={27}
+                height={19}
                 unoptimized
               />
             ) : (
-              <Globe2
-                size={19}
-                aria-hidden="true"
-              />
+              <Globe2 size={18} aria-hidden="true" />
             )}
 
             <strong>
-              {selectedCountry
-                ? selectedCountry.name
-                : "Not selected"}
+              {selectedCountry ? selectedCountry.name : "Not selected"}
             </strong>
           </div>
         </div>
 
         <ArrowRight
-          size={19}
+          size={18}
           aria-hidden="true"
           className={styles.atlasRouteArrow}
         />
 
         <div className={styles.atlasRouteSegment}>
-          <span
-            className={styles.atlasRouteLabel}
-          >
-            STUDY FIELD
-          </span>
+          <span className={styles.atlasRouteLabel}>STUDY FIELD</span>
 
-          <div
-            className={styles.atlasRouteValue}
-          >
-            <GraduationCap
-              size={19}
-              aria-hidden="true"
-            />
-
+          <div className={styles.atlasRouteValue}>
+            <GraduationCap size={18} aria-hidden="true" />
             <strong>{program}</strong>
           </div>
         </div>
@@ -649,26 +478,21 @@ export function ExploreCatalog() {
         <div className={styles.atlasRouteDivider} />
 
         <div className={styles.atlasRouteResult}>
-          <span>YOUR NEXT STEP</span>
+          <span className={styles.atlasRouteLabel}>YOUR NEXT STEP</span>
 
           <strong>
-            {selectedCountry
-              ? `${selectedCountry.universityCount} institutions to explore`
-              : "Choose a destination"}
+            {!selectedCountry
+              ? "Choose a destination"
+              : selectionVerified
+                ? "Verified programs available"
+                : `${selectedCountry.universityCount} institutions to explore`}
           </strong>
         </div>
 
         {resultsHref ? (
-          <Link
-            href={resultsHref}
-            className={styles.atlasContinue}
-          >
+          <Link href={resultsHref} className={styles.atlasContinue}>
             Show universities
-
-            <ArrowRight
-              size={18}
-              aria-hidden="true"
-            />
+            <ArrowRight size={17} aria-hidden="true" />
           </Link>
         ) : (
           <button
@@ -677,174 +501,10 @@ export function ExploreCatalog() {
             disabled
           >
             Select a country
-
-            <ArrowRight
-              size={18}
-              aria-hidden="true"
-            />
+            <ArrowRight size={17} aria-hidden="true" />
           </button>
         )}
       </section>
-
-      {countryPickerOpen && (
-        <div
-          className={styles.countryModal}
-          onMouseDown={(event) => {
-            if (
-              event.target ===
-              event.currentTarget
-            ) {
-              setCountryPickerOpen(false);
-            }
-          }}
-        >
-          <section
-            className={styles.countryDialog}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="country-dialog-title"
-          >
-            <header
-              className={
-                styles.countryDialogHeader
-              }
-            >
-              <div>
-                <p className={styles.eyebrow}>
-                  EXPLORE EUROPE
-                </p>
-
-                <h2 id="country-dialog-title">
-                  Choose your destination
-                </h2>
-
-                <p>
-                  Select a country to explore
-                  its universities.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                aria-label="Close country selection"
-                className={
-                  styles.closeCountryDialog
-                }
-                onClick={() =>
-                  setCountryPickerOpen(false)
-                }
-              >
-                <X
-                  size={20}
-                  aria-hidden="true"
-                />
-              </button>
-            </header>
-
-            <label
-              className={styles.countrySearch}
-            >
-              <Search
-                size={18}
-                aria-hidden="true"
-              />
-
-              <input
-                type="search"
-                autoFocus
-                placeholder="Search a country"
-                value={countrySearch}
-                onChange={(event) =>
-                  setCountrySearch(
-                    event.target.value,
-                  )
-                }
-              />
-            </label>
-
-            <div className={styles.countryCount}>
-              {filteredCountries.length}{" "}
-              destinations
-            </div>
-
-            <div
-              className={
-                styles.countryPickerGrid
-              }
-            >
-              {filteredCountries.map(
-                (country) => {
-                  const selected =
-                    country.code ===
-                    countryCode;
-
-                  return (
-                    <button
-                      key={country.code}
-                      type="button"
-                      aria-pressed={selected}
-                      className={`${
-                        styles.countryPickerItem
-                      } ${
-                        selected
-                          ? styles.countryPickerItemSelected
-                          : ""
-                      }`}
-                      onClick={() =>
-                        selectCountry(
-                          country.code,
-                        )
-                      }
-                    >
-                      <Image
-                        src={`https://flagcdn.com/w80/${country.code.toLowerCase()}.png`}
-                        alt=""
-                        width={38}
-                        height={28}
-                        unoptimized
-                      />
-
-                      <span>
-                        <strong>
-                          {country.name}
-                        </strong>
-
-                        <small>
-                          {
-                            country.universityCount
-                          }{" "}
-                          universities
-                        </small>
-                      </span>
-
-                      {selected && (
-                        <span
-                          className={
-                            styles.selectedCountryMark
-                          }
-                        >
-                          Selected
-                        </span>
-                      )}
-                    </button>
-                  );
-                },
-              )}
-            </div>
-
-            {filteredCountries.length ===
-              0 && (
-              <div
-                className={
-                  styles.countryEmptyState
-                }
-              >
-                No countries found.
-              </div>
-            )}
-          </section>
-        </div>
-      )}
     </div>
   );
 }

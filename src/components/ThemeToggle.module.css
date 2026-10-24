@@ -1,0 +1,71 @@
+.toggle {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  border: 1px solid light-dark(rgba(68, 107, 123, 0.2), rgba(132, 184, 206, 0.16));
+  border-radius: 12px;
+  background: light-dark(rgba(255, 255, 255, 0.75), rgba(13, 31, 42, 0.6));
+  color: light-dark(#3d5560, #c6d7df);
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.toggle svg {
+  grid-area: 1 / 1;
+}
+
+/* Dark theme shows the sun (switch to light), light theme the moon. */
+.moon {
+  display: none;
+}
+
+:root[data-theme="light"] .sun {
+  display: none;
+}
+
+:root[data-theme="light"] .moon {
+  display: block;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .sun {
+    display: none;
+  }
+
+  :root:not([data-theme="dark"]) .moon {
+    display: block;
+  }
+}
+
+@media (hover: hover) {
+  .toggle:hover {
+    border-color: light-dark(rgba(68, 107, 123, 0.4), rgba(132, 184, 206, 0.35));
+    background: light-dark(#ffffff, #142d3a);
+    color: light-dark(#10202a, #ffffff);
+  }
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .toggle {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle {
+    transition: none;
+  }
+}

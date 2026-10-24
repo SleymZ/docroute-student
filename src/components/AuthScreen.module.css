@@ -2,13 +2,13 @@
   --ink: #081b24;
   --paper: #f1eee7;
   --paper-muted: #6d7778;
-  --coral: #ff785f;
-  --cyan: #76d9ea;
+  --coral: light-dark(#d4502f, #ff785f);
+  --cyan: light-dark(#0b7686, #76d9ea);
   display: grid;
   grid-template-columns: minmax(0, 1.38fr) minmax(430px, 0.82fr);
   min-height: 100svh;
   overflow: hidden;
-  background: #061720;
+  background: light-dark(#f1f6f9, #061720);
 }
 
 .storyPanel {
@@ -22,15 +22,15 @@
   background:
     radial-gradient(
       circle at 76% 40%,
-      rgba(42, 105, 126, 0.3),
+      light-dark(rgba(162, 205, 221, 0.3), rgba(42, 105, 126, 0.3)),
       transparent 34%
     ),
     radial-gradient(
       circle at 6% 94%,
-      rgba(255, 120, 95, 0.08),
+      light-dark(rgba(245, 111, 87, 0.08), rgba(255, 120, 95, 0.08)),
       transparent 27%
     ),
-    linear-gradient(145deg, #071923 0%, #09222d 48%, #061720 100%);
+    linear-gradient(145deg, light-dark(#f1f7fa, #071923) 0%, light-dark(#f2f9fd, #09222d) 48%, light-dark(#f1f6f9, #061720) 100%);
 }
 
 .storyGrid {
@@ -38,12 +38,12 @@
   inset: 0;
   opacity: 0.62;
   background-image:
-    linear-gradient(rgba(118, 217, 234, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(118, 217, 234, 0.045) 1px, transparent 1px),
+    linear-gradient(light-dark(rgba(73, 175, 191, 0.045), rgba(118, 217, 234, 0.045)) 1px, transparent 1px),
+    linear-gradient(90deg, light-dark(rgba(73, 175, 191, 0.045), rgba(118, 217, 234, 0.045)) 1px, transparent 1px),
     repeating-radial-gradient(
       ellipse at 22% 28%,
       transparent 0 58px,
-      rgba(118, 217, 234, 0.045) 59px 60px
+      light-dark(rgba(73, 175, 191, 0.045), rgba(118, 217, 234, 0.045)) 59px 60px
     );
   background-size: 72px 72px, 72px 72px, 100% 100%;
   pointer-events: none;
@@ -55,11 +55,11 @@
   right: 4%;
   width: 360px;
   height: 360px;
-  border: 1px solid rgba(118, 217, 234, 0.07);
+  border: 1px solid light-dark(rgba(42, 150, 166, 0.07), rgba(118, 217, 234, 0.07));
   border-radius: 50%;
   box-shadow:
-    0 0 0 70px rgba(118, 217, 234, 0.025),
-    0 0 0 140px rgba(118, 217, 234, 0.018);
+    0 0 0 70px light-dark(rgba(66, 168, 185, 0.025), rgba(118, 217, 234, 0.025)),
+    0 0 0 140px light-dark(rgba(66, 168, 185, 0.018), rgba(118, 217, 234, 0.018));
   pointer-events: none;
 }
 
@@ -77,6 +77,12 @@
   gap: 24px;
 }
 
+.storyActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .brand,
 .mobileBrand {
   display: inline-flex;
@@ -87,7 +93,7 @@
 
 .brand {
   gap: 13px;
-  color: #f4f1eb;
+  color: light-dark(#24221e, #f4f1eb);
 }
 
 .brandMark,
@@ -95,9 +101,9 @@
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  border: 1px solid rgba(255, 134, 105, 0.34);
-  background: rgba(255, 120, 95, 0.08);
-  color: #ff856d;
+  border: 1px solid light-dark(rgba(210, 93, 66, 0.34), rgba(255, 134, 105, 0.34));
+  background: light-dark(rgba(245, 111, 87, 0.08), rgba(255, 120, 95, 0.08));
+  color: light-dark(#c44a33, #ff856d);
 }
 
 .brandMark {
@@ -130,9 +136,9 @@
   align-items: center;
   gap: 8px;
   padding: 9px 12px;
-  border: 1px solid rgba(112, 172, 191, 0.17);
+  border: 1px solid light-dark(rgba(70, 115, 129, 0.17), rgba(112, 172, 191, 0.17));
   border-radius: 10px;
-  color: #a8c1cb;
+  color: light-dark(#475e67, #a8c1cb);
   font-size: 11px;
   text-decoration: none;
   transition:
@@ -160,7 +166,7 @@
 
 .storyCopy h1 {
   margin: 0;
-  color: #f4f1eb;
+  color: light-dark(#24221e, #f4f1eb);
   font-size: clamp(48px, 5.2vw, 82px);
   font-weight: 500;
   line-height: 0.98;
@@ -174,7 +180,7 @@
 .storyDescription {
   max-width: 540px;
   margin: 27px 0 0;
-  color: #a4bdc7;
+  color: light-dark(#4c626b, #a4bdc7);
   font-size: 14px;
   line-height: 1.8;
 }
@@ -186,15 +192,15 @@
   justify-self: end;
   overflow: hidden;
   padding: 22px;
-  border: 1px solid rgba(104, 175, 197, 0.27);
+  border: 1px solid light-dark(rgba(74, 145, 167, 0.27), rgba(104, 175, 197, 0.27));
   border-radius: 20px;
   background:
     linear-gradient(
       135deg,
-      rgba(18, 50, 63, 0.92),
-      rgba(7, 27, 37, 0.96)
+      light-dark(rgba(249, 253, 255, 0.92), rgba(18, 50, 63, 0.92)),
+      light-dark(rgba(241, 247, 251, 0.96), rgba(7, 27, 37, 0.96))
     );
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 28px 80px light-dark(rgba(24, 52, 66, 0.126), rgba(0, 0, 0, 0.28));
   backdrop-filter: blur(14px);
 }
 
@@ -204,9 +210,9 @@
   right: -70px;
   width: 230px;
   height: 230px;
-  border: 1px solid rgba(118, 217, 234, 0.08);
+  border: 1px solid light-dark(rgba(42, 150, 166, 0.08), rgba(118, 217, 234, 0.08));
   border-radius: 50%;
-  box-shadow: 0 0 0 38px rgba(118, 217, 234, 0.025);
+  box-shadow: 0 0 0 38px light-dark(rgba(66, 168, 185, 0.025), rgba(118, 217, 234, 0.025));
   content: "";
 }
 
@@ -217,7 +223,7 @@
   justify-content: space-between;
   gap: 18px;
   padding-bottom: 18px;
-  border-bottom: 1px solid rgba(131, 190, 207, 0.14);
+  border-bottom: 1px solid light-dark(rgba(62, 106, 119, 0.14), rgba(131, 190, 207, 0.14));
 }
 
 .boardHeader div {
@@ -227,22 +233,22 @@
 }
 
 .boardHeader small {
-  color: #789aa8;
+  color: light-dark(#486976, #789aa8);
   font-size: 8px;
   letter-spacing: 0.17em;
 }
 
 .boardHeader strong {
-  color: #eef2ef;
+  color: light-dark(#212422, #eef2ef);
   font-size: 15px;
   font-weight: 600;
 }
 
 .boardHeader > span {
   padding: 6px 8px;
-  border: 1px solid rgba(255, 130, 102, 0.18);
+  border: 1px solid light-dark(rgba(212, 91, 65, 0.18), rgba(255, 130, 102, 0.18));
   border-radius: 7px;
-  color: #ff9a81;
+  color: light-dark(#b8563e, #ff9a81);
   font-size: 8px;
   letter-spacing: 0.12em;
 }
@@ -267,7 +273,7 @@
   bottom: -20px;
   left: 21px;
   width: 1px;
-  background: linear-gradient(#4b8699, rgba(75, 134, 153, 0.12));
+  background: linear-gradient(light-dark(#90b8c6, #4b8699), light-dark(rgba(144, 184, 198, 0.12), rgba(75, 134, 153, 0.12)));
   content: "";
 }
 
@@ -279,15 +285,15 @@
   flex: 0 0 auto;
   width: 43px;
   height: 43px;
-  border: 1px solid #345c6b;
+  border: 1px solid light-dark(#7b9ca9, #345c6b);
   border-radius: 50%;
-  background: #0d2a36;
-  color: #7c9daa;
+  background: light-dark(#f5fcff, #0d2a36);
+  color: light-dark(#496975, #7c9daa);
 }
 
 .stageComplete {
-  border-color: rgba(116, 219, 170, 0.43);
-  color: #7ce2af;
+  border-color: light-dark(rgba(47, 156, 111, 0.43), rgba(116, 219, 170, 0.43));
+  color: light-dark(#248c5f, #7ce2af);
 }
 
 .checkMark {
@@ -298,10 +304,10 @@
   place-items: center;
   width: 17px;
   height: 17px;
-  border: 2px solid #0b2632;
+  border: 2px solid light-dark(#a4bcc8, #0b2632);
   border-radius: 50%;
-  background: #79dfae;
-  color: #071b23;
+  background: light-dark(#4eb586, #79dfae);
+  color: light-dark(#071b23, #071b23);
 }
 
 .stageText {
@@ -313,20 +319,20 @@
 
 .stageText small {
   grid-row: 1 / 3;
-  color: #6d929f;
+  color: light-dark(#466976, #6d929f);
   font-size: 8px;
   letter-spacing: 0.12em;
 }
 
 .stageText strong {
-  color: #e8efef;
+  color: light-dark(#222727, #e8efef);
   font-size: 13px;
   font-weight: 600;
 }
 
 .stageText span {
   margin-top: 5px;
-  color: #84a1ac;
+  color: light-dark(#4d6872, #84a1ac);
   font-size: 10px;
 }
 
@@ -335,8 +341,8 @@
   align-items: center;
   gap: 9px;
   padding-top: 17px;
-  border-top: 1px solid rgba(131, 190, 207, 0.14);
-  color: #7de0ae;
+  border-top: 1px solid light-dark(rgba(62, 106, 119, 0.14), rgba(131, 190, 207, 0.14));
+  color: light-dark(#208c5f, #7de0ae);
   font-size: 9px;
 }
 
@@ -346,20 +352,20 @@
   flex-wrap: wrap;
   gap: 22px;
   padding-top: 20px;
-  border-top: 1px solid rgba(109, 165, 183, 0.14);
+  border-top: 1px solid light-dark(rgba(76, 118, 132, 0.14), rgba(109, 165, 183, 0.14));
 }
 
 .storyFooter span {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: #8faab5;
+  color: light-dark(#4f6872, #8faab5);
   font-size: 9px;
   letter-spacing: 0.03em;
 }
 
 .storyFooter svg {
-  color: #7ce2af;
+  color: light-dark(#248c5f, #7ce2af);
 }
 
 .authPanel {
@@ -736,9 +742,9 @@
 
 @media (hover: hover) {
   .homeLink:hover {
-    border-color: rgba(118, 217, 234, 0.34);
-    background: rgba(118, 217, 234, 0.05);
-    color: #edf7f8;
+    border-color: light-dark(rgba(42, 150, 166, 0.34), rgba(118, 217, 234, 0.34));
+    background: light-dark(rgba(73, 175, 191, 0.05), rgba(118, 217, 234, 0.05));
+    color: light-dark(#1a2122, #edf7f8);
   }
 
   .googleButton:hover {

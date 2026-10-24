@@ -13,7 +13,7 @@
 }
 
 .label {
-  color: var(--muted, #a6bdca);
+  color: var(--muted, light-dark(#4c616c, #a6bdca));
   font-size: 9px;
   font-weight: 600;
   line-height: 1.5;
@@ -31,11 +31,11 @@
   min-height: 42px;
   padding: 9px 10px;
 
-  border: 1px solid rgba(132, 184, 206, 0.25);
+  border: 1px solid light-dark(rgba(68, 107, 123, 0.25), rgba(132, 184, 206, 0.25));
   border-radius: 9px;
-  background: #102431;
+  background: light-dark(#f4fafe, #102431);
 
-  color: #f5f3ee;
+  color: light-dark(#22211d, #f5f3ee);
   font: inherit;
   font-size: 13px;
   font-weight: 400;
@@ -50,12 +50,12 @@
 }
 
 .triggerOpen {
-  border-color: #79ddef;
-  background: #14303e;
+  border-color: light-dark(#2896a7, #79ddef);
+  background: light-dark(#f9fdff, #14303e);
 }
 
 .trigger:focus-visible {
-  outline: 2px solid #79ddef;
+  outline: 2px solid light-dark(#2896a7, #79ddef);
   outline-offset: 3px;
 }
 
@@ -70,7 +70,7 @@
 .chevron {
   flex-shrink: 0;
   margin-left: auto;
-  color: #9db8c6;
+  color: light-dark(#4e6774, #9db8c6);
   transition: transform 180ms ease;
 }
 
@@ -86,7 +86,7 @@
   flex-shrink: 0;
   width: 22px;
   height: 20px;
-  color: #a6bdca;
+  color: light-dark(#4c616c, #a6bdca);
 }
 
 .flagImage {
@@ -94,11 +94,11 @@
   width: 22px;
   height: 16px;
   object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0 1px 2px light-dark(rgba(24, 52, 66, 0.113), rgba(0, 0, 0, 0.25)));
 }
 
 .programIcon {
-  color: #f5a383;
+  color: light-dark(#ae5f3f, #f5a383);
 }
 
 /* ===== Выпадающий список ===== */
@@ -120,16 +120,16 @@
   padding: 6px;
   list-style: none;
 
-  border: 1px solid #345362;
+  border: 1px solid light-dark(#859fac, #345362);
   border-radius: 12px;
 
-  background: #0d2230;
+  background: light-dark(#f3f9fe, #0d2230);
   box-shadow:
-    inset 0 1px 0 rgba(222, 244, 255, 0.04),
-    0 16px 36px rgba(0, 0, 0, 0.28);
+    inset 0 1px 0 light-dark(rgba(222, 244, 255, 0.04), rgba(222, 244, 255, 0.04)),
+    0 16px 36px light-dark(rgba(24, 52, 66, 0.126), rgba(0, 0, 0, 0.28));
 
   scrollbar-width: thin;
-  scrollbar-color: #365767 #0d2230;
+  scrollbar-color: light-dark(#bbd4e1, #365767) light-dark(#f3f9fe, #0d2230);
 }
 
 /* Последний список раскрывается в сторону формы */
@@ -147,7 +147,7 @@
   padding: 10px;
   border-radius: 8px;
 
-  color: #c6d8e1;
+  color: light-dark(#334249, #c6d8e1);
   font-size: 13px;
   line-height: 1.4;
   cursor: pointer;
@@ -164,32 +164,32 @@
 }
 
 .optionSelected {
-  color: #ffffff;
+  color: light-dark(#161616, #ffffff);
 }
 
 .optionActive {
-  background: #1b3b4b;
-  color: #ffffff;
+  background: light-dark(#feffff, #1b3b4b);
+  color: light-dark(#161616, #ffffff);
 }
 
 .check {
   flex-shrink: 0;
   margin-left: 6px;
-  color: #f5a383;
+  color: light-dark(#ae5f3f, #f5a383);
 }
 
 @media (hover: hover) {
   .trigger:hover {
-    border-color: rgba(132, 184, 206, 0.5);
+    border-color: light-dark(rgba(68, 107, 123, 0.5), rgba(132, 184, 206, 0.5));
   }
 
   .triggerOpen:hover {
-    border-color: #79ddef;
+    border-color: light-dark(#2896a7, #79ddef);
   }
 
   .option:hover {
-    background: #1b3b4b;
-    color: #ffffff;
+    background: light-dark(#feffff, #1b3b4b);
+    color: light-dark(#161616, #ffffff);
   }
 }
 
@@ -233,7 +233,7 @@
   gap: 7px;
   margin-bottom: 14px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(132, 184, 206, 0.14);
+  border-bottom: 1px solid light-dark(rgba(68, 107, 123, 0.14), rgba(132, 184, 206, 0.14));
 }
 
 .purposeOptions {
@@ -250,10 +250,10 @@
   min-width: 0;
   min-height: 30px;
   padding: 0 6px;
-  border: 1px solid rgba(132, 184, 206, 0.18);
+  border: 1px solid light-dark(rgba(68, 107, 123, 0.18), rgba(132, 184, 206, 0.18));
   border-radius: 999px;
   background: transparent;
-  color: #8aa4af;
+  color: light-dark(#4f6871, #8aa4af);
   font: inherit;
   font-size: 11px;
   white-space: nowrap;
@@ -261,24 +261,24 @@
 }
 
 .purposeSelected {
-  border-color: rgba(255, 128, 103, 0.55);
-  background: rgba(255, 128, 103, 0.1);
-  color: #ffb3a1;
+  border-color: light-dark(rgba(213, 90, 67, 0.55), rgba(255, 128, 103, 0.55));
+  background: light-dark(rgba(241, 115, 91, 0.1), rgba(255, 128, 103, 0.1));
+  color: light-dark(#a4452e, #ffb3a1);
 }
 
 .purposeSoon {
   border-style: dashed;
-  color: #6d8995;
+  color: light-dark(#4d6874, #6d8995);
 }
 
 .purposeNote {
   margin: 0;
-  color: #6f8b96;
+  color: light-dark(#4d6872, #6f8b96);
   font-size: 10px;
 }
 
 .purpose:focus-visible {
-  outline: 2px solid #79ddef;
+  outline: 2px solid light-dark(#2896a7, #79ddef);
   outline-offset: 2px;
 }
 

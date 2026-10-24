@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-10-23. Keep this file factual: describe what exists and
+Last updated: 2026-10-24. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -146,6 +146,26 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #8 (merged 2026-10-24): **light theme** and Explore redesign.
+  - Theme follows the system setting until the person presses the
+    sun/moon button in the header (also on the sign-in page); the choice is
+    stored in `localStorage` (`docroute-theme`) and applied by an inline
+    script in `<head>` before paint (`src/lib/theme.ts`,
+    `ThemeToggle.tsx`). Every colour is written as
+    `light-dark(<light>, <dark>)`; dark values were kept as designed. Write
+    new colours the same way; `light-dark()` takes colours only (not
+    gradients or whole shadows).
+  - By design the sign-in form panel stays light ("paper") in both themes,
+    and university illustrations (`UniversityImage`) stay dark.
+  - Explore: destination and field lists with search (shown once a list
+    has more than 6 items) that scroll inside their panels; "Verified"
+    badges are derived from `verified-programs.ts`; the country pop-up was
+    removed; sticky selection bar (compact on phones). The background glow
+    no longer shows a vertical seam on wide screens.
+  - The university page now has the site header; on phones "Log in" is an
+    icon button so the header fits one row.
+  - Not checked: the account page while signed in (needs a login).
+
 - Evidence-based matching for the UNIZA FRI scenario (PR #2), including
   date handling in Europe/Bratislava, exam-waiver evidence and language
   proof rules.
@@ -183,7 +203,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (111 tests on 2026-10-23).
+- Unit tests: `npm test` (116 tests on 2026-10-24).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -191,7 +211,10 @@ still publish only their 2026/27 rules.
 
 Note: in the Claude cloud environment npm packages could not be installed,
 so tests were run with Node's built-in TypeScript support and a small local
-module loader; ESLint and `test:ssr` were not run there.
+module loader; ESLint and `test:ssr` were not run there. Light/dark text
+contrast was checked with a script in the browser on the Preview for every
+public page (no remaining issues except the sign-in form's small grey
+text, which is unchanged from before).
 
 ## Open questions and known limits
 

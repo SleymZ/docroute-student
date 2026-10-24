@@ -23,9 +23,9 @@
 
   background: linear-gradient(
     90deg,
-    rgba(126, 175, 194, 0.26),
-    rgba(126, 175, 194, 0.1) 55%,
-    rgba(126, 175, 194, 0.26)
+    light-dark(rgba(0, 41, 54, 0.26), rgba(126, 175, 194, 0.26)),
+    light-dark(rgba(0, 41, 54, 0.1), rgba(126, 175, 194, 0.1)) 55%,
+    light-dark(rgba(0, 41, 54, 0.26), rgba(126, 175, 194, 0.26))
   );
 }
 
@@ -45,20 +45,20 @@
   width: 42px;
   height: 42px;
 
-  border: 1px solid rgba(255, 151, 122, 0.28);
+  border: 1px solid light-dark(rgba(200, 102, 74, 0.28), rgba(255, 151, 122, 0.28));
   border-radius: 13px;
 
   background:
     linear-gradient(
       145deg,
-      rgba(255, 137, 108, 0.14),
-      rgba(255, 137, 108, 0.025)
+      light-dark(rgba(236, 120, 92, 0.14), rgba(255, 137, 108, 0.14)),
+      light-dark(rgba(236, 120, 92, 0.025), rgba(255, 137, 108, 0.025))
     ),
-    #10212b;
+    light-dark(#f4f9fd, #10212b);
 
-  color: #ff947b;
+  color: light-dark(#bb533b, #ff947b);
 
-  box-shadow: inset 0 1px 0 rgba(255, 222, 199, 0.06);
+  box-shadow: inset 0 1px 0 light-dark(rgba(255, 222, 199, 0.06), rgba(255, 222, 199, 0.06));
 }
 
 .brandText {
@@ -68,7 +68,7 @@
 }
 
 .brandName {
-  color: #f5f3ee;
+  color: light-dark(#22211d, #f5f3ee);
   font-size: 21px;
   font-weight: 700;
   line-height: 1;
@@ -76,7 +76,7 @@
 }
 
 .brandCaption {
-  color: #a8c3ce;
+  color: light-dark(#445c66, #a8c3ce);
   font-size: 9px;
   font-weight: 600;
   line-height: 1;
@@ -90,16 +90,16 @@
   gap: 3px;
   padding: 5px;
 
-  border: 1px solid rgba(132, 184, 206, 0.16);
+  border: 1px solid light-dark(rgba(68, 107, 123, 0.16), rgba(132, 184, 206, 0.16));
   border-radius: 15px;
 
   background: linear-gradient(
     180deg,
-    rgba(18, 40, 53, 0.84),
-    rgba(10, 27, 38, 0.84)
+    light-dark(rgba(245, 251, 255, 0.84), rgba(18, 40, 53, 0.84)),
+    light-dark(rgba(242, 247, 251, 0.84), rgba(10, 27, 38, 0.84))
   );
 
-  box-shadow: inset 0 1px 0 rgba(221, 245, 255, 0.035);
+  box-shadow: inset 0 1px 0 light-dark(rgba(221, 245, 255, 0.035), rgba(221, 245, 255, 0.035));
 }
 
 .navLink {
@@ -112,7 +112,7 @@
   padding: 9px 16px;
   border-radius: 10px;
 
-  color: #d5e2e9;
+  color: light-dark(#2b353b, #d5e2e9);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
@@ -127,7 +127,7 @@
 
 .navLink svg {
   flex-shrink: 0;
-  color: #f49a78;
+  color: light-dark(#b35b39, #f49a78);
   transition: color 180ms ease;
 }
 
@@ -166,20 +166,20 @@
 }
 
 .login {
-  border-color: rgba(132, 184, 206, 0.16);
-  background: rgba(13, 31, 42, 0.6);
-  color: #c6d7df;
+  border-color: light-dark(rgba(68, 107, 123, 0.16), rgba(132, 184, 206, 0.16));
+  background: light-dark(rgba(243, 248, 252, 0.6), rgba(13, 31, 42, 0.6));
+  color: light-dark(#344249, #c6d7df);
 }
 
 .login svg {
-  color: #93b5c4;
+  color: light-dark(#496976, #93b5c4);
 }
 
 .buildRoute {
-  border-color: rgba(255, 220, 199, 0.22);
-  background: #ff8067;
-  color: #10202a;
-  box-shadow: inset 0 1px 0 rgba(255, 235, 217, 0.22);
+  border-color: light-dark(rgba(93, 70, 56, 0.22), rgba(255, 220, 199, 0.22));
+  background: light-dark(#f1735b, #ff8067);
+  color: light-dark(#10202a, #10202a);
+  box-shadow: inset 0 1px 0 light-dark(rgba(255, 235, 217, 0.22), rgba(255, 235, 217, 0.22));
 }
 
 .buildRoute svg {
@@ -188,22 +188,22 @@
 
 @media (hover: hover) {
   .navLink:hover {
-    background: rgba(121, 221, 239, 0.08);
-    color: #f5f3ee;
+    background: light-dark(rgba(72, 175, 192, 0.08), rgba(121, 221, 239, 0.08));
+    color: light-dark(#22211d, #f5f3ee);
   }
 
  .navLink:hover svg {
-  color: #ffbc9d;
+  color: light-dark(#8c5236, #ffbc9d);
 }
 
   .login:hover {
-    border-color: rgba(132, 184, 206, 0.35);
-    background: #142d3a;
-    color: #ffffff;
+    border-color: light-dark(rgba(68, 107, 123, 0.35), rgba(132, 184, 206, 0.35));
+    background: light-dark(#f7fcff, #142d3a);
+    color: light-dark(#161616, #ffffff);
   }
 
   .buildRoute:hover {
-    background: #ff947d;
+    background: light-dark(#e57d67, #ff947d);
   }
 
   .buildRoute:hover svg {
@@ -215,7 +215,7 @@
 .navLink:focus-visible,
 .login:focus-visible,
 .buildRoute:focus-visible {
-  outline: 2px solid #79ddef;
+  outline: 2px solid light-dark(#2896a7, #79ddef);
   outline-offset: 3px;
 }
 
@@ -299,6 +299,44 @@
   }
 
   .navLink svg {
+    display: none;
+  }
+}
+
+/* Phones: brand, theme switch, log in and the main action share one row.
+   "Log in" becomes an icon button (it keeps its accessible name). */
+@media (max-width: 480px) {
+  .header {
+    gap: 8px;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+
+  .brandCaption {
+    display: none;
+  }
+
+  .login {
+    width: 40px;
+    padding: 0;
+  }
+
+  .login svg {
+    display: block;
+  }
+
+  .login span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .buildRoute svg {
     display: none;
   }
 }
