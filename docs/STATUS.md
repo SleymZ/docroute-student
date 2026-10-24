@@ -146,7 +146,7 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
-- PR #8 (open, 2026-10-24): **light theme** and Explore redesign.
+- PR #8 (merged 2026-10-24): **light theme** and Explore redesign.
   - Theme follows the system setting until the person presses the
     sun/moon button in the header (also on the sign-in page); the choice is
     stored in `localStorage` (`docroute-theme`) and applied by an inline
