@@ -14,7 +14,7 @@
 
 .eyebrow {
   margin: 0 0 10px;
-  color: light-dark(#12808f, #67d9ed);
+  color: light-dark(#10707d, #67d9ed);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -101,11 +101,11 @@
   border: 1px solid light-dark(rgba(5, 151, 170, 0.35), rgba(103, 217, 237, 0.35));
   border-radius: 14px;
   background: light-dark(rgba(55, 176, 196, 0.08), rgba(103, 217, 237, 0.08));
-  color: light-dark(#12808f, #67d9ed);
+  color: light-dark(#10707d, #67d9ed);
 }
 
 .number {
-  color: light-dark(#597785, #8baab9);
+  color: light-dark(#4b6876, #8baab9);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.12em;
@@ -133,13 +133,13 @@
   gap: 12px;
   width: 100%;
   margin-top: auto;
-  color: light-dark(#00818d, #78e1ef);
+  color: light-dark(#02717b, #78e1ef);
   font-size: 14px;
   font-weight: 600;
 }
 
 .activeCard .action {
-  color: light-dark(#b24f3c, #ff947e);
+  color: light-dark(#a1402d, #ff947e);
 }
 
 .details {
@@ -158,7 +158,7 @@
 .details span {
   display: block;
   margin-top: 14px;
-  color: light-dark(#5e7583, #91aab8);
+  color: light-dark(#506774, #91aab8);
   font-size: 11px;
   line-height: 1.5;
 }

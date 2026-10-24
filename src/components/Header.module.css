@@ -56,7 +56,7 @@
     ),
     light-dark(#f4f9fd, #10212b);
 
-  color: light-dark(#b24f39, #ff947b);
+  color: light-dark(#a1402a, #ff947b);
 
   box-shadow: inset 0 1px 0 light-dark(rgba(255, 222, 199, 0.06), rgba(255, 222, 199, 0.06));
 }
@@ -127,7 +127,7 @@
 
 .navLink svg {
   flex-shrink: 0;
-  color: light-dark(#aa5737, #f49a78);
+  color: light-dark(#994828, #f49a78);
   transition: color 180ms ease;
 }
 
@@ -172,7 +172,7 @@
 }
 
 .login svg {
-  color: light-dark(#4f6f7c, #93b5c4);
+  color: light-dark(#496976, #93b5c4);
 }
 
 .buildRoute {
@@ -193,7 +193,7 @@
   }
 
  .navLink:hover svg {
-  color: light-dark(#9c6044, #ffbc9d);
+  color: light-dark(#8c5236, #ffbc9d);
 }
 
   .login:hover {

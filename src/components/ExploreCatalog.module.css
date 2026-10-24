@@ -8,7 +8,7 @@
 
 .eyebrow {
   margin: 0 0 15px;
-  color: light-dark(#15808e, #7dd9e8);
+  color: light-dark(#01707d, #7dd9e8);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.17em;
@@ -24,7 +24,7 @@
 }
 
 .resultsHeader h1 span {
-  color: light-dark(#bc442e, #ff8067);
+  color: light-dark(#ab341e, #ff8067);
 }
 
 .resultsHeader > div > p:last-child {
@@ -43,7 +43,7 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 30px;
-  color: light-dark(#5b7683, #91adbb);
+  color: light-dark(#4d6874, #91adbb);
   font-size: 12px;
 }
 
@@ -51,7 +51,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: light-dark(#1e7f8c, #83dbe9);
+  color: light-dark(#10707c, #83dbe9);
 }
 
 .breadcrumb strong {
@@ -92,7 +92,7 @@
   border: 1px solid light-dark(#84a0ad, #315261);
   border-radius: 12px;
   background: light-dark(#f3faff, #0e2532);
-  color: light-dark(#a55a3c, #f5a383);
+  color: light-dark(#954c2e, #f5a383);
 }
 
 .resultsSearch input {
@@ -141,7 +141,7 @@
 }
 
 .scopeTabs span {
-  color: light-dark(#a55a3c, #f5a383);
+  color: light-dark(#954c2e, #f5a383);
 }
 
 .verificationNotice {
@@ -158,7 +158,7 @@
 
 .verificationNotice svg {
   flex-shrink: 0;
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
 }
 
 .verificationNotice p {
@@ -169,7 +169,7 @@
 
 .resultMeta {
   margin-bottom: 12px;
-  color: light-dark(#5d7682, #91abb8);
+  color: light-dark(#4f6773, #91abb8);
   font-size: 11px;
 }
 
@@ -217,7 +217,7 @@
   position: absolute;
   top: 18px;
   left: 18px;
-  color: light-dark(#567683, #8eafbd);
+  color: light-dark(#496975, #8eafbd);
   font-size: 11px;
   letter-spacing: 0.12em;
 }
@@ -254,7 +254,7 @@
 
 .verifiedBadge {
   background: light-dark(rgba(71, 183, 129, 0.09), rgba(119, 228, 172, 0.09));
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
 }
 
 .pendingBadge {
@@ -277,12 +277,12 @@
 .saveButton.saved {
   border-color: light-dark(rgba(203, 99, 74, 0.4), rgba(255, 146, 119, 0.4));
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .location {
   margin: 24px 0 8px;
-  color: light-dark(#347d8a, #83cbd8);
+  color: light-dark(#236e7b, #83cbd8);
   font-size: 11px;
 }
 
@@ -298,7 +298,7 @@
 .pendingText {
   max-width: 650px;
   margin: 22px 0;
-  color: light-dark(#526973, #9fb7c3);
+  color: light-dark(#506771, #9fb7c3);
   font-size: 13px;
   line-height: 1.7;
 }
@@ -337,7 +337,7 @@
   align-items: center;
   gap: 5px;
   margin-top: 9px;
-  color: light-dark(#1e7f8c, #82dae7);
+  color: light-dark(#10707c, #82dae7);
   font-size: 11px;
 }
 
@@ -350,7 +350,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: light-dark(#257f8a, #8adee9);
+  color: light-dark(#0c707b, #8adee9);
   font-size: 12px;
 }
 
@@ -391,7 +391,7 @@
   align-items: center;
   gap: 8px;
   margin-top: 16px;
-  color: light-dark(#1e7f8c, #83dbe9);
+  color: light-dark(#10707c, #83dbe9);
 }
 
 @media (hover: hover) {
@@ -866,7 +866,7 @@
   height: 20px;
   border: 1px solid light-dark(rgba(19, 34, 43, 0.2), rgba(143, 183, 197, 0.35));
   border-radius: 50%;
-  color: light-dark(#ffffff, #10202a);
+  color: light-dark(#636363, #10202a);
 }
 
 [aria-pressed="true"] > .atlasCheck {
@@ -986,7 +986,7 @@
 .atlasContinue:disabled {
   opacity: 1;
   background: light-dark(#e3eaed, #213b47);
-  color: light-dark(#5f7682, #829da9);
+  color: light-dark(#506773, #829da9);
 }
 
 /* Responsive */

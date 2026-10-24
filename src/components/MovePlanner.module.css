@@ -17,7 +17,7 @@
 
 .eyebrow {
   margin: 0;
-  color: light-dark(#af523d, #ff9a82);
+  color: light-dark(#9e432e, #ff9a82);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.17em;
@@ -34,7 +34,7 @@
 .header p {
   max-width: 560px;
   margin: 8px 0 0;
-  color: light-dark(#5d7680, #93adb8);
+  color: light-dark(#4f6871, #93adb8);
   font-size: 12px;
   line-height: 1.65;
 }
@@ -74,7 +74,7 @@
   align-items: center;
   gap: 9px;
   margin: 20px 0 0;
-  color: light-dark(#5d7680, #8aa4af);
+  color: light-dark(#4f6871, #8aa4af);
   font-size: 12px;
 }
 
@@ -94,7 +94,7 @@
   border: 1px solid light-dark(rgba(179, 120, 39, 0.3), rgba(255, 191, 115, 0.3));
   border-radius: 12px;
   background: light-dark(rgba(205, 144, 67, 0.06), rgba(255, 191, 115, 0.06));
-  color: light-dark(#916937, #ffd29e);
+  color: light-dark(#815a28, #ffd29e);
   font-size: 12px;
   line-height: 1.6;
 }
@@ -125,12 +125,12 @@
   place-items: center;
   border: 1px solid light-dark(rgba(40, 150, 167, 0.22), rgba(121, 221, 239, 0.22));
   border-radius: 10px;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .items li[data-tone="soon"] .icon {
   border-color: light-dark(rgba(179, 120, 39, 0.35), rgba(255, 191, 115, 0.35));
-  color: light-dark(#9d6301, #ffbf73);
+  color: light-dark(#895603, #ffbf73);
 }
 
 .items li[data-tone="late"] {
@@ -139,11 +139,11 @@
 
 .items li[data-tone="late"] .icon {
   border-color: light-dark(rgba(213, 90, 67, 0.45), rgba(255, 128, 103, 0.45));
-  color: light-dark(#b74a34, #ff8b72);
+  color: light-dark(#a63a25, #ff8b72);
 }
 
 .items li[data-tone="info"] .icon {
-  color: light-dark(#5d7680, #8aa4af);
+  color: light-dark(#4f6871, #8aa4af);
 }
 
 .copy strong {
@@ -155,7 +155,7 @@
 
 .copy p {
   margin: 3px 0 0;
-  color: light-dark(#5c7681, #85a1ac);
+  color: light-dark(#4e6872, #85a1ac);
   font-size: 11px;
   line-height: 1.55;
 }
@@ -175,21 +175,21 @@
 .when small {
   display: block;
   margin-top: 3px;
-  color: light-dark(#5b7681, #7c98a3);
+  color: light-dark(#4d6873, #7c98a3);
   font-size: 10px;
 }
 
 .items li[data-tone="late"] .when strong {
-  color: light-dark(#af523d, #ff9a82);
+  color: light-dark(#9e432e, #ff9a82);
 }
 
 .items li[data-tone="soon"] .when strong {
-  color: light-dark(#936830, #ffcf96);
+  color: light-dark(#835920, #ffcf96);
 }
 
 .footnote {
   margin: 14px 0 0;
-  color: light-dark(#5b7781, #6f8b96);
+  color: light-dark(#4d6872, #6f8b96);
   font-size: 10px;
   line-height: 1.6;
 }

@@ -14,7 +14,7 @@
   align-items: center;
   gap: 9px;
   margin-bottom: 24px;
-  color: light-dark(#567786, #6f91a0);
+  color: light-dark(#486977, #6f91a0);
   font-size: 11px;
 }
 
@@ -22,7 +22,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: light-dark(#307e8a, #91ddea);
+  color: light-dark(#1d6f7b, #91ddea);
 }
 
 .breadcrumb strong {
@@ -51,7 +51,7 @@
 .eyebrow,
 .sectionHeader small {
   margin: 0;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.17em;
@@ -68,7 +68,7 @@
 }
 
 .hero h1 span {
-  color: light-dark(#bc442e, #ff8067);
+  color: light-dark(#ab341e, #ff8067);
 }
 
 .hero > div > p:last-child {
@@ -104,7 +104,7 @@
 }
 
 .routeSummary small {
-  color: light-dark(#597784, #7695a3);
+  color: light-dark(#4b6875, #7695a3);
   font-size: 8px;
   letter-spacing: 0.14em;
 }
@@ -117,7 +117,7 @@
 
 .routeSummary span {
   margin-top: 3px;
-  color: light-dark(#327d8b, #8fd9e7);
+  color: light-dark(#216f7c, #8fd9e7);
   font-size: 10px;
 }
 
@@ -152,7 +152,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.22), rgba(255, 128, 103, 0.22));
   border-radius: 13px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .sectionHeader h2 {
@@ -165,7 +165,7 @@
 
 .sectionHeader p {
   margin: 8px 0 0;
-  color: light-dark(#5a7681, #91aeba);
+  color: light-dark(#4d6873, #91aeba);
   font-size: 12px;
   line-height: 1.65;
 }
@@ -215,7 +215,7 @@
 }
 
 .field input::placeholder {
-  color: light-dark(#587785, #607f8d);
+  color: light-dark(#4a6876, #607f8d);
 }
 
 .routeDataNote {
@@ -224,7 +224,7 @@
   padding: 12px 14px;
   border-left: 2px solid light-dark(rgba(40, 150, 167, 0.7), rgba(121, 221, 239, 0.7));
   background: light-dark(rgba(72, 175, 192, 0.045), rgba(121, 221, 239, 0.045));
-  color: light-dark(#5a7782, #88a6b2);
+  color: light-dark(#4c6873, #88a6b2);
   font-size: 10px;
   line-height: 1.6;
 }
@@ -252,7 +252,7 @@
 
 .languageNumber {
   align-self: center;
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
   font-size: 9px;
   letter-spacing: 0.12em;
 }
@@ -308,7 +308,7 @@
   border: 1px solid light-dark(#85a1ad, #31515f);
   border-radius: 10px;
   background: transparent;
-  color: light-dark(#5b7782, #7f9ca8);
+  color: light-dark(#4d6873, #7f9ca8);
 }
 
 .addLanguage {
@@ -319,7 +319,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: light-dark(#1c7f8d, #82dbe9);
+  color: light-dark(#0d707d, #82dbe9);
   font-size: 11px;
   font-weight: 600;
 }
@@ -334,7 +334,7 @@
   padding: 11px 13px;
   border-left: 2px solid light-dark(#ad7b39, #efb978);
   background: light-dark(rgba(199, 147, 82, 0.05), rgba(239, 185, 120, 0.05));
-  color: light-dark(#75674e, #bdad92);
+  color: light-dark(#6f6148, #bdad92);
   font-size: 10px;
   line-height: 1.6;
 }
@@ -375,7 +375,7 @@
 
 .evidenceCard small {
   margin-top: 5px;
-  color: light-dark(#5b7682, #829eaa);
+  color: light-dark(#4d6874, #829eaa);
   font-size: 9px;
   line-height: 1.5;
 }
@@ -390,7 +390,7 @@
   border: 1px dashed light-dark(rgba(40, 150, 167, 0.25), rgba(121, 221, 239, 0.25));
   border-radius: 12px;
   background: light-dark(rgba(72, 175, 192, 0.04), rgba(121, 221, 239, 0.04));
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .masterEvidenceNotice p,
@@ -407,7 +407,7 @@
 
 .masterEvidenceNotice span {
   margin-top: 5px;
-  color: light-dark(#5b7682, #86a3af);
+  color: light-dark(#4d6874, #86a3af);
   font-size: 9px;
   line-height: 1.6;
 }
@@ -442,14 +442,14 @@
   border: 1px solid light-dark(rgba(40, 150, 167, 0.2), rgba(121, 221, 239, 0.2));
   border-radius: 11px;
   background: light-dark(rgba(72, 175, 192, 0.07), rgba(121, 221, 239, 0.07));
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .accountSync[data-state="guest"] .syncIcon,
 .accountSync[data-state="error"] .syncIcon {
   border-color: light-dark(rgba(213, 90, 67, 0.25), rgba(255, 128, 103, 0.25));
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .accountSync > div {
@@ -470,7 +470,7 @@
 
 .accountSync p {
   margin-top: 4px;
-  color: light-dark(#5d7681, #8faab5);
+  color: light-dark(#4f6872, #8faab5);
   font-size: 9px;
   line-height: 1.55;
 }
@@ -480,7 +480,7 @@
   align-items: center;
   gap: 7px;
   flex: 0 0 auto;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   font-size: 10px;
   font-weight: 700;
   text-decoration: none;
@@ -500,7 +500,7 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  color: light-dark(#0b865a, #75dba9);
+  color: light-dark(#0c764f, #75dba9);
 }
 
 .submitDock p,
@@ -517,7 +517,7 @@
 
 .submitDock span {
   margin-top: 4px;
-  color: light-dark(#5d7680, #8ea8b3);
+  color: light-dark(#4f6871, #8ea8b3);
   font-size: 10px;
 }
 
@@ -547,7 +547,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.38), rgba(255, 128, 103, 0.38));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#a45a48, #ffac98);
+  color: light-dark(#944c3a, #ffac98);
   font-size: 11px;
 }
 
@@ -556,7 +556,7 @@
   place-items: center;
   min-height: calc(100vh - 92px);
   padding: 48px 0;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   text-align: center;
   background:
     linear-gradient(light-dark(rgba(72, 175, 192, 0.03), rgba(121, 221, 239, 0.03)) 1px, transparent 1px),
@@ -587,12 +587,12 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.32), rgba(255, 128, 103, 0.32));
   border-radius: 17px;
   background: light-dark(rgba(241, 115, 91, 0.09), rgba(255, 128, 103, 0.09));
-  color: light-dark(#b54c34, #ff8e74);
+  color: light-dark(#a43d25, #ff8e74);
 }
 
 .invalidEyebrow {
   margin: 24px 0 0 !important;
-  color: light-dark(#108090, #79ddef) !important;
+  color: light-dark(#0e707e, #79ddef) !important;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -610,7 +610,7 @@
 .invalidCard > p:not(.invalidEyebrow) {
   max-width: 520px;
   margin: 16px 0 0;
-  color: light-dark(#576e77, #9bb3bd);
+  color: light-dark(#516770, #9bb3bd);
   font-size: 13px;
   line-height: 1.7;
 }
@@ -643,7 +643,7 @@
 
   .removeLanguage:not(:disabled):hover {
     border-color: light-dark(#d55a43, #ff8067);
-    color: light-dark(#b34e36, #ff9277);
+    color: light-dark(#a23f27, #ff9277);
   }
 }
 

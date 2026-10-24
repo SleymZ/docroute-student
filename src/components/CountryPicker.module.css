@@ -54,7 +54,7 @@
 }
 
 .selection > span[data-placeholder="true"] {
-  color: light-dark(#597783, #718f9c);
+  color: light-dark(#4b6874, #718f9c);
 }
 
 .flag {
@@ -76,12 +76,12 @@
   border: 1px solid light-dark(rgba(40, 150, 167, 0.15), rgba(121, 221, 239, 0.15));
   border-radius: 7px;
   background: light-dark(rgba(72, 175, 192, 0.06), rgba(121, 221, 239, 0.06));
-  color: light-dark(#247f8d, #76cad9);
+  color: light-dark(#09707e, #76cad9);
 }
 
 .trigger > svg {
   flex: 0 0 auto;
-  color: light-dark(#557885, #7195a3);
+  color: light-dark(#476976, #7195a3);
   transition: transform 160ms ease;
 }
 
@@ -113,7 +113,7 @@
   border: 1px solid light-dark(rgba(40, 150, 167, 0.17), rgba(121, 221, 239, 0.17));
   border-radius: 9px;
   background: light-dark(#f3fbff, #0c2632);
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .searchField input {
@@ -128,7 +128,7 @@
 }
 
 .searchField input::placeholder {
-  color: light-dark(#587785, #607f8d);
+  color: light-dark(#4a6876, #607f8d);
 }
 
 .searchField input::-webkit-search-cancel-button {
@@ -143,7 +143,7 @@
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: light-dark(#577784, #7899a6);
+  color: light-dark(#496975, #7899a6);
 }
 
 .options {
@@ -195,20 +195,20 @@
 }
 
 .optionName small {
-  color: light-dark(#567784, #668895);
+  color: light-dark(#486976, #668895);
   font-size: 8px;
   letter-spacing: 0.12em;
 }
 
 .check {
   flex: 0 0 auto;
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .empty {
   margin: 0;
   padding: 22px 12px;
-  color: light-dark(#5a7782, #7795a1);
+  color: light-dark(#4c6873, #7795a1);
   font-size: 10px;
   text-align: center;
 }

@@ -12,7 +12,7 @@
   flex-wrap: wrap;
   gap: 9px;
   margin-bottom: 22px;
-  color: light-dark(#5b7684, #7995a3);
+  color: light-dark(#4d6875, #7995a3);
   font-size: 11px;
 }
 
@@ -20,7 +20,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: light-dark(#2a7e8c, #8bdbea);
+  color: light-dark(#156f7d, #8bdbea);
   text-decoration: none;
 }
 
@@ -87,7 +87,7 @@
   align-items: center;
   gap: 11px;
   margin-bottom: 26px;
-  color: light-dark(#526973, #9eb7c2);
+  color: light-dark(#506771, #9eb7c2);
   font-size: 12px;
 }
 
@@ -100,7 +100,7 @@
 
 .eyebrow {
   margin: 0 0 12px;
-  color: light-dark(#0a808f, #76dced);
+  color: light-dark(#0a707d, #76dced);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -188,7 +188,7 @@
   border: 1px solid light-dark(rgba(208, 95, 64, 0.2), rgba(255, 137, 105, 0.2));
   border-radius: 11px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .facts small,
@@ -199,7 +199,7 @@
 
 .facts small {
   margin-bottom: 7px;
-  color: light-dark(#547787, #7195a5);
+  color: light-dark(#466978, #7195a5);
   font-size: 8px;
   letter-spacing: 0.15em;
 }
@@ -212,7 +212,7 @@
 
 .facts p {
   margin: 7px 0 0;
-  color: light-dark(#5e7681, #92abb7);
+  color: light-dark(#506772, #92abb7);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -230,7 +230,7 @@
   display: grid;
   gap: 7px;
   margin: 8px 0 22px;
-  color: light-dark(#596e78, #9bb2bd);
+  color: light-dark(#526771, #9bb2bd);
   font-size: 12px;
 }
 
@@ -244,7 +244,7 @@
   padding: 7px 10px;
   border-radius: 999px;
   background: light-dark(rgba(72, 175, 192, 0.08), rgba(121, 221, 239, 0.08));
-  color: light-dark(#2a7e8c, #8bdbea);
+  color: light-dark(#156f7d, #8bdbea);
   font-size: 10px;
 }
 
@@ -260,7 +260,7 @@
 }
 
 .matchSummary > span {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .matchSummary h3 {
@@ -273,7 +273,7 @@
 .checkList p,
 .documentList p {
   margin: 7px 0 0;
-  color: light-dark(#596e78, #9bb2bd);
+  color: light-dark(#526771, #9bb2bd);
   font-size: 12px;
   line-height: 1.7;
 }
@@ -296,11 +296,11 @@
 }
 
 .deadlineGrid svg {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .deadlineGrid small {
-  color: light-dark(#5a7783, #819fac);
+  color: light-dark(#4c6874, #819fac);
   font-size: 9px;
   letter-spacing: 0.06em;
 }
@@ -352,19 +352,19 @@
 
 .checkIcon {
   flex: 0 0 auto;
-  color: light-dark(#976622, #efb978);
+  color: light-dark(#87570d, #efb978);
 }
 
 .checkMet {
-  color: light-dark(#0b865a, #75dba9);
+  color: light-dark(#0c764f, #75dba9);
 }
 
 .checkMissing {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .checkAction {
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .documentList {
@@ -382,13 +382,13 @@
 }
 
 .documentList li > span {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
   font-size: 10px;
 }
 
 .documentList li > small {
   grid-column: 2;
-  color: light-dark(#976622, #efb978);
+  color: light-dark(#87570d, #efb978);
   font-size: 10px;
 }
 
@@ -399,14 +399,14 @@
   padding: 14px;
   border: 1px solid light-dark(#88a5b2, #294b59);
   border-radius: 12px;
-  color: light-dark(#2a7e8c, #8bdbea);
+  color: light-dark(#156f7d, #8bdbea);
   font-size: 12px;
 }
 
 .sourceList small {
   display: block;
   margin-top: 6px;
-  color: light-dark(#5a7783, #819fac);
+  color: light-dark(#4c6874, #819fac);
   font-size: 10px;
 }
 
@@ -446,7 +446,7 @@
   padding: 7px 10px;
   border-radius: 999px;
   background: light-dark(rgba(210, 142, 61, 0.09), rgba(255, 184, 105, 0.09));
-  color: light-dark(#976622, #efb978);
+  color: light-dark(#87570d, #efb978);
   font-size: 9px;
 }
 
@@ -468,7 +468,7 @@
   height: 44px;
   border-radius: 12px;
   background: light-dark(rgba(72, 175, 192, 0.08), rgba(121, 221, 239, 0.08));
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .pendingBox h3 {
@@ -481,7 +481,7 @@
 .pendingBox p {
   max-width: 650px;
   margin: 8px 0 0;
-  color: light-dark(#596e78, #9bb2bd);
+  color: light-dark(#526771, #9bb2bd);
   font-size: 12px;
   line-height: 1.65;
 }
@@ -502,7 +502,7 @@
 }
 
 .requirementPreview span {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
   font-size: 9px;
   letter-spacing: 0.12em;
 }
@@ -556,7 +556,7 @@
   border: 1px solid light-dark(#7698a5, #3a6373);
   border-radius: 50%;
   background: light-dark(#f3fbff, #0c2733);
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   font-size: 10px;
 }
 
@@ -568,7 +568,7 @@
 
 .routeSteps p {
   margin: 6px 0 0;
-  color: light-dark(#5d7681, #8fa9b5);
+  color: light-dark(#4f6872, #8fa9b5);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -579,7 +579,7 @@
   gap: 10px;
   padding-top: 19px;
   border-top: 1px solid light-dark(rgba(68, 107, 123, 0.14), rgba(132, 184, 206, 0.14));
-  color: light-dark(#0b865a, #75dba9);
+  color: light-dark(#0c764f, #75dba9);
 }
 
 .routeNotice svg {
@@ -588,7 +588,7 @@
 
 .routeNotice p {
   margin: 0;
-  color: light-dark(#556b74, #9db5bf);
+  color: light-dark(#516770, #9db5bf);
   font-size: 10px;
   line-height: 1.6;
 }

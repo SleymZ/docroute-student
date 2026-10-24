@@ -14,7 +14,7 @@
   align-items: center;
   gap: 9px;
   margin-bottom: 23px;
-  color: light-dark(#597783, #708f9c);
+  color: light-dark(#4b6874, #708f9c);
   font-size: 11px;
 }
 
@@ -22,7 +22,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: light-dark(#237f8c, #84d9e7);
+  color: light-dark(#07707d, #84d9e7);
 }
 
 .breadcrumb strong {
@@ -50,7 +50,7 @@
 
 .eyebrow {
   margin: 0;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.17em;
@@ -67,7 +67,7 @@
 }
 
 .heroCopy h1 span {
-  color: light-dark(#bc442e, #ff8067);
+  color: light-dark(#ab341e, #ff8067);
 }
 
 .heroCopy > p:last-child {
@@ -98,7 +98,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.22), rgba(255, 128, 103, 0.22));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.09), rgba(255, 128, 103, 0.09));
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .heroRoute small,
@@ -109,7 +109,7 @@
 }
 
 .heroRoute small {
-  color: light-dark(#577785, #7192a0);
+  color: light-dark(#496976, #7192a0);
   font-size: 8px;
   letter-spacing: 0.13em;
 }
@@ -122,7 +122,7 @@
 
 .heroRoute p {
   margin-top: 4px;
-  color: light-dark(#547885, #83a8b6);
+  color: light-dark(#466976, #83a8b6);
   font-size: 9px;
   line-height: 1.45;
 }
@@ -150,7 +150,7 @@
   border: 1px solid light-dark(#89a5b2, #294a58);
   border-radius: 14px;
   background: light-dark(rgba(243, 250, 254, 0.82), rgba(11, 35, 46, 0.82));
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .routeFacts small,
@@ -159,7 +159,7 @@
 }
 
 .routeFacts small {
-  color: light-dark(#577785, #6f909e);
+  color: light-dark(#496976, #6f909e);
   font-size: 7px;
   letter-spacing: 0.13em;
 }
@@ -218,7 +218,7 @@
   border: 1px solid light-dark(#7898a5, #3a6271);
   border-radius: 50%;
   background: light-dark(#f3fbff, #0b2632);
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   font-size: 9px;
   letter-spacing: 0.08em;
 }
@@ -251,7 +251,7 @@
 .stageHeader > div:first-child > p:last-child {
   max-width: 680px;
   margin: 9px 0 0;
-  color: light-dark(#5d7681, #8faab5);
+  color: light-dark(#4f6872, #8faab5);
   font-size: 11px;
   line-height: 1.65;
 }
@@ -265,7 +265,7 @@
   border: 1px solid light-dark(rgba(203, 99, 74, 0.18), rgba(255, 146, 119, 0.18));
   border-radius: 999px;
   background: light-dark(rgba(241, 115, 91, 0.06), rgba(255, 128, 103, 0.06));
-  color: light-dark(#9f5d4a, #e9a18c);
+  color: light-dark(#8f4f3c, #e9a18c);
   font-size: 8px;
 }
 
@@ -315,13 +315,13 @@
   border: 1px solid light-dark(#7c9aa6, #3a5e6c);
   border-radius: 9px;
   background: light-dark(#f5fcff, #0d2a36);
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .taskToggle[aria-pressed="true"] {
   border-color: light-dark(#309c6e, #75dba9);
   background: light-dark(rgba(78, 181, 133, 0.12), rgba(117, 219, 169, 0.12));
-  color: light-dark(#0b865a, #75dba9);
+  color: light-dark(#0c764f, #75dba9);
 }
 
 .taskToggle:disabled {
@@ -352,28 +352,28 @@
 
 .statusReady {
   background: light-dark(rgba(78, 181, 133, 0.1), rgba(117, 219, 169, 0.1));
-  color: light-dark(#0b865a, #75dba9);
+  color: light-dark(#0c764f, #75dba9);
 }
 
 .statusAction {
   background: light-dark(rgba(72, 175, 192, 0.09), rgba(121, 221, 239, 0.09));
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .statusAttention {
   background: light-dark(rgba(231, 124, 95, 0.09), rgba(255, 145, 116, 0.09));
-  color: light-dark(#b44e33, #ff9174);
+  color: light-dark(#a33e23, #ff9174);
 }
 
 .statusInformation,
 .statusNotApplicable {
   background: light-dark(rgba(17, 36, 43, 0.08), rgba(164, 187, 197, 0.08));
-  color: light-dark(#576c75, #9db4bd);
+  color: light-dark(#526770, #9db4bd);
 }
 
 .taskCopy > p {
   margin: 6px 0 0;
-  color: light-dark(#5d7680, #8ea8b3);
+  color: light-dark(#4f6871, #8ea8b3);
   font-size: 9px;
   line-height: 1.65;
 }
@@ -383,7 +383,7 @@
   align-items: center;
   gap: 6px;
   margin-top: 9px;
-  color: light-dark(#96644c, #d6a086);
+  color: light-dark(#86563e, #d6a086);
   font-size: 8px;
 }
 
@@ -399,7 +399,7 @@
   display: flex;
   align-items: center;
   gap: 13px;
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .sources h2 {
@@ -425,7 +425,7 @@
   border: 1px solid light-dark(#86a2af, #2d4f5d);
   border-radius: 11px;
   background: light-dark(rgba(241, 247, 250, 0.56), rgba(6, 25, 34, 0.56));
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .sources small,
@@ -436,7 +436,7 @@
 }
 
 .sources small {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
   font-size: 7px;
   letter-spacing: 0.11em;
 }
@@ -449,7 +449,7 @@
 
 .sources p {
   margin-top: 4px;
-  color: light-dark(#597783, #7695a2);
+  color: light-dark(#4b6874, #7695a2);
   font-size: 8px;
 }
 
@@ -474,7 +474,7 @@
 
 .memoryStatus {
   margin: 9px 0 0;
-  color: light-dark(#597783, #7695a2);
+  color: light-dark(#4b6874, #7695a2);
   font-size: 8px;
   line-height: 1.5;
 }
@@ -490,7 +490,7 @@
 }
 
 .memoryStatus[data-error="true"] {
-  color: light-dark(#94654a, #d7a487);
+  color: light-dark(#85573c, #d7a487);
 }
 
 .memoryStatus[data-error="true"]::before {
@@ -544,7 +544,7 @@
 
 .progressRing span {
   margin-top: -28px;
-  color: light-dark(#597783, #7593a0);
+  color: light-dark(#4b6874, #7593a0);
   font-size: 9px;
 }
 
@@ -569,7 +569,7 @@
 
 .controlStats span {
   min-height: 23px;
-  color: light-dark(#587784, #6f8f9c);
+  color: light-dark(#4a6875, #6f8f9c);
   font-size: 7px;
   line-height: 1.4;
 }
@@ -589,7 +589,7 @@
   border: 1px solid light-dark(rgba(203, 99, 74, 0.18), rgba(255, 146, 119, 0.18));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.055), rgba(255, 128, 103, 0.055));
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .controlDeadline small,
@@ -599,7 +599,7 @@
 }
 
 .controlDeadline small {
-  color: light-dark(#886961, #9d7d75);
+  color: light-dark(#795b53, #9d7d75);
   font-size: 7px;
   letter-spacing: 0.11em;
 }
@@ -612,7 +612,7 @@
 
 .controlDeadline span {
   margin-top: 3px;
-  color: light-dark(#5d7680, #8ea8b2);
+  color: light-dark(#4f6871, #8ea8b2);
   font-size: 8px;
 }
 
@@ -637,14 +637,14 @@
 .editRoute {
   margin-top: 8px;
   border: 1px solid light-dark(#809da8, #365966);
-  color: light-dark(#2b7e8b, #8bdbe8);
+  color: light-dark(#176f7c, #8bdbe8);
 }
 
 .disclaimer {
   margin: 17px 0 0;
   padding-top: 15px;
   border-top: 1px solid light-dark(rgba(68, 107, 123, 0.14), rgba(132, 184, 206, 0.14));
-  color: light-dark(#5d7681, #758f9a);
+  color: light-dark(#4f6872, #758f9a);
   font-size: 8px;
   line-height: 1.65;
 }
@@ -653,7 +653,7 @@
   display: grid;
   place-items: center;
   min-height: 66vh;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   text-align: center;
 }
 
@@ -665,14 +665,14 @@
 .invalidPage p {
   max-width: 520px;
   margin: 8px 0 20px;
-  color: light-dark(#5e7680, #91aab5);
+  color: light-dark(#506771, #91aab5);
 }
 
 .invalidPage a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 @media (hover: hover) {

@@ -10,11 +10,11 @@
   --line: light-dark(rgba(62, 113, 133, 0.16), rgba(132, 184, 206, 0.16));
   --line-strong: light-dark(rgba(62, 113, 133, 0.3), rgba(132, 184, 206, 0.3));
   --panel: light-dark(#f2f8fc, #0c1e2a);
-  --coral: light-dark(#ce543d, #ff8067);
-  --cyan: light-dark(#1f8fa1, #79ddef);
-  --amber: light-dark(#a17905, #f3c86b);
-  --green: light-dark(#1c9764, #77e4ac);
-  --late: light-dark(#bf614e, #ff9a85);
+  --coral: light-dark(#d4502f, #ff8067);
+  --cyan: light-dark(#0b7686, #79ddef);
+  --amber: light-dark(#8f6a00, #f3c86b);
+  --green: light-dark(#17895a, #77e4ac);
+  --late: light-dark(#b9452f, #ff9a85);
 
   width: calc(100% - var(--page-gutter, 24px) * 2);
   max-width: 1240px;
@@ -718,7 +718,7 @@
 .choiceOptions label[data-checked] {
   border-color: light-dark(rgba(213, 90, 67, 0.6), rgba(255, 128, 103, 0.6));
   background: light-dark(rgba(241, 115, 91, 0.1), rgba(255, 128, 103, 0.1));
-  color: light-dark(#a05c4d, #ffb3a1);
+  color: light-dark(#904e3f, #ffb3a1);
 }
 
 .choiceOptions input {

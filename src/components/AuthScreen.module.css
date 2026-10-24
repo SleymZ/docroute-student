@@ -2,8 +2,8 @@
   --ink: #081b24;
   --paper: #f1eee7;
   --paper-muted: #6d7778;
-  --coral: #ff785f;
-  --cyan: light-dark(#218fa0, #76d9ea);
+  --coral: light-dark(#d4502f, #ff785f);
+  --cyan: light-dark(#0b7686, #76d9ea);
   display: grid;
   grid-template-columns: minmax(0, 1.38fr) minmax(430px, 0.82fr);
   min-height: 100svh;
@@ -103,7 +103,7 @@
   flex: 0 0 auto;
   border: 1px solid light-dark(rgba(210, 93, 66, 0.34), rgba(255, 134, 105, 0.34));
   background: light-dark(rgba(245, 111, 87, 0.08), rgba(255, 120, 95, 0.08));
-  color: light-dark(#ba4732, #ff856d);
+  color: light-dark(#a93722, #ff856d);
 }
 
 .brandMark {
@@ -233,7 +233,7 @@
 }
 
 .boardHeader small {
-  color: light-dark(#567785, #789aa8);
+  color: light-dark(#486976, #789aa8);
   font-size: 8px;
   letter-spacing: 0.17em;
 }
@@ -248,7 +248,7 @@
   padding: 6px 8px;
   border: 1px solid light-dark(rgba(212, 91, 65, 0.18), rgba(255, 130, 102, 0.18));
   border-radius: 7px;
-  color: light-dark(#af523c, #ff9a81);
+  color: light-dark(#9e432d, #ff9a81);
   font-size: 8px;
   letter-spacing: 0.12em;
 }
@@ -288,12 +288,12 @@
   border: 1px solid light-dark(#7b9ca9, #345c6b);
   border-radius: 50%;
   background: light-dark(#f5fcff, #0d2a36);
-  color: light-dark(#577784, #7c9daa);
+  color: light-dark(#496975, #7c9daa);
 }
 
 .stageComplete {
   border-color: light-dark(rgba(47, 156, 111, 0.43), rgba(116, 219, 170, 0.43));
-  color: light-dark(#0b8759, #7ce2af);
+  color: light-dark(#0a764d, #7ce2af);
 }
 
 .checkMark {
@@ -319,7 +319,7 @@
 
 .stageText small {
   grid-row: 1 / 3;
-  color: light-dark(#547885, #6d929f);
+  color: light-dark(#466976, #6d929f);
   font-size: 8px;
   letter-spacing: 0.12em;
 }
@@ -332,7 +332,7 @@
 
 .stageText span {
   margin-top: 5px;
-  color: light-dark(#5b7781, #84a1ac);
+  color: light-dark(#4d6872, #84a1ac);
   font-size: 10px;
 }
 
@@ -342,7 +342,7 @@
   gap: 9px;
   padding-top: 17px;
   border-top: 1px solid light-dark(rgba(62, 106, 119, 0.14), rgba(131, 190, 207, 0.14));
-  color: light-dark(#148659, #7de0ae);
+  color: light-dark(#01764c, #7de0ae);
   font-size: 9px;
 }
 
@@ -359,13 +359,13 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: light-dark(#5d7681, #8faab5);
+  color: light-dark(#4f6872, #8faab5);
   font-size: 9px;
   letter-spacing: 0.03em;
 }
 
 .storyFooter svg {
-  color: light-dark(#0b8759, #7ce2af);
+  color: light-dark(#0a764d, #7ce2af);
 }
 
 .authPanel {

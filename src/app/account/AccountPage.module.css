@@ -34,7 +34,7 @@
     linear-gradient(light-dark(rgba(72, 175, 192, 0.022), rgba(121, 221, 239, 0.022)) 1px, transparent 1px),
     linear-gradient(90deg, light-dark(rgba(72, 175, 192, 0.022), rgba(121, 221, 239, 0.022)) 1px, transparent 1px);
   background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 65% 45% at 50% 18%, light-dark(#eeeeee, #000), transparent 85%);
+  mask-image: radial-gradient(ellipse 65% 45% at 50% 18%, #000, transparent 85%);
   content: "";
   pointer-events: none;
 }
@@ -72,13 +72,13 @@
 }
 
 .hero h1 span {
-  color: light-dark(#bc442e, #ff8067);
+  color: light-dark(#ab341e, #ff8067);
 }
 
 .heroLead {
   max-width: 660px;
   margin: 22px 0 0;
-  color: light-dark(#536c77, #9ab5c0);
+  color: light-dark(#4f6872, #9ab5c0);
   font-size: 14px;
   line-height: 1.75;
 }
@@ -104,7 +104,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.28), rgba(255, 128, 103, 0.28));
   border-radius: 13px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#b64b34, #ff8d73);
+  color: light-dark(#a53c25, #ff8d73);
 }
 
 .identityCard small,
@@ -115,7 +115,7 @@
 }
 
 .identityCard small {
-  color: light-dark(#567784, #789aa7);
+  color: light-dark(#486976, #789aa7);
   font-size: 9px;
   letter-spacing: 0.16em;
 }
@@ -129,7 +129,7 @@
 
 .identityCard p {
   margin-top: 4px;
-  color: light-dark(#5c7681, #819ca7);
+  color: light-dark(#4e6872, #819ca7);
   font-size: 10px;
 }
 
@@ -172,15 +172,15 @@
   gap: 12px;
   min-width: 0;
   padding: 18px 20px;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .statusStrip article[data-tone="ok"] {
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
 }
 
 .statusStrip article[data-tone="warn"] {
-  color: light-dark(#9d6301, #ffbf73);
+  color: light-dark(#895603, #ffbf73);
 }
 
 .statusStrip article + article {
@@ -193,7 +193,7 @@
 }
 
 .statusStrip small {
-  color: light-dark(#597783, #718f9c);
+  color: light-dark(#4b6874, #718f9c);
   font-size: 9px;
   letter-spacing: 0.14em;
 }
@@ -256,7 +256,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.26), rgba(255, 128, 103, 0.26));
   border-radius: 12px;
   background: light-dark(rgba(241, 115, 91, 0.07), rgba(255, 128, 103, 0.07));
-  color: light-dark(#b64b35, #ff8c73);
+  color: light-dark(#a53b26, #ff8c73);
 }
 
 .profileDetails {
@@ -276,7 +276,7 @@
 }
 
 .profileDetails dt {
-  color: light-dark(#5b7781, #7996a1);
+  color: light-dark(#4d6872, #7996a1);
   font-size: 9px;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -307,7 +307,7 @@
   padding: 3px 7px;
   border: 1px solid light-dark(rgba(179, 120, 39, 0.26), rgba(255, 191, 115, 0.26));
   border-radius: 999px;
-  color: light-dark(#936830, #ffcf96);
+  color: light-dark(#835920, #ffcf96);
   font-size: 9px;
 }
 
@@ -321,7 +321,7 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .subsectionHeading h3 {
@@ -369,7 +369,7 @@
   border: 1px solid light-dark(rgba(213, 90, 67, 0.3), rgba(255, 128, 103, 0.3));
   border-radius: 999px;
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#a95743, #ffa58f);
+  color: light-dark(#984835, #ffa58f);
   font-size: 11px;
   font-weight: 700;
   text-align: center;
@@ -377,19 +377,19 @@
 
 .proof {
   overflow: hidden;
-  color: light-dark(#59737c, #95b0ba);
+  color: light-dark(#4e6871, #95b0ba);
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .studyFlag {
-  color: light-dark(#5a7781, #6f8c97);
+  color: light-dark(#4c6872, #6f8c97);
   font-size: 11px;
 }
 
 .studyFlag[data-on] {
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
 }
 
 .chipList {
@@ -411,12 +411,12 @@
 .chipList span[data-legacy] {
   border-color: light-dark(rgba(179, 120, 39, 0.3), rgba(255, 191, 115, 0.3));
   background: light-dark(rgba(205, 144, 67, 0.06), rgba(255, 191, 115, 0.06));
-  color: light-dark(#936830, #ffcf96);
+  color: light-dark(#835920, #ffcf96);
 }
 
 .mutedNote {
   margin: 12px 0 0;
-  color: light-dark(#5a7781, #82a0ab);
+  color: light-dark(#4c6872, #82a0ab);
   font-size: 12px;
   line-height: 1.65;
 }
@@ -458,7 +458,7 @@
 .secondaryAction {
   border: 1px solid light-dark(rgba(40, 150, 167, 0.26), rgba(121, 221, 239, 0.26));
   background: light-dark(rgba(72, 175, 192, 0.04), rgba(121, 221, 239, 0.04));
-  color: light-dark(#267f8c, #8fe2f0);
+  color: light-dark(#0d707d, #8fe2f0);
 }
 
 /* ---------- Route card ---------- */
@@ -482,7 +482,7 @@
 }
 
 .routeMeta > span:last-child {
-  color: light-dark(#5a7781, #87a5b0);
+  color: light-dark(#4c6872, #87a5b0);
 }
 
 .stageList {
@@ -520,25 +520,25 @@
   border: 1px solid light-dark(rgba(40, 150, 167, 0.2), rgba(121, 221, 239, 0.2));
   border-radius: 11px;
   background: light-dark(#f5fcff, #0d2a36);
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .stageList li[data-state="done"] .stageIcon {
   border-color: light-dark(rgba(38, 157, 106, 0.35), rgba(119, 228, 172, 0.35));
   background: light-dark(rgba(71, 183, 129, 0.08), rgba(119, 228, 172, 0.08));
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
 }
 
 .stageList li[data-state="active"] .stageIcon {
   border-color: light-dark(rgba(213, 90, 67, 0.4), rgba(255, 128, 103, 0.4));
   background: light-dark(rgba(241, 115, 91, 0.12), rgba(255, 128, 103, 0.12));
-  color: light-dark(#b74a34, #ff8b72);
+  color: light-dark(#a63a25, #ff8b72);
 }
 
 .stageList li[data-state="blocked"] .stageIcon {
   border-color: light-dark(rgba(179, 120, 39, 0.35), rgba(255, 191, 115, 0.35));
   background: light-dark(rgba(205, 144, 67, 0.08), rgba(255, 191, 115, 0.08));
-  color: light-dark(#9d6301, #ffbf73);
+  color: light-dark(#895603, #ffbf73);
 }
 
 .stageList li[data-state="upcoming"] {
@@ -553,7 +553,7 @@
 }
 
 .stageList small {
-  color: light-dark(#597783, #7897a4);
+  color: light-dark(#4b6874, #7897a4);
   font-size: 9px;
   letter-spacing: 0.13em;
 }
@@ -567,7 +567,7 @@
 
 .stageList p {
   margin-top: 2px;
-  color: light-dark(#5a7781, #82a0ab);
+  color: light-dark(#4c6872, #82a0ab);
   font-size: 11px;
 }
 
@@ -589,19 +589,19 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
   font-size: 12px;
   font-weight: 600;
 }
 
 .coverageBox[data-tone="warn"] > p {
-  color: light-dark(#9d6301, #ffbf73);
+  color: light-dark(#895603, #ffbf73);
 }
 
 .coverageBox > span {
   display: block;
   margin-top: 8px;
-  color: light-dark(#576e77, #9ab3bc);
+  color: light-dark(#516770, #9ab3bc);
   font-size: 12px;
   line-height: 1.6;
 }
@@ -635,13 +635,13 @@
 
 .coverageBox em[data-status="strong"] {
   background: light-dark(rgba(71, 183, 129, 0.12), rgba(119, 228, 172, 0.12));
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
 }
 
 .coverageBox em[data-status="preparation-required"],
 .coverageBox em[data-status="unavailable"] {
   background: light-dark(rgba(205, 144, 67, 0.1), rgba(255, 191, 115, 0.1));
-  color: light-dark(#936830, #ffcf96);
+  color: light-dark(#835920, #ffcf96);
 }
 
 .routeActions {
@@ -675,7 +675,7 @@
   border: 1px solid light-dark(rgba(40, 150, 167, 0.13), rgba(121, 221, 239, 0.13));
   border-radius: 13px;
   background: light-dark(rgba(241, 246, 249, 0.55), rgba(6, 24, 32, 0.55));
-  color: light-dark(#267f8c, #8fe2f0);
+  color: light-dark(#0d707d, #8fe2f0);
   transition: border-color var(--transition), background var(--transition);
 }
 
@@ -699,7 +699,7 @@
 
 .savedList span small {
   margin-top: 3px;
-  color: light-dark(#5b7781, #7f9ca7);
+  color: light-dark(#4d6872, #7f9ca7);
   font-size: 11px;
 }
 
@@ -712,7 +712,7 @@
   width: min(920px, 100%);
   margin: 30px auto 0;
   padding: 56px 46px;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   text-align: center;
 }
 
@@ -727,7 +727,7 @@
 .emptyState p {
   max-width: 560px;
   margin: 8px 0 0;
-  color: light-dark(#5d767f, #91abb5);
+  color: light-dark(#4f6871, #91abb5);
   font-size: 13px;
   line-height: 1.7;
 }

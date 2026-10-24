@@ -84,7 +84,7 @@
   border: 1px solid light-dark(rgba(193, 108, 73, 0.16), rgba(255, 164, 128, 0.16));
   border-radius: 11px;
   background: light-dark(rgba(228, 127, 88, 0.08), rgba(255, 151, 112, 0.08));
-  color: light-dark(#a55a3c, #f5a383);
+  color: light-dark(#954c2e, #f5a383);
 }
 
 .searchField input {
@@ -166,7 +166,7 @@
 .resultsHeading {
   margin: 0;
   padding: 9px 10px;
-  color: light-dark(#5b7684, #91adbc);
+  color: light-dark(#4d6875, #91adbc);
   font-size: 10px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -234,7 +234,7 @@
 
 .selectedBadge {
   margin-left: auto;
-  color: light-dark(#b1503a, #ff967d);
+  color: light-dark(#a0412b, #ff967d);
   font-size: 11px;
 }
 
@@ -328,12 +328,12 @@
   overflow: hidden;
   shape-rendering: geometricPrecision;
   -webkit-mask-image:
-    linear-gradient(to right, transparent 0, light-dark(#eeeeee, #000) 18%, light-dark(#eeeeee, #000) 93%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, light-dark(#eeeeee, #000) 9%, light-dark(#eeeeee, #000) 80%, transparent 100%);
+    linear-gradient(to right, transparent 0, #000 18%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 80%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image:
-    linear-gradient(to right, transparent 0, light-dark(#eeeeee, #000) 18%, light-dark(#eeeeee, #000) 93%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, light-dark(#eeeeee, #000) 9%, light-dark(#eeeeee, #000) 80%, transparent 100%);
+    linear-gradient(to right, transparent 0, #000 18%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 80%, transparent 100%);
   mask-composite: intersect;
 }
 
@@ -361,7 +361,7 @@
   border-radius: 999px;
   background:
     light-dark(rgba(228, 127, 88, 0.08), rgba(255, 151, 112, 0.08));
-  color: light-dark(#a55b3f, #ffad8f);
+  color: light-dark(#944c30, #ffad8f);
   font-size: 8px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -388,7 +388,7 @@
 .pendingCoverage > svg {
   flex-shrink: 0;
   margin-top: 1px;
-  color: light-dark(#af5139, #ff997e);
+  color: light-dark(#9f422b, #ff997e);
 }
 
 .pendingCoverage strong {
@@ -400,13 +400,13 @@
 
 .pendingCoverage p {
   margin: 5px 0 0;
-  color: light-dark(#5d7680, #93adb8);
+  color: light-dark(#4f6871, #93adb8);
   font-size: 9px;
   line-height: 1.55;
 }
 
 .pendingVerification {
-  color: light-dark(#a45b42, #f0a085);
+  color: light-dark(#944c34, #f0a085);
 }
 
 .disabledButton {
@@ -424,8 +424,8 @@
 }
 
 .country {
-  fill: light-dark(#587784, #173440);
-  stroke: light-dark(#537886, #486d7b);
+  fill: light-dark(#dde7eb, #173440);
+  stroke: light-dark(#b7cad1, #486d7b);
   stroke-width: 0.75;
   vector-effect: non-scaling-stroke;
   transition:
@@ -439,18 +439,18 @@
 }
 
 .interactive:hover {
-  fill: light-dark(#527886, #1d424f);
-  stroke: light-dark(#557883, #7195a1);
+  fill: light-dark(#d0dee4, #1d424f);
+  stroke: light-dark(#9db6bf, #7195a1);
 }
 
 .available {
-  fill: light-dark(#4c7a86, #2b5965);
-  stroke: light-dark(#3d6f77, #88bcc5);
+  fill: light-dark(#c5dce2, #2b5965);
+  stroke: light-dark(#8db2bc, #88bcc5);
 }
 
 .available:hover {
-  fill: light-dark(#457a8a, #3c7180);
-  stroke: light-dark(#0e383a, #c0eced);
+  fill: light-dark(#b3d1d9, #3c7180);
+  stroke: light-dark(#4f8c99, #c0eced);
   filter: brightness(1.05);
 }
 
@@ -459,8 +459,8 @@
  */
 .selected,
 .selected:hover {
-  fill: light-dark(#c03f28, #ff795f);
-  stroke: light-dark(#a05c4b, #ffb39f);
+  fill: light-dark(#f0725a, #ff795f);
+  stroke: light-dark(#c9533c, #ffb39f);
   stroke-width: 1.25;
   filter:
     drop-shadow(
@@ -475,8 +475,8 @@
  */
 .focused,
 .focused:hover {
-  fill: light-dark(#557885, #1c3e4a);
-  stroke: light-dark(#ae523c, #ff9b82);
+  fill: light-dark(#d3e1e6, #1c3e4a);
+  stroke: light-dark(#d9573d, #ff9b82);
   stroke-width: 1.45;
   filter:
     drop-shadow(
@@ -522,21 +522,21 @@
 }
 
 .available {
-  fill: light-dark(#4c7a86, #2b5965);
-  stroke: light-dark(#3d6f77, #88bcc5);
+  fill: light-dark(#c5dce2, #2b5965);
+  stroke: light-dark(#8db2bc, #88bcc5);
   cursor: pointer;
 }
 
 .available:hover {
-  fill: light-dark(#457a8a, #3c7180);
-  stroke: light-dark(#0e383a, #c0eced);
+  fill: light-dark(#b3d1d9, #3c7180);
+  stroke: light-dark(#4f8c99, #c0eced);
   filter: brightness(1.05);
 }
 
 .selected,
 .selected:hover {
-  fill: light-dark(#c03f28, #ff795f);
-  stroke: light-dark(#a05c4b, #ffb39f);
+  fill: light-dark(#f0725a, #ff795f);
+  stroke: light-dark(#c9533c, #ffb39f);
   stroke-width: 1.25;
   filter:
     drop-shadow(0 0 5px light-dark(rgba(238, 105, 80, 0.25), rgba(255, 121, 95, 0.25)));
@@ -568,7 +568,7 @@
 /* ===== Подписи и столица ===== */
 
 .labels {
-  fill: light-dark(#3d525b, #b3cbd5);
+  fill: light-dark(#4c616b, #b3cbd5);
   font-size: 10px;
   letter-spacing: 0.1em;
   pointer-events: none;
@@ -585,19 +585,19 @@
 
 .markerRing {
   fill: light-dark(rgba(163, 93, 45, 0.14), rgba(255, 177, 129, 0.14));
-  stroke: light-dark(#8e6943, #ffd6ad);
+  stroke: light-dark(#d08a5c, #ffd6ad);
   stroke-width: 1;
 }
 
 .markerDot {
-  fill: light-dark(#281f08, #fff3d7);
-  stroke: light-dark(#c03f28, #ff795f);
+  fill: light-dark(#ffffff, #fff3d7);
+  stroke: light-dark(#c9533c, #ff795f);
   stroke-width: 1.5;
 }
 
 .capitalLabel {
-  fill: light-dark(#271e0e, #fff3de);
-  stroke: light-dark(#091923, #091923);
+  fill: light-dark(#1d2a30, #fff3de);
+  stroke: light-dark(#ffffff, #091923);
   stroke-width: 4px;
   paint-order: stroke;
   font-size: 14px;
@@ -675,7 +675,7 @@
 
 .cardEyebrow {
   margin: 0;
-  color: light-dark(#1b7f91, #83dcef);
+  color: light-dark(#0b6f80, #83dcef);
   font-size: 9px;
   font-weight: 650;
   letter-spacing: 0.14em;
@@ -688,7 +688,7 @@
   border: 1px solid light-dark(rgba(25, 157, 120, 0.19), rgba(118, 232, 191, 0.19));
   border-radius: 999px;
   background: light-dark(rgba(31, 186, 134, 0.07), rgba(61, 204, 151, 0.07));
-  color: light-dark(#048663, #70e5ba);
+  color: light-dark(#057556, #70e5ba);
   font-size: 9px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -717,7 +717,7 @@
 }
 
 .capital svg {
-  color: light-dark(#b54c33, #ff8e73);
+  color: light-dark(#a43d24, #ff8e73);
 }
 
 .countryDescription {
@@ -750,7 +750,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: light-dark(#597682, #8faebb);
+  color: light-dark(#4c6874, #8faebb);
   font-size: 9px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -758,7 +758,7 @@
 
 .countryFacts dt svg {
   flex-shrink: 0;
-  color: light-dark(#147f90, #67d8ed);
+  color: light-dark(#027080, #67d8ed);
 }
 
 .countryFacts dd {
@@ -787,14 +787,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  color: light-dark(#836356, #c8a496);
+  color: light-dark(#7a5b4e, #c8a496);
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .interestHeader svg {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .countryInterest strong {
@@ -810,7 +810,7 @@
   align-items: flex-start;
   gap: 9px;
   margin-top: 11px;
-  color: light-dark(#118564, #6fe0b6);
+  color: light-dark(#107557, #6fe0b6);
 }
 
 .verificationNote > svg {
@@ -832,7 +832,7 @@
 .verificationNote span {
   display: block;
   margin-top: 3px;
-  color: light-dark(#5d7680, #91abb6);
+  color: light-dark(#4f6871, #91abb6);
   font-size: 9px;
   line-height: 1.5;
 }

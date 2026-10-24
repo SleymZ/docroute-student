@@ -70,7 +70,7 @@
 .chevron {
   flex-shrink: 0;
   margin-left: auto;
-  color: light-dark(#4f6875, #9db8c6);
+  color: light-dark(#4e6774, #9db8c6);
   transition: transform 180ms ease;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .programIcon {
-  color: light-dark(#a55a3c, #f5a383);
+  color: light-dark(#954c2e, #f5a383);
 }
 
 /* ===== Выпадающий список ===== */
@@ -175,7 +175,7 @@
 .check {
   flex-shrink: 0;
   margin-left: 6px;
-  color: light-dark(#a55a3c, #f5a383);
+  color: light-dark(#954c2e, #f5a383);
 }
 
 @media (hover: hover) {
@@ -253,7 +253,7 @@
   border: 1px solid light-dark(rgba(68, 107, 123, 0.18), rgba(132, 184, 206, 0.18));
   border-radius: 999px;
   background: transparent;
-  color: light-dark(#5d7680, #8aa4af);
+  color: light-dark(#4f6871, #8aa4af);
   font: inherit;
   font-size: 11px;
   white-space: nowrap;
@@ -263,17 +263,17 @@
 .purposeSelected {
   border-color: light-dark(rgba(213, 90, 67, 0.55), rgba(255, 128, 103, 0.55));
   background: light-dark(rgba(241, 115, 91, 0.1), rgba(255, 128, 103, 0.1));
-  color: light-dark(#a05c4d, #ffb3a1);
+  color: light-dark(#904e3f, #ffb3a1);
 }
 
 .purposeSoon {
   border-style: dashed;
-  color: light-dark(#5b7682, #6d8995);
+  color: light-dark(#4d6874, #6d8995);
 }
 
 .purposeNote {
   margin: 0;
-  color: light-dark(#5b7781, #6f8b96);
+  color: light-dark(#4d6872, #6f8b96);
   font-size: 10px;
 }
 

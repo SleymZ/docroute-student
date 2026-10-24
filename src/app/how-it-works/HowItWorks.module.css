@@ -7,7 +7,7 @@
 
 .eyebrow {
   margin: 0 0 10px;
-  color: light-dark(#12808f, #67d9ed);
+  color: light-dark(#10707d, #67d9ed);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -75,7 +75,7 @@
 
 .secondaryAction {
   border: 1px solid light-dark(#7e9ca9, #365a69);
-  color: light-dark(#2d7e8a, #8cdae7);
+  color: light-dark(#1a6f7b, #8cdae7);
 }
 
 .secondaryAction:hover {
@@ -126,7 +126,7 @@
   border: 1px solid light-dark(rgba(5, 151, 170, 0.35), rgba(103, 217, 237, 0.35));
   border-radius: 13px;
   background: light-dark(rgba(55, 176, 196, 0.08), rgba(103, 217, 237, 0.08));
-  color: light-dark(#12808f, #67d9ed);
+  color: light-dark(#10707d, #67d9ed);
 }
 
 /* Steps */
@@ -157,7 +157,7 @@
 }
 
 .stepNumber {
-  color: light-dark(#597785, #8baab9);
+  color: light-dark(#4b6876, #8baab9);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.12em;
@@ -181,7 +181,7 @@
 .aside {
   max-width: 760px;
   margin: 18px 0 0;
-  color: light-dark(#557482, #8fb0be);
+  color: light-dark(#4a6876, #8fb0be);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -213,7 +213,7 @@
 }
 
 .workNote strong {
-  color: light-dark(#a05c4d, #ffb3a1);
+  color: light-dark(#904e3f, #ffb3a1);
 }
 
 .inlineLink {
@@ -221,7 +221,7 @@
   align-items: center;
   gap: 7px;
   margin-top: 10px;
-  color: light-dark(#2d7e8a, #8cdae7);
+  color: light-dark(#1a6f7b, #8cdae7);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -265,12 +265,12 @@
 
 .badgeVerified {
   background: light-dark(rgba(71, 183, 129, 0.1), rgba(119, 228, 172, 0.1));
-  color: light-dark(#0b8757, #77e4ac);
+  color: light-dark(#0a764c, #77e4ac);
 }
 
 .badgeComing {
   background: light-dark(rgba(193, 152, 55, 0.1), rgba(243, 200, 107, 0.1));
-  color: light-dark(#8f6b0a, #f3c86b);
+  color: light-dark(#7d5e0a, #f3c86b);
 }
 
 .badgePending {
@@ -308,7 +308,7 @@
 }
 
 .statuses dt {
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   font-size: 14px;
   font-weight: 600;
 }
@@ -370,7 +370,7 @@
 
 .coverage h3 {
   margin: 0 0 12px;
-  color: light-dark(#12808f, #67d9ed);
+  color: light-dark(#10707d, #67d9ed);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -403,7 +403,7 @@
 }
 
 .coverage small {
-  color: light-dark(#567785, #6f919f);
+  color: light-dark(#486976, #6f919f);
   font-size: 11px;
 }
 

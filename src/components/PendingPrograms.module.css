@@ -25,12 +25,12 @@
   border: 1px solid light-dark(rgba(168, 127, 20, 0.2), rgba(243, 200, 107, 0.2));
   border-radius: 10px;
   background: light-dark(rgba(193, 152, 55, 0.07), rgba(243, 200, 107, 0.07));
-  color: light-dark(#8f6b0a, #f3c86b);
+  color: light-dark(#7d5e0a, #f3c86b);
 }
 
 .eyebrow {
   margin: 0 0 4px;
-  color: light-dark(#8f6b0a, #f3c86b);
+  color: light-dark(#7d5e0a, #f3c86b);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -72,7 +72,7 @@
 }
 
 .cardHeading span {
-  color: light-dark(#557482, #8fb0be);
+  color: light-dark(#4a6876, #8fb0be);
   font-size: 12px;
 }
 
@@ -81,13 +81,13 @@
   padding: 5px 9px;
   border-radius: 999px;
   background: light-dark(rgba(193, 152, 55, 0.1), rgba(243, 200, 107, 0.1));
-  color: light-dark(#8f6b0a, #f3c86b) !important;
+  color: light-dark(#7d5e0a, #f3c86b) !important;
   font-size: 10px !important;
 }
 
 .scope {
   margin: 0;
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
   font-size: 12px;
 }
 
@@ -115,7 +115,7 @@
 }
 
 .programs span {
-  color: light-dark(#557482, #8fb0be);
+  color: light-dark(#4a6876, #8fb0be);
   font-size: 11px;
 }
 
@@ -142,7 +142,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: light-dark(#2d7e8a, #8cdae7);
+  color: light-dark(#1a6f7b, #8cdae7);
   font-size: 12px;
   text-decoration: none;
 }
@@ -152,7 +152,7 @@
 }
 
 .sources small {
-  color: light-dark(#567785, #6f919f);
+  color: light-dark(#486976, #6f919f);
   font-size: 10px;
 }
 
@@ -165,7 +165,7 @@
   padding: 0 13px;
   border: 1px solid light-dark(#7e9ca9, #365a69);
   border-radius: 10px;
-  color: light-dark(#2d7e8a, #8cdae7);
+  color: light-dark(#1a6f7b, #8cdae7);
   font-size: 12px;
   font-weight: 600;
   text-decoration: none;

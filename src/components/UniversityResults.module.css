@@ -65,7 +65,7 @@
   border: 1px solid light-dark(rgba(40, 150, 167, 0.16), rgba(121, 221, 239, 0.16));
   border-radius: 10px;
   background: light-dark(rgba(72, 175, 192, 0.06), rgba(121, 221, 239, 0.06));
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .profileSnapshot p,
@@ -78,7 +78,7 @@
 
 .profileSnapshot small {
   margin-bottom: 4px;
-  color: light-dark(#567785, #6f919f);
+  color: light-dark(#486976, #6f919f);
   font-size: 8px;
   letter-spacing: 0.13em;
 }
@@ -101,7 +101,7 @@
   padding: 0 13px;
   border: 1px solid light-dark(#7e9ca9, #365a69);
   border-radius: 10px;
-  color: light-dark(#2d7e8a, #8cdae7);
+  color: light-dark(#1a6f7b, #8cdae7);
   font-size: 10px;
   font-weight: 600;
 }
@@ -125,12 +125,12 @@
 .directoryPrompt > a {
   border-color: light-dark(rgba(213, 90, 67, 0.34), rgba(255, 128, 103, 0.34));
   background: light-dark(rgba(241, 115, 91, 0.08), rgba(255, 128, 103, 0.08));
-  color: light-dark(#af523d, #ff9a82);
+  color: light-dark(#9e432e, #ff9a82);
 }
 
 .memoryStatus {
   margin: -3px 2px 14px;
-  color: light-dark(#597783, #708f9b);
+  color: light-dark(#4b6874, #708f9b);
   font-size: 9px;
   line-height: 1.5;
 }
@@ -146,7 +146,7 @@
 }
 
 .memoryStatus[data-error="true"] {
-  color: light-dark(#94654a, #d7a487);
+  color: light-dark(#85573c, #d7a487);
 }
 
 .memoryStatus[data-error="true"]::before {
@@ -173,7 +173,7 @@
 .coverageActions > a:first-child {
   border-color: light-dark(rgba(213, 90, 67, 0.38), rgba(255, 128, 103, 0.38));
   background: light-dark(rgba(241, 115, 91, 0.09), rgba(255, 128, 103, 0.09));
-  color: light-dark(#af523d, #ff9a82);
+  color: light-dark(#9e432e, #ff9a82);
 }
 
 .matchCard {
@@ -206,7 +206,7 @@
 
 .matchHeading > div > span {
   margin-top: 3px;
-  color: light-dark(#597783, #7695a2);
+  color: light-dark(#4b6874, #7695a2);
   font-size: 9px;
 }
 
@@ -221,24 +221,24 @@
 
 .statusStrong {
   background: light-dark(rgba(78, 181, 133, 0.11), rgba(117, 219, 169, 0.11));
-  color: light-dark(#0b865a, #75dba9);
+  color: light-dark(#0c764f, #75dba9);
 }
 
 .statusConditional {
   background: light-dark(rgba(72, 175, 192, 0.1), rgba(121, 221, 239, 0.1));
-  color: light-dark(#108090, #79ddef);
+  color: light-dark(#0e707e, #79ddef);
 }
 
 .statusPreparationRequired,
 .statusMoreInformation,
 .statusUnavailable {
   background: light-dark(rgba(199, 147, 82, 0.1), rgba(239, 185, 120, 0.1));
-  color: light-dark(#976622, #efb978);
+  color: light-dark(#87570d, #efb978);
 }
 
 .matchSummary {
   margin: 11px 0 0;
-  color: light-dark(#5a727b, #97b0ba);
+  color: light-dark(#506870, #97b0ba);
   font-size: 10px;
   line-height: 1.6;
 }
@@ -260,7 +260,7 @@
 }
 
 .matchFacts svg {
-  color: light-dark(#b34e36, #ff9277);
+  color: light-dark(#a23f27, #ff9277);
 }
 
 .routeLink {
@@ -268,7 +268,7 @@
   align-items: center;
   gap: 7px;
   margin-top: 13px;
-  color: light-dark(#15808d, #7fdbe9);
+  color: light-dark(#02707d, #7fdbe9);
   font-size: 10px;
   font-weight: 700;
 }
@@ -279,7 +279,7 @@
   }
 
   .universityTitleLink:hover {
-    color: light-dark(#b34e36, #ff9277);
+    color: light-dark(#a23f27, #ff9277);
   }
 
   .profileLink:hover {

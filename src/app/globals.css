@@ -19,10 +19,10 @@
 
   --text: light-dark(#22211d, #f5f3ee);
   --muted: light-dark(#4c616c, #a6bdca);
-  --cyan: light-dark(#0f8597, #79ddef);
-  --coral: light-dark(#e0583d, #ff795f);
-  --coral-hover: light-dark(#cc4b32, #ff927b);
-  --green: light-dark(#1c9764, #77e4ac);
+  --cyan: light-dark(#0b7686, #79ddef);
+  --coral: light-dark(#d4502f, #ff795f);
+  --coral-hover: light-dark(#bf4429, #ff927b);
+  --green: light-dark(#17895a, #77e4ac);
 
   --page-gutter: 24px;
   --header-height: 72px;
