@@ -352,11 +352,11 @@
 
 .checkIcon {
   flex: 0 0 auto;
-  color: light-dark(#9f6b23, #efb978);
+  color: light-dark(#855d14, #efb978);
 }
 
 .checkMet {
-  color: light-dark(#258c61, #75dba9);
+  color: light-dark(#157048, #75dba9);
 }
 
 .checkMissing {
@@ -388,7 +388,7 @@
 
 .documentList li > small {
   grid-column: 2;
-  color: light-dark(#9f6b23, #efb978);
+  color: light-dark(#855d14, #efb978);
   font-size: 10px;
 }
 
@@ -446,7 +446,7 @@
   padding: 7px 10px;
   border-radius: 999px;
   background: light-dark(rgba(210, 142, 61, 0.09), rgba(255, 184, 105, 0.09));
-  color: light-dark(#9f6b23, #efb978);
+  color: light-dark(#855d14, #efb978);
   font-size: 9px;
 }
 
@@ -579,7 +579,7 @@
   gap: 10px;
   padding-top: 19px;
   border-top: 1px solid light-dark(rgba(68, 107, 123, 0.14), rgba(132, 184, 206, 0.14));
-  color: light-dark(#258c61, #75dba9);
+  color: light-dark(#157048, #75dba9);
 }
 
 .routeNotice svg {

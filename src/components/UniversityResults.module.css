@@ -221,7 +221,7 @@
 
 .statusStrong {
   background: light-dark(rgba(78, 181, 133, 0.11), rgba(117, 219, 169, 0.11));
-  color: light-dark(#258c61, #75dba9);
+  color: light-dark(#157048, #75dba9);
 }
 
 .statusConditional {
@@ -233,7 +233,7 @@
 .statusMoreInformation,
 .statusUnavailable {
   background: light-dark(rgba(199, 147, 82, 0.1), rgba(239, 185, 120, 0.1));
-  color: light-dark(#9f6b23, #efb978);
+  color: light-dark(#855d14, #efb978);
 }
 
 .matchSummary {

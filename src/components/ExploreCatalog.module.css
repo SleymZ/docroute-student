@@ -158,7 +158,7 @@
 
 .verificationNotice svg {
   flex-shrink: 0;
-  color: light-dark(#248c5e, #77e4ac);
+  color: light-dark(#157048, #77e4ac);
 }
 
 .verificationNotice p {
@@ -254,7 +254,7 @@
 
 .verifiedBadge {
   background: light-dark(rgba(71, 183, 129, 0.09), rgba(119, 228, 172, 0.09));
-  color: light-dark(#248c5e, #77e4ac);
+  color: light-dark(#157048, #77e4ac);
 }
 
 .pendingBadge {
@@ -453,9 +453,9 @@
 ======================================== */
 
 .atlasPage {
-  --atlas-coral: light-dark(#d4553b, #ff8067);
+  --atlas-coral: light-dark(#c24a30, #ff8067);
   --atlas-coral-fill: light-dark(#f2765d, #ff8067);
-  --atlas-cyan: light-dark(#0d7a8b, #79ddef);
+  --atlas-cyan: light-dark(#0a6d7c, #79ddef);
   --atlas-ink: light-dark(#13222b, #f3f2ed);
   --atlas-body: light-dark(#475d68, #a3bcc8);
   --atlas-dim: light-dark(#5f7682, #7f9ba8);

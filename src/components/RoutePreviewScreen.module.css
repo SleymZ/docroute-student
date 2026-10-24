@@ -321,7 +321,7 @@
 .taskToggle[aria-pressed="true"] {
   border-color: light-dark(#309c6e, #75dba9);
   background: light-dark(rgba(78, 181, 133, 0.12), rgba(117, 219, 169, 0.12));
-  color: light-dark(#258c61, #75dba9);
+  color: light-dark(#157048, #75dba9);
 }
 
 .taskToggle:disabled {
@@ -352,7 +352,7 @@
 
 .statusReady {
   background: light-dark(rgba(78, 181, 133, 0.1), rgba(117, 219, 169, 0.1));
-  color: light-dark(#258c61, #75dba9);
+  color: light-dark(#157048, #75dba9);
 }
 
 .statusAction {

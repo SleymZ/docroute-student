@@ -718,7 +718,7 @@
 .choiceOptions label[data-checked] {
   border-color: light-dark(rgba(213, 90, 67, 0.6), rgba(255, 128, 103, 0.6));
   background: light-dark(rgba(241, 115, 91, 0.1), rgba(255, 128, 103, 0.1));
-  color: light-dark(#a96151, #ffb3a1);
+  color: light-dark(#a4452e, #ffb3a1);
 }
 
 .choiceOptions input {

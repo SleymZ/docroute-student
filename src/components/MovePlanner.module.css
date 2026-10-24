@@ -130,7 +130,7 @@
 
 .items li[data-tone="soon"] .icon {
   border-color: light-dark(rgba(179, 120, 39, 0.35), rgba(255, 191, 115, 0.35));
-  color: light-dark(#a16a1d, #ffbf73);
+  color: light-dark(#855d14, #ffbf73);
 }
 
 .items li[data-tone="late"] {
@@ -184,7 +184,7 @@
 }
 
 .items li[data-tone="soon"] .when strong {
-  color: light-dark(#9b6d32, #ffcf96);
+  color: light-dark(#855d14, #ffcf96);
 }
 
 .footnote {
