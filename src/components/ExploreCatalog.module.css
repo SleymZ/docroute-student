@@ -888,6 +888,32 @@
   text-align: center;
 }
 
+.atlasDeckNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: auto 0 16px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: light-dark(rgba(13, 122, 139, 0.06), rgba(121, 221, 239, 0.05));
+  color: var(--atlas-body);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.atlasDeckNote svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--atlas-cyan);
+}
+
+.atlasDeckNote a {
+  color: var(--atlas-cyan);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* Selection bar */
 
 .atlasRouteDock {
@@ -1067,8 +1093,9 @@
     padding: 12px;
   }
 
+  /* The values speak for themselves; labels would double the height. */
   .atlasRouteLabel {
-    margin-bottom: 3px;
+    display: none;
   }
 
   .atlasRouteValue strong {

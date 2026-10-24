@@ -303,6 +303,44 @@
   }
 }
 
+/* Phones: brand, theme switch, log in and the main action share one row.
+   "Log in" becomes an icon button (it keeps its accessible name). */
+@media (max-width: 480px) {
+  .header {
+    gap: 8px;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+
+  .brandCaption {
+    display: none;
+  }
+
+  .login {
+    width: 40px;
+    padding: 0;
+  }
+
+  .login svg {
+    display: block;
+  }
+
+  .login span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .buildRoute svg {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .navLink,
   .navLink svg,

@@ -422,6 +422,15 @@ export function ExploreCatalog() {
               </p>
             )}
           </div>
+
+          <p className={styles.atlasDeckNote}>
+            <BadgeCheck size={15} aria-hidden="true" />
+            <span>
+              A field is marked verified only after its admission rules are
+              checked against the university&apos;s official sources.{" "}
+              <Link href="/how-it-works">How we check</Link>
+            </span>
+          </p>
         </section>
       </div>
 
