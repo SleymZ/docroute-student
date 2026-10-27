@@ -633,11 +633,6 @@
   font-style: normal;
 }
 
-.coverageBox em[data-status="strong"] {
-  background: light-dark(rgba(71, 183, 129, 0.12), rgba(119, 228, 172, 0.12));
-  color: light-dark(#157048, #77e4ac);
-}
-
 .coverageBox em[data-status="preparation-required"],
 .coverageBox em[data-status="unavailable"] {
   background: light-dark(rgba(205, 144, 67, 0.1), rgba(255, 191, 115, 0.1));
