@@ -230,7 +230,8 @@
   list-style: none;
 }
 
-.item {
+.item,
+.card {
   scroll-margin-top: 80px;
 }
 
