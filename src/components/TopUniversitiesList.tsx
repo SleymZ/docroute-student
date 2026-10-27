@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, Search, X } from "lucide-react";
 
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -23,7 +23,7 @@ function groupThousands(value: number) {
 function normalise(value: string) {
   return value
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 }
 
@@ -36,6 +36,19 @@ export function TopUniversitiesList({
 }) {
   const [query, setQuery] = useState("");
   const [country, setCountry] = useState("");
+
+  // A link such as /explore/top#rank-2 opens that university's card.
+  useEffect(() => {
+    const match = /^#rank-(\d+)$/.exec(window.location.hash);
+    if (!match) return;
+    const card = document.querySelector<HTMLDetailsElement>(
+      `#rank-${match[1]} details`,
+    );
+    if (card) {
+      card.open = true;
+      card.scrollIntoView({ block: "start" });
+    }
+  }, []);
 
   const visible = useMemo(() => {
     const needle = normalise(query.trim());
