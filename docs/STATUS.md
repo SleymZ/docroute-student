@@ -160,8 +160,14 @@ still publish only their 2026/27 rules.
   `deadlines.ts`. `WorkRouteScreen` has its own layout (route strip,
   checklist rows, sticky date panel), separate from the study preview.
 - `src/lib/residence/deadlines.ts`: pure date calculations for the planner
-  (UTC, weekends skipped, public holidays not included; dates formatted by
+  (UTC; working days skip weekends and Slovak days off; dates formatted by
   hand to avoid ICU differences between server and browser).
+- `src/lib/residence/slovak-holidays.ts`: Slovak days off under Act No.
+  241/1993 (Slov-Lex version in force from 1 Nov 2025, checked 2026-10-27):
+  11 fixed days plus Good Friday and Easter Monday (Easter is calculated).
+  1 Sep, 28 Oct and 17 Nov are state holidays but not days off; § 4b makes
+  8 May and 15 Sep working days in 2026 only. Recheck the act each year;
+  a test pins the list.
 
 ## Residence sources (rechecked 2026-10-23)
 
@@ -180,6 +186,24 @@ still publish only their 2026/27 rules.
   link and a "#N in Europe's top 100" button on university pages. Checked
   on the Preview: 100 cards, search and country filter, both themes,
   375px width without sideways scroll.
+- PR #9 (2026-10-27): UNIZA rules and planner holidays.
+  - Slovak test exemption: rechecked points 2 and 9–13 of the FRI 2027/28
+    rules on 2026-10-27. Point 11 exempts foreign applicants "from the
+    Czech Republic"; point 2 describes a foreign applicant as one who
+    finished school abroad; citizenship is not mentioned. The test is now
+    skipped only when citizenship and school country are both SK/CZ,
+    required when neither is, and otherwise the route says "ask the
+    faculty" (Needs clarification) with the test as fallback
+    (`slovakTestRule` in `match-programs.ts`).
+  - The route shows the UNIZA test once (language task); the separate
+    document task was removed from the route.
+  - The "Profile aligned" match status was removed: the faculty always
+    keeps a step, so "Steps remaining" is the best status. A met condition
+    inside the route is labelled "Condition met".
+  - Planner counts Slovak public holidays (see residence code structure).
+  - Checked on the Preview: CZ citizen schooled in UA gets "ask the
+    faculty"; no duplicate test task; move date 25 Mar 2027 gives the
+    arrival report by 1 Apr 2027 (Easter skipped).
 
 - PR #8 (merged 2026-10-24): **light theme** and Explore redesign.
   - Theme follows the system setting until the person presses the
@@ -238,7 +262,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (122 tests on 2026-10-27, without PR #9).
+- Unit tests: `npm test` (130 tests on 2026-10-27).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -253,22 +277,19 @@ text, which is unchanged from before).
 
 ## Open questions and known limits
 
-1. **UNIZA Slovak test exemption.** The code exempts Slovak and Czech
-   *citizens*. The rules speak of applicants "from the Czech Republic",
-   which might mean Czech education rather than citizenship. Needs a reread
-   of the official PDF before changing.
-2. **Duplicate UNIZA test tasks.** Preview shows both the language check and
-   the "UNIZA Slovak language test result" document. Consider merging.
-3. **"Profile aligned" is unreachable.** The entrance-route check is always
-   an action, so the best status is "Steps remaining". Decide whether that
-   is intended.
+1. **UNIZA Slovak test exemption** (resolved in PR #9 as "ask the faculty"
+   when citizenship and school country differ). A written answer from the
+   faculty would let DocRoute decide these cases.
+2. (resolved in PR #9) Duplicate UNIZA test tasks.
+3. (resolved in PR #9) "Profile aligned" removed as unreachable.
 4. **EU/EEA/Swiss registration route** is not verified.
 5. **Signed-in flows on Previews**: email links may redirect to production
    because Preview URLs are not in the Supabase redirect allow list.
 6. Accessibility: the university image container uses `role="img"` while
    containing credit links on the university page.
-7. **Planner limits**: Slovak public holidays are not counted; steps that
-   start at card collection (insurance, medical report) are relative, not
+7. **Planner limits**: Slovak public holidays are counted only as listed in
+   Act 241/1993 (future one-year exceptions must be added by hand); steps
+   that start at card collection (insurance, medical report) are relative, not
    dated. The planner uses the maximum 90-day decision period.
 8. The production domain is still `docroute-student.vercel.app`; renaming
    the Vercel project/domain is a separate decision.
@@ -278,7 +299,8 @@ text, which is unchanged from before).
 1. Watch https://fmph.uniba.sk/prihlasky/ for the approved Comenius FMFI
    2027/28 rules; then verify and add the four programs with their own
    matching policy.
-2. Resolve open questions 1–3 against the official UNIZA rules.
+2. Ask UNIZA FRI in writing how the Czech exemption applies to mixed
+   citizenship/school cases (open question 1).
 3. Verify the EU/EEA/Swiss registration route for Slovakia.
 4. Add the next verified faculty or program only with its own official
    sources (STU FIIT and TUKE FEI once their 2027/28 rules are out).

@@ -19,7 +19,6 @@ const levelRank: Record<CefrLevel, number> = {
 };
 
 export const matchStatusLabels: Record<MatchStatus, string> = {
-  strong: "Profile aligned",
   conditional: "Steps remaining",
   "preparation-required": "Preparation needed",
   "more-information": "Needs clarification",
@@ -27,12 +26,31 @@ export const matchStatusLabels: Record<MatchStatus, string> = {
 };
 
 const statusRank: Record<MatchStatus, number> = {
-  strong: 0,
-  conditional: 1,
-  "more-information": 2,
-  "preparation-required": 3,
-  unavailable: 4,
+  conditional: 0,
+  "more-information": 1,
+  "preparation-required": 2,
+  unavailable: 3,
 };
+
+
+export type SlovakTestRule = "exempt" | "required" | "unclear";
+
+// FRI rules (2027/28, admission conditions, point 11) require the UNIZA Slovak
+// test from foreign applicants "except applicants from the Czech Republic",
+// and point 2 describes a foreign applicant as one who finished secondary
+// school abroad. Citizenship is not mentioned, so when citizenship and school
+// country disagree the faculty has to confirm.
+export function slovakTestRule(
+  program: AdmissionProgram,
+  profile: Pick<ApplicantProfile, "citizenshipCountryCode" | "educationCountryCode">,
+): SlovakTestRule {
+  const exempt = program.languagePolicy.foreignApplicantTest.exemptCountryCodes;
+  const byCitizenship = exempt.includes(profile.citizenshipCountryCode);
+  const byEducation = exempt.includes(profile.educationCountryCode);
+  if (byCitizenship && byEducation) return "exempt";
+  if (!byCitizenship && !byEducation) return "required";
+  return "unclear";
+}
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -268,14 +286,13 @@ export function matchProgram(
       "Review the teaching language and your study-language preferences; other known languages do not replace it.",
     );
 
-  const needsForeignTest = !languageTest.exemptCitizenshipCountryCodes.includes(
-    profile.citizenshipCountryCode,
-  );
+  const testRule = slovakTestRule(program, profile);
+  const needsForeignTest = testRule !== "exempt";
   const language = bestLanguage(
     profile,
-    needsForeignTest ? ["sk"] : ["sk", "cs"],
+    testRule === "required" ? ["sk"] : ["sk", "cs"],
   );
-  if (needsForeignTest) {
+  if (testRule === "required") {
     const enoughLevel = reachesLevel(language, languageTest.minimumLevel);
     const qualifyingTest = enoughLevel && language?.proof === "uniza-test";
     check(
@@ -285,10 +302,14 @@ export function matchProgram(
       !enoughLevel
         ? "You have not reported Slovak " +
             languageTest.minimumLevel +
-            " or higher. English and other languages cannot substitute for this rule."
+            " or higher. English and other languages cannot substitute for this rule. Pass the UNIZA Slovak test at B1 or higher with grade A, B or C by " +
+            languageDeadline +
+            "."
         : qualifyingTest
-          ? "You report a qualifying UNIZA Slovak test at B1 or higher, with grade A, B or C. The faculty must verify the result."
-          : "Your reported Slovak reaches B1, but a school record or unrelated certificate does not automatically replace the required UNIZA test. An earlier qualifying UNIZA test is explicitly recognised.",
+          ? "You report a qualifying UNIZA Slovak test at B1 or higher, with grade A, B or C. Bring the result; the faculty must verify it."
+          : "Your reported Slovak reaches B1, but a school record or unrelated certificate does not replace the required UNIZA test. Pass it at B1 or higher with grade A, B or C by " +
+            languageDeadline +
+            "; an earlier qualifying UNIZA test is recognised.",
     );
     if (!qualifyingTest)
       nextActions.push(
@@ -296,6 +317,23 @@ export function matchProgram(
           languageDeadline +
           "; only one attempt is allowed in the admission calendar year.",
       );
+  } else if (testRule === "unclear") {
+    check(
+      "language",
+      "Slovak test exemption: ask the faculty",
+      language ? "unknown" : "missing",
+      (language
+        ? ""
+        : "Written and spoken Slovak or Czech is required, and your profile lists neither. ") +
+        "The rules exempt applicants from the Czech Republic (and Slovak applicants) from the UNIZA Slovak test, but do not say whether this depends on citizenship or on where you finished school. Your citizenship and school country differ, so ask the faculty in writing. Until it confirms, plan to pass the UNIZA Slovak test at B1 or higher with grade A, B or C by " +
+        languageDeadline +
+        ".",
+    );
+    nextActions.push(
+      "Ask the faculty in writing whether the Slovak test exemption applies to you; until it confirms, plan the UNIZA Slovak test by " +
+        languageDeadline +
+        ".",
+    );
   } else {
     // No numerical CEFR minimum is published for the Slovak/Czech exemption.
     check(
@@ -303,7 +341,7 @@ export function matchProgram(
       "Written and spoken Slovak or Czech",
       language ? "action" : "missing",
       language
-        ? "The rules exempt Slovak and Czech applicants from this foreign-applicant test. Confirm that your written and spoken Slovak or Czech is sufficient; the rule does not specify a CEFR threshold for this route."
+        ? "Your citizenship and school are both Slovak or Czech, so the foreign-applicant Slovak test does not apply. Confirm that your written and spoken Slovak or Czech is sufficient; the rules give no CEFR threshold."
         : "Written and spoken Slovak or Czech is required. Add your actual language knowledge and confirm proficiency with the faculty.",
     );
     nextActions.push(
@@ -361,6 +399,7 @@ export function matchProgram(
           break;
         case "foreign-language-test":
           applies = needsForeignTest;
+          conditional = testRule === "unclear";
           break;
         case "waiver-claim":
           applies = entranceRoute !== "exam";
@@ -390,9 +429,9 @@ export function matchProgram(
     ? "preparation-required"
     : checks.some((item) => item.status === "unknown")
       ? "more-information"
-      : checks.some((item) => item.status === "action")
-        ? "conditional"
-        : "strong";
+      : // Best possible status: admission always keeps a faculty step
+        // (exam or waiver confirmation), so DocRoute never says "aligned".
+        "conditional";
   const summary =
     status === "preparation-required"
       ? "This program matches your study choices, but your current education or language profile has unmet conditions. It is a preparation option, not a confirmed fit."

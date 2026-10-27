@@ -6,7 +6,9 @@ import {
   addWorkingDays,
   isIsoDate,
   planStudyResidenceDeadlines,
+  subtractWorkingDays,
 } from "../src/lib/residence/deadlines";
+import { easterSunday, slovakDaysOff } from "../src/lib/residence/slovak-holidays";
 
 const base = {
   today: "2026-10-23",
@@ -106,4 +108,29 @@ test("plan dates are formatted without locale-dependent month names", async () =
   const { formatPlanDate } = await import("../src/lib/residence/deadlines");
   assert.equal(formatPlanDate("2027-09-20"), "20 Sep 2027");
   assert.equal(formatPlanDate("2027-06-07"), "7 Jun 2027");
+});
+
+test("Slovak public holidays follow Act 241/1993 as in force from 1 November 2025", () => {
+  assert.equal(easterSunday(2027), "2027-03-28");
+  assert.equal(easterSunday(2026), "2026-04-05");
+  const days2027 = slovakDaysOff(2027);
+  for (const day of ["2027-01-01", "2027-01-06", "2027-03-26", "2027-03-29", "2027-05-08", "2027-09-15", "2027-12-26"])
+    assert.ok(days2027.has(day), day);
+  // State holidays that are not days off since the amendments.
+  for (const day of ["2027-09-01", "2027-10-28", "2027-11-17", "2027-03-28"])
+    assert.ok(!days2027.has(day), day);
+  // § 4b: only in 2026, 8 May and 15 September are working days.
+  assert.ok(!slovakDaysOff(2026).has("2026-05-08"));
+  assert.ok(!slovakDaysOff(2026).has("2026-09-15"));
+  assert.equal(slovakDaysOff(2027).size, 13);
+});
+
+test("working days skip Slovak public holidays", () => {
+  // Arriving Wed 23 Dec 2026: 24, 25, 26 Dec are days off, then the weekend.
+  assert.equal(addWorkingDays("2026-12-23", 3), "2026-12-30");
+  // Thu 25 Mar 2027 + 3: Good Friday and Easter Monday are skipped.
+  assert.equal(addWorkingDays("2027-03-25", 3), "2027-04-01");
+  // 1 September is no longer a day off.
+  assert.equal(addWorkingDays("2027-08-31", 1), "2027-09-01");
+  assert.equal(subtractWorkingDays("2027-01-07", 2), "2027-01-04");
 });

@@ -5,7 +5,7 @@ import { verifiedPrograms } from "../src/data/verified-programs";
 import catalog from "../src/data/universities.json";
 import { getAdmissionDate } from "../src/lib/admission-date";
 import { buildRoutePreview } from "../src/lib/build-route-preview";
-import { matchProgram, matchPrograms } from "../src/lib/match-programs";
+import { matchProgram, matchPrograms, slovakTestRule } from "../src/lib/match-programs";
 import {
   createProfileSearchParams,
   getProfileProgressId,
@@ -135,6 +135,7 @@ test("English alone does not satisfy a Slovak-taught program", () => {
 
 test("knowing Slovak and agreeing to study in it are separate conditions", () => {
   const result = match({
+    educationCountryCode: "IL",
     languages: profile().languages.map((language) => ({
       ...language,
       willingToStudyIn: language.code === "en",
@@ -153,6 +154,7 @@ test("knowing Slovak and agreeing to study in it are separate conditions", () =>
 for (const proof of ["none", "school", "certificate"] as const) {
   test(`${proof} does not automatically replace UNIZA's specific test`, () => {
     const result = match({
+      educationCountryCode: "IL",
       languages: [{ code: "sk", level: "C1", willingToStudyIn: true, proof }],
     });
     assert.equal(
@@ -164,6 +166,7 @@ for (const proof of ["none", "school", "certificate"] as const) {
 
 test("an explicitly reported qualifying UNIZA result satisfies the test check", () => {
   const result = match({
+    educationCountryCode: "IL",
     languages: [
       { code: "sk", level: "B1", willingToStudyIn: true, proof: "uniza-test" },
     ],
@@ -176,6 +179,7 @@ test("an explicitly reported qualifying UNIZA result satisfies the test check", 
 
 test("a claimed test with an insufficient reported level is not accepted", () => {
   const result = match({
+    educationCountryCode: "IL",
     languages: [
       { code: "sk", level: "A2", willingToStudyIn: true, proof: "uniza-test" },
     ],
@@ -186,13 +190,17 @@ test("a claimed test with an insufficient reported level is not accepted", () =>
   );
 });
 
-test("Slovak education and residence do not waive a foreign applicant's test", () => {
+test("a foreign citizen with Slovak schooling is asked to confirm the test exemption", () => {
+  // FRI rules do not say whether "foreign applicant" means citizenship or
+  // schooling abroad, so DocRoute must not decide either way.
   const result = match();
-  assert.ok(
-    result.requiredDocuments.some(
-      (item) => item.id === "uniza-language-result",
-    ),
+  const language = result.checks.find((item) => item.id === "language");
+  assert.equal(language?.status, "unknown");
+  assert.equal(result.status, "more-information");
+  const document = result.requiredDocuments.find(
+    (item) => item.id === "uniza-language-result",
   );
+  assert.equal(document?.conditional, true);
   assert.ok(
     !result.requiredDocuments.some(
       (item) => item.id === "recognition-decision",
@@ -200,9 +208,33 @@ test("Slovak education and residence do not waive a foreign applicant's test", (
   );
 });
 
+for (const [citizenship, education] of [
+  ["CZ", "UA"],
+  ["UA", "CZ"],
+  ["SK", "DE"],
+] as const) {
+  test(`citizenship ${citizenship} with school in ${education} is not auto-exempt`, () => {
+    assert.equal(
+      slovakTestRule(program, {
+        citizenshipCountryCode: citizenship,
+        educationCountryCode: education,
+      }),
+      "unclear",
+    );
+  });
+}
+
+test("foreign citizenship and schooling abroad always require the UNIZA test", () => {
+  assert.equal(
+    slovakTestRule(program, { citizenshipCountryCode: "UA", educationCountryCode: "UA" }),
+    "required",
+  );
+});
+
 test("Czech citizenship exemption does not invent a numerical CEFR threshold", () => {
   const result = match({
     citizenshipCountryCode: "CZ",
+    educationCountryCode: "CZ",
     languages: [
       { code: "sk", level: "A1", willingToStudyIn: true, proof: "none" },
       { code: "cs", level: "native", willingToStudyIn: false, proof: "none" },
@@ -210,7 +242,7 @@ test("Czech citizenship exemption does not invent a numerical CEFR threshold", (
   });
   const language = result.checks.find((item) => item.id === "language");
   assert.equal(language?.status, "action");
-  assert.match(language!.detail, /does not specify a CEFR threshold/);
+  assert.match(language!.detail, /no CEFR threshold/);
   assert.ok(
     !result.requiredDocuments.some(
       (item) => item.id === "uniza-language-result",
@@ -463,4 +495,23 @@ test("checklist progress changes with the profile but not language-row ordering"
       })),
     }),
   );
+});
+
+test("the route lists the UNIZA Slovak test once", () => {
+  const applicant = profile({ educationCountryCode: "IL" });
+  const preview = buildRoutePreview(applicant, matchProgram(applicant, program, today));
+  const tasks = preview!.stages.flatMap((stage) => stage.tasks);
+  assert.ok(tasks.some((task) => task.id === "route-language"));
+  assert.ok(!tasks.some((task) => task.id === "admission-uniza-language-result"));
+});
+
+test("the best match status is 'Steps remaining', never a sure fit", () => {
+  const result = match({
+    educationCountryCode: "IL",
+    educationStatus: "completed",
+    languages: [
+      { code: "sk", level: "B2", willingToStudyIn: true, proof: "uniza-test" },
+    ],
+  });
+  assert.equal(result.status, "conditional");
 });

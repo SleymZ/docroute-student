@@ -167,7 +167,7 @@ export function UniversityResults({
       .map((university) => {
         const host = getWebsiteHost(university.website);
         const matchingPrograms = (verifiedByHost.get(host) ?? []).filter(
-          (match) => scope !== "current" || match.status === "strong" || match.status === "conditional",
+          (match) => scope !== "current" || match.status === "conditional",
         );
 
         return {
@@ -231,7 +231,7 @@ export function UniversityResults({
   ).length;
   const currentCount = countryUniversities.filter((university) =>
     verifiedByHost.get(getWebsiteHost(university.website))?.some(
-      (match) => match.status === "strong" || match.status === "conditional",
+      (match) => match.status === "conditional",
     ),
   ).length;
   const noCurrentOptions = mode === "route" && scope === "current" && currentCount === 0;

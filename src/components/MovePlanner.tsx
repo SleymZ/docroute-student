@@ -123,8 +123,8 @@ export function MovePlanner({
 
           <p className={styles.footnote}>
             Dates are calculated from the published maximum periods. The
-            authority can decide sooner. Slovak public holidays are not
-            counted.
+            authority can decide sooner. Working days skip weekends and Slovak
+            public holidays.
           </p>
         </>
       )}

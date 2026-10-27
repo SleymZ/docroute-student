@@ -10,7 +10,7 @@ import type {
   RouteStage,
   RouteTask,
 } from "@/types/route-preview";
-import { matchesStudyChoice } from "@/lib/match-programs";
+import { matchesStudyChoice, slovakTestRule } from "@/lib/match-programs";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -54,7 +54,12 @@ export function buildRoutePreview(
   const laterDocuments = match.requiredDocuments.filter(
     (document) => document.due === "enrolment",
   );
-  const admissionDocuments = match.requiredDocuments.filter((document) => document.due === "admission-day");
+  // The UNIZA test result is already covered by the language task below.
+  const admissionDocuments = match.requiredDocuments.filter(
+    (document) =>
+      document.due === "admission-day" &&
+      document.appliesWhen !== "foreign-language-test",
+  );
   const studyLanguageCheck = match.checks.find((check) => check.id === "study-language");
 
   const languageCheck = match.checks.find(
@@ -108,7 +113,7 @@ export function buildRoutePreview(
                 title: languageCheck.label,
                 description: languageCheck.detail,
                 status: admissionTaskStatus(languageCheck.status),
-                dueLabel: program.languagePolicy.foreignApplicantTest.exemptCitizenshipCountryCodes.includes(profile.citizenshipCountryCode)
+                dueLabel: slovakTestRule(program, profile) === "exempt"
                   ? "Confirm before enrolment" : `Complete by ${languageDeadline}`,
                 sourceIds: languageCheck.sourceIds,
               } satisfies RouteTask,
