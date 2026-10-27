@@ -27,6 +27,7 @@ import { AdmissionSources } from "@/components/AdmissionSources";
 import { PendingPrograms } from "@/components/PendingPrograms";
 import { findPendingProgramGroups } from "@/data/pending-programs";
 import catalog from "@/data/universities.json";
+import { topUniversities } from "@/data/top-universities";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
@@ -137,6 +138,10 @@ export default async function UniversityPage({
   if (!university) {
     notFound();
   }
+
+  const topEntry = topUniversities.find(
+    (entry) => entry.catalogId === university.id,
+  );
 
   const selectedProgram = firstValue(query.program)?.trim() || null;
   const requestedProgram = findVerifiedProgram(
@@ -364,6 +369,16 @@ export default async function UniversityPage({
                 University website
                 <ArrowUpRight size={17} aria-hidden="true" />
               </a>
+
+              {topEntry && (
+                <Link
+                  href={`/explore/top#rank-${topEntry.rank}`}
+                  className={styles.secondaryAction}
+                >
+                  #{topEntry.rank} in Europe&apos;s top 100
+                  <ArrowRight size={17} aria-hidden="true" />
+                </Link>
+              )}
 
               <a href="#admission-requirements" className={styles.secondaryAction}>
                 View requirements

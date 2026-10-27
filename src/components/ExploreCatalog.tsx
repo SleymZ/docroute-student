@@ -18,6 +18,7 @@ import {
   Search,
   Smile,
   Stethoscope,
+  Trophy,
   X,
 } from "lucide-react";
 
@@ -237,6 +238,12 @@ export function ExploreCatalog() {
             the catalog and mark the programs whose admission rules are
             verified from official sources.
           </p>
+
+          <Link href="/explore/top" className={styles.atlasTopLink}>
+            <Trophy size={15} aria-hidden="true" />
+            See Europe&apos;s top 100 universities and their entry requirements
+            <ArrowRight size={15} aria-hidden="true" />
+          </Link>
         </div>
 
         <dl className={styles.atlasStats}>
