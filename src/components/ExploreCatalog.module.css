@@ -560,6 +560,40 @@
   line-height: 1.65;
 }
 
+.atlasTopLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--atlas-row-line);
+  border-radius: 12px;
+  color: var(--atlas-cyan);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+.atlasTopLink svg:first-child {
+  flex: 0 0 auto;
+  color: var(--atlas-coral);
+}
+
+.atlasTopLink svg:last-child {
+  flex: 0 0 auto;
+}
+
+.atlasTopLink:hover {
+  border-color: var(--atlas-cyan);
+}
+
+.atlasTopLink:focus-visible {
+  outline: 2px solid var(--atlas-cyan);
+  outline-offset: 3px;
+}
+
 .atlasStats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

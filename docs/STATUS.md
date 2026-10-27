@@ -26,6 +26,9 @@ form shows Family and Business as "coming soon" without routes.
   duties after approval. Includes progress ticks and a start-date deadline
   planner. Answers live in the URL (page is noindex); no account needed.
 - **Explore** is a public university directory (no account needed).
+- **Top 100** (`/explore/top`, linked from the Explore hero): Europe's 100
+  universities with the most top-10%-cited papers, with bachelor's
+  admission facts for non-EU applicants (reference only, see below).
 - **How it works** (`/how-it-works`, the header button) explains the four
   steps, the three labels (verified / rules awaiting approval / review
   pending), the match statuses, the sourcing rules and current coverage.
@@ -88,6 +91,33 @@ pending entry; a test fails if both exist.
 
 Other Slovak computing faculties checked on 2026-10-23 (STU FIIT, TUKE FEI)
 still publish only their 2026/27 rules.
+
+## Top 100 universities (checked 2026-10-27)
+
+- Order: CWTS Leiden Ranking Open Edition 2025, region Europe, indicator
+  P(top 10%), 2020–2023, fractional counting, core publications, all
+  sciences. Data are CC0 (Zenodo 10.5281/zenodo.17473224). Taken from the
+  ranking site's list for Europe. The 2026 edition is due 4 Nov 2026:
+  update `src/data/top-universities.ts` then. QS, THE and ARWU positions
+  are not shown: their terms do not allow republishing.
+- Data: `src/data/top-universities.ts` (generated once from research
+  notes, edit by hand now), types in `src/types/top-universities.ts`,
+  field resolution in `src/lib/top-universities.ts`, page
+  `src/app/explore/top`, list `TopUniversitiesList.tsx`.
+- Facts per university: how to apply, deadline, school certificate,
+  language, tuition for a non-EU bachelor's applicant. A university's own
+  statement wins; otherwise a sourced country rule is shown, labelled
+  "Country rule". Fields with neither are listed as "Not checked yet".
+  When a source page describes another intake (often 2026/27), the card
+  says "Source describes: …". This is reference information: no
+  matching, no checklist, not a verified route.
+- 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
+  PSL do not (the catalog has only predecessor institutions).
+- Known gaps: Federico II (Naples) and KU Leuven pages could not be read
+  by the tools; Spanish universities mostly show the national procedure;
+  Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.
+  UK tuition is per course (link only). Oxford, Cambridge and UK
+  medicine closed for 2027 entry on 15 October 2026.
 
 ## Work route sources and limits (checked 2026-10-23)
 
@@ -152,6 +182,10 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #10 (2026-10-27): Top 100 page (see the section above), Explore hero
+  link and a "#N in Europe's top 100" button on university pages. Checked
+  on the Preview: 100 cards, search and country filter, both themes,
+  375px width without sideways scroll.
 - PR #9 (2026-10-27): UNIZA rules and planner holidays.
   - Slovak test exemption: rechecked points 2 and 9–13 of the FRI 2027/28
     rules on 2026-10-27. Point 11 exempts foreign applicants "from the
@@ -228,7 +262,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (124 tests on 2026-10-27).
+- Unit tests: `npm test` (130 tests on 2026-10-27).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -273,5 +307,8 @@ text, which is unchanged from before).
 5. Work route: cross-check key paragraphs of Act 404/2011 (and the
    Employment Services Act for the 20-working-day rule) on Slov-Lex;
    consider seasonal work and the Blue Card salary amount.
-6. Define family or business purposes for Slovakia with official sources
+6. Update the Top 100 list when the Leiden Ranking 2026 is published
+   (4 Nov 2026) and recheck deadlines once universities publish 2027/28
+   rules.
+7. Define family or business purposes for Slovakia with official sources
    before enabling them in the form.
