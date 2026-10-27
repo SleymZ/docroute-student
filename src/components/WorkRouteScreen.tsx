@@ -563,8 +563,8 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
               )}
               {plan && (
                 <p className={styles.sideHint}>
-                  Labour Office time is not published and public holidays are not
-                  counted, so leave a margin.
+                  Labour Office time is not published, so leave a margin.
+                  Working days skip weekends and Slovak public holidays.
                 </p>
               )}
             </>

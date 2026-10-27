@@ -41,7 +41,7 @@ const sharedProgram = {
     foreignApplicantTest: {
       languageCode: "sk" as const,
       minimumLevel: "B1" as const,
-      exemptCitizenshipCountryCodes: ["SK", "CZ"],
+      exemptCountryCodes: ["SK", "CZ"],
       deadline: "2027-06-03",
       note:
         "Only a previously passed Slovak test administered by UNIZA's Institute of Lifelong Learning, at B1 or higher with grade A, B or C, is explicitly recognised by these rules. A school record or an unrelated certificate is not an automatic exemption.",

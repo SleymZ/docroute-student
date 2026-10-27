@@ -151,7 +151,11 @@ export type AdmissionProgram = {
     foreignApplicantTest: {
       languageCode: "sk";
       minimumLevel: "B1";
-      exemptCitizenshipCountryCodes: string[];
+      // Countries named by the exemption. The FRI rules say "applicants from
+      // the Czech Republic" without saying whether that means citizenship or
+      // where the applicant finished school, so the exemption is certain only
+      // when both point to one of these countries (see slovakTestRule).
+      exemptCountryCodes: string[];
       deadline: string;
       note: string;
     };
@@ -163,7 +167,6 @@ export type AdmissionProgram = {
 };
 
 export type MatchStatus =
-  | "strong"
   | "conditional"
   | "preparation-required"
   | "more-information"

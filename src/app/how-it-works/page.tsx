@@ -66,10 +66,8 @@ const steps = [
 ];
 
 const statusExplanations: Record<MatchStatus, string> = {
-  strong:
-    "Every checked condition is already met by what you reported. The university still decides.",
   conditional:
-    "Nothing is missing, but there are steps to complete, such as a language test or a document.",
+    "The best status. Nothing is missing, but steps remain, such as a language test, a document or the entrance exam. The university always decides, so DocRoute never calls a profile a sure fit.",
   "more-information":
     "Some of your evidence is not specific enough to judge. Clarify it before relying on the route.",
   "preparation-required":
@@ -79,7 +77,6 @@ const statusExplanations: Record<MatchStatus, string> = {
 };
 
 const statusOrder: MatchStatus[] = [
-  "strong",
   "conditional",
   "more-information",
   "preparation-required",

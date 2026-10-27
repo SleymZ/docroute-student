@@ -1,3 +1,4 @@
+import { isSlovakDayOff } from "@/lib/residence/slovak-holidays";
 import type { ResidenceFiling } from "@/lib/residence/slovakia";
 import type { WorkAuthorisationRoute } from "@/lib/work-profile";
 
@@ -63,27 +64,30 @@ export function addDays(value: string, days: number) {
   return toIso(date);
 }
 
-// Monday–Friday only. Slovak public holidays are not included, so the
-// result can be one or two days too late around holidays; the UI says so.
+function isWorkingDay(date: Date) {
+  const weekday = date.getUTCDay();
+  return weekday !== 0 && weekday !== 6 && !isSlovakDayOff(toIso(date));
+}
+
+// Monday–Friday, skipping Slovak days off (Act No. 241/1993, see
+// slovak-holidays.ts).
 export function addWorkingDays(value: string, days: number) {
   const date = toDate(value);
   let added = 0;
   while (added < days) {
     date.setUTCDate(date.getUTCDate() + 1);
-    const weekday = date.getUTCDay();
-    if (weekday !== 0 && weekday !== 6) added += 1;
+    if (isWorkingDay(date)) added += 1;
   }
   return toIso(date);
 }
 
-// Monday–Friday only, counting backwards (public holidays not included).
+// Same rule, counting backwards.
 export function subtractWorkingDays(value: string, days: number) {
   const date = toDate(value);
   let removed = 0;
   while (removed < days) {
     date.setUTCDate(date.getUTCDate() - 1);
-    const weekday = date.getUTCDay();
-    if (weekday !== 0 && weekday !== 6) removed += 1;
+    if (isWorkingDay(date)) removed += 1;
   }
   return toIso(date);
 }
@@ -200,7 +204,7 @@ export function planStudyResidenceDeadlines({
       title: "Report the start of residence",
       date: reportBy,
       dateLabel: `By ${formatPlanDate(reportBy)}`,
-      detail: `Within ${reportWorkingDays} working days of arriving on ${formatPlanDate(moveDate)} (weekends skipped; public holidays are not counted here).`,
+      detail: `Within ${reportWorkingDays} working days of arriving on ${formatPlanDate(moveDate)} (weekends and Slovak public holidays skipped).`,
       tone: "info",
     });
   }
@@ -357,7 +361,7 @@ export function planWorkResidenceDeadlines({
       title: "Report the start of residence",
       date: reportBy,
       dateLabel: `By ${formatPlanDate(reportBy)}`,
-      detail: `Within ${reportWorkingDays} working days of arriving on ${formatPlanDate(moveDate)} (weekends skipped; public holidays are not counted here).`,
+      detail: `Within ${reportWorkingDays} working days of arriving on ${formatPlanDate(moveDate)} (weekends and Slovak public holidays skipped).`,
       tone: "info",
     });
   }
