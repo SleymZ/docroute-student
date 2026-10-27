@@ -60,7 +60,7 @@ const statusMeta: Record<
   }
 > = {
   ready: {
-    label: "Profile aligned",
+    label: "Condition met",
     icon: CheckCircle2,
   },
   action: {
