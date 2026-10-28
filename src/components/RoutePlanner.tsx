@@ -45,10 +45,19 @@ export function RoutePlanner() {
 
   const destinationCountryCode =
     destinationCountryCodes[destination];
+  const hasVerifiedProgram = verifiedPrograms.some(
+    (verifiedProgram) =>
+      verifiedProgram.countryCode === destinationCountryCode &&
+      verifiedProgram.category === program,
+  );
+  const residenceOnly =
+    purpose === "study" &&
+    !hasVerifiedProgram &&
+    studyResidenceRouteCountries.has(destinationCountryCode);
   const routeAvailable =
     purpose === "work"
       ? workRouteCountries.has(destinationCountryCode)
-      : studyResidenceRouteCountries.has(destinationCountryCode) ||
+      : residenceOnly ||
         verifiedPrograms.some(
           (verifiedProgram) =>
             verifiedProgram.countryCode === destinationCountryCode &&
@@ -88,7 +97,7 @@ export function RoutePlanner() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (destinationCountryCode === "CZ") {
+    if (destinationCountryCode === "CZ" && (purpose === "work" || residenceOnly)) {
       if (!routeAvailable) return;
       const czParams = new URLSearchParams({ country: "CZ", purpose });
       const citizenship = educationCountryCodes[documentCountry];
@@ -168,7 +177,7 @@ export function RoutePlanner() {
           destination={destination}
           program={program}
           routeAvailable={routeAvailable}
-          residenceOnly={purpose === "study" && studyResidenceRouteCountries.has(destinationCountryCode)}
+          residenceOnly={residenceOnly}
           onDocumentCountryChange={handleDocumentCountryChange}
           onDestinationChange={handleDestinationChange}
           onProgramChange={handleProgramChange}

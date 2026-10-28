@@ -219,12 +219,172 @@ const programs = [
   },
 ] as const;
 
-export const verifiedPrograms: readonly AdmissionProgram[] = programs.map(
-  (program) => ({
+const mffRules =
+  "https://www.mff.cuni.cz/cs/uchazeci/prijimaci-rizeni/prijimaci-rizeni-ke-studiu-bakalarskych-programu/2027-2028";
+const mffPrograms =
+  "https://www.mff.cuni.cz/cs/uchazeci/bakalarske-studium/programy-bakalarskeho-studia";
+const cuniConditions =
+  "https://is.cuni.cz/studium/prijimacky/index.php?do=info_fakulta&fak=11320";
+
+// Charles University, Faculty of Mathematics and Physics: Czech-taught
+// bachelor's programme Informatika, 2027/28 (checked 2026-10-28). Own
+// matching policy: never reuse UNIZA thresholds here, or these for UNIZA.
+const charlesMffInformatics: AdmissionProgram = {
+  id: "cuni-mff-informatics-bsc-2027",
+  admissionPolicy: "cuni-mff-bachelor-2027",
+  universityId: "82010c9cd5813db075bc",
+  universityHost: "cuni.cz",
+  universityName: "Charles University",
+  faculty: "Faculty of Mathematics and Physics",
+  country: "Czechia",
+  countryCode: "CZ",
+  city: "Prague",
+  category: "Computer Science",
+  programName: "Computer Science",
+  localProgramName: "Informatika",
+  degreeLevel: "bachelor",
+  intake: "2027/28",
+  durationYears: 3,
+  studyMode: "full-time",
+  instructionLanguages: [{ code: "cs", name: "Czech" }],
+  application: {
+    deadline: "2027-03-31",
+    admissionDate: "2027-06-07",
+    feeLabel: "CZK 1,000",
+    applicationUrl: "https://is.cuni.cz/studium/prihlaska/",
+  },
+  languagePolicy: {
+    generalStatement:
+      "The programme is taught in Czech. Applicants without a Czech or Slovak maturita must prove sufficient Czech: two years of full-time study at a Czech or Slovak school taught in that language, a Czech B2/C1 exam at ÚJOP UK, or a state language exam or Czech/Slovak exam at B2–C2.",
+  },
+  documents: [
+    {
+      id: "mff-e-application",
+      title: "Electronic application in the Charles University system",
+      description:
+        "Submit one electronic application for Informatika by 31 March 2027. Each programme needs its own application.",
+      appliesWhen: "always",
+      due: "application",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-fee",
+      title: "Application fee CZK 1,000",
+      description:
+        "The non-refundable fee is due on the third day after the application deadline.",
+      appliesWhen: "always",
+      due: "application",
+      sourceIds: ["mff-rules-2027", "cuni-conditions-2027"],
+    },
+    {
+      id: "mff-waiver-request",
+      title: "Request a waiver of the entrance exam",
+      description:
+        "After the application is registered, request the waiver in the e-application (Žádosti – Upuštění od přijímací zkoušky) with a digitally signed confirmation or an authorised conversion of the proof. Deadlines: 5 April 2027 (maths average), 30 April 2027 (olympiads, seminars, AP), 23–24 May 2027 (maturita results; the page gives both dates, so use 23 May).",
+      appliesWhen: "waiver-claim",
+      due: "application",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-exam",
+      title: "Written entrance exam",
+      description:
+        "10 tasks in 75 minutes on logical thinking, precise expression and secondary-school mathematics, up to 100 points. At least 40 points means the exam is passed. Regular date 7 June 2027, substitute date 22 June 2027 on request.",
+      appliesWhen: "entrance-exam",
+      due: "admission-day",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-czech-proof",
+      title: "Proof of Czech",
+      description:
+        "Without a Czech or Slovak maturita: send a certified proof of Czech (two years at a Czech or Slovak school, ÚJOP UK B2/C1, or a state or Czech/Slovak exam at B2–C2) by post, preferably by 31 July 2027.",
+      appliesWhen: "foreign-language-test",
+      due: "enrolment",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-maturita",
+      title: "Certified copy of the maturita certificate",
+      description:
+        "Send a certified paper copy to the Study Department. The page gives 31 July 2027 in one section and 30 September 2027 in another (22 October 2027 for an autumn exam or a foreign school), so plan for 31 July. Without it you are not admitted or invited to enrol.",
+      appliesWhen: "always",
+      due: "enrolment",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-foreign-recognition",
+      title: "Recognition of foreign secondary education",
+      description:
+        "Slovak, Polish, Hungarian and Slovenian maturita certificates are automatically equivalent. Other foreign certificates need nostrifikace, an IB or European Baccalaureate diploma, or an assessment by the faculty (free of charge).",
+      appliesWhen: "foreign-education",
+      due: "enrolment",
+      sourceIds: ["mff-rules-2027"],
+    },
+  ],
+  minimumRequirements: [
+    {
+      id: "mff-admission-rule",
+      title: "Everyone who meets the conditions is admitted",
+      description:
+        "Applicants who pass the entrance exam (at least 40 of 100 points) or receive a waiver, and who prove completed secondary education, are admitted. The page gives no capacity limit.",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-waivers",
+      title: "Published exam-waiver grounds",
+      description:
+        "Maturita in 2025/26 or 2026/27 with a maths average of at most 1.5 (Czech, Slovak or European school); listed olympiad results; an MFF correspondence seminar certificate; Czech maturita plus Matematika rozšiřující 68%+; Slovak maturita with 75%+ in the external maths test; AP Calculus or Physics 1/2 with 4 or 5; third place in České hlavičky. Only for applicants who have not studied at MFF before.",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-language",
+      title: "Czech",
+      description:
+        "Czech-taught programme. A Czech or Slovak maturita covers the language requirement; otherwise prove Czech at B2 or higher.",
+      sourceIds: ["mff-rules-2027"],
+    },
+    {
+      id: "mff-specialisations",
+      title: "Six specialisations from year 2",
+      description:
+        "A shared first year, then a choice of six specialisations (programming and software development, systems programming, databases and web, computer graphics and vision, general computer science, artificial intelligence) by the end of year 2.",
+      sourceIds: ["mff-programmes-2027"],
+    },
+  ],
+  sources: [
+    {
+      id: "mff-rules-2027",
+      title: "Admission to bachelor's programmes (2027/2028)",
+      publisher: "Faculty of Mathematics and Physics, Charles University",
+      url: mffRules,
+      checkedAt: "2026-10-28",
+    },
+    {
+      id: "mff-programmes-2027",
+      title: "Bachelor's programmes opened for 2027/2028",
+      publisher: "Faculty of Mathematics and Physics, Charles University",
+      url: mffPrograms,
+      checkedAt: "2026-10-28",
+    },
+    {
+      id: "cuni-conditions-2027",
+      title: "General and faculty admission conditions (Informatika, 3 years, Czech)",
+      publisher: "Charles University information system",
+      url: cuniConditions,
+      checkedAt: "2026-10-28",
+    },
+  ],
+  verifiedAt: "2026-10-28",
+};
+
+export const verifiedPrograms: readonly AdmissionProgram[] = [
+  ...programs.map((program) => ({
     ...sharedProgram,
     ...program,
-  }),
-);
+  })),
+  charlesMffInformatics,
+];
 
 export type VerifiedProgram = AdmissionProgram;
 

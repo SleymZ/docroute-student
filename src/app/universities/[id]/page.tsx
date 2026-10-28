@@ -498,7 +498,7 @@ export default async function UniversityPage({
                   <article>
                     <Euro size={19} aria-hidden="true" />
                     <small>APPLICATION FEE</small>
-                    <strong>€{verifiedProgram.application.feeEur}</strong>
+                    <strong>{verifiedProgram.application.feeLabel ?? `€${verifiedProgram.application.feeEur}`}</strong>
                   </article>
 
                   <article>
@@ -671,7 +671,7 @@ export default async function UniversityPage({
                   <article>
                     <Euro size={19} aria-hidden="true" />
                     <small>APPLICATION FEE</small>
-                    <strong>€{verifiedProgram.application.feeEur}</strong>
+                    <strong>{verifiedProgram.application.feeLabel ?? `€${verifiedProgram.application.feeEur}`}</strong>
                   </article>
 
                   <article>

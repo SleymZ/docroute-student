@@ -77,40 +77,84 @@ const languageOptions = [
 
 const countryOptions = applicantCountryOptions;
 
+// Each option belongs to the verified programmes of one destination.
 const waiverOptions: Array<{
   value: WaiverEvidence;
   label: string;
   description: string;
+  countryCode: string;
 }> = [
   {
     value: "math-matura-60",
+    countryCode: "SK",
     label: waiverEvidenceLabels["math-matura-60"],
     description: "Slovak external mathematics maturita percentile of at least 60, not just a completed exam",
   },
   {
     value: "scio-math-60",
+    countryCode: "SK",
     label: waiverEvidenceLabels["scio-math-60"],
     description: "NPS Mathematics percentile of at least 60",
   },
   {
     value: "scio-general-70",
+    countryCode: "SK",
     label: waiverEvidenceLabels["scio-general-70"],
     description: "General study aptitude percentile of at least 70",
   },
   {
     value: "ccna",
+    countryCode: "SK",
     label: waiverEvidenceLabels["ccna"],
     description: "Official networking industry certificate",
   },
   {
     value: "fri-course",
+    countryCode: "SK",
     label: waiverEvidenceLabels["fri-course"],
     description: "Completed specialist course organised by the faculty",
   },
   {
     value: "regional-olympiad",
+    countryCode: "SK",
     label: waiverEvidenceLabels["regional-olympiad"],
     description: "Successful regional mathematics, physics or informatics olympiad solver, or second round of Mladý účtovník during secondary school",
+  },
+  {
+    value: "sk-matura-math-75",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["sk-matura-math-75"],
+    description: "Slovak maturita taken in 2025/26 or 2026/27 with at least 75% in the external part of the mathematics exam",
+  },
+  {
+    value: "cz-matura-math-plus-68",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["cz-matura-math-plus-68"],
+    description: "Czech maturita in 2025/26 or 2026/27 and the CERMAT Matematika rozšiřující exam with at least 68%",
+  },
+  {
+    value: "mff-math-average-1-5",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["mff-math-average-1-5"],
+    description: "Maturita in 2025/26 or 2026/27 at a Czech, Slovak or European school; maths average no higher than 1.5 over the final reports of years 1–3 and the half-year report of year 4",
+  },
+  {
+    value: "mff-olympiad",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["mff-olympiad"],
+    description: "For example the national round of the Mathematical Olympiad (A or P), Physics Olympiad (A) or Informatics Olympiad (A), or a successful regional-round solver of a listed competition",
+  },
+  {
+    value: "mff-seminar",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["mff-seminar"],
+    description: "Successful solver certificate from an MFF UK seminar (mathematics, physics, programming or M&M)",
+  },
+  {
+    value: "ap-exam-4-5",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["ap-exam-4-5"],
+    description: "AP Calculus AB/BC or AP Physics 1/2 taken by May 2026, confirmed through the Centre for Talented Youth",
   },
 ];
 
@@ -783,7 +827,9 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
               </div>
             ) : null}
             <div className={styles.waiverGrid}>
-              {waiverOptions.map((option) => {
+              {waiverOptions
+                .filter((option) => option.countryCode === countryCode)
+                .map((option) => {
                 const checked = waiverEvidence.has(option.value);
 
                 return (

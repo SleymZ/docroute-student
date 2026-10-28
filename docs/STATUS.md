@@ -57,6 +57,7 @@ form shows Family and Business as "coming soon" without routes.
 | --- | --- | --- |
 | Admission | Slovakia · Computer Science · Bachelor · 2027/28 · UNIZA FRI, 4 programs (`src/data/verified-programs.ts`) | 2026-10-19 |
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
+| Admission | Czechia · Computer Science · Bachelor · 2027/28 · Charles University MFF, Informatika (Czech-taught), policy `cuni-mff-bachelor-2027` | 2026-10-28 |
 | Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed only; no match, checklist or route | 2026-10-23 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
@@ -151,6 +152,28 @@ still publish only their 2026/27 rules.
 - Not covered: family members of EU citizens; a study holder switching to
   work is still shown the ordinary in-country work route.
 
+## Charles University MFF Informatika (checked 2026-10-28)
+
+- Sources: MFF page "Přijímací řízení ke studiu bakalářských programů
+  (2027/2028)", the 2027/28 programme list, and the Charles University
+  information system (Informatika: full-time, Czech, 3 years). No
+  approval date is shown on the pages.
+- Rules used: deadline 31 Mar 2027; fee CZK 1,000 due 3 days later;
+  written exam 7 Jun 2027 (substitute 22 Jun), 40/100 passes, everyone
+  who meets the conditions is admitted; waivers (maturita 2025/26–2026/27
+  only for the maturita grounds): maths average ≤1.5 (CZ/SK/European
+  school), olympiads, MFF seminars, CZ Matematika rozšiřující 68%+, SK
+  external maths 75%+, AP 4/5 (by May 2026), České hlavičky (not in the
+  form). Czech proof (B2+) only without a CZ/SK maturita; SK/PL/HU/SI
+  certificates are automatically equivalent.
+- Inconsistencies on the page: waiver deadline 23 vs 24 May 2027;
+  maturita copy 31 Jul vs 30 Sep 2027. The route uses the earlier dates.
+- The English-taught Computer Science bachelor (EUR 7,500/year non-EU,
+  deadline 30 Apr 2027) is not verified: its 2027/28 requirements page
+  was not found.
+- Matcher: `matchProgram` dispatches per policy; profile form shows waiver
+  options per destination country.
+
 ## Czechia residence (checked 2026-10-28)
 
 - Sources: Ministry of the Interior portal ipc.gov.cz (study permit and
@@ -239,6 +262,10 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #13 (2026-10-28): Charles University MFF Informatika verified (see
+  above); the study route uses Czech residence stages and planner.
+  Checked on the Preview: UA citizen, Slovak school, SK maths 75%+ →
+  waiver, no Czech proof, CZK 1,000, planner dates.
 - PR #12 (2026-10-28): Czech residence routes for study and work at
   `/route/czechia` (same layout as the Slovak work route), home form and
   map. Checked on the Preview: UA student from abroad (planner, 78,250
@@ -329,7 +356,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (137 tests on 2026-10-28).
+- Unit tests: `npm test` (150 tests on 2026-10-28).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
