@@ -2,7 +2,11 @@
 -- residence. Existing rows keep 'destination-residence' (now labelled
 -- "temporary residence for another purpose"); people can re-pick in the form.
 
--- Older saved profiles may still use the first status names.
+alter table public.applicant_profiles
+  drop constraint if exists applicant_profiles_current_residence_status_check;
+
+-- Older saved profiles may still use the first status names (the database
+-- may still have the first constraint, so it is dropped before updating).
 update public.applicant_profiles
 set current_residence_status = case current_residence_status
   when 'outside-slovakia' then 'non-eu-passport-no-residence'
@@ -12,9 +16,6 @@ set current_residence_status = case current_residence_status
   when 'visa-free' then 'visa-free-entry'
   else current_residence_status
 end;
-
-alter table public.applicant_profiles
-  drop constraint if exists applicant_profiles_current_residence_status_check;
 
 -- NOT VALID: new and edited rows are checked; any unexpected older value is
 -- left untouched instead of blocking the migration (the app normalises it).
