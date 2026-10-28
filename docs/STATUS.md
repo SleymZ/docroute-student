@@ -114,6 +114,12 @@ still publish only their 2026/27 rules.
   When a source page describes another intake (often 2026/27), the card
   says "Source describes: …". This is reference information: no
   matching, no checklist, not a verified route.
+- Computer science bachelor per university (`src/data/top-computer-science.ts`,
+  checked 2026-10-28 on the universities' own sites): programme link, the
+  teaching language only when the checked page states it (28 marked
+  English, UK/IE by default), and notes; 5 have none (Karolinska, Erasmus,
+  Lausanne, Medical University of Vienna, Lund in English). Filter
+  "Computer science in English" on the page. Not verified routes.
 - 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
   PSL do not (the catalog has only predecessor institutions).
 - Known gaps: Federico II (Naples) and KU Leuven pages could not be read
@@ -262,6 +268,8 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #14 (2026-10-28): computer science bachelor link and language for
+  each Top 100 university, English filter.
 - PR #13 (2026-10-28): Charles University MFF Informatika verified (see
   above); the study route uses Czech residence stages and planner.
   Checked on the Preview: UA citizen, Slovak school, SK maths 75%+ →
@@ -356,7 +364,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (150 tests on 2026-10-28).
+- Unit tests: `npm test` (152 tests on 2026-10-28).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

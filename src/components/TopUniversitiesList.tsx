@@ -6,13 +6,14 @@ import { ExternalLink, Search, X } from "lucide-react";
 
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import type { resolveTopAdmissions } from "@/lib/top-universities";
-import type { TopUniversity } from "@/types/top-universities";
+import type { TopComputerScience, TopUniversity } from "@/types/top-universities";
 
 import styles from "@/app/explore/top/TopUniversities.module.css";
 
 type Entry = {
   university: TopUniversity;
   admissions: ReturnType<typeof resolveTopAdmissions>;
+  computerScience?: TopComputerScience;
 };
 
 // Formatted by hand so the server and the browser always print the same.
@@ -36,6 +37,7 @@ export function TopUniversitiesList({
 }) {
   const [query, setQuery] = useState("");
   const [country, setCountry] = useState("");
+  const [englishCs, setEnglishCs] = useState(false);
 
   // A link such as /explore/top#rank-2 opens that university's card.
   useEffect(() => {
@@ -53,12 +55,13 @@ export function TopUniversitiesList({
   const visible = useMemo(() => {
     const needle = normalise(query.trim());
     return entries.filter(
-      ({ university }) =>
+      ({ university, computerScience }) =>
         (!country || university.country === country) &&
+        (!englishCs || computerScience?.language === "English" || Boolean(computerScience?.note?.includes("English-taught track"))) &&
         (!needle ||
           normalise(`${university.name} ${university.country}`).includes(needle)),
     );
-  }, [entries, query, country]);
+  }, [entries, query, country, englishCs]);
 
   return (
     <section className={styles.listSection} aria-label="Top 100 universities">
@@ -91,6 +94,15 @@ export function TopUniversitiesList({
           </select>
         </label>
 
+        <label className={styles.toggle}>
+          <input
+            type="checkbox"
+            checked={englishCs}
+            onChange={(event) => setEnglishCs(event.target.checked)}
+          />
+          Computer science in English
+        </label>
+
         <p className={styles.count} aria-live="polite">
           {visible.length} of {entries.length}
         </p>
@@ -100,7 +112,7 @@ export function TopUniversitiesList({
         <p className={styles.empty}>No university matches this search.</p>
       ) : (
         <ol className={styles.list}>
-          {visible.map(({ university, admissions }) => (
+          {visible.map(({ university, admissions, computerScience }) => (
             <li key={university.rank} id={`rank-${university.rank}`} className={styles.item}>
               <details className={styles.card}>
                 <summary className={styles.summary}>
@@ -124,6 +136,30 @@ export function TopUniversitiesList({
                   )}
 
                   <dl className={styles.facts}>
+                    {computerScience && (
+                      <div>
+                        <dt>
+                          Computer science bachelor
+                          {computerScience.language && (
+                            <span className={styles.scope}>{computerScience.language}</span>
+                          )}
+                        </dt>
+                        <dd>
+                          {computerScience.url ? (
+                            <a href={computerScience.url} target="_blank" rel="noreferrer">
+                              {computerScience.name}
+                              <ExternalLink size={12} aria-hidden="true" />
+                            </a>
+                          ) : (
+                            "None found"
+                          )}
+                          {computerScience.note && <> · {computerScience.note}</>}
+                          {computerScience.url && !computerScience.language && (
+                            <> · The checked page does not state the teaching language; see the country rule below.</>
+                          )}
+                        </dd>
+                      </div>
+                    )}
                     {admissions.fields.map((item) => (
                       <div key={item.field}>
                         <dt>
