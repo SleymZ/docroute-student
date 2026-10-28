@@ -338,13 +338,13 @@ text, which is unchanged from before).
    matching policy.
 2. Ask UNIZA FRI in writing how the Czech exemption applies to mixed
    citizenship/school cases (open question 1).
-4. Add the next verified faculty or program only with its own official
+3. Add the next verified faculty or program only with its own official
    sources (STU FIIT and TUKE FEI once their 2027/28 rules are out).
-5. Work route: cross-check key paragraphs of Act 404/2011 (and the
+4. Work route: cross-check key paragraphs of Act 404/2011 (and the
    Employment Services Act for the 20-working-day rule) on Slov-Lex;
    consider seasonal work and the Blue Card salary amount.
-6. Update the Top 100 list when the Leiden Ranking 2026 is published
+5. Update the Top 100 list when the Leiden Ranking 2026 is published
    (4 Nov 2026) and recheck deadlines once universities publish 2027/28
    rules.
-7. Define family or business purposes for Slovakia with official sources
+6. Define family or business purposes for Slovakia with official sources
    before enabling them in the form.
