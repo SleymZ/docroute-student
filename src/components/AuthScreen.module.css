@@ -641,9 +641,14 @@
   display: flex;
   align-items: flex-start;
   gap: 9px;
-  color: #687574;
-  font-size: 9px;
+  color: #4f5b5c;
+  font-size: 12px;
   line-height: 1.55;
+}
+
+.consent a {
+  color: #0b6f7e;
+  font-weight: 600;
 }
 
 .consent input {
@@ -731,11 +736,23 @@
   text-decoration: none;
 }
 
+.consentNote {
+  margin: 0 0 14px;
+  color: #4f5b5c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.consentNote a {
+  color: #0b6f7e;
+  font-weight: 600;
+}
+
 .privacyNote {
   max-width: 390px;
   margin: 27px auto 0;
-  color: #8c9491;
-  font-size: 8px;
+  color: #5f6b67;
+  font-size: 11px;
   line-height: 1.6;
   text-align: center;
 }

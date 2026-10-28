@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { CookieNotice } from "@/components/CookieNotice";
+import { SiteFooter } from "@/components/SiteFooter";
 import { getSiteUrl } from "@/lib/site-url";
 import { themeInitScript } from "@/lib/theme";
 
@@ -75,7 +77,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <SiteFooter />
+        <CookieNotice />
+      </body>
     </html>
   );
 }

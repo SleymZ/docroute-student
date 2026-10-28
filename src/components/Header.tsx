@@ -51,7 +51,10 @@ export function Header() {
 
         <span className={styles.brandText}>
           <span className={styles.brandName}>DocRoute</span>
-          <span className={styles.brandCaption}>EUROPE</span>
+          <span className={styles.brandCaption}>
+            EUROPE
+            <span className={styles.betaBadge}>BETA</span>
+          </span>
         </span>
       </Link>
 

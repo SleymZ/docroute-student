@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 import { AccountBackdrop } from "./AccountBackdrop";
+import { AccountDataControls } from "@/components/AccountDataControls";
 import { AccountSignOut } from "@/components/AccountSignOut";
 import { Header } from "@/components/Header";
 import catalog from "@/data/universities.json";
@@ -217,6 +218,8 @@ export default async function AccountPage() {
               </Link>
             )}
           </section>
+
+          <AccountDataControls />
         </div>
       </main>
     );
@@ -603,6 +606,8 @@ export default async function AccountPage() {
             </p>
           )}
         </section>
+
+        <AccountDataControls />
       </div>
     </main>
   );
