@@ -1,6 +1,7 @@
 import { czechiaResidenceRules as rules, czechiaSources } from "@/data/czechia-residence";
 import {
   czechWorkLabels,
+  holdsEuStudyPermit,
   selectCzechWorkProcedure,
   type CzechProfile,
   type CzechWorkProcedure,
@@ -30,6 +31,10 @@ export type CzechRoute = {
   // null when the third-country procedure does not apply.
   procedure: CzechWorkProcedure | "study" | "study-extension" | null;
   filing: ResidenceFiling | null;
+  // First study application filed in Czechia on the strength of a study
+  // permit or visa from another EU country (documents as for a first
+  // application, not as for a change of purpose).
+  euStudyHolder: boolean;
   processingDays: number | null;
   stages: RouteStage[];
   sources: RouteSource[];
@@ -38,6 +43,15 @@ export type CzechRoute = {
 
 const disclaimer =
   "DocRoute is a preparation tool, not legal advice. The residence decision belongs to the Czech Ministry of the Interior. Czech university admission is not verified by DocRoute; check it on the university's own pages. Recheck each requirement before filing.";
+
+/** Filing place for a whole profile (adds the EU study-permit exception). */
+export function czechProfileFiling(profile: CzechProfile): ResidenceFiling {
+  if (profile.purpose === "study" && profile.currentResidenceStatus === "other-eu-residence") {
+    if (holdsEuStudyPermit(profile)) return "in-country";
+    if (profile.euPermitPurpose && profile.euPermitIssuer) return "abroad";
+  }
+  return czechFilingPlace(profile.currentResidenceStatus);
+}
 
 export function czechFilingPlace(
   status: CurrentResidenceStatus,
@@ -80,6 +94,49 @@ const accommodation: RouteTask = {
   sourceIds: ["cz-ipc-study-permit"],
 };
 
+function euStudySubmissionTask(): RouteTask {
+  return {
+    id: "cz-submission-place",
+    title: "Apply in person at a Ministry of the Interior office in Czechia",
+    description:
+      "You hold a long-term residence permit or long-term visa for study from an EU country other than Ireland and Denmark (for example Slovakia). The Czech portal lets you file the first application for a long-term residence permit for study in person at a Ministry of the Interior office in Czechia, without a Czech visa. Applying at a Czech embassy is also possible. Your permit must still be valid when you file; bring it with your passport.",
+    status: "action",
+    sourceIds: ["cz-ipc-study-permit"],
+  };
+}
+
+function euStudyStayTask(): RouteTask {
+  return {
+    id: "cz-eu-holder-stay",
+    title: "Plan where you wait for the decision",
+    description:
+      "With your current EU permit you can travel to Czechia for short stays of up to 90 days in any 180 days. The portal says that having just applied for a residence permit does not let you exceed that limit, so keep your current permit valid and be ready to wait in the country that issued it. Confirm your situation at the Ministry office when you file.",
+    status: "attention",
+    sourceIds: ["cz-ipc-schengen-travel", "cz-ipc-study-permit"],
+  };
+}
+
+function studyMobilityTask(exchange: "yes" | "unsure"): RouteTask {
+  const m = rules.studyMobility;
+  return {
+    id: "cz-study-mobility",
+    title: exchange === "yes" ? "Exchange study: you may not need a Czech permit" : "Check whether your permit is for an exchange",
+    description: `If your permit was issued for an exchange programme (for example Erasmus+) or a university agreement and carries a note saying so, you may study at a Czech university for up to ${m.maxMonths} months from your first entry without a Czech permit. Then register with the Foreign Police within ${m.registerWithinDays} days of arrival and keep your permit valid; the Czech university reports the start and end of your studies, and you can work without limits. You can still apply for the Czech permit for study at any time during that stay. For a full degree in Czechia, the permit below is the usual route.`,
+    status: exchange === "yes" ? "information" : "attention",
+    sourceIds: ["cz-ipc-study-mobility"],
+  };
+}
+
+function leavingPermitCountryTask(): RouteTask {
+  return {
+    id: "cz-leave-permit-country",
+    title: "Duties in the country that issued your permit",
+    description: `When your studies there end, the purpose of your residence there ends too. In Slovakia the Foreign Police must be told within ${rules.slovakPurposeEndReportWorkingDays} working days when the purpose of residence ends; other countries have their own rules. Do not report it before you know when your Czech permit will be ready, and ask the Foreign Police how a gap affects you.`,
+    status: "attention",
+    sourceIds: ["sk-iom-reporting-duties"],
+  };
+}
+
 function submissionTask(filing: ResidenceFiling, purpose: "study" | "work"): RouteTask {
   const sourceIds = purpose === "study" ? ["cz-mzv-study", "cz-ipc-study-permit"] : ["cz-ipc-employee-card"];
   switch (filing) {
@@ -109,7 +166,7 @@ function submissionTask(filing: ResidenceFiling, purpose: "study" | "work"): Rou
         title: "Confirm where you are allowed to apply",
         description:
           purpose === "study"
-            ? "Your status does not map safely to one filing place. Holders of a long-term study permit or visa from another EU country (except Ireland and Denmark) may apply in Czechia; otherwise confirm with the Ministry of the Interior or the embassy before booking."
+            ? "Your status does not map safely to one filing place. Holders of a long-term study permit or visa from another EU country (except Ireland and Denmark) may apply in Czechia; the Czechia residence route asks about your permit and tells you where to file. Otherwise confirm with the Ministry of the Interior or the embassy before booking."
             : "Your status does not map safely to one filing place. Confirm with the Ministry of the Interior or the Czech embassy before booking.",
         status: "attention",
         sourceIds,
@@ -297,7 +354,12 @@ function gateStage(profile: CzechProfile): RouteStage | null {
 
 // ---------------------------------------------------------------- study
 
-function studyStages(filing: ResidenceFiling, extension: boolean): RouteStage[] {
+function studyStages(
+  filing: ResidenceFiling,
+  extension: boolean,
+  profile?: CzechProfile,
+): RouteStage[] {
+  const euHolder = profile ? holdsEuStudyPermit(profile) : false;
   const s = rules.study;
   const admission: RouteStage = {
     id: "admission",
@@ -361,8 +423,29 @@ function studyStages(filing: ResidenceFiling, extension: boolean): RouteStage[] 
     ];
   }
 
-  const residenceTasks: RouteTask[] = [
-    submissionTask(filing, "study"),
+  const residenceTasks: RouteTask[] = [];
+  const exchange = profile?.exchangeProgramme;
+  if (euHolder && (exchange === "yes" || exchange === "unsure")) {
+    residenceTasks.push(studyMobilityTask(exchange));
+  }
+  if (euHolder) {
+    residenceTasks.push(euStudySubmissionTask(), euStudyStayTask());
+  } else {
+    residenceTasks.push(submissionTask(filing, "study"));
+    if (filing === "abroad" && profile?.euPermitPurpose) {
+      residenceTasks.push({
+        id: "cz-eu-permit-no-exception",
+        title: "Your EU permit does not let you file in Czechia",
+        description:
+          profile.euPermitPurpose === "other"
+            ? "Only a long-term residence permit or long-term visa for study from another EU country lets you file the first study application in Czechia. Yours is for another purpose, so apply at a Czech embassy or consulate; ask the one in the country where you live whether it accepts your application."
+            : "The in-country exception does not cover study permits and visas issued by Ireland, Denmark or non-EU countries, so apply at a Czech embassy or consulate; ask the one in the country where you live whether it accepts your application.",
+        status: "attention",
+        sourceIds: ["cz-ipc-study-permit"],
+      });
+    }
+  }
+  residenceTasks.push(
     formPassportPhoto,
     {
       id: "cz-study-funds",
@@ -372,8 +455,8 @@ function studyStages(filing: ResidenceFiling, extension: boolean): RouteStage[] 
       sourceIds: ["cz-ipc-funds"],
     },
     accommodation,
-  ];
-  if (filing !== "in-country") {
+  );
+  if (filing !== "in-country" || euHolder) {
     residenceTasks.push({
       id: "cz-criminal-record",
       title: "Criminal-record document",
@@ -432,6 +515,7 @@ function studyStages(filing: ResidenceFiling, extension: boolean): RouteStage[] 
       timing: "After the decision",
       tasks: [
         ...afterArrivalTasks(filing),
+        ...(profile?.euPermitPurpose ? [leavingPermitCountryTask()] : []),
         {
           id: "cz-student-work",
           title: "Work while studying",
@@ -641,6 +725,7 @@ export function buildCzechiaRoute(profile: CzechProfile): CzechRoute {
       profile,
       procedure: null,
       filing: null,
+      euStudyHolder: false,
       processingDays: null,
       stages: [gate],
       sources: czechiaSources,
@@ -648,7 +733,7 @@ export function buildCzechiaRoute(profile: CzechProfile): CzechRoute {
     };
   }
 
-  const filing = czechFilingPlace(profile.currentResidenceStatus);
+  const filing = czechProfileFiling(profile);
 
   if (profile.purpose === "study") {
     const extension = profile.currentResidenceStatus === "destination-study-residence";
@@ -657,8 +742,9 @@ export function buildCzechiaRoute(profile: CzechProfile): CzechRoute {
       profile,
       procedure: extension ? "study-extension" : "study",
       filing,
+      euStudyHolder: holdsEuStudyPermit(profile),
       processingDays: rules.study.processingDays,
-      stages: studyStages(filing, extension),
+      stages: studyStages(filing, extension, profile),
       sources: czechiaSources,
       disclaimer,
     };
@@ -675,6 +761,7 @@ export function buildCzechiaRoute(profile: CzechProfile): CzechRoute {
     profile,
     procedure,
     filing,
+    euStudyHolder: false,
     processingDays,
     stages: workStages(profile, procedure, filing, processingDays),
     sources: czechiaSources,
@@ -743,12 +830,17 @@ export function planCzechiaDeadlines(
       "Your status does not map to one filing place. Confirm where you may apply before relying on these dates.",
     );
   }
+  if (route.euStudyHolder) {
+    warnings.push(
+      "Short stays in Czechia on your current EU permit are limited to 90 days in any 180; a pending application does not extend that.",
+    );
+  }
   if (route.filing === "in-country") {
     warnings.push("File while your current visa or permit is still valid, even if that is earlier than the date below.");
   }
 
   const items: DeadlineItem[] = [];
-  if (route.filing !== "in-country") {
+  if (route.filing !== "in-country" || route.euStudyHolder) {
     items.push({
       id: "documents",
       taskId: "cz-criminal-record",

@@ -39,6 +39,14 @@ export const czechiaResidenceRules = {
   extensionEarliestDays: 120,
   addressChangeWorkingDays: 30,
   dataChangeWorkingDays: 3,
+  // Holders of a study permit from another EU state (not IE/DK) issued for
+  // an exchange programme: visa-free stay in Czechia (study mobility).
+  studyMobility: {
+    maxMonths: 12,
+    registerWithinDays: 3,
+  },
+  // Slovakia (IOM): report the end of the purpose of residence.
+  slovakPurposeEndReportWorkingDays: 3,
   eu: {
     // Report the stay if it will last more than 30 days.
     registerWithinDays: 30,
@@ -152,5 +160,29 @@ export const czechiaSources = [
     url: "https://ipc.gov.cz/en/visa-and-residence-permit-types/eu-nationals/registration-certificate/",
     checkedAt: "2026-10-28",
     authority: "official" as const,
+  },
+  {
+    id: "cz-ipc-study-mobility",
+    title: "One-year visa-free stay for holders of a study permit from another EU member state (updated 24 August 2026)",
+    publisher: "Ministry of the Interior – Information Portal for Foreigners",
+    url: "https://ipc.gov.cz/en/visa-and-residence-permit-types/third-country-nationals/short-term-and-visa-free-stays/visa-free-stay-for-1-year-for-holders-of-a-long-term-residence-permit-for-study-purposes-issued-by-another-eu-member-state/",
+    checkedAt: "2026-10-28",
+    authority: "official" as const,
+  },
+  {
+    id: "cz-ipc-schengen-travel",
+    title: "Travelling within the Schengen Area (updated 28 July 2026)",
+    publisher: "Ministry of the Interior – Information Portal for Foreigners",
+    url: "https://ipc.gov.cz/en/life-in-the-eu/life-in-the-eu-third-country-nationals/travelling-within-the-schengen-area/",
+    checkedAt: "2026-10-28",
+    authority: "official" as const,
+  },
+  {
+    id: "sk-iom-reporting-duties",
+    title: "Slovakia: reporting residence and other important obligations (updated 14 July 2026)",
+    publisher: "IOM Migration Information Centre Slovakia",
+    url: "https://mic.iom.sk/en/residence/general-information/225-reporting-residence-and-other-important-changes.html",
+    checkedAt: "2026-10-28",
+    authority: "authoritative-guidance" as const,
   },
 ] satisfies RouteSource[];
