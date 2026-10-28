@@ -83,7 +83,10 @@ export function FeedbackForm({
                     name={`${id}-rating`}
                     value={value}
                     checked={rating === value}
-                    onChange={() => setRating(value)}
+                    onChange={() => {
+                      setRating(value);
+                      setError(null);
+                    }}
                   />
                   <strong>{value}</strong>
                   <span>{label}</span>
