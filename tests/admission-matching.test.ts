@@ -52,7 +52,7 @@ function match(patch: Partial<ApplicantProfile> = {}) {
 }
 
 for (const [label, patch] of [
-  ["another country", { destinationCountryCode: "CZ" }],
+  ["another country", { destinationCountryCode: "AT" }],
   ["another subject", { studyCategory: "Medicine" }],
   ["master's degree", { degreeLevel: "master" }],
   ["another intake", { intake: "2028/29" }],
@@ -425,7 +425,7 @@ test("every generated requirement and document has a resolvable official source"
     }
     assert.ok(
       item.sources.every((source) =>
-        new URL(source.url).hostname.endsWith("uniza.sk"),
+        new URL(source.url).hostname.endsWith(item.universityHost),
       ),
     );
   }

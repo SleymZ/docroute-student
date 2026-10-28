@@ -1,5 +1,7 @@
+import { czechiaSources } from "@/data/czechia-residence";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import { slovakiaResidentSources } from "@/data/slovakia-residents";
+import { buildCzechiaRoute, CZECH_ROUTE_VERSION } from "@/lib/residence/czechia";
 import { buildSlovakiaResidenceStage } from "@/lib/residence/slovakia";
 import type {
   ApplicantProfile,
@@ -36,6 +38,27 @@ function admissionTaskStatus(
   return "action" as const;
 }
 
+// Czech residence for study, without the route's own admission stage (the
+// verified programme already covers admission). Stages continue at 04.
+export function czechStudyRoute(profile: ApplicantProfile) {
+  return buildCzechiaRoute({
+    destinationCountryCode: "CZ",
+    purpose: "study",
+    citizenshipCountryCode: profile.citizenshipCountryCode,
+    currentResidenceStatus: profile.currentResidenceStatus,
+  });
+}
+
+function czechResidenceStages(profile: ApplicantProfile): RouteStage[] {
+  return czechStudyRoute(profile)
+    .stages.filter((stage) => stage.id !== "admission")
+    .map((stage, index) => ({
+      ...stage,
+      id: index === 0 ? "residence" : stage.id,
+      number: String(4 + index).padStart(2, "0"),
+    }));
+}
+
 export function buildRoutePreview(
   profile: ApplicantProfile,
   match: ProgramMatch,
@@ -44,9 +67,9 @@ export function buildRoutePreview(
   const program = match.program;
   const applicationDeadline = formatDate(program.application.deadline);
   const admissionDate = formatDate(program.application.admissionDate);
-  const languageDeadline = formatDate(
-    program.languagePolicy.foreignApplicantTest.deadline,
-  );
+  const czech = program.countryCode === "CZ";
+  const languageTest = program.languagePolicy.foreignApplicantTest;
+  const languageDeadline = languageTest ? formatDate(languageTest.deadline) : null;
   const verifiedAt = formatDate(program.verifiedAt);
   const programSourceIds = program.sources.map((source) => source.id);
   const applicationDocuments = match.requiredDocuments.filter(
@@ -114,8 +137,14 @@ export function buildRoutePreview(
                 title: languageCheck.label,
                 description: languageCheck.detail,
                 status: admissionTaskStatus(languageCheck.status),
-                dueLabel: slovakTestRule(program, profile) === "exempt"
-                  ? "Confirm before enrolment" : `Complete by ${languageDeadline}`,
+                dueLabel:
+                  !languageDeadline
+                    ? languageCheck.status === "met"
+                      ? undefined
+                      : "Preferably by 31 July 2027"
+                    : slovakTestRule(program, profile) === "exempt"
+                      ? "Confirm before enrolment"
+                      : `Complete by ${languageDeadline}`,
                 sourceIds: languageCheck.sourceIds,
               } satisfies RouteTask,
             ]
@@ -129,7 +158,9 @@ export function buildRoutePreview(
                     ? "Submit entrance-exam waiver evidence"
                     : match.entranceRoute === "needs-information"
                       ? "Clarify waiver evidence; prepare an exam fallback"
-                      : "Take the mathematics and logical-thinking exam",
+                      : czech
+                        ? "Take the written entrance exam"
+                        : "Take the mathematics and logical-thinking exam",
                 description: entranceCheck.detail,
                 status: admissionTaskStatus(entranceCheck.status),
                 dueLabel:
@@ -183,22 +214,27 @@ export function buildRoutePreview(
         })),
         {
           id: "admission-letter",
-          title: "Receive and keep the official admission document",
-          description:
-            "This document closes the university stage and becomes the proof of purpose for a third-country student residence application.",
+          title: czech
+            ? "Ask for the original confirmation of studies"
+            : "Receive and keep the official admission document",
+          description: czech
+            ? "After admission, the university's original confirmation of studies or enrolment becomes the proof of purpose for a Czech student residence permit."
+            : "This document closes the university stage and becomes the proof of purpose for a third-country student residence application.",
           status: "information",
           sourceIds: [
             ...programSourceIds,
-            "iom-study-residence-application",
+            czech ? "cz-ipc-study-permit" : "iom-study-residence-application",
           ],
         },
       ],
     },
-    buildSlovakiaResidenceStage(profile),
+    ...(czech ? czechResidenceStages(profile) : [buildSlovakiaResidenceStage(profile)]),
   ];
 
   return {
-    version: `route-${program.intake}-${slovakiaResidenceRules.effectiveFrom}-admissions-${program.verifiedAt}-v2`,
+    version: czech
+      ? `route-${program.intake}-${CZECH_ROUTE_VERSION}-admissions-${program.verifiedAt}`
+      : `route-${program.intake}-${slovakiaResidenceRules.effectiveFrom}-admissions-${program.verifiedAt}-v2`,
     generatedFor: profile,
     match,
     stages,
@@ -207,8 +243,7 @@ export function buildRoutePreview(
         ...source,
         authority: "official" as const,
       })),
-      ...slovakiaResidenceRules.sources,
-      ...slovakiaResidentSources,
+      ...(czech ? czechiaSources : [...slovakiaResidenceRules.sources, ...slovakiaResidentSources]),
     ],
     disclaimer:
       `This is a preparation route based on the profile you entered and university sources checked on ${verifiedAt}. It is not an admission decision or legally binding immigration advice. Recheck every open task before submission.`,

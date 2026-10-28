@@ -716,6 +716,8 @@ export function planCzechiaDeadlines(
   route: CzechRoute,
   moveDate: string,
   today: string,
+  // Entrance exam or results day of a verified programme, when known.
+  admissionDate?: string,
 ): CzechDeadlinePlan | null {
   if (!route.filing || !route.processingDays || route.procedure === "study-extension") {
     return null;
@@ -729,6 +731,11 @@ export function planCzechiaDeadlines(
   if (latestFilingDate < today) {
     warnings.push(
       `To have a decision by ${formatPlanDate(moveDate)}, you would have had to apply by ${formatPlanDate(latestFilingDate)}. The Ministry may decide sooner, but up to ${route.processingDays} days is allowed; consider a later date.`,
+    );
+  }
+  if (admissionDate && admissionDate > latestFilingDate) {
+    warnings.push(
+      `The entrance exam is on ${formatPlanDate(admissionDate)}, after your latest filing date (${formatPlanDate(latestFilingDate)}). The confirmation of studies is needed to apply, so a decision may not arrive before ${formatPlanDate(moveDate)}.`,
     );
   }
   if (route.filing === "unclear") {

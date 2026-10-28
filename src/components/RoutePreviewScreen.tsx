@@ -29,9 +29,10 @@ import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
+import { planCzechiaDeadlines } from "@/lib/residence/czechia";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
-import { buildRoutePreview } from "@/lib/build-route-preview";
+import { buildRoutePreview, czechStudyRoute } from "@/lib/build-route-preview";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { createProfileSearchParams, getProfileProgressId } from "@/lib/profile-query";
 import { addDays, isIsoDate, planStudyResidenceDeadlines } from "@/lib/residence/deadlines";
@@ -117,10 +118,22 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   // renders the same on the server and in the browser.
   const rawMoveDate = searchParams.get("move") ?? "";
   const moveDate = isIsoDate(rawMoveDate) ? rawMoveDate : "";
-  const thirdCountry = profile ? usesThirdCountryResidence(profile) : false;
+  const czechRoute = useMemo(
+    () => (profile && program?.countryCode === "CZ" ? czechStudyRoute(profile) : null),
+    [profile, program],
+  );
+  const thirdCountry = czechRoute
+    ? czechRoute.procedure === "study"
+    : profile
+      ? usesThirdCountryResidence(profile)
+      : false;
   const deadlinePlan = useMemo(() => {
     if (!profile || !program || !route || !thirdCountry || !moveDate) {
       return null;
+    }
+
+    if (czechRoute) {
+      return planCzechiaDeadlines(czechRoute, moveDate, asOfDate, program.application.admissionDate);
     }
 
     return planStudyResidenceDeadlines({
@@ -132,7 +145,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
       processingDays: slovakiaResidenceRules.processingTimeDays,
       changeOfPurpose: isChangeOfPurpose(profile),
     });
-  }, [profile, program, route, thirdCountry, moveDate, asOfDate]);
+  }, [profile, program, route, thirdCountry, czechRoute, moveDate, asOfDate]);
   const datedTaskLabels = new Map(
     (deadlinePlan?.items ?? [])
       .filter((item) => item.taskId)
@@ -282,6 +295,14 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
             moveDate={moveDate}
             minDate={addDays(asOfDate, 1)}
             plan={deadlinePlan}
+            {...(czechRoute
+              ? {
+                  description:
+                    "Enter the date you need to be living in Czechia, for example the start of studies. DocRoute calculates when each residence step has to be done.",
+                  footnote:
+                    "Dates are calculated from the published maximum periods (calendar days). The Ministry of the Interior can decide sooner.",
+                }
+              : {})}
             unavailableReason={
               thirdCountry
                 ? null

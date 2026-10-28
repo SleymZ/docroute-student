@@ -23,6 +23,7 @@ type MovePlannerProps = {
   // Explains why dates cannot be planned (EU citizen, Slovak citizen,
   // contradictory profile); null when the third-country route applies.
   unavailableReason: string | null;
+  footnote?: string;
   onMoveDateChange: (value: string) => void;
 };
 
@@ -48,6 +49,7 @@ export function MovePlanner({
   plan,
   unavailableReason,
   onMoveDateChange,
+  footnote = "Dates are calculated from the published maximum periods. The authority can decide sooner. Working days skip weekends and Slovak public holidays.",
   description = "Enter the date you need to be living in Slovakia, for example the start of studies. DocRoute calculates when each residence step has to be done.",
   dateLabel = "Move date",
 }: MovePlannerProps) {
@@ -121,11 +123,7 @@ export function MovePlanner({
             })}
           </ol>
 
-          <p className={styles.footnote}>
-            Dates are calculated from the published maximum periods. The
-            authority can decide sooner. Working days skip weekends and Slovak
-            public holidays.
-          </p>
+          <p className={styles.footnote}>{footnote}</p>
         </>
       )}
     </section>

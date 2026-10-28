@@ -61,7 +61,14 @@ export type WaiverEvidence =
   | "ccna"
   | "fri-course"
   | "olympiad"
-  | "regional-olympiad";
+  | "regional-olympiad"
+  // Charles University MFF 2027/28 waiver grounds.
+  | "mff-math-average-1-5"
+  | "mff-olympiad"
+  | "mff-seminar"
+  | "cz-matura-math-plus-68"
+  | "sk-matura-math-75"
+  | "ap-exam-4-5";
 
 export const waiverEvidenceOptions: readonly WaiverEvidence[] = [
   "math-matura", // Legacy profiles: no percentile was collected.
@@ -72,6 +79,12 @@ export const waiverEvidenceOptions: readonly WaiverEvidence[] = [
   "fri-course",
   "olympiad", // Legacy profiles: competition scope was unspecified.
   "regional-olympiad",
+  "mff-math-average-1-5",
+  "mff-olympiad",
+  "mff-seminar",
+  "cz-matura-math-plus-68",
+  "sk-matura-math-75",
+  "ap-exam-4-5",
 ];
 
 export type ApplicantProfile = {
@@ -145,12 +158,15 @@ export type AdmissionProgram = {
   application: {
     deadline: string;
     admissionDate: string;
-    feeEur: number;
+    feeEur?: number;
+    // Shown when the fee is not in euros (e.g. "CZK 1,000").
+    feeLabel?: string;
     applicationUrl: string;
   };
   languagePolicy: {
     generalStatement: string;
-    foreignApplicantTest: {
+    // UNIZA FRI only; other policies describe language rules in checks.
+    foreignApplicantTest?: {
       languageCode: "sk";
       minimumLevel: "B1";
       // Countries named by the exemption. The FRI rules say "applicants from

@@ -66,6 +66,12 @@ export const waiverEvidenceLabels: Record<WaiverEvidence, string> = {
   "fri-course": "FRI preparatory course",
   olympiad: "Competition (scope not given)",
   "regional-olympiad": "Qualifying olympiad result",
+  "mff-math-average-1-5": "Maths average 1.5 or better (Czech/Slovak school)",
+  "mff-olympiad": "Olympiad result listed by MFF UK",
+  "mff-seminar": "MFF UK correspondence seminar certificate",
+  "cz-matura-math-plus-68": "Czech maturita: Matematika rozšiřující 68%+",
+  "sk-matura-math-75": "Slovak maturita: external maths test 75%+",
+  "ap-exam-4-5": "AP Calculus or Physics 1/2, score 4 or 5",
 };
 
 // Older saved profiles may hold evidence that is too vague to confirm a waiver.

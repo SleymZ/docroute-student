@@ -44,7 +44,8 @@ export function slovakTestRule(
   program: AdmissionProgram,
   profile: Pick<ApplicantProfile, "citizenshipCountryCode" | "educationCountryCode">,
 ): SlovakTestRule {
-  const exempt = program.languagePolicy.foreignApplicantTest.exemptCountryCodes;
+  const exempt = program.languagePolicy.foreignApplicantTest?.exemptCountryCodes;
+  if (!exempt) return "exempt";
   const byCitizenship = exempt.includes(profile.citizenshipCountryCode);
   const byEducation = exempt.includes(profile.educationCountryCode);
   if (byCitizenship && byEducation) return "exempt";
@@ -123,6 +124,151 @@ function evaluateFriWaiver(
     return "needs-information";
   }
   return "exam";
+}
+
+// Charles University MFF, bachelor's programmes 2027/28 (checked
+// 2026-10-28). Own thresholds and documents; never reuse them elsewhere.
+const mffAutoEquivalentSchools = new Set(["SK", "PL", "HU", "SI"]);
+const mffMaturitaSchools = new Set(["CZ", "SK"]);
+
+function matchCharlesMff(
+  profile: ApplicantProfile,
+  program: AdmissionProgram,
+  checks: MatchCheck[],
+  nextActions: string[],
+  sourceIds: string[],
+  admissionDate: string,
+): Pick<ProgramMatch, "requiredDocuments" | "entranceRoute"> {
+  const check = (
+    id: string,
+    label: string,
+    status: MatchCheck["status"],
+    detail: string,
+  ) => checks.push({ id, label, status, detail, sourceIds });
+  const school = profile.educationCountryCode;
+  const czechOrSlovakSchool = mffMaturitaSchools.has(school);
+
+  // Language: a Czech or Slovak maturita covers it; otherwise proof of Czech.
+  const czech = bestLanguage(profile, ["cs"]);
+  const needsCzechProof = !czechOrSlovakSchool;
+  if (!needsCzechProof) {
+    check(
+      "language",
+      "Czech: covered by a Czech or Slovak maturita",
+      "met",
+      "With a Czech or Slovak maturita no separate proof of Czech is needed. The programme is taught in Czech.",
+    );
+  } else {
+    const enough = reachesLevel(czech, "B2");
+    check(
+      "language",
+      "Proof of Czech at B2 or higher",
+      enough ? "action" : "missing",
+      enough
+        ? "Send a certified proof of Czech by post, preferably by 31 July 2027: two years of full-time study at a Czech or Slovak school taught in that language, a Czech B2/C1 exam at ÚJOP UK, or a state or Czech/Slovak language exam at B2–C2."
+        : "You have not reported Czech at B2 or higher. Without a Czech or Slovak maturita, prove Czech (two years at a Czech or Slovak school, ÚJOP UK B2/C1, or a state or Czech/Slovak exam at B2–C2), preferably by 31 July 2027.",
+    );
+    nextActions.push("Prove Czech at B2 or higher, preferably by 31 July 2027.");
+  }
+
+  // Recognition of secondary education.
+  const autoEquivalent = mffAutoEquivalentSchools.has(school);
+  const foreignEducation = school !== "CZ" && !autoEquivalent;
+  check(
+    "recognition",
+    "Secondary education recognition",
+    foreignEducation ? "action" : "met",
+    school === "CZ"
+      ? "You report Czech secondary education; no recognition is needed."
+      : autoEquivalent
+        ? "Maturita certificates from Slovakia, Poland, Hungary and Slovenia are automatically equivalent in Czechia; no recognition procedure is needed."
+        : "Your certificate needs nostrifikace, an IB or European Baccalaureate diploma, or an assessment by the faculty (free of charge) before enrolment.",
+  );
+  if (foreignEducation) {
+    nextActions.push("Arrange recognition of your secondary education before enrolment.");
+  }
+
+  // Exam waivers. Maturita-based grounds need a maturita in 2025/26 or
+  // 2026/27; a "completed" profile does not say which year.
+  const evidence = new Set(profile.waiverEvidence);
+  const recentMaturita = profile.educationStatus === "final-year";
+  const maturitaGround = (country: "CZ" | "SK" | "CZSK", claimed: boolean) => {
+    if (!claimed) return null;
+    const schoolMatches = country === "CZSK" ? czechOrSlovakSchool : school === country;
+    return schoolMatches && recentMaturita ? "waived" : "needs-information";
+  };
+  const groundResults = [
+    maturitaGround("SK", evidence.has("sk-matura-math-75")),
+    maturitaGround("CZ", evidence.has("cz-matura-math-plus-68")),
+    maturitaGround("CZSK", evidence.has("mff-math-average-1-5")),
+    evidence.has("mff-olympiad") || evidence.has("mff-seminar") || evidence.has("ap-exam-4-5")
+      ? "waived"
+      : null,
+  ];
+  const entranceRoute: ProgramMatch["entranceRoute"] = groundResults.includes("waived")
+    ? "waived"
+    : groundResults.includes("needs-information")
+      ? "needs-information"
+      : "exam";
+
+  check(
+    "entrance-route",
+    "Entrance-exam route",
+    entranceRoute === "needs-information" ? "unknown" : "action",
+    entranceRoute === "waived"
+      ? "Your self-reported evidence matches a published waiver ground. Request the waiver in the e-application by its deadline; the faculty decides from April 2027."
+      : entranceRoute === "needs-information"
+        ? "The maturita-based waivers apply only to a maturita taken in 2025/26 or 2026/27 at the matching school (the maths-average ground also accepts European schools). Your profile does not confirm this, so ask the faculty and prepare for the exam."
+        : "No waiver ground is established. Take the written exam on " +
+          admissionDate +
+          " (substitute date 22 June 2027 on request): 10 tasks in 75 minutes, at least 40 of 100 points passes.",
+  );
+  nextActions.push(
+    entranceRoute === "waived"
+      ? "Request the exam waiver in the e-application with signed proof by its deadline."
+      : entranceRoute === "needs-information"
+        ? "Confirm with the faculty that your maturita qualifies for a waiver; keep the exam on " + admissionDate + " as a fallback."
+        : "Prepare for the entrance exam on " + admissionDate + ".",
+  );
+
+  const requiredDocuments = program.documents
+    .flatMap((document) => {
+      let applies = false;
+      let conditional = false;
+      switch (document.appliesWhen) {
+        case "always":
+          applies = true;
+          break;
+        case "foreign-education":
+          applies = foreignEducation;
+          break;
+        case "foreign-language-test":
+          applies = needsCzechProof;
+          break;
+        case "waiver-claim":
+          applies = entranceRoute !== "exam";
+          conditional = entranceRoute === "needs-information";
+          break;
+        case "entrance-exam":
+          applies = entranceRoute !== "waived";
+          conditional = entranceRoute === "needs-information";
+          break;
+        default:
+          applies = false;
+      }
+      return applies ? [{ ...document, conditional }] : [];
+    })
+    .sort((a, b) => {
+      const order = { application: 0, "admission-day": 1, enrolment: 2 };
+      return order[a.due] - order[b.due];
+    });
+
+  nextActions.push(
+    "Submit the e-application by " +
+      formatDate(program.application.deadline) +
+      " and pay the fee on time.",
+  );
+  return { requiredDocuments, entranceRoute };
 }
 
 export function matchProgram(
@@ -211,11 +357,19 @@ export function matchProgram(
       ". Check the official portal for application opening and submission instructions.",
   );
 
+  const mffPolicy =
+    program.admissionPolicy === "cuni-mff-bachelor-2027" &&
+    program.countryCode === "CZ" &&
+    program.degreeLevel === "bachelor" &&
+    program.intake === "2027/28";
+  const languageTest = program.languagePolicy.foreignApplicantTest;
   if (
-    program.admissionPolicy !== "uniza-fri-bachelor-2027" ||
-    program.countryCode !== "SK" ||
-    program.degreeLevel !== "bachelor" ||
-    program.intake !== "2027/28"
+    !mffPolicy &&
+    (program.admissionPolicy !== "uniza-fri-bachelor-2027" ||
+      program.countryCode !== "SK" ||
+      program.degreeLevel !== "bachelor" ||
+      program.intake !== "2027/28" ||
+      !languageTest)
   ) {
     check(
       "policy",
@@ -230,8 +384,6 @@ export function matchProgram(
   }
 
   const admissionDate = formatDate(program.application.admissionDate);
-  const languageTest = program.languagePolicy.foreignApplicantTest;
-  const languageDeadline = formatDate(languageTest.deadline);
 
   if (profile.educationStatus === "completed") {
     check(
@@ -285,6 +437,14 @@ export function matchProgram(
     nextActions.push(
       "Review the teaching language and your study-language preferences; other known languages do not replace it.",
     );
+
+  if (mffPolicy) {
+    return finishMatch(
+      matchCharlesMff(profile, program, checks, nextActions, sourceIds, admissionDate),
+    );
+  }
+  if (!languageTest) return unavailable("Missing language policy.", "more-information");
+  const languageDeadline = formatDate(languageTest.deadline);
 
   const testRule = slovakTestRule(program, profile);
   const needsForeignTest = testRule !== "exempt";
@@ -425,31 +585,39 @@ export function matchProgram(
     "Prepare the applicable documents and submit them with the application fee before the faculty deadline.",
   );
 
-  const status: MatchStatus = checks.some((item) => item.status === "missing")
-    ? "preparation-required"
-    : checks.some((item) => item.status === "unknown")
-      ? "more-information"
-      : // Best possible status: admission always keeps a faculty step
-        // (exam or waiver confirmation), so DocRoute never says "aligned".
-        "conditional";
-  const summary =
-    status === "preparation-required"
-      ? "This program matches your study choices, but your current education or language profile has unmet conditions. It is a preparation option, not a confirmed fit."
-      : status === "more-information"
-        ? "This program matches your study choices, but some evidence is incomplete. Clarify the highlighted conditions before relying on the route."
-        : "This program matches your study choices. Complete the listed document, language and entrance steps; admission remains the faculty's decision.";
+  return finishMatch({ requiredDocuments, entranceRoute });
 
-  return {
-    program,
-    status,
-    summary,
-    checks,
-    requiredDocuments,
-    nextActions: [...new Set(nextActions)],
-    entranceRoute,
-    canBuildRoute: true,
-    evaluatedOn: asOfDate,
-  };
+  function finishMatch(result: {
+    requiredDocuments: ProgramMatch["requiredDocuments"];
+    entranceRoute: ProgramMatch["entranceRoute"];
+  }): ProgramMatch {
+    const { requiredDocuments, entranceRoute } = result;
+    const status: MatchStatus = checks.some((item) => item.status === "missing")
+      ? "preparation-required"
+      : checks.some((item) => item.status === "unknown")
+        ? "more-information"
+        : // Best possible status: admission always keeps a faculty step
+          // (exam or waiver confirmation), so DocRoute never says "aligned".
+          "conditional";
+    const summary =
+      status === "preparation-required"
+        ? "This program matches your study choices, but your current education or language profile has unmet conditions. It is a preparation option, not a confirmed fit."
+        : status === "more-information"
+          ? "This program matches your study choices, but some evidence is incomplete. Clarify the highlighted conditions before relying on the route."
+          : "This program matches your study choices. Complete the listed document, language and entrance steps; admission remains the faculty's decision.";
+
+    return {
+      program,
+      status,
+      summary,
+      checks,
+      requiredDocuments,
+      nextActions: [...new Set(nextActions)],
+      entranceRoute,
+      canBuildRoute: true,
+      evaluatedOn: asOfDate,
+    };
+  }
 }
 
 export function matchPrograms(
