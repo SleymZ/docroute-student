@@ -3,62 +3,53 @@
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 
-import { COOKIE_NOTICE_STORAGE_KEY } from "@/data/legal";
+import {
+  readCookieConsent,
+  saveCookieConsent,
+  subscribeCookieConsent,
+} from "@/lib/cookie-consent";
 
 import styles from "./CookieNotice.module.css";
 
-const CLOSE_EVENT = "docroute-cookie-notice-closed";
-let closedThisVisit = false;
-
-function subscribe(onChange: () => void) {
-  window.addEventListener(CLOSE_EVENT, onChange);
-  window.addEventListener("storage", onChange);
-  return () => {
-    window.removeEventListener(CLOSE_EVENT, onChange);
-    window.removeEventListener("storage", onChange);
-  };
-}
-
-function isClosed() {
-  if (closedThisVisit) return true;
-  try {
-    return window.localStorage.getItem(COOKIE_NOTICE_STORAGE_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
 /**
- * A one-time notice, not a consent banner: DocRoute stores only strictly
- * necessary items, which need no consent (see /cookies). It appears until
- * closed and stays closed on this device. The server renders nothing, so
- * the notice never flashes for someone who already closed it.
+ * Cookie choice shown until the visitor picks one. Both buttons have the
+ * same weight, so refusing is as easy as accepting. The server renders
+ * nothing, so the banner never flashes for someone who already chose.
  */
 export function CookieNotice() {
-  const closed = useSyncExternalStore(subscribe, isClosed, () => true);
+  const chosen = useSyncExternalStore(
+    subscribeCookieConsent,
+    () => readCookieConsent() !== null,
+    () => true,
+  );
 
-  function close() {
-    closedThisVisit = true;
-    try {
-      window.localStorage.setItem(COOKIE_NOTICE_STORAGE_KEY, "1");
-    } catch {
-      // Storage unavailable: the notice stays closed for this visit only.
-    }
-    window.dispatchEvent(new Event(CLOSE_EVENT));
-  }
-
-  if (closed) return null;
+  if (chosen) return null;
 
   return (
-    <aside className={styles.notice} aria-label="Cookie notice">
-      <p>
-        DocRoute uses only necessary cookies and browser storage — to keep you
-        signed in and remember your progress. No tracking or ads.{" "}
-        <Link href="/cookies">Details</Link>
-      </p>
-      <button type="button" onClick={close}>
-        OK
-      </button>
+    <aside
+      className={styles.notice}
+      aria-labelledby="cookie-notice-title"
+      role="region"
+    >
+      <div className={styles.text}>
+        <p id="cookie-notice-title" className={styles.title}>
+          Cookies on DocRoute
+        </p>
+        <p>
+          We use necessary cookies to keep you signed in and remember your
+          progress. With your permission we may later add privacy-friendly
+          statistics to improve the site; today nothing optional is used. No
+          ads, no tracking. <Link href="/cookies">Details and settings</Link>
+        </p>
+      </div>
+      <div className={styles.buttons}>
+        <button type="button" onClick={() => saveCookieConsent("necessary")}>
+          Necessary only
+        </button>
+        <button type="button" onClick={() => saveCookieConsent("all")}>
+          Accept all
+        </button>
+      </div>
     </aside>
   );
 }

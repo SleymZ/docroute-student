@@ -4,11 +4,14 @@ import { join } from "node:path";
 import { test } from "node:test";
 
 import {
-  COOKIE_NOTICE_STORAGE_KEY,
   browserStorageItems,
   legalInfo,
   legalPages,
 } from "../src/data/legal";
+import {
+  COOKIE_CONSENT_STORAGE_KEY,
+  parseCookieConsent,
+} from "../src/lib/cookie-consent";
 import { THEME_STORAGE_KEY } from "../src/lib/theme";
 
 const root = process.env.REPO_ROOT ?? process.cwd();
@@ -32,7 +35,7 @@ test("the footer and cookie notice are on every page", () => {
 test("the cookie policy lists every key DocRoute stores in the browser", () => {
   const names = browserStorageItems.map((item) => item.name).join("\n");
   assert.ok(names.includes(THEME_STORAGE_KEY));
-  assert.ok(names.includes(COOKIE_NOTICE_STORAGE_KEY));
+  assert.ok(names.includes(COOKIE_CONSENT_STORAGE_KEY));
   assert.ok(names.includes("docroute:saved-universities"));
   assert.ok(names.includes("docroute:route-progress"));
   assert.ok(names.includes("auth-token"));
@@ -77,4 +80,19 @@ test("account deletion is limited to the signed-in person", () => {
   assert.match(sql, /set search_path = ''/);
   assert.match(sql, /revoke all on function public\.delete_my_account\(\) from anon/);
   assert.match(sql, /grant execute on function public\.delete_my_account\(\) to authenticated/);
+});
+
+test("only the two known cookie choices are accepted", () => {
+  assert.equal(parseCookieConsent("all"), "all");
+  assert.equal(parseCookieConsent("necessary"), "necessary");
+  assert.equal(parseCookieConsent("yes"), null);
+  assert.equal(parseCookieConsent(null), null);
+});
+
+test("the operator stays unnamed while the beta is free", () => {
+  assert.equal(legalInfo.isCommercial, false);
+  assert.ok(!("operatorName" in legalInfo));
+  for (const page of ["terms", "privacy", "cookies"]) {
+    assert.ok(!read(`src/app/${page}/page.tsx`).includes("[OWNER"));
+  }
 });

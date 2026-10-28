@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { CookieSettings } from "@/components/CookieSettings";
 import { LegalPage } from "@/components/LegalPage";
 import styles from "@/components/LegalPage.module.css";
-import { browserStorageItems, legalInfo } from "@/data/legal";
+import { browserStorageItems, contact, legalInfo } from "@/data/legal";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -23,8 +24,8 @@ export default function CookiesPage() {
           <strong>In short.</strong> DocRoute uses only what is strictly
           necessary for the site to work: staying signed in, your theme and
           your progress on this device. There are no analytics, advertising
-          or tracking cookies, and nothing is shared with advertisers. That
-          is why we do not ask you to accept cookies.
+          or tracking cookies, and nothing is shared with advertisers. You
+          can change your cookie choice below at any time.
         </p>
       }
     >
@@ -59,16 +60,24 @@ export default function CookiesPage() {
         </table>
       </div>
 
-      <h2>2. Why no consent banner</h2>
+      <h2>2. Your choice</h2>
       <p>
         Under the ePrivacy rules (in Slovakia § 109(8) of Act No. 452/2021
         Coll. on Electronic Communications), storing information on your
-        device needs your consent unless it is strictly necessary to provide
-        a service you asked for. Everything listed above falls into that
-        exception, so we only inform you about it. If we ever add cookies
-        that are not strictly necessary, such as analytics, we will ask for
-        your consent first and you will be able to refuse.
+        device needs your consent unless it is strictly necessary for a
+        service you asked for. Everything listed above is strictly necessary,
+        so it is used whichever option you pick.
       </p>
+      <p>
+        We still ask for your choice when you first visit. If you choose{" "}
+        <strong>Accept all</strong>, we may in future add optional,
+        privacy-friendly tools such as visit statistics; this page will list
+        them before they are switched on. If you choose{" "}
+        <strong>Necessary only</strong>, no optional cookie or tool will ever
+        be used. Today nothing optional exists, so both choices work the same.
+        You can change your choice here at any time:
+      </p>
+      <CookieSettings />
 
       <h2>3. Other websites</h2>
       <p>
@@ -91,9 +100,7 @@ export default function CookiesPage() {
       <h2>5. Questions</h2>
       <p>
         Write to{" "}
-        <a href={`mailto:${legalInfo.contactEmail}`}>
-          {legalInfo.contactEmail}
-        </a>
+        <a href={contact.href}>{contact.label}</a>
         .
       </p>
     </LegalPage>

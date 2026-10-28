@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { LegalPage } from "@/components/LegalPage";
-import { legalInfo } from "@/data/legal";
+import { contact, legalInfo } from "@/data/legal";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -12,8 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
-  const { operatorName, operatorCountry, contactEmail, minimumAccountAge } =
-    legalInfo;
+  const { operatorDescription, minimumAccountAge } = legalInfo;
 
   return (
     <LegalPage
@@ -48,11 +47,11 @@ export default function TermsPage() {
       <h2>1. Who runs DocRoute</h2>
       <p>
         DocRoute (&ldquo;DocRoute&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;)
-        is a personal, non-commercial project run by {operatorName}, a private
-        individual living in {operatorCountry}. It is not a company, an
+        is a personal, non-commercial project run by {operatorDescription}{" "}
+        (the &ldquo;operator&rdquo;). It is not a company, an
         immigration agency, a law firm or an education agent, and it is not
         connected to any university, government authority or police force.
-        Contact: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+        Contact: <a href={contact.href}>{contact.label}</a>.
       </p>
       <p>
         These terms apply when you use the website and its features
@@ -121,7 +120,7 @@ export default function TermsPage() {
       </p>
       <p>
         If you find a mistake, please tell us at{" "}
-        <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. We will
+        <a href={contact.href}>{contact.label}</a>. We will
         correct confirmed mistakes as soon as we reasonably can.
       </p>
 
@@ -225,7 +224,7 @@ export default function TermsPage() {
       <h2>12. Contact</h2>
       <p>
         Questions, corrections and complaints:{" "}
-        <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. How we handle
+        <a href={contact.href}>{contact.label}</a>. How we handle
         personal data is described in the{" "}
         <Link href="/privacy">Privacy Policy</Link>, and what we store in
         your browser in the <Link href="/cookies">Cookie Policy</Link>.

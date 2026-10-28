@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { legalInfo, legalPages } from "@/data/legal";
+import { contact, legalPages } from "@/data/legal";
 
 import styles from "./SiteFooter.module.css";
 
@@ -21,7 +21,7 @@ export function SiteFooter() {
               {page.label}
             </Link>
           ))}
-          <a href={`mailto:${legalInfo.contactEmail}`}>Contact</a>
+          <a href={contact.href}>Contact</a>
         </nav>
       </div>
     </footer>

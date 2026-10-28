@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { LegalPage } from "@/components/LegalPage";
 import styles from "@/components/LegalPage.module.css";
-import { legalInfo } from "@/data/legal";
+import { contact, legalInfo } from "@/data/legal";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -76,9 +76,7 @@ const processors = [
 
 export default function PrivacyPage() {
   const {
-    operatorName,
-    operatorCountry,
-    contactEmail,
+    operatorDescription,
     minimumAccountAge,
     supervisoryAuthority,
   } = legalInfo;
@@ -111,10 +109,19 @@ export default function PrivacyPage() {
       <h2>1. Who is responsible for your data</h2>
       <p>
         The controller of personal data processed through DocRoute is{" "}
-        {operatorName}, a private individual living in {operatorCountry}, who
-        runs DocRoute as a free, non-commercial project. Contact for every
+        the operator of DocRoute, {operatorDescription}, who runs DocRoute as a free, non-commercial project. Contact for every
         privacy question or request:{" "}
-        <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. DocRoute has no
+        <a href={contact.href}>{contact.label}</a>.
+        {!contact.isEmail && (
+          <>
+            {" "}
+            GitHub issues are public, so never post personal data there;
+            you can download or delete your own data at any time on the{" "}
+            <Link href="/account">Account</Link> page, and a private email
+            address will be published here soon.
+          </>
+        )}{" "}
+        DocRoute has no
         data protection officer because it is not required to have one.
       </p>
       <p>
@@ -216,7 +223,7 @@ export default function PrivacyPage() {
         removes your account, profile, saved universities and progress from
         our database immediately; copies in our providers&apos; backups are
         overwritten within their backup cycle. For anything else, email{" "}
-        <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. We answer
+        <a href={contact.href}>{contact.label}</a>. We answer
         within one month.
       </p>
       <p>

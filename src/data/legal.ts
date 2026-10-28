@@ -6,12 +6,20 @@
  */
 
 export const legalInfo = {
-  /** Full name of the private individual who runs the site. */
-  operatorName: "[OWNER FULL NAME]",
+  /**
+   * The operator is not named on the site during the free beta. Once
+   * DocRoute sells anything, the name (or business name), IČO and address
+   * must be published (Act 22/2004 § 4 and consumer law).
+   */
+  operatorDescription: "a private individual living in Slovakia",
   /** Country where the operator lives; Slovak law applies. */
   operatorCountry: "Slovakia",
-  /** Address people use for questions, data requests and complaints. */
-  contactEmail: "[CONTACT EMAIL]",
+  /**
+   * Address for questions, data requests and complaints. Until the
+   * dedicated mailbox exists, people are sent to GitHub issues.
+   */
+  contactEmail: null as string | null,
+  contactFallbackUrl: "https://github.com/SleymZ/docroute-student/issues",
   /**
    * DocRoute is run by a private individual as a free, non-commercial
    * beta. There is no business registration (no IČO) and no payment of any
@@ -74,11 +82,23 @@ export const browserStorageItems = [
     duration: "Until you clear site data or sign in (then moved to your account)",
   },
   {
-    name: "docroute-cookie-notice",
+    name: "docroute-cookie-consent",
     kind: "Local storage",
-    purpose: "Remembers that you closed the cookie notice.",
-    duration: "Until you clear site data",
+    purpose:
+      "Remembers your cookie choice (accept all or necessary only) so we do not ask again.",
+    duration: "Until you clear site data or change your choice",
   },
 ] as const;
 
-export const COOKIE_NOTICE_STORAGE_KEY = "docroute-cookie-notice";
+/** Where people reach the operator: the mailbox once it exists. */
+export const contact = legalInfo.contactEmail
+  ? {
+      href: `mailto:${legalInfo.contactEmail}`,
+      label: legalInfo.contactEmail,
+      isEmail: true,
+    }
+  : {
+      href: legalInfo.contactFallbackUrl,
+      label: "GitHub (DocRoute issues)",
+      isEmail: false,
+    };

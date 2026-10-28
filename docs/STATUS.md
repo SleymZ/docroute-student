@@ -270,9 +270,10 @@ still publish only their 2026/27 rules.
 ## Legal status and beta (2026-10-28)
 
 - DocRoute runs as a **free, non-commercial public beta** by a private
-  individual living in Slovakia (no IČO, no payments). `legalInfo` in
-  `src/data/legal.ts` holds the operator name, contact email, minimum
-  account age (16) and document dates; Terms, Privacy, Cookies and the
+  individual living in Slovakia (no IČO, no payments). The operator is not
+  named on the site during the beta. `legalInfo` in `src/data/legal.ts`
+  holds the contact (email `null` until the dedicated mailbox exists;
+  meanwhile GitHub issues), minimum account age (16) and document dates; Terms, Privacy, Cookies and the
   footer read from it. `isCommercial` must stay `false` until a trade
   licence exists and payment terms are written (a test checks it).
 - Pages: `/terms` (not legal advice / not a legal service under Act
@@ -280,7 +281,10 @@ still publish only their 2026/27 rules.
   guarantee, Slovak law), `/privacy` (GDPR: data table, processors
   Supabase, Vercel, Google sign-in, Wikimedia photos; rights; complaint to
   ÚOOÚ SR), `/cookies` (only strictly necessary items; § 109(8) of Act
-  452/2021, so no consent banner, only a one-time notice).
+  452/2021). A cookie banner asks "Accept all" / "Necessary only" (equal
+  buttons, choice in `docroute-cookie-consent`, changeable on `/cookies`);
+  both behave the same today. Any future optional tool must check
+  `hasOptionalConsent()` in `src/lib/cookie-consent.ts`.
 - Site-wide footer with the BETA label and legal links; BETA badge in the
   header; consent line on the sign-in/sign-up screen (Terms, 16+, Privacy).
 - Account page: **Download my data** (JSON of account, profile, saved
@@ -291,7 +295,9 @@ still publish only their 2026/27 rules.
 - Before taking money: trade licence (živnosť; study-residence holders may
   run a trade per podnikajte.sk, confirm with the trade office), payment
   terms with the 14-day withdrawal waiver for digital content, Vercel Pro
-  (Hobby is non-commercial), and a lawyer's review of the wording.
+  (Hobby is non-commercial), a lawyer's review of the wording, and the
+  seller's name or business name, IČO and address on the site (selling
+  cannot be anonymous).
 
 ## Recently shipped (October 2026)
 
