@@ -118,8 +118,12 @@ export function getResidenceStatusLabel(
       return "EU, EEA or Swiss passport";
     case "non-eu-passport-no-residence":
       return "Non-EU passport · no residence permit";
+    case "destination-study-residence":
+      return `Temporary residence for study in ${destinationName}`;
     case "destination-residence":
-      return `Residence permit for ${destinationName}`;
+      return `Temporary residence in ${destinationName} for another purpose (work, family…)`;
+    case "destination-permanent-residence":
+      return `Permanent or long-term residence in ${destinationName}`;
     case "other-eu-residence":
       return "Residence permit in another EU / EEA country";
     case "destination-national-visa":

@@ -40,7 +40,9 @@ export type StudyIntake = (typeof studyIntakes)[number];
 export const currentResidenceStatuses = [
   "eu-eea-swiss-passport",
   "non-eu-passport-no-residence",
+  "destination-study-residence",
   "destination-residence",
+  "destination-permanent-residence",
   "other-eu-residence",
   "destination-national-visa",
   "visa-free-entry",

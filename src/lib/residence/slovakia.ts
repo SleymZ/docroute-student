@@ -1,5 +1,9 @@
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import {
+  slovakiaEuRegistrationRules as euRules,
+  slovakiaResidentRules as residentRules,
+} from "@/data/slovakia-residents";
+import {
   findResidenceStatusConflict,
   isEuEeaSwissCitizen,
 } from "@/lib/profile-options";
@@ -13,7 +17,7 @@ import type { RouteStage, RouteTask } from "@/types/route-preview";
 // - steps shared by every purpose (where to file, passport, criminal
 //   records, apostille and translation, card fee, duties after approval);
 // - a purpose definition (proof of purpose and purpose-specific notices).
-// Study is the only verified purpose. Work, family or business are added
+// Study is the purpose defined here (work has its own builder). Family or business are added
 // here as new purpose definitions once their official rules are checked.
 
 export type ResidenceFiling = "abroad" | "in-country" | "unclear";
@@ -24,7 +28,9 @@ export function residenceFilingPlace(
   status: CurrentResidenceStatus,
 ): ResidenceFiling {
   switch (status) {
+    case "destination-study-residence":
     case "destination-residence":
+    case "destination-permanent-residence":
     case "other-eu-residence":
     case "destination-national-visa":
     case "visa-free-entry":
@@ -239,33 +245,238 @@ export function residenceGateStage(
   }
 
   if (isEuEeaSwissCitizen(profile.citizenshipCountryCode)) {
-    return {
-      id: "residence",
-      number: stageNumber,
-      eyebrow: "EU / EEA / SWISS MOBILITY",
-      title: "EU, EEA or Swiss citizen registration route",
-      description:
-        "The third-country temporary residence procedure does not apply. The EU, EEA and Swiss registration route has not yet been verified in this first data release.",
-      timing: "Verification pending",
-      tasks: [
-        {
-          id: "eu-route-pending",
-          title: "Current rules still need source verification",
-          description:
-            "DocRoute will not reuse the non-EU checklist for an EU, EEA or Swiss citizen. Until this route is verified, confirm registration duties with the Slovak authorities.",
-          status: "attention",
-          sourceIds: ["sk-act-404-2011"],
-        },
-      ],
-    };
+    return euRegistrationStage(purpose, stageNumber);
+  }
+
+  if (profile.currentResidenceStatus === "destination-permanent-residence") {
+    return permanentResidentStage(purpose, stageNumber);
+  }
+
+  if (
+    purpose === "study" &&
+    profile.currentResidenceStatus === "destination-study-residence"
+  ) {
+    return currentStudentStage(stageNumber);
   }
 
   return null;
 }
 
+// EU, EEA and Swiss citizens register their residence; they never get the
+// third-country checklist.
+function euRegistrationStage(
+  purpose: GateOptions["purpose"],
+  stageNumber: string,
+): RouteStage {
+  const sourceIds = ["iom-eu-citizens"];
+  const purposeDocument =
+    purpose === "work"
+      ? "your employment contract"
+      : "the university's confirmation of study";
+
+  return {
+    id: "residence",
+    number: stageNumber,
+    eyebrow: "EU / EEA / SWISS REGISTRATION",
+    title: "Register your residence as an EU, EEA or Swiss citizen",
+    description:
+      "You do not need a residence permit. You report where you stay and, for a stay longer than three months, register your residence with the Foreign Police.",
+    timing: `Report within ${euRules.noticeOfStayWorkingDays} working days of entry · register within ${euRules.registrationAfterMonths} months + ${euRules.registrationWithinDays} days`,
+    tasks: [
+      {
+        id: "eu-notice-of-stay",
+        title: "Report the start and place of your stay",
+        description: `Within ${euRules.noticeOfStayWorkingDays} working days of entering Slovakia, report where you stay on the Notice of Stay form, unless your accommodation provider (for example a dormitory or hotel) reports it for you.`,
+        status: "action",
+        dueLabel: `Within ${euRules.noticeOfStayWorkingDays} working days of entry`,
+        sourceIds,
+      },
+      {
+        id: "eu-registration",
+        title: "Register your residence at the Foreign Police",
+        description: `If you stay longer than three months, register in person at any Foreign Police department within ${euRules.registrationWithinDays} days after the first ${euRules.registrationAfterMonths} months from entry. Book an appointment. Registration is free; you receive a confirmation of residence registration.`,
+        status: "action",
+        dueLabel: `Within ${euRules.registrationWithinDays} days after ${euRules.registrationAfterMonths} months from entry`,
+        sourceIds,
+      },
+      {
+        id: "eu-registration-documents",
+        title: "Documents for registration",
+        description: `Bring a valid ID card or passport and ${purposeDocument} as proof of the reason for your stay. Proof of sufficient funds and health insurance is the alternative when you have no school, employment or business document (the subsistence minimum is €${euRules.subsistenceMinimumEur} from July 2026).`,
+        status: "action",
+        dueLabel: "At the registration appointment",
+        sourceIds,
+      },
+      {
+        id: "eu-residence-card",
+        title: "Optional residence card",
+        description: `You may also apply for a residence card valid for ${euRules.residenceCardValidityYears} years: €${euRules.residenceCardFeesEur.standard} for delivery within 30 days or €${euRules.residenceCardFeesEur.expedited} within two business days. Proof of accommodation can be a notarised owner affidavit, electronic consent, a notarised tenancy agreement or a confirmation from a hotel or dormitory.`,
+        status: "information",
+        sourceIds,
+      },
+      {
+        id: "eu-after-registration",
+        title: "Duties after registration",
+        description: `Report a change of name, marital status, nationality or document data, and a lost or damaged document, within ${euRules.changeReportWorkingDays} working days. Tell the authorities in writing when you end your residence. After ${euRules.permanentResidenceAfterYears} years of uninterrupted legal residence you can get permanent residence.`,
+        status: "information",
+        sourceIds,
+      },
+    ],
+  };
+}
+
+function permanentResidentStage(
+  purpose: GateOptions["purpose"],
+  stageNumber: string,
+): RouteStage {
+  const sourceIds = ["iom-permanent-residence"];
+
+  return {
+    id: "residence",
+    number: stageNumber,
+    eyebrow: "RESIDENCE STATUS",
+    title: "You already hold permanent residence",
+    description:
+      "Guidance says permanent and long-term residents have the same rights and duties as Slovak citizens in most areas of life, including employment. No new residence application is listed for you.",
+    timing: "No new residence application listed",
+    tasks: [
+      purpose === "work"
+        ? {
+            id: "permanent-resident-purpose",
+            title: "Work residence permit not listed for you",
+            description:
+              "Employment is named among the rights of permanent residents. Agree the employment directly with your employer and keep your residence card valid.",
+            status: "information",
+            sourceIds,
+          }
+        : {
+            id: "permanent-resident-purpose",
+            title: "Confirm with the university that no student permit is needed",
+            description:
+              "The guidance does not mention study separately, so ask the university's international office to confirm that your permanent residence is enough. Keep your residence card valid.",
+            status: "attention",
+            sourceIds,
+          },
+      {
+        id: "resident-address-change",
+        title: "Report a change of address",
+        description: `If you move for your studies or job, report the new address to the Foreign Police within ${residentRules.addressChangeReportWorkingDays} working days.`,
+        status: "information",
+        sourceIds: ["iom-reporting-duties"],
+      },
+    ],
+  };
+}
+
+// The person already holds Slovak temporary residence for study and starts
+// new studies: no first application, but the change must be reported.
+function currentStudentStage(stageNumber: string): RouteStage {
+  return {
+    id: "residence",
+    number: stageNumber,
+    eyebrow: "STUDENT RESIDENCE",
+    title: "Keep your residence for study valid for the new studies",
+    description:
+      "You already hold temporary residence for study, so you do not apply for a first permit. Tell the Foreign Police about the new university and keep the permit valid while you study.",
+    timing: "After admission · before your permit expires",
+    tasks: [
+      {
+        id: "resident-report-school-change",
+        title: "Report the new university or programme",
+        description:
+          "Guidance says a move to another programme or university in Slovakia usually has to be reported to the Foreign Police. No deadline is published, so ask when you report, and bring the university's admission document.",
+        status: "action",
+        dueLabel: "After receiving the admission letter",
+        sourceIds: ["iom-study-residence"],
+      },
+      {
+        id: "resident-study-gap",
+        title: "Check the gap between your current and new studies",
+        description: `If your current studies end before the new ones start, the purpose of your residence may end. The Foreign Police must be told within ${residentRules.purposeEndReportWorkingDays} working days when the purpose ends. Ask them how a gap affects your permit before your current studies end.`,
+        status: "attention",
+        sourceIds: ["iom-reporting-duties", "iom-study-residence"],
+      },
+      {
+        id: "resident-renewal",
+        title: "Renew before the permit expires",
+        description:
+          "If your permit ends before the new studies do, file the renewal at the Foreign Police no later than the last day of its validity. Renewal for study requires that you continue studying in Slovakia.",
+        status: "action",
+        dueLabel: "By the last day of validity",
+        sourceIds: ["iom-study-residence"],
+      },
+      ...studyPurpose.noticesAfter,
+    ],
+  };
+}
+
 // True when the third-country temporary residence procedure applies.
 export function usesThirdCountryResidence(profile: ResidenceGateProfile) {
   return residenceGateStage(profile) === null;
+}
+
+// A third-country citizen with Slovak temporary residence for another
+// purpose (work, family...) applies for a change of purpose to study.
+export function isChangeOfPurpose(profile: ResidenceGateProfile) {
+  return (
+    profile.currentResidenceStatus === "destination-residence" &&
+    usesThirdCountryResidence(profile)
+  );
+}
+
+function changeOfPurposeStage(purpose: ResidencePurpose): RouteStage {
+  const sourceIds = ["iom-change-of-purpose"];
+
+  return {
+    id: "residence",
+    number: "04",
+    eyebrow: purpose.eyebrow,
+    title: "Change the purpose of your residence to study",
+    description:
+      "Your temporary residence was granted for another purpose, and a permit allows only what its purpose covers. A change of purpose is a new application for temporary residence for study.",
+    timing: `File by the last day of your current permit · decision within up to ${rules.processingTimeDays} days`,
+    tasks: [
+      {
+        id: "change-of-purpose-check",
+        title: "Ask whether your current purpose already allows study",
+        description:
+          "The guidance does not say which other purposes allow university study. Ask the Foreign Police before you apply; if a change is needed, follow the steps below.",
+        status: "attention",
+        sourceIds,
+      },
+      {
+        id: "residence-submission-place",
+        title: "File the change of purpose at the Foreign Police",
+        description:
+          "File no later than the last day of your current permit. While the new application is decided, your stay is authorised in Slovakia only.",
+        status: "action",
+        dueLabel: "After admission, before your permit expires",
+        sourceIds,
+      },
+      sharedSteps.formAndPassport,
+      purpose.proofTask,
+      {
+        id: "change-of-purpose-documents",
+        title: "Documents you do not submit again",
+        description:
+          "You do not submit a criminal-record certificate if you already gave one with your previous application, and the medical report is not required with this application.",
+        status: "information",
+        sourceIds,
+      },
+      sharedSteps.authenticationTranslation,
+      ...purpose.noticesBeforeFees,
+      sharedSteps.cardFee,
+      {
+        id: "post-card-duties",
+        title: "Take out health insurance after approval",
+        description: `Take out health insurance within ${residentRules.healthInsuranceWorkingDays} working days of collecting the new residence card.`,
+        status: "action",
+        dueLabel: "After card collection",
+        sourceIds: ["iom-reporting-duties"],
+      },
+      ...purpose.noticesAfter,
+    ],
+  };
 }
 
 export function buildSlovakiaResidenceStage(
@@ -274,6 +485,8 @@ export function buildSlovakiaResidenceStage(
 ): RouteStage {
   const gate = residenceGateStage(profile);
   if (gate) return gate;
+
+  if (isChangeOfPurpose(profile)) return changeOfPurposeStage(purpose);
 
   return {
     id: "residence",

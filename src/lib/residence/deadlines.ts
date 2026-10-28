@@ -40,6 +40,9 @@ type PlanInput = {
   documentMaxAgeDays?: number;
   reportWorkingDays?: number;
   soonDays?: number;
+  // Slovak residence for another purpose changed to study: no new criminal
+  // record or medical report, and no arrival to report.
+  changeOfPurpose?: boolean;
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -123,6 +126,7 @@ export function planStudyResidenceDeadlines({
   documentMaxAgeDays = 90,
   reportWorkingDays = 3,
   soonDays = 30,
+  changeOfPurpose = false,
 }: PlanInput): StudyDeadlinePlan | null {
   if (!isIsoDate(moveDate) || !isIsoDate(today) || moveDate <= today) {
     return null;
@@ -150,6 +154,12 @@ export function planStudyResidenceDeadlines({
     );
   }
 
+  if (changeOfPurpose) {
+    warnings.push(
+      "File the change of purpose no later than the last day of your current permit, even if that is earlier than the date below.",
+    );
+  }
+
   const items: DeadlineItem[] = [
     {
       id: "university-application",
@@ -159,7 +169,10 @@ export function planStudyResidenceDeadlines({
       detail: "Fixed faculty deadline, independent of your move date.",
       tone: toneFor(applicationDeadline, today, soonDays),
     },
-    {
+  ];
+
+  if (!changeOfPurpose) {
+    items.push({
       id: "criminal-record",
       taskId: "criminal-record",
       title: "Request criminal-record documents",
@@ -167,7 +180,10 @@ export function planStudyResidenceDeadlines({
       dateLabel: `${formatPlanDate(recordEarliest)} – ${formatPlanDate(latestFilingDate)}`,
       detail: `They must be no older than ${documentMaxAgeDays} days on the day you file. Requesting them earlier than this window risks them expiring.`,
       tone: toneFor(latestFilingDate, today, soonDays),
-    },
+    });
+  }
+
+  items.push(
     {
       id: "authentication-translation",
       taskId: "authentication-translation",
@@ -180,8 +196,9 @@ export function planStudyResidenceDeadlines({
     {
       id: "residence-filing",
       taskId: "residence-submission-place",
-      title:
-        filing === "in-country"
+      title: changeOfPurpose
+        ? "File the change of purpose at the Foreign Police"
+        : filing === "in-country"
           ? "File at the Foreign Police in Slovakia"
           : filing === "abroad"
             ? "File at the Slovak embassy"
@@ -194,7 +211,7 @@ export function planStudyResidenceDeadlines({
           : `The decision can take up to ${processingDays} days. Book the embassy appointment early; an interview is part of the procedure.`,
       tone: toneFor(latestFilingDate, today, soonDays),
     },
-  ];
+  );
 
   if (filing !== "in-country") {
     const reportBy = addWorkingDays(moveDate, reportWorkingDays);
@@ -217,14 +234,17 @@ export function planStudyResidenceDeadlines({
       detail: "Counts from the day you collect the residence card. Students do not have to submit the proof.",
       tone: "info",
     },
-    {
+  );
+
+  if (!changeOfPurpose) {
+    items.push({
       id: "medical-report",
       title: "Submit a medical report",
       dateLabel: "30 days after collecting the card",
       detail: "The report must be no older than 30 days. Students are not exempt.",
       tone: "info",
-    },
-  );
+    });
+  }
 
   return { moveDate, latestFilingDate, items, warnings };
 }

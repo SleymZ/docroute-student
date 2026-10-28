@@ -1,4 +1,5 @@
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
+import { slovakiaResidentSources } from "@/data/slovakia-residents";
 import { buildSlovakiaResidenceStage } from "@/lib/residence/slovakia";
 import type {
   ApplicantProfile,
@@ -207,6 +208,7 @@ export function buildRoutePreview(
         authority: "official" as const,
       })),
       ...slovakiaResidenceRules.sources,
+      ...slovakiaResidentSources,
     ],
     disclaimer:
       `This is a preparation route based on the profile you entered and university sources checked on ${verifiedAt}. It is not an admission decision or legally binding immigration advice. Recheck every open task before submission.`,

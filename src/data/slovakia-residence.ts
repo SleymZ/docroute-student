@@ -40,7 +40,7 @@ export const slovakiaResidenceRules = {
       title: "Temporary residence – study",
       publisher: "IOM Migration Information Centre Slovakia",
       url: "https://mic.iom.sk/en/residence/temporary-residence/985-temporary-residence-study.html",
-      checkedAt: "2026-10-23",
+      checkedAt: "2026-10-28",
       authority: "authoritative-guidance" as const,
     },
     {

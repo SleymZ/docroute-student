@@ -49,7 +49,9 @@ function isActionableTask(status: RouteTaskStatus) {
 const statusPhrases: Record<CurrentResidenceStatus, string> = {
   "eu-eea-swiss-passport": "an EU, EEA or Swiss passport",
   "non-eu-passport-no-residence": "no residence permit yet",
-  "destination-residence": "a Slovak residence permit",
+  "destination-study-residence": "Slovak temporary residence for study",
+  "destination-residence": "Slovak temporary residence for another purpose",
+  "destination-permanent-residence": "Slovak permanent or long-term residence",
   "other-eu-residence": "a residence permit in another EU / EEA country",
   "destination-national-visa": "a Slovak national visa",
   "visa-free-entry": "a visa-free stay in Slovakia",

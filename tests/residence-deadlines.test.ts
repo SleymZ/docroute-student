@@ -134,3 +134,19 @@ test("working days skip Slovak public holidays", () => {
   assert.equal(addWorkingDays("2027-08-31", 1), "2027-09-01");
   assert.equal(subtractWorkingDays("2027-01-07", 2), "2027-01-04");
 });
+
+test("a change of purpose drops the criminal record, medical report and arrival", () => {
+  const plan = planStudyResidenceDeadlines({
+    ...base,
+    moveDate: "2027-09-15",
+    filing: "in-country",
+    changeOfPurpose: true,
+  });
+  assert.ok(plan);
+  const ids = plan.items.map((entry) => entry.id);
+  assert.ok(!ids.includes("criminal-record"));
+  assert.ok(!ids.includes("medical-report"));
+  assert.ok(!ids.includes("report-arrival"));
+  assert.match(item(plan, "residence-filing").title, /change of purpose/);
+  assert.ok(plan.warnings.some((warning) => /last day of your current permit/.test(warning)));
+});

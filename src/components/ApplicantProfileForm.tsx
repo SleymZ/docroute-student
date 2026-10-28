@@ -478,9 +478,21 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
                     destination.name,
                   )}
                 </option>
+                <option value="destination-study-residence">
+                  {getResidenceStatusLabel(
+                    "destination-study-residence",
+                    destination.name,
+                  )}
+                </option>
                 <option value="destination-residence">
                   {getResidenceStatusLabel(
                     "destination-residence",
+                    destination.name,
+                  )}
+                </option>
+                <option value="destination-permanent-residence">
+                  {getResidenceStatusLabel(
+                    "destination-permanent-residence",
                     destination.name,
                   )}
                 </option>
