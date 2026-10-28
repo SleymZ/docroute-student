@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
+import { WaitlistCta } from "@/components/WaitlistCta";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { slovakiaWorkRules } from "@/data/slovakia-work";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
@@ -532,6 +533,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
             </ul>
             <p className={styles.disclaimer}>{route.disclaimer}</p>
           </section>
+          <WaitlistCta route="work-sk" />
         </div>
 
         <aside className={styles.side} aria-label="Dates and progress">

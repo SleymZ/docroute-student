@@ -105,11 +105,35 @@ export type Database = {
         };
         Relationships: [];
       };
+      waitlist_signups: {
+        Row: {
+          id: string;
+          email: string;
+          route: string;
+          consent_version: string;
+          consented_at: string;
+        };
+        Insert: {
+          email: string;
+          route: string;
+          consent_version: string;
+        };
+        Update: {
+          email?: string;
+          route?: string;
+          consent_version?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
       delete_my_account: {
         Args: never;
+        Returns: undefined;
+      };
+      leave_waitlist: {
+        Args: { p_email: string };
         Returns: undefined;
       };
     };
