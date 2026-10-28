@@ -56,12 +56,13 @@ const destinationById: Partial<Record<string, Destination>> = {
 
 /*
  * Featured countries stay highlighted even while another
- * European country is being explored. Only Slovakia has a
- * verified route today; other countries return here once their
- * official rules are collected.
+ * European country is being explored. Slovakia (study and work)
+ * and Czechia (residence for study and work) have verified routes;
+ * other countries return here once their official rules are collected.
  */
 const highlightedCountryIds = new Set([
   "703", // Slovakia
+  "203", // Czechia (residence routes for study and work)
 ]);
 
 /*

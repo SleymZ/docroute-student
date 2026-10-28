@@ -59,6 +59,7 @@ form shows Family and Business as "coming soon" without routes.
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
 | Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed only; no match, checklist or route | 2026-10-23 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
+| Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
 | Current Slovak residents | Study residence (report new studies, gap, renewal), other purpose (change of purpose to study), permanent/long-term (no new application) | 2026-10-28 |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
@@ -67,8 +68,8 @@ The catalog (`src/data/universities.json`, 2,598 institutions in 46
 countries, imported 2026-09-16 from Hipo) lists institutions only. It is not
 evidence that a program exists or of its requirements.
 
-On the home map only Slovakia is highlighted, because it is the only
-verified destination.
+On the home map Slovakia and Czechia are highlighted (Czechia for its
+residence routes).
 
 ## "Coming soon" programs
 
@@ -150,6 +151,31 @@ still publish only their 2026/27 rules.
 - Not covered: family members of EU citizens; a study holder switching to
   work is still shown the ordinary in-country work route.
 
+## Czechia residence (checked 2026-10-28)
+
+- Sources: Ministry of the Interior portal ipc.gov.cz (study permit and
+  study visa 27 Jul 2026, funds 30 Sep 2026, formal requirements 27 Jul,
+  obligations 24 Aug, processing periods 25 Jun, employee card 12 Oct,
+  Blue Card 14 Sep, free access 27 Jul, EU obligations 24 Aug, EU
+  registration certificate 15 Sep 2026) and mzv.gov.cz (study: legal
+  processing 60 days, Režim Student). Act 326/1999 is the legal basis,
+  not checked section by section.
+- Numbers: funds CZK 78,250 per semester / 115,810 per year (portal still
+  uses a CZK 3,130 subsistence minimum; recheck yearly); fee CZK 2,500
+  (study), CZK 5,000 consular / 2,500 in Czechia (employee card, Blue
+  Card); documents ≤180 days, Czech translation unless Czech or Slovak;
+  register within 30 days with D/VR visa (3 days visa-free); card within
+  60 days of biometrics; extension from 120 days before expiry; employee
+  card 60 days (90 complex), Blue Card 90 days; EU: report stay within 30
+  days, optional certificate CZK 200.
+- Known gaps: the Blue Card page gives both 6 months and 1 year as minimum
+  contract and no CZK salary amount (route asks to confirm); employee card
+  unemployment rules not described; holders of a residence permit from
+  another EU country may apply in Czechia only with a study permit/visa
+  (route says "confirm where to apply"); how a study-permit holder reports
+  a change of university is not described.
+- Planner uses calendar days (no Czech holidays needed).
+
 ## Work route sources and limits (checked 2026-10-23)
 
 - IOM Migration Information Centre: "Temporary residence – employment" and
@@ -212,6 +238,11 @@ still publish only their 2026/27 rules.
   removed.
 
 ## Recently shipped (October 2026)
+
+- PR #12 (2026-10-28): Czech residence routes for study and work at
+  `/route/czechia` (same layout as the Slovak work route), home form and
+  map. Checked on the Preview: UA student from abroad (planner, 78,250
+  CZK), Blue Card questionnaire, Czechia highlighted.
 
 - PR #11 (2026-10-28): EU/EEA/Swiss registration and current-resident
   routes for Slovakia (see the section above). Checked on the Preview:
