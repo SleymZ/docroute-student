@@ -357,6 +357,10 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #20 (2026-10-28): README rewritten as an English case study for the
+  portfolio (beta results section to fill after interviews);
+  `docs/launch-kit.md` with the beta post (RU/EN), interview questions and
+  the demo-video script.
 - PR #19 (2026-10-28): feedback form and consent-gated visit statistics
   (see Legal status and beta).
 - PR #18 (2026-10-28): "Save as PDF" on every route page (browser print

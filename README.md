@@ -1,36 +1,143 @@
 # DocRoute
 
-DocRoute helps people move to Europe with one source-linked route: find a
-university (for students), see which documents are needed and get a deadline
-for each one, from application to residence permit.
+**One personal, source-linked route for moving to Europe to study or work.**
+DocRoute turns scattered university pages and immigration guidance into a
+single checklist: which documents you need, where you file them, and the
+date by which each step has to happen. Every rule links to the official
+page it came from and the date it was checked.
 
-Study and work are supported for Slovakia. The work route covers non-EU
-citizens: single permit, EU Blue Card and Slovak graduates, from the job offer
-to duties after arrival. Family and business are planned and appear in the home
-form as "coming soon" until their official rules are verified.
+Live beta: https://docroute-student.vercel.app (free, non-commercial).
 
-The public Explore area is a university directory. Personalised matching is
-kept separate in the **Build my route** flow and only labels a program as
-verified when its requirements have been checked against an official source.
+> DocRoute is a preparation tool, not legal advice. Universities and
+> authorities make every decision; recheck each requirement on its official
+> source before you file anything.
 
-## Current verified coverage
+---
 
-- Destination: Slovakia
-- Category: Computer Science
-- Degree: Bachelor
-- Intake: 2027/28
-- Institution: University of Žilina, Faculty of Management Science and
-  Informatics
-- Verified programs: 4
+## The problem
 
-Coming soon (listed, not verified): Comenius University Bratislava, Faculty
-of Mathematics, Physics and Informatics — four computing programs whose
-2027/28 rules are awaiting approval. They never produce a personalised route.
+A student from outside the EU who wants a bachelor's degree in Slovakia or
+Czechia has to combine three systems that never talk to each other:
 
-Other institutions remain available in the public directory, with their
-verification status shown explicitly.
+1. **Admission rules** of one faculty, for one intake year, often only in
+   the local language, with waivers that depend on where you finished school.
+2. **Residence permit rules** of the country, which changed in Slovakia on
+   15 July 2026 and differ for every citizenship and current status.
+3. **Deadlines that chain together**: documents must be recent when you
+   file, the decision can take 60–90 days, and you must report your arrival
+   within a few working days.
 
-## Local development
+Mistakes are expensive: a document that expires a week early or a permit
+filed at the wrong office can cost a whole academic year. Official sources
+are accurate but fragmented; generic advice sites mix up years, degrees and
+countries.
+
+## What DocRoute does
+
+| For whom | What they get |
+| --- | --- |
+| Students choosing a university | A profile (citizenship, school country, grades, languages, waiver evidence) matched against **verified** admission rules, with a status per requirement: met, missing, needs clarification. |
+| People moving from abroad | A route from application to residence card, with a **deadline planner**: enter the date you need to be there and get the latest filing date, the window for each document and the duties after arrival. |
+| People already in Europe | Routes for current residents and EU citizens: change of purpose, renewal, registration, and filing in Czechia with a Slovak study permit. |
+
+Current routes:
+
+- **Study in Slovakia**: University of Žilina (FRI), four Computer Science
+  bachelor programmes for 2027/28, plus the Slovak study residence permit.
+- **Study in Czechia**: Charles University (MFF) *Informatika* for 2027/28,
+  plus the Czech long-term residence permit for study.
+- **Work in Slovakia**: single permit, EU Blue Card, Slovak graduates.
+- **Czechia residence**: study and work permits, EU registration, and the
+  in-country filing exception for holders of another EU state's study permit.
+- **Explore**: a directory of 2,598 institutions in 46 countries and a
+  Top 100 list (CWTS Leiden Ranking, open data) with admission facts for
+  non-EU applicants.
+
+Each route can be saved as a PDF, ticked off step by step, and shared as a
+link without an account.
+
+## How facts are sourced
+
+The most important design decision is what DocRoute refuses to do.
+
+- **Only official sources, with a check date.** Faculty regulations, the
+  Slovak and Czech interior ministries' guidance, the IOM Migration
+  Information Centre, consolidated legislation. The source and date are
+  shown next to every requirement.
+- **No borrowed rules.** A rule from another year, degree, field or purpose
+  never produces a personalised checklist. Programmes whose next-year rules
+  are only drafts are listed as "Rules awaiting approval" and never matched.
+- **No admission predictions.** No percentages, no "your chances". When a
+  rule is ambiguous (for example, whether a faculty's exemption for Czech
+  applicants covers a Czech citizen who finished school in Ukraine), the
+  route says "ask the faculty" instead of guessing.
+- **Contradictions are documented.** When an official page contradicts
+  itself (two different deadlines on one page), the route uses the earlier
+  date and the inconsistency is recorded in `docs/STATUS.md`.
+
+## Architecture
+
+- **Next.js 16 (App Router), React 19, TypeScript**, deployed on **Vercel**
+  with a Preview deployment for every pull request.
+- **Supabase** (Postgres, Auth with email and Google) for accounts, saved
+  profiles, bookmarks and progress. Every table uses **row-level security**:
+  a signed-in person can read only their own rows.
+- **Rules as data.** Admission policies and residence rules are typed data
+  files (`src/data/*`) with their sources; route builders in
+  `src/lib/residence/*` and `src/lib/match-programs.ts` are pure functions,
+  so they are unit-tested without a browser or database.
+- **Date logic** runs in UTC with Slovak public holidays computed from the
+  law (including Easter), so the server and the browser always show the
+  same dates.
+- **Guests first.** Route answers live in the URL (those pages are
+  `noindex`) and progress in local storage; signing in merges them into the
+  account.
+
+## Privacy by design (GDPR)
+
+DocRoute is run by a private individual in Slovakia, so the legal side had
+to be simple and correct rather than copied from a template:
+
+- Terms of Use, Privacy Policy and Cookie Policy read from one data file
+  (`src/data/legal.ts`), so a change shows everywhere.
+- **Self-service rights**: "Download my data" (JSON) and "Delete my account"
+  (a `security definer` database function limited to `auth.uid()`).
+- **Consent where it is needed**: an unticked checkbox for the waitlist, a
+  one-step way to leave it, and visit statistics that load only after
+  "Accept all" and never send the route answers in the URL.
+- **Insert-only tables** for the waitlist and feedback: the public can add a
+  row, but nobody can read the table through the API.
+- Tests guard the promises: no tracker packages, the cookie list matches the
+  keys the code actually stores, the operator stays unnamed while the beta
+  is free, and nothing is sold until a trade licence exists.
+
+## Quality
+
+- **181 unit tests** (Node's built-in test runner) covering admission
+  matching, residence routes, deadline planning, holidays, legal pages,
+  database migrations and print/accessibility rules.
+- Database migrations are re-runnable and were tested against a local
+  PostgreSQL with Supabase-like roles before being applied.
+- Every pull request is checked on its Vercel Preview in the browser, at
+  375 px phone width and in both light and dark themes, before it is merged.
+- A status file (`docs/STATUS.md`) records what was checked, when, against
+  which source, and every known gap.
+
+## Status and what's next
+
+Public beta since 28 October 2026. Next:
+
+- Update the Top 100 list with the Leiden Ranking 2026 (published 4 Nov 2026).
+- Beta interviews with 10–20 students and a waitlist for a fuller route, to
+  decide whether a paid version is worth building.
+- Add the next faculties only when their 2027/28 rules are officially
+  approved (Comenius University FMFI, STU FIIT, TUKE FEI).
+
+**Beta results** *(to be filled in after the interviews)*: number of
+interviews, the main problems people described, waitlist sign-ups, and what
+changed because of the feedback.
+
+## Run it locally
 
 ```bash
 npm install
@@ -38,9 +145,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-Required public environment variables:
+Open http://localhost:3000. Public environment variables:
 
 ```text
 NEXT_PUBLIC_SUPABASE_URL
@@ -48,32 +153,19 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 NEXT_PUBLIC_SITE_URL
 ```
 
-## Supabase
+### Supabase
 
-Run the SQL migrations in filename order:
-
-1. `supabase/migrations/20260928120000_ensure_applicant_profiles.sql`
-2. `supabase/migrations/20260929070000_expand_applicant_profile_options.sql`
-3. `supabase/migrations/20261002121500_create_user_memory.sql`
-4. `supabase/migrations/20261028090000_residence_permit_types.sql`
-
-The earlier `20260927190000` migration is a historical placeholder and does
-not need to be pasted into the SQL editor.
-
-The profile, saved-university, and route-progress tables use row-level
-security. Authenticated users can only access rows whose `user_id` matches
-their Supabase identity. Guests can still save bookmarks and route progress
-in their browser; those choices are merged into their account after login.
-
-For authentication, add both local and deployed callback URLs to the Supabase
-redirect allow list:
+Run the SQL migrations in `supabase/migrations/` in filename order in the
+Supabase SQL editor (the first one, `20260927190000`, is a historical
+placeholder). Every later migration is safe to run more than once. Add the
+local and deployed callback URLs to the Supabase redirect allow list:
 
 ```text
 http://localhost:3000/auth/callback
 https://your-domain.example/auth/callback
 ```
 
-## Quality checks
+### Checks
 
 ```bash
 npm run lint
@@ -82,39 +174,16 @@ npm run build
 npm run test:ssr
 ```
 
-## Deployment
+### Deployment
 
-The project is designed for Vercel. Connect the GitHub repository, configure
-the three environment variables for Preview and Production, run the Supabase
-migrations, and verify signup, login, profile saving, matching, and route
-preview on the deployed domain.
+Connect the repository to Vercel, set the three environment variables for
+Preview and Production, run the migrations, and enable Web Analytics in the
+Vercel project if visit statistics are wanted (they still load only after
+consent).
 
-DocRoute is a preparation tool, not an admission decision or legal advice.
-Every open requirement must be rechecked before submission.
+## About
 
-## Admission matching policy
-
-The first implemented policy is FRI UNIZA bachelor-level Computer Science
-for 2027/28 (four programmes at one faculty, not complete Slovak coverage).
-Rules and the electronic-application instructions were rechecked on 2026-10-19.
-The policy source is linked beside requirements and documents in the UI.
-
-- Destination, subject, degree and intake must all match exactly. A rule from
-  another year or degree cannot generate a personalised checklist.
-- A server-supplied date in the Europe/Bratislava timezone is used for deadline
-  checks, so SSR and client hydration use the same snapshot.
-- Known languages, willingness to study in them and accepted language proof
-  are separate checks. An unrelated certificate does not satisfy the specific
-  UNIZA test rule.
-- Old `math-matura` / `olympiad` profile entries remain readable but require
-  clarification. New evidence options state the actual percentile/round.
-- A self-reported waiver is a possible admission route, not a faculty decision.
-  A foreign grade scale is not automatically converted into a Slovak average.
-- A final-year applicant still needs a final graduation certificate even when
-  an entrance-exam waiver is claimed. Conditional documents are labelled.
-- Preview rejects incompatible or expired routes and stores progress separately
-  when the profile changes.
-
-This update uses the existing JSON profile fields; no additional SQL migration
-is needed. Immigration guidance is a separate data set and is not re-verified
-by this admissions update.
+Built and maintained by one student living in Slovakia, for people in the
+same situation. Development used an AI coding assistant (Claude by
+Anthropic); every change went through a pull request and was checked on a
+preview deployment before merging.
