@@ -22,6 +22,10 @@ import { Header } from "@/components/Header";
 import { movePurposes } from "@/data/move-purposes";
 import { pendingProgramGroups } from "@/data/pending-programs";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
+import {
+  slovakiaEuRegistrationRules,
+  slovakiaResidentRules,
+} from "@/data/slovakia-residents";
 import { slovakiaWorkRules } from "@/data/slovakia-work";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { matchStatusLabels } from "@/lib/match-programs";
@@ -366,11 +370,31 @@ export default function HowItWorksPage() {
                   <small>Checked {formatPlanDate(slovakiaWorkRules.checkedAt)}</small>
                 </li>
                 <li>
-                  <strong>EU, EEA and Swiss citizens</strong>
+                  <strong>
+                    {slovakiaEuRegistrationRules.jurisdiction}: EU, EEA and
+                    Swiss citizens
+                  </strong>
                   <span>
-                    Registration rules are not verified yet; the route says so
-                    and shows no checklist.
+                    Notice of stay and registration of residence for study or
+                    work, with the optional residence card.
                   </span>
+                  <small>
+                    Checked {formatPlanDate(slovakiaEuRegistrationRules.checkedAt)}
+                  </small>
+                </li>
+                <li>
+                  <strong>
+                    {slovakiaEuRegistrationRules.jurisdiction}: people who
+                    already live there
+                  </strong>
+                  <span>
+                    Residence for study (report the new studies, renewal),
+                    another purpose (change of purpose to study) and permanent
+                    residence.
+                  </span>
+                  <small>
+                    Checked {formatPlanDate(slovakiaResidentRules.checkedAt)}
+                  </small>
                 </li>
               </ul>
             </article>

@@ -55,6 +55,7 @@ Run the SQL migrations in filename order:
 1. `supabase/migrations/20260928120000_ensure_applicant_profiles.sql`
 2. `supabase/migrations/20260929070000_expand_applicant_profile_options.sql`
 3. `supabase/migrations/20261002121500_create_user_memory.sql`
+4. `supabase/migrations/20261028090000_residence_permit_types.sql`
 
 The earlier `20260927190000` migration is a historical placeholder and does
 not need to be pasted into the SQL editor.

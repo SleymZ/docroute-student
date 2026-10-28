@@ -149,6 +149,22 @@ test("Slovak, EU and contradictory profiles get no third-country checklist", () 
     profile({ citizenshipCountryCode: "SK", currentResidenceStatus: "eu-eea-swiss-passport" }),
   );
   assert.match(slovak.stages[0].description, /work in Slovakia/);
+  const eu = buildSlovakiaWorkRoute(
+    profile({ citizenshipCountryCode: "DE", currentResidenceStatus: "eu-eea-swiss-passport" }),
+  );
+  const documents = eu.stages[0].tasks.find((task) => task.id === "eu-registration-documents");
+  assert.match(documents!.description, /employment contract/);
+  const known = new Set(eu.sources.map((source) => source.id));
+  assert.ok(eu.stages[0].tasks.every((task) => task.sourceIds.every((id) => known.has(id))));
+});
+
+test("permanent residents are not sent through a work permit", () => {
+  const route = buildSlovakiaWorkRoute(
+    profile({ currentResidenceStatus: "destination-permanent-residence" }),
+  );
+  assert.equal(route.authorisation, null);
+  assert.equal(route.stages[0].tasks[0].id, "permanent-resident-purpose");
+  assert.equal(route.stages[0].tasks[0].status, "information");
 });
 
 test("progress namespace changes with answers that change the checklist", () => {

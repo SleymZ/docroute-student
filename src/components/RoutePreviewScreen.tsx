@@ -36,6 +36,7 @@ import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { createProfileSearchParams, getProfileProgressId } from "@/lib/profile-query";
 import { addDays, isIsoDate, planStudyResidenceDeadlines } from "@/lib/residence/deadlines";
 import {
+  isChangeOfPurpose,
   residenceFilingPlace,
   usesThirdCountryResidence,
 } from "@/lib/residence/slovakia";
@@ -129,6 +130,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
       applicationDeadline: program.application.deadline,
       admissionDate: program.application.admissionDate,
       processingDays: slovakiaResidenceRules.processingTimeDays,
+      changeOfPurpose: isChangeOfPurpose(profile),
     });
   }, [profile, program, route, thirdCountry, moveDate, asOfDate]);
   const datedTaskLabels = new Map(

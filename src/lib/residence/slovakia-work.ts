@@ -1,3 +1,4 @@
+import { slovakiaResidentSources } from "@/data/slovakia-residents";
 import { slovakiaWorkRules } from "@/data/slovakia-work";
 import {
   residenceFilingPlace,
@@ -403,7 +404,7 @@ function afterApprovalStage(route: WorkAuthorisationRoute): RouteStage {
 }
 
 export function buildSlovakiaWorkRoute(profile: WorkProfile): WorkRoute {
-  const sources = rules.sources;
+  const sources = [...rules.sources, ...slovakiaResidentSources];
   const gate = residenceGateStage(profile, { purpose: "work", stageNumber: "01" });
 
   if (gate) {
