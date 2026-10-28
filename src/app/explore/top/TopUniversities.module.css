@@ -471,3 +471,27 @@
     margin-left: 0;
   }
 }
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: light-dark(#34474f, #c5d6de);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: currentColor;
+}
+
+.facts dd a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: light-dark(#1a6f7b, #8cdae7);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

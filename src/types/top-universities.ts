@@ -41,3 +41,13 @@ export type TopUniversity = {
   };
   admissions: TopAdmissionFacts;
 };
+
+// The university's computer science (or closest computing) bachelor. No
+// name/url means none was found; `note` explains it.
+export type TopComputerScience = {
+  name?: string;
+  url?: string;
+  language?: string;
+  note?: string;
+  checkedAt: string;
+};
