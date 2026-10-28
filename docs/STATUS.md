@@ -50,7 +50,7 @@ form shows Family and Business as "coming soon" without routes.
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
   Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`,
-  `waitlist_signups`. Functions: `delete_my_account()` (migration
+  `waitlist_signups`, `feedback`. Functions: `delete_my_account()` (migration
   `20261028150000`, redefined in `20261028180000`), `leave_waitlist(email)`.
 
 ## Verified coverage
@@ -306,8 +306,20 @@ still publish only their 2026/27 rules.
 - Account page: **Download my data** (JSON of account, profile, saved
   universities, progress) and **Delete my account** (RPC
   `delete_my_account`, migration `20261028150000`).
-- No analytics or trackers are loaded; adding any needs a consent banner
-  first (a test checks package.json for common trackers).
+- Visit statistics (PR #19): Vercel Web Analytics loaded by
+  `ConsentedAnalytics` only after "Accept all" and only on production
+  (`NEXT_PUBLIC_VERCEL_ENV`), via the plain script
+  `/_vercel/insights/script.js` (no npm package). Cookieless; `beforeSend`
+  strips the query string (route answers live there) and drops events if
+  consent was withdrawn. Needs Analytics enabled in the Vercel project
+  (owner action). Hobby has no custom events. Cookie Policy, banner and
+  Privacy Policy describe it. No other analytics or trackers (a test
+  checks package.json).
+- Feedback (PR #19): anonymous form (rating 1–5 and/or text) at the end of
+  every route page and on `/feedback` (footer link). Table `feedback`
+  (migration `20261028200000_feedback.sql`): insert-only like the
+  waitlist, page path without query string (checked in the database),
+  kept at most 24 months; read in the Supabase dashboard.
 - Before taking money: trade licence (živnosť; study-residence holders may
   run a trade per podnikajte.sk, confirm with the trade office), payment
   terms with the 14-day withdrawal waiver for digital content, Vercel Pro
@@ -345,6 +357,8 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #19 (2026-10-28): feedback form and consent-gated visit statistics
+  (see Legal status and beta).
 - PR #18 (2026-10-28): "Save as PDF" on every route page (browser print
   dialog; `@media print` in `globals.css` forces the light theme, hides
   the header, breadcrumbs, waitlist, edit links, footer and cookie banner
@@ -454,7 +468,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (176 tests on 2026-10-28).
+- Unit tests: `npm test` (181 tests on 2026-10-28).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

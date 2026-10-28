@@ -17,6 +17,7 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
+import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { czechiaResidenceRules } from "@/data/czechia-residence";
@@ -528,6 +529,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
             </ul>
             <p className={styles.disclaimer}>{route.disclaimer}</p>
           </section>
+          <FeedbackForm route={profile.purpose === "work" ? "work-cz" : "study-cz"} />
           <WaitlistCta route={profile.purpose === "work" ? "work-cz" : "study-cz"} />
         </div>
 

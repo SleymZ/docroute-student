@@ -5,6 +5,7 @@ import { LegalPage } from "@/components/LegalPage";
 import styles from "@/components/LegalPage.module.css";
 import { WaitlistLeave } from "@/components/WaitlistLeave";
 import { contact, legalInfo } from "@/data/legal";
+import { FEEDBACK_KEEP_MONTHS } from "@/lib/feedback";
 import { WAITLIST_MAX_MONTHS } from "@/lib/waitlist";
 
 export const metadata: Metadata = {
@@ -46,6 +47,18 @@ const dataRows = [
     kept: `Until we send that one email, until you withdraw, or at most ${WAITLIST_MAX_MONTHS} months after you joined, whichever comes first. Then deleted.`,
   },
   {
+    what: "Feedback you send with the feedback form: a rating from 1 to 5 and/or your text, the page address without the part after \u201c?\u201d, and the time. We do not ask who you are; please do not write personal details.",
+    why: "To find mistakes and improve DocRoute.",
+    basis: "Legitimate interest in improving the service (Art. 6(1)(f)).",
+    kept: `At most ${FEEDBACK_KEEP_MONTHS} months.`,
+  },
+  {
+    what: "Visit statistics, only if you choose \u201cAccept all\u201d on the cookie banner: page address without the part after \u201c?\u201d, referring site, country or region, browser, operating system and device type. No cookies; a visit is recognised by a hash that is discarded after 24 hours. We see only totals.",
+    why: "To see which pages are used and where people get stuck.",
+    basis: "Your consent (Art. 6(1)(a)), which you can withdraw on the Cookies page at any time.",
+    kept: "Aggregated by Vercel under its Web Analytics terms.",
+  },
+  {
     what: "Technical data: IP address, browser type, the page requested (including its address), time and errors, recorded automatically by our hosting and database providers.",
     why: "To deliver pages, keep the service secure and fix errors.",
     basis: "Legitimate interest in a secure, working service (Art. 6(1)(f)).",
@@ -62,12 +75,12 @@ const dataRows = [
 const processors = [
   {
     name: "Supabase, Inc.",
-    role: "Database and sign-in (stores your account, profile, saved universities, progress and waitlist emails).",
+    role: "Database and sign-in (stores your account, profile, saved universities, progress, waitlist emails and feedback).",
     link: "https://supabase.com/privacy",
   },
   {
     name: "Vercel, Inc.",
-    role: "Hosting: delivers the website and records technical logs.",
+    role: "Hosting: delivers the website, records technical logs and, only with \u201cAccept all\u201d, counts visits (Web Analytics).",
     link: "https://vercel.com/legal/privacy-policy",
   },
   {
@@ -101,7 +114,11 @@ export default function PrivacyPage() {
             save your route.
           </p>
           <ul>
-            <li>No advertising, no analytics trackers, no selling of data.</li>
+            <li>
+              No advertising, no tracking across sites, no selling of data.
+              Anonymous visit statistics only if you choose &ldquo;Accept
+              all&rdquo;.
+            </li>
             <li>
               Nothing is shared with universities, employers or authorities.
             </li>
@@ -275,8 +292,9 @@ export default function PrivacyPage() {
 
       <h2>8. Cookies</h2>
       <p>
-        DocRoute uses only strictly necessary cookies and browser storage,
-        for example to keep you signed in. Details are in the{" "}
+        DocRoute uses strictly necessary cookies and browser storage, for
+        example to keep you signed in, and cookieless visit statistics only
+        if you choose &ldquo;Accept all&rdquo;. Details are in the{" "}
         <Link href="/cookies">Cookie Policy</Link>.
       </p>
 

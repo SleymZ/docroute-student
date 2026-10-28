@@ -17,6 +17,7 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
+import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { slovakiaWorkRules } from "@/data/slovakia-work";
@@ -538,6 +539,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
             </ul>
             <p className={styles.disclaimer}>{route.disclaimer}</p>
           </section>
+          <FeedbackForm route="work-sk" />
           <WaitlistCta route="work-sk" />
         </div>
 

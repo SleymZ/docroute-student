@@ -105,6 +105,29 @@ export type Database = {
         };
         Relationships: [];
       };
+      feedback: {
+        Row: {
+          id: string;
+          page: string;
+          route: string | null;
+          rating: number | null;
+          message: string | null;
+          created_at: string;
+        };
+        Insert: {
+          page: string;
+          route?: string | null;
+          rating?: number | null;
+          message?: string | null;
+        };
+        Update: {
+          page?: string;
+          route?: string | null;
+          rating?: number | null;
+          message?: string | null;
+        };
+        Relationships: [];
+      };
       waitlist_signups: {
         Row: {
           id: string;

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { ConsentedAnalytics } from "@/components/ConsentedAnalytics";
 import { CookieNotice } from "@/components/CookieNotice";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getSiteUrl } from "@/lib/site-url";
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <SiteFooter />
         <CookieNotice />
+        <ConsentedAnalytics />
       </body>
     </html>
   );
