@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-10-27. Keep this file factual: describe what exists and
+Last updated: 2026-10-28. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -59,7 +59,8 @@ form shows Family and Business as "coming soon" without routes.
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
 | Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed only; no match, checklist or route | 2026-10-23 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
-| EU/EEA/Swiss residence | Not verified; route says so and shows no checklist | — |
+| EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
+| Current Slovak residents | Study residence (report new studies, gap, renewal), other purpose (change of purpose to study), permanent/long-term (no new application) | 2026-10-28 |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
 
 The catalog (`src/data/universities.json`, 2,598 institutions in 46
@@ -118,6 +119,36 @@ still publish only their 2026/27 rules.
   Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.
   UK tuition is per course (link only). Oxford, Cambridge and UK
   medicine closed for 2027 entry on 15 October 2026.
+
+## EU citizens and current residents (checked 2026-10-28)
+
+- Sources (IOM MIC): "Residence of Union citizens" (updated 16 July 2026),
+  "Change of the purpose or type of residence permit" (4 March 2026),
+  "Reporting residence and other important obligations" (14 July 2026),
+  "Permanent residence" (14 July 2026), "Temporary residence – study"
+  (22 July 2026).
+- EU, EEA, Swiss: notice of stay within 10 working days of entry (unless
+  the accommodation provider reports it); register within 30 days after
+  the first 3 months, free; card optional (10 years, €10/€39); report
+  changes within 10 working days; permanent residence after 5 years. The
+  route uses the university confirmation (study) or employment contract
+  (work). No dated planner for this group yet.
+- Residence status now has three Slovak options: `destination-study-residence`,
+  `destination-residence` (now "another purpose") and
+  `destination-permanent-residence`. Migration
+  `20261028090000_residence_permit_types.sql` must be run in Supabase
+  before profiles with the new values can be saved.
+- Study holders: report the new university (no published deadline, so the
+  route says "ask"), gap warning (purpose end must be reported within 3
+  working days), renewal by the last day of validity.
+- Other purpose: the guidance does not say which purposes allow study, so
+  the route asks to confirm first, then gives the change-of-purpose
+  checklist (no repeated criminal record or medical report, stay
+  authorised in Slovakia while pending); the planner drops those items.
+- Permanent: guidance gives citizen-like rights incl. employment; study is
+  not mentioned, so the study route asks to confirm with the university.
+- Not covered: family members of EU citizens; a study holder switching to
+  work is still shown the ordinary in-country work route.
 
 ## Work route sources and limits (checked 2026-10-23)
 
@@ -181,6 +212,11 @@ still publish only their 2026/27 rules.
   removed.
 
 ## Recently shipped (October 2026)
+
+- PR #11 (2026-10-28): EU/EEA/Swiss registration and current-resident
+  routes for Slovakia (see the section above). Checked on the Preview:
+  UA citizen with study residence, DE citizen, change of purpose with move
+  date 15 Sep 2027 (no criminal-record or medical items), new form options.
 
 - PR #10 (2026-10-27): Top 100 page (see the section above), Explore hero
   link and a "#N in Europe's top 100" button on university pages. Checked
@@ -262,7 +298,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (130 tests on 2026-10-27).
+- Unit tests: `npm test` (137 tests on 2026-10-28).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -282,7 +318,8 @@ text, which is unchanged from before).
    faculty would let DocRoute decide these cases.
 2. (resolved in PR #9) Duplicate UNIZA test tasks.
 3. (resolved in PR #9) "Profile aligned" removed as unreachable.
-4. **EU/EEA/Swiss registration route** is not verified.
+4. (resolved in PR #11) EU/EEA/Swiss registration route for Slovakia.
+   Family members of EU citizens are not covered.
 5. **Signed-in flows on Previews**: email links may redirect to production
    because Preview URLs are not in the Supabase redirect allow list.
 6. Accessibility: the university image container uses `role="img"` while
@@ -301,7 +338,6 @@ text, which is unchanged from before).
    matching policy.
 2. Ask UNIZA FRI in writing how the Czech exemption applies to mixed
    citizenship/school cases (open question 1).
-3. Verify the EU/EEA/Swiss registration route for Slovakia.
 4. Add the next verified faculty or program only with its own official
    sources (STU FIIT and TUKE FEI once their 2027/28 rules are out).
 5. Work route: cross-check key paragraphs of Act 404/2011 (and the
