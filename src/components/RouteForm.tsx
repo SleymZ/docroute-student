@@ -49,6 +49,8 @@ type RouteFormProps = {
   destination: Destination;
   program: string;
   routeAvailable: boolean;
+  // Residence route only: university programmes there are not verified.
+  residenceOnly?: boolean;
   onDocumentCountryChange: (value: string) => void;
   onDestinationChange: (value: string) => void;
   onProgramChange: (value: string) => void;
@@ -477,6 +479,7 @@ export function RouteForm({
   destination,
   program,
   routeAvailable,
+  residenceOnly = false,
   onDocumentCountryChange,
   onDestinationChange,
   onProgramChange,
@@ -533,7 +536,9 @@ export function RouteForm({
             ? "Build my work route"
             : "Work route not verified yet"
           : routeAvailable
-            ? "Build my route"
+            ? residenceOnly
+              ? "Build my residence route"
+              : "Build my route"
             : "Explore universities"}
         <ArrowRight size={18} aria-hidden="true" />
       </button>
@@ -546,9 +551,11 @@ export function RouteForm({
             <CircleDashed size={16} aria-hidden="true" />
           )}
           {routeAvailable
-            ? "Verified route available · Official sources included"
+            ? residenceOnly
+              ? "Residence route verified · University admission not verified yet"
+              : "Verified route available · Official sources included"
             : purpose === "work"
-              ? "Work routes are verified for Slovakia only so far"
+              ? "Work routes are verified for Slovakia and Czechia so far"
               : "Personalised route coverage in progress · Public directory available"}
         </span>
       </div>

@@ -21,6 +21,7 @@ import {
 import { Header } from "@/components/Header";
 import { movePurposes } from "@/data/move-purposes";
 import { pendingProgramGroups } from "@/data/pending-programs";
+import { czechiaResidenceRules } from "@/data/czechia-residence";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import {
   slovakiaEuRegistrationRules,
@@ -396,6 +397,19 @@ export default function HowItWorksPage() {
                     Checked {formatPlanDate(slovakiaResidentRules.checkedAt)}
                   </small>
                 </li>
+                <li>
+                  <strong>
+                    {czechiaResidenceRules.jurisdiction}: study and work
+                  </strong>
+                  <span>
+                    Long-term residence permit for study, employee card and EU
+                    Blue Card, EU registration and current residents, with a
+                    date planner. Czech university admission is not verified.
+                  </span>
+                  <small>
+                    Checked {formatPlanDate(czechiaResidenceRules.checkedAt)}
+                  </small>
+                </li>
               </ul>
             </article>
 
@@ -404,7 +418,7 @@ export default function HowItWorksPage() {
               <ul>
                 <li>
                   <strong>{availablePurposes.join(", ")}</strong>
-                  <span>Available now, for Slovakia.</span>
+                  <span>Available now for Slovakia; residence routes for Czechia.</span>
                 </li>
                 <li>
                   <strong>{comingPurposes.join(", ")}</strong>

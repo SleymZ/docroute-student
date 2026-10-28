@@ -29,8 +29,11 @@ const educationCountryCodes: Record<string, string> = {
   "United Kingdom": "GB",
 };
 
-// Only Slovakia has a verified work route (third-country citizens).
-const workRouteCountries = new Set(["SK"]);
+// Verified work routes: Slovakia and Czechia.
+const workRouteCountries = new Set(["SK", "CZ"]);
+// Countries with a verified residence route for study but no verified
+// university programmes yet: "Build my route" opens the residence route.
+const studyResidenceRouteCountries = new Set(["CZ"]);
 
 export function RoutePlanner() {
   const router = useRouter();
@@ -45,7 +48,8 @@ export function RoutePlanner() {
   const routeAvailable =
     purpose === "work"
       ? workRouteCountries.has(destinationCountryCode)
-      : verifiedPrograms.some(
+      : studyResidenceRouteCountries.has(destinationCountryCode) ||
+        verifiedPrograms.some(
           (verifiedProgram) =>
             verifiedProgram.countryCode === destinationCountryCode &&
             verifiedProgram.category === program,
@@ -83,6 +87,15 @@ export function RoutePlanner() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (destinationCountryCode === "CZ") {
+      if (!routeAvailable) return;
+      const czParams = new URLSearchParams({ country: "CZ", purpose });
+      const citizenship = educationCountryCodes[documentCountry];
+      if (citizenship) czParams.set("citizenship", citizenship);
+      router.push(`/route/czechia?${czParams.toString()}`);
+      return;
+    }
 
     if (purpose === "work") {
       if (!routeAvailable) return;
@@ -155,6 +168,7 @@ export function RoutePlanner() {
           destination={destination}
           program={program}
           routeAvailable={routeAvailable}
+          residenceOnly={purpose === "study" && studyResidenceRouteCountries.has(destinationCountryCode)}
           onDocumentCountryChange={handleDocumentCountryChange}
           onDestinationChange={handleDestinationChange}
           onProgramChange={handleProgramChange}
