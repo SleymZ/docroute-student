@@ -396,6 +396,13 @@ export function AuthScreen({
             </span>
           </header>
 
+          <p className={styles.consentNote}>
+            By continuing, including with Google, you agree to the{" "}
+            <Link href="/terms">Terms of Use</Link> and confirm you are 16 or
+            older. See how we handle your data in the{" "}
+            <Link href="/privacy">Privacy Policy</Link>.
+          </p>
+
           <button
             type="button"
             className={styles.googleButton}
@@ -535,8 +542,9 @@ export function AuthScreen({
           </Link>
 
           <p className={styles.privacyNote}>
-            Your application information remains private and is never
-            shared with universities without your permission.
+            Your profile stays private: it is never shared with universities,
+            employers or authorities. DocRoute is a free beta and not legal
+            advice.
           </p>
         </div>
       </section>

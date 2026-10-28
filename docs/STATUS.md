@@ -50,6 +50,7 @@ form shows Family and Business as "coming soon" without routes.
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
   Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`.
+  Function: `delete_my_account()` (migration `20261028150000`).
 
 ## Verified coverage
 
@@ -266,8 +267,37 @@ still publish only their 2026/27 rules.
 - The previous minv.sk deep link redirects to the ministry homepage and was
   removed.
 
+## Legal status and beta (2026-10-28)
+
+- DocRoute runs as a **free, non-commercial public beta** by a private
+  individual living in Slovakia (no IČO, no payments). `legalInfo` in
+  `src/data/legal.ts` holds the operator name, contact email, minimum
+  account age (16) and document dates; Terms, Privacy, Cookies and the
+  footer read from it. `isCommercial` must stay `false` until a trade
+  licence exists and payment terms are written (a test checks it).
+- Pages: `/terms` (not legal advice / not a legal service under Act
+  586/2003, decisions belong to universities and authorities, no
+  guarantee, Slovak law), `/privacy` (GDPR: data table, processors
+  Supabase, Vercel, Google sign-in, Wikimedia photos; rights; complaint to
+  ÚOOÚ SR), `/cookies` (only strictly necessary items; § 109(8) of Act
+  452/2021, so no consent banner, only a one-time notice).
+- Site-wide footer with the BETA label and legal links; BETA badge in the
+  header; consent line on the sign-in/sign-up screen (Terms, 16+, Privacy).
+- Account page: **Download my data** (JSON of account, profile, saved
+  universities, progress) and **Delete my account** (RPC
+  `delete_my_account`, migration `20261028150000`).
+- No analytics or trackers are loaded; adding any needs a consent banner
+  first (a test checks package.json for common trackers).
+- Before taking money: trade licence (živnosť; study-residence holders may
+  run a trade per podnikajte.sk, confirm with the trade office), payment
+  terms with the 14-day withdrawal waiver for digital content, Vercel Pro
+  (Hobby is non-commercial), and a lawyer's review of the wording.
+
 ## Recently shipped (October 2026)
 
+- PR #15 (2026-10-28): public beta legal basis — Terms, Privacy,
+  Cookies, footer, BETA badge, sign-up consent line, data download and
+  account deletion.
 - PR #14 (2026-10-28): computer science bachelor link and language for
   each Top 100 university, English filter.
 - PR #13 (2026-10-28): Charles University MFF Informatika verified (see
