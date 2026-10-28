@@ -7,6 +7,11 @@
   background: #102a37;
 }
 
+.visual {
+  position: absolute;
+  inset: 0;
+}
+
 .placeholder,
 .photo,
 .overlay {

@@ -72,7 +72,7 @@ export function WaitlistCta({ route }: { route: WaitlistRoute }) {
 
   if (state === "joined") {
     return (
-      <section className={styles.card} aria-live="polite">
+      <section className={styles.card} aria-live="polite" data-print-hide="">
         <p className={styles.done}>
           <Check size={18} aria-hidden="true" />
           You are on the list. We will write to you once if the full route
@@ -87,7 +87,7 @@ export function WaitlistCta({ route }: { route: WaitlistRoute }) {
   }
 
   return (
-    <section className={styles.card} aria-labelledby={`${id}-title`}>
+    <section className={styles.card} aria-labelledby={`${id}-title`} data-print-hide="">
       <p className={styles.eyebrow}>FULL ROUTE · NOT AVAILABLE YET</p>
       <h2 id={`${id}-title`} className={styles.title}>
         Want the full route?

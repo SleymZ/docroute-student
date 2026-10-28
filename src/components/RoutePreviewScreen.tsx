@@ -28,6 +28,7 @@ import {
 import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
+import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { WaitlistCta } from "@/components/WaitlistCta";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import { planCzechiaDeadlines } from "@/lib/residence/czechia";
@@ -213,7 +214,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
 
   return (
     <div className={styles.page}>
-      <nav className={styles.breadcrumb}>
+      <nav className={styles.breadcrumb} data-print-hide="">
         <Link href={universityHref}>
           <ArrowLeft size={16} aria-hidden="true" />
           Back to program
@@ -256,6 +257,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
           />
         </div>
       </header>
+      <PrintNote asOfDate={asOfDate} />
 
       <section className={styles.routeFacts}>
         <article>
@@ -537,15 +539,17 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
             <ArrowUpRight size={17} aria-hidden="true" />
           </a>
 
-          <Link href={universityHref} className={styles.editRoute}>
+          <Link href={universityHref} className={styles.editRoute} data-print-hide="">
             Review requirements
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
 
-          <Link href={editProfileHref} className={styles.editRoute}>
+          <Link href={editProfileHref} className={styles.editRoute} data-print-hide="">
             Edit my profile
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
+
+          <SaveRoutePdf title={`Route to ${program.universityName}`} block />
 
           <p className={styles.disclaimer}>{route.disclaimer}</p>
         </aside>

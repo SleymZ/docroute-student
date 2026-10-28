@@ -35,7 +35,7 @@ const navigation = [
 
 export function Header() {
   return (
-    <header className={styles.header}>
+    <header className={styles.header} data-print-hide="">
       <Link
         href="/"
         className={styles.brand}

@@ -1,0 +1,47 @@
+.button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid light-dark(#809da8, #365966);
+  border-radius: 10px;
+  background: transparent;
+  color: light-dark(#176f7c, #8bdbe8);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:hover {
+  border-color: light-dark(#176f7c, #8bdbe8);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.button[data-block="true"] {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.printNote {
+  display: none;
+}
+
+@media print {
+  .printNote {
+    display: block;
+    margin: 0 0 16px;
+    padding: 8px 10px;
+    border: 1px solid #999999;
+    color: #222222;
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+}
