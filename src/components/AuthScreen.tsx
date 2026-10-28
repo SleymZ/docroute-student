@@ -496,7 +496,15 @@ export function AuthScreen({
               <label className={styles.consent}>
                 <input type="checkbox" required />
                 <span>
-                  I agree to the Terms of Use and Privacy Policy.
+                  I agree to the{" "}
+                  <Link href="/terms" target="_blank">
+                    Terms of Use
+                  </Link>
+                  , have read the{" "}
+                  <Link href="/privacy" target="_blank">
+                    Privacy Policy
+                  </Link>{" "}
+                  and am 16 or older.
                 </span>
               </label>
             )}
