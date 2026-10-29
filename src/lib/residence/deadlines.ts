@@ -405,3 +405,23 @@ export function planWorkResidenceDeadlines({
 
   return { moveDate, latestFilingDate, items, warnings };
 }
+
+// Family and business residence: no Labour Office steps, so the work plan
+// with the graduate path gives the documents, filing and arrival dates.
+export function planPurposeResidenceDeadlines(input: {
+  moveDate: string;
+  today: string;
+  filing: ResidenceFiling;
+  processingDays: number;
+  documentMaxAgeDays: number;
+  reportWorkingDays: number;
+}): ResidenceDeadlinePlan | null {
+  return planWorkResidenceDeadlines({
+    ...input,
+    route: "slovak-graduate",
+    hasJobOffer: true,
+    shortageOccupation: "no",
+    vacancyReportWorkingDays: 0,
+    fileWithinDaysOfConfirmation: 0,
+  });
+}

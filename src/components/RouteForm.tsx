@@ -391,8 +391,8 @@ const purposeIcons: Record<MovePurpose, typeof GraduationCap> = {
   business: Building2,
 };
 
-// Study and work are selectable; family and business show the planned
-// scope without pretending a route exists.
+// Every purpose with checked sources is selectable; a purpose without
+// them would show as "coming soon" without pretending a route exists.
 function PurposeSelector({
   value,
   onChange,
@@ -461,13 +461,15 @@ function PurposeSelector({
           );
         })}
       </div>
-      <p className={styles.purposeNote}>
-        {movePurposes
-          .filter((purpose) => !purpose.available)
-          .map((purpose) => purpose.label)
-          .join(" and ")}{" "}
-        routes are coming soon.
-      </p>
+      {movePurposes.some((purpose) => !purpose.available) && (
+        <p className={styles.purposeNote}>
+          {movePurposes
+            .filter((purpose) => !purpose.available)
+            .map((purpose) => purpose.label)
+            .join(" and ")}{" "}
+          routes are coming soon.
+        </p>
+      )}
     </div>
   );
 }
@@ -489,7 +491,7 @@ export function RouteForm({
     <form className="route-form" onSubmit={onSubmit}>
       <PurposeSelector value={purpose} onChange={onPurposeChange} />
 
-      <div className={purpose === "work" ? "form-grid form-grid-two" : "form-grid"}>
+      <div className={purpose === "study" ? "form-grid" : "form-grid form-grid-two"}>
         <VisualSelect
           label="Documents issued in"
           name="documentCountry"
@@ -502,7 +504,15 @@ export function RouteForm({
         />
 
         <VisualSelect
-          label={purpose === "work" ? "I want to work in" : "I want to study in"}
+          label={
+            purpose === "work"
+              ? "I want to work in"
+              : purpose === "family"
+                ? "I want to join family in"
+                : purpose === "business"
+                  ? "I want to do business in"
+                  : "I want to study in"
+          }
           name="destination"
           value={destination}
           options={destinationOptions}
@@ -529,12 +539,12 @@ export function RouteForm({
       <button
         type="submit"
         className="primary-button route-button"
-        disabled={purpose === "work" && !routeAvailable}
+        disabled={purpose !== "study" && !routeAvailable}
       >
-        {purpose === "work"
+        {purpose !== "study"
           ? routeAvailable
-            ? "Build my work route"
-            : "Work route not verified yet"
+            ? `Build my ${purpose} route`
+            : `${purpose.charAt(0).toUpperCase() + purpose.slice(1)} route not verified yet`
           : routeAvailable
             ? residenceOnly
               ? "Build my residence route"
@@ -556,6 +566,8 @@ export function RouteForm({
               : "Verified route available · Official sources included"
             : purpose === "work"
               ? "Work routes are verified for Slovakia and Czechia so far"
+              : purpose !== "study"
+                ? "Family and business routes cover Slovakia so far"
               : "Personalised route coverage in progress · Public directory available"}
         </span>
       </div>

@@ -55,7 +55,9 @@ export function RoutePlanner() {
     !hasVerifiedProgram &&
     studyResidenceRouteCountries.has(destinationCountryCode);
   const routeAvailable =
-    purpose === "work"
+    purpose === "family" || purpose === "business"
+      ? destinationCountryCode === "SK"
+      : purpose === "work"
       ? workRouteCountries.has(destinationCountryCode)
       : residenceOnly ||
         verifiedPrograms.some(
@@ -69,8 +71,9 @@ export function RoutePlanner() {
       const params = new URLSearchParams(window.location.search);
 
       const requestedDestination = params.get("destination");
-      if (params.get("purpose") === "work") {
-        setPurpose("work");
+      const requestedPurpose = params.get("purpose");
+      if (requestedPurpose === "work" || requestedPurpose === "family" || requestedPurpose === "business") {
+        setPurpose(requestedPurpose);
       }
       const requestedProgram = params.get("program");
 
@@ -103,6 +106,15 @@ export function RoutePlanner() {
       const citizenship = educationCountryCodes[documentCountry];
       if (citizenship) czParams.set("citizenship", citizenship);
       router.push(`/route/czechia?${czParams.toString()}`);
+      return;
+    }
+
+    if (purpose === "family" || purpose === "business") {
+      if (!routeAvailable) return;
+      const purposeParams = new URLSearchParams({ country: "SK" });
+      const citizenship = educationCountryCodes[documentCountry];
+      if (citizenship) purposeParams.set("citizenship", citizenship);
+      router.push(`/route/${purpose}?${purposeParams.toString()}`);
       return;
     }
 
