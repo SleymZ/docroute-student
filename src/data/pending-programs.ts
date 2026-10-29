@@ -42,7 +42,9 @@ export type PendingProgramGroup = {
   countryCode: string;
   city: string;
   category: string;
-  degreeLevel: DegreeLevel;
+  // "long-cycle": medicine and dentistry (combined first and second cycle,
+  // MUDr./MDDr.), entered straight from secondary school like a bachelor's.
+  degreeLevel: DegreeLevel | "long-cycle";
   intake: StudyIntake;
   // "rules-awaiting-approval": a draft for the intake exists;
   // "rules-not-published": nothing for the intake is published yet;
