@@ -27,6 +27,7 @@ import { AdmissionSources } from "@/components/AdmissionSources";
 import { PendingPrograms } from "@/components/PendingPrograms";
 import {
   findPendingProgramGroups,
+  isCurrentReference,
   pendingStatusLabel,
 } from "@/data/pending-programs";
 import catalog from "@/data/universities.json";
@@ -208,9 +209,8 @@ export default async function UniversityPage({
   const pendingGroups = verifiedProgram
     ? []
     : findPendingProgramGroups({ universityId: university.id });
-  // Last year's rules fill the three requirement cards, labelled as such.
-  const previousOverview = pendingGroups.find((group) => group.previousCycle)
-    ?.previousCycle;
+  // Reference rules fill the three requirement cards, one row per faculty.
+  const referenceGroups = pendingGroups.filter((group) => group.referenceRules);
   const pendingProgramCount = pendingGroups.reduce(
     (count, group) => count + group.programs.length,
     0,
@@ -800,33 +800,48 @@ export default async function UniversityPage({
                 <PendingPrograms
                   groups={pendingGroups}
                   heading="Programs coming soon"
-                  previousCycleOpen
+                  referenceOpen
                 />
 
-                {previousOverview ? (
-                  <div
-                    className={`${styles.requirementPreview} ${styles.requirementPreviewFilled}`}
-                  >
-                    {(
-                      [
-                        ["01", "Application documents", previousOverview.overview.applicationDocuments],
-                        ["02", "Entrance requirements", previousOverview.overview.entranceRequirements],
-                        ["03", "After admission", previousOverview.overview.afterAdmission],
-                      ] as const
-                    ).map(([index, title, items]) => (
-                      <div key={index}>
-                        <span>
-                          {index} · {previousOverview.intake}, for orientation
-                        </span>
-                        <p>{title}</p>
-                        <ul>
-                          {items.map((item) => (
-                            <li key={item}>{item}</li>
+                {referenceGroups.length > 0 ? (
+                  referenceGroups.map((group) => {
+                    const rules = group.referenceRules!;
+                    const label = isCurrentReference(group)
+                      ? `${rules.intake}, published rules`
+                      : `${rules.intake}, for orientation`;
+                    return (
+                      <div key={group.id} className={styles.requirementGroup}>
+                        {referenceGroups.length > 1 && (
+                          <p className={styles.requirementGroupTitle}>
+                            {group.faculty} · {group.category}
+                          </p>
+                        )}
+                        <div
+                          className={`${styles.requirementPreview} ${styles.requirementPreviewFilled}`}
+                        >
+                          {(
+                            [
+                              ["01", "Application documents", rules.overview.applicationDocuments],
+                              ["02", "Entrance requirements", rules.overview.entranceRequirements],
+                              ["03", "After admission", rules.overview.afterAdmission],
+                            ] as const
+                          ).map(([index, title, items]) => (
+                            <div key={index}>
+                              <span>
+                                {index} · {label}
+                              </span>
+                              <p>{title}</p>
+                              <ul>
+                                {items.map((item) => (
+                                  <li key={item}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
                           ))}
-                        </ul>
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })
                 ) : (
                   <div className={styles.requirementPreview}>
                     <div>

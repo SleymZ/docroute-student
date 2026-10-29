@@ -20,7 +20,10 @@ import {
 
 import { Header } from "@/components/Header";
 import { movePurposes } from "@/data/move-purposes";
-import { pendingProgramGroups } from "@/data/pending-programs";
+import {
+  formatPendingDegree,
+  pendingProgramGroups,
+} from "@/data/pending-programs";
 import { czechiaResidenceRules } from "@/data/czechia-residence";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import {
@@ -241,15 +244,18 @@ export default function HowItWorksPage() {
             <article className={styles.labelCard}>
               <span className={`${styles.labelBadge} ${styles.badgeComing}`}>
                 <Clock3 size={14} aria-hidden="true" />
-                Rules awaiting approval / not published yet
+                Coming soon
               </span>
               <p>
                 The faculty has drafted rules for the intake but not approved
-                them, or has not published anything for the intake yet. The programs are listed so
+                them, has not published anything for the intake yet, or has
+                published rules that DocRoute has not turned into a route yet. The programs are listed so
                 you can plan ahead; no checklist is built from a draft. Where
                 the faculty published approved rules for the previous intake,
-                they are shown as &quot;Last year&apos;s rules&quot;, for
-                orientation only and never used for matching.
+                they are shown as &quot;Last year&apos;s rules&quot;; rules
+                already published for the intake are summarised as
+                &quot;Published rules&quot;. Both are for reference only and
+                never used for matching.
               </p>
             </article>
             <article className={styles.labelCard}>
@@ -335,7 +341,7 @@ export default function HowItWorksPage() {
                       {group.universityName}, {group.faculty}
                     </strong>
                     <span>
-                      {group.city} · {formatDegreeLevel(group.degreeLevel)} ·{" "}
+                      {group.city} · {formatPendingDegree(group.degreeLevel)} ·{" "}
                       {group.category} · {group.intake} ·{" "}
                       {group.programs.map((program) => program.programName).join(", ")}
                     </span>
