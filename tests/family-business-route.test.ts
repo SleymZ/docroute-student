@@ -184,7 +184,18 @@ test("every task cites a source the route lists", () => {
 });
 
 test("the business route never cites the family-reunification page", () => {
-  for (const status of ["non-eu-passport-no-residence", "destination-residence"] as const) {
+  for (const status of ["non-eu-passport-no-residence", "destination-study-residence"] as const) {
     assert.doesNotMatch(text(buildSlovakiaBusinessRoute(business({ currentResidenceStatus: status })).stages), /iom-family-reunification/);
   }
+});
+
+test("filing warnings: family on a national visa, business from family residence", () => {
+  const visa = buildSlovakiaFamilyRoute(family({ currentResidenceStatus: "destination-national-visa" }));
+  const visaTask = visa.stages.flatMap((s) => s.tasks).find((t) => t.id === "residence-submission-place")!;
+  assert.equal(visaTask.status, "attention");
+  assert.match(visaTask.description, /different purpose/);
+  const change = buildSlovakiaBusinessRoute(business({ currentResidenceStatus: "destination-residence" }));
+  const changeTask = change.stages.flatMap((s) => s.tasks).find((t) => t.id === "residence-submission-place")!;
+  assert.equal(changeTask.status, "attention");
+  assert.match(changeTask.description, /24 months/);
 });

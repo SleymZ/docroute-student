@@ -282,8 +282,36 @@ function documentsTasks(feeLine: string, extra: RouteTask[], feeSource: string, 
   ];
 }
 
-function filingTask(filing: ResidenceFiling, businessFirstApplication: boolean): RouteTask {
+function filingTask(
+  filing: ResidenceFiling,
+  businessFirstApplication: boolean,
+  status?: CurrentResidenceStatus,
+): RouteTask {
   const purposeSource = businessFirstApplication ? "iom-business-by-residence" : "iom-family-reunification";
+  // A national visa issued for another residence purpose does not allow an
+  // in-country application for family reunification (only for study,
+  // special activity or research).
+  if (!businessFirstApplication && status === "destination-national-visa") {
+    return {
+      id: "residence-submission-place",
+      title: "Check whether you may file in Slovakia",
+      description:
+        "With a Slovak national visa you may file at the Foreign Police, unless the visa was issued in connection with residence for a different purpose; then apply at the Slovak embassy instead. Check what your visa was issued for.",
+      status: "attention",
+      sourceIds: ["iom-temporary-residence-application", purposeSource],
+    };
+  }
+  // Change of purpose to business from Slovak temporary residence: not
+  // possible from family-reunification residence within 24 months.
+  if (businessFirstApplication && status === "destination-residence") {
+    return {
+      id: "residence-submission-place",
+      title: "File the change of purpose at the Foreign Police",
+      description: `A change of purpose from Slovak temporary residence is filed at the Foreign Police, by the last day of your current residence. If your current residence is for family reunification, you may apply for business only ${rules.family.noBusinessChangeMonths} months after it was granted; until then, keep it and you can still run a business on it.`,
+      status: "attention",
+      sourceIds: ["iom-temporary-residence-application", "iom-family-reunification", purposeSource],
+    };
+  }
   const description =
     filing === "in-country"
       ? "Book an appointment online and apply in person at the Foreign Police department in Slovakia."
@@ -517,7 +545,7 @@ export function buildSlovakiaFamilyRoute(profile: FamilyProfile): PurposeRoute<F
         title: "File the family-reunification application",
         description: `The Foreign Police decide within ${processingDays} days.`,
         timing: "At least 90 days before you need the permit",
-        tasks: [filingTask(filing, false)],
+        tasks: [filingTask(filing, false, profile.currentResidenceStatus)],
       },
       {
         id: "after-approval",
@@ -653,7 +681,7 @@ export function buildSlovakiaBusinessRoute(profile: BusinessProfile): PurposeRou
         title: "File the business residence application",
         description: `Decided within ${rules.processingDays} days.`,
         timing: "At least 90 days before you need the permit",
-        tasks: [filingTask(filing, true)],
+        tasks: [filingTask(filing, true, profile.currentResidenceStatus)],
       },
       {
         id: "after-approval",
