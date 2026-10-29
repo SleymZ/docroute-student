@@ -60,7 +60,7 @@ form shows Family and Business as "coming soon" without routes.
 | Admission | Slovakia · Computer Science · Bachelor · 2027/28 · UNIZA FRI, 4 programs (`src/data/verified-programs.ts`) | 2026-10-19 |
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
 | Admission | Czechia · Computer Science · Bachelor · 2027/28 · Charles University MFF, Informatika (Czech-taught), policy `cuni-mff-bachelor-2027` | 2026-10-28 |
-| Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed with last year's (2026/27) approved rules for orientation; no match, checklist or route | 2026-10-29 |
+| Coming soon (not verified) | Computer Science · Bachelor · 2027/28 (`src/data/pending-programs.ts`): Comenius FMFI (4 programs, rules awaiting approval), STU FIIT (Informatika) and TUKE FEI (5 programs), both "rules not published yet". Listed with last year's (2026/27) approved rules for orientation; no match, checklist or route | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
@@ -107,8 +107,18 @@ appear on https://fmph.uniba.sk/studium/prijimacie-konanie/bakalarske-studium/
 competition criteria differ completely from UNIZA's) and delete the
 pending entry; a test fails if both exist.
 
-Other Slovak computing faculties checked on 2026-10-23 (STU FIIT, TUKE FEI)
-still publish only their 2026/27 rules.
+Other Slovak computing faculties (PR #22, checked 2026-10-29): STU FIIT
+and TUKE FEI still publish only their 2026/27 bachelor conditions (STU has
+a university-wide 2027/28 admissions page, without FIIT rules). Both are
+listed as "Rules not published yet" (`status: "rules-not-published"`) with
+their 2026/27 rules: FIIT regulation 4/2025 of 18 Nov 2025 (better of
+external maturita maths percentile or faculty exam, competition points,
+3-year auto-admit 70+/reject <50, 4-year 50+/<35, Slovak B2 via ICV STU,
+early exam for third-year pupils) and FEI TUKE 2026/27 conditions (deadline
+30 Apr 2026, €20, no exam, points for grades/competitions/school type,
+Slovak A1, planned intakes). FIIT's English-taught Informatics (fee-paying)
+is not covered. The FIIT bachelor admission page and STU's schedule PDF
+could not be opened by the tools.
 
 ## Top 100 universities (checked 2026-10-27)
 
@@ -370,6 +380,12 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #22 (2026-10-29): STU FIIT and TUKE FEI computing bachelors added as
+  coming soon with their 2026/27 rules; new status "Rules not published
+  yet" shown on cards, the university page and How it works. On the
+  university page the three requirement cards (application documents,
+  entrance requirements, after admission) are filled from last year's
+  rules (`previousCycle.overview`), labelled "2026/27, for orientation".
 - PR #21 (2026-10-29): last year's approved rules for "coming soon"
   programs, starting with Comenius FMFI 2026/27 (deadline, fee, no entrance
   exam, grade/percentile thresholds per program, SCIO for non-EU schools,
@@ -490,7 +506,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (183 tests on 2026-10-29).
+- Unit tests: `npm test` (185 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -538,8 +554,8 @@ text, which is unchanged from before).
 5. Update the Top 100 list when the Leiden Ranking 2026 is published
    (4 Nov 2026) and recheck deadlines once universities publish 2027/28
    rules.
-6. Add more "coming soon" faculties with last year's rules (STU FIIT,
-   TUKE FEI, then other fields such as medicine in English) while their
-   2027/28 rules are not out.
+6. Add more "coming soon" faculties with last year's rules (next: other
+   fields such as medicine in English, Czech computing faculties) while
+   their 2027/28 rules are not out. Watch FIIT/FEI for 2027/28 rules.
 7. Define family or business purposes for Slovakia with official sources
    before enabling them in the form.

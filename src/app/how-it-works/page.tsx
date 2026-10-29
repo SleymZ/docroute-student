@@ -241,11 +241,11 @@ export default function HowItWorksPage() {
             <article className={styles.labelCard}>
               <span className={`${styles.labelBadge} ${styles.badgeComing}`}>
                 <Clock3 size={14} aria-hidden="true" />
-                Rules awaiting approval
+                Rules awaiting approval / not published yet
               </span>
               <p>
-                The faculty has announced or drafted rules for the intake, but
-                the final version is not published. The programs are listed so
+                The faculty has drafted rules for the intake but not approved
+                them, or has not published anything for the intake yet. The programs are listed so
                 you can plan ahead; no checklist is built from a draft. Where
                 the faculty published approved rules for the previous intake,
                 they are shown as &quot;Last year&apos;s rules&quot;, for

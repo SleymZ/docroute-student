@@ -2,7 +2,10 @@ import Link from "next/link";
 
 import { ArrowRight, Clock3, ExternalLink, History } from "lucide-react";
 
-import type { PendingProgramGroup } from "@/data/pending-programs";
+import {
+  pendingStatusLabel,
+  type PendingProgramGroup,
+} from "@/data/pending-programs";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { formatDegreeLevel } from "@/lib/profile-options";
 
@@ -55,7 +58,9 @@ export function PendingPrograms({
                 {group.faculty} · {group.city}
               </span>
             </div>
-            <span className={styles.badge}>Rules awaiting approval</span>
+            <span className={styles.badge}>
+              {pendingStatusLabel(group.status)}
+            </span>
           </div>
 
           <p className={styles.scope}>

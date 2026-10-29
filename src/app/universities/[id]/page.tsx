@@ -25,7 +25,10 @@ import { Header } from "@/components/Header";
 import { UniversityImage } from "@/components/UniversityImage";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { PendingPrograms } from "@/components/PendingPrograms";
-import { findPendingProgramGroups } from "@/data/pending-programs";
+import {
+  findPendingProgramGroups,
+  pendingStatusLabel,
+} from "@/data/pending-programs";
 import catalog from "@/data/universities.json";
 import { topUniversities } from "@/data/top-universities";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
@@ -205,6 +208,9 @@ export default async function UniversityPage({
   const pendingGroups = verifiedProgram
     ? []
     : findPendingProgramGroups({ universityId: university.id });
+  // Last year's rules fill the three requirement cards, labelled as such.
+  const previousOverview = pendingGroups.find((group) => group.previousCycle)
+    ?.previousCycle;
   const pendingProgramCount = pendingGroups.reduce(
     (count, group) => count + group.programs.length,
     0,
@@ -256,7 +262,7 @@ export default async function UniversityPage({
     : verifiedProgram
       ? "Official program information"
       : pendingGroups.length > 0
-        ? "Rules awaiting approval"
+        ? pendingStatusLabel(pendingGroups[0].status)
         : "Verification pending";
 
   return (
@@ -797,20 +803,46 @@ export default async function UniversityPage({
                   previousCycleOpen
                 />
 
-                <div className={styles.requirementPreview}>
-                  <div>
-                    <span>01</span>
-                    <p>Application documents</p>
+                {previousOverview ? (
+                  <div
+                    className={`${styles.requirementPreview} ${styles.requirementPreviewFilled}`}
+                  >
+                    {(
+                      [
+                        ["01", "Application documents", previousOverview.overview.applicationDocuments],
+                        ["02", "Entrance requirements", previousOverview.overview.entranceRequirements],
+                        ["03", "After admission", previousOverview.overview.afterAdmission],
+                      ] as const
+                    ).map(([index, title, items]) => (
+                      <div key={index}>
+                        <span>
+                          {index} · {previousOverview.intake}, for orientation
+                        </span>
+                        <p>{title}</p>
+                        <ul>
+                          {items.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
-                  <div>
-                    <span>02</span>
-                    <p>Entrance requirements</p>
+                ) : (
+                  <div className={styles.requirementPreview}>
+                    <div>
+                      <span>01</span>
+                      <p>Application documents</p>
+                    </div>
+                    <div>
+                      <span>02</span>
+                      <p>Entrance requirements</p>
+                    </div>
+                    <div>
+                      <span>03</span>
+                      <p>Documents after admission</p>
+                    </div>
                   </div>
-                  <div>
-                    <span>03</span>
-                    <p>Documents after admission</p>
-                  </div>
-                </div>
+                )}
               </>
             )}
           </section>
