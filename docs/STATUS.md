@@ -396,6 +396,12 @@ could not be opened by the tools.
   VUT sources are on vut.cz (the catalog still says vutbr.cz; the test
   allows this alias). Not checked: FIT VUT fee and the directive PDF, MU
   fee and Czech-language rules (pages not reachable or silent).
+  Results pages no longer show the separate "Coming soon" block (owner
+  request): those universities are ordinary cards in the list with a
+  "Coming soon" badge (exact status in the tooltip) and a line saying
+  whether the next intake's rules are out; the rules summary stays on the
+  university page. The block is still shown when a route profile has no
+  verified match, and on the university page.
 
 - PR #23 (2026-10-29): Slovak medicine (LF UK Bratislava, JLF UK Martin
   with published 2027/28 rules, UPJŠ LF Košice) and TUM Informatics as
