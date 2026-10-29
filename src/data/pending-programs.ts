@@ -18,6 +18,14 @@ export type PreviousCycleRules = {
   approvedNote: string;
   facts: ReadonlyArray<{ label: string; value: string }>;
   programRules: ReadonlyArray<{ localProgramName: string; rule: string }>;
+  // Fills the three requirement cards on the university page (application
+  // documents, entrance requirements, after admission) with the same
+  // "last year, for orientation" label.
+  overview: {
+    applicationDocuments: readonly string[];
+    entranceRequirements: readonly string[];
+    afterAdmission: readonly string[];
+  };
   sources: OfficialSource[];
   checkedAt: string;
 };
@@ -160,6 +168,23 @@ export const pendingProgramGroups: readonly PendingProgramGroup[] = [
           rule: "Grade 1 in one profile subject in every year, or maths percentile 70+. Planned intake 15 (with the 4-year variant).",
         },
       ],
+      overview: {
+        applicationDocuments: [
+          "Application for up to three programs (electronic €15, paper €33), by 31 March 2026 (extended to 12 April).",
+          "Report cards, maturita or test results and olympiad diplomas: upload by 31 March or deliver by 30 April 2026.",
+          "School outside Slovakia/Czechia: official translation plus recognition stamp or nostrification decision, on paper.",
+        ],
+        entranceRequirements: [
+          "No entrance exam: olympiads, grade 1 in a profile subject in every year, or a maths percentile (Computer Science 60+, Applied Informatics 50+, Data Science 80+, Bioinformatics 70+).",
+          "School outside the EU: SCIO maths percentile with the same thresholds.",
+          "Slovak at least B1 (a B1 certificate recommended without a Slovak or Czech maturita).",
+        ],
+        afterAdmission: [
+          "Decision by post, usually in June.",
+          "Electronic enrolment form in AIS2 by 6 July 2026, photo for the student card, card fee (ISIC €26, other card €13).",
+          "Dormitory request 20–31 July 2026.",
+        ],
+      },
       sources: [
         {
           id: "fmfi-conditions-2026-27",
@@ -245,6 +270,22 @@ export const pendingProgramGroups: readonly PendingProgramGroup[] = [
           rule: "3-year study: admitted automatically with 70+ points, rejected below 50; in between the admissions committee ranks applicants. 4-year study: 50+ admitted, below 35 rejected. The dean could lower these thresholds. An English-taught Informatics bachelor also exists (fee-paying; not covered here).",
         },
       ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application in the STU information system (paper posted by 31 March 2026); admission fee (amount not in the conditions).",
+          "Certified copy of the maturita certificate and external maturita results in maths and Slovak or Czech, if taken; olympiad diplomas optional.",
+          "Without a Slovak or Czech maturita: Slovak B2 assessment from the STU language centre. School abroad: recognition decision.",
+        ],
+        entranceRequirements: [
+          "Points = the better of the external maturita maths percentile or the faculty's exam percentile, plus competition points (up to 90).",
+          "3-year study: 70+ admitted, below 50 rejected; 4-year study: 50+ admitted, below 35 rejected; in between the committee ranks.",
+        ],
+        afterAdmission: [
+          "Admission can be conditional until the maturita or Slovak B2 is proven.",
+          "A review of the dean's decision can be requested within 8 days of delivery.",
+          "Enrolment steps are not in the conditions: check the faculty's site.",
+        ],
+      },
       sources: [
         {
           id: "fiit-conditions-2026-27",
@@ -339,6 +380,20 @@ export const pendingProgramGroups: readonly PendingProgramGroup[] = [
           rule: "3 years, planned intake 140; in 2026/27 it was still being prepared for accreditation.",
         },
       ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application only, by 30 April 2026; fee €20 by bank transfer.",
+          "School outside the EU: apostille, sworn Slovak translation and recognition of the certificate.",
+          "Proof of Slovak at least A1 (maturita, language school or TUKE online course), certificate by 7 June 2026.",
+        ],
+        entranceRequirements: [
+          "No entrance exam: ranking by points for grade average (up to 60), olympiads and competitions, and school type (up to 30).",
+          "Admissions committee by 15 June 2026; the dean decides.",
+        ],
+        afterAdmission: [
+          "Enrolment dates and the enrolment fee are in a separate faculty document (not checked); the fee is not refunded if you do not enrol.",
+        ],
+      },
       sources: [
         {
           id: "tuke-fei-conditions-2026-27",

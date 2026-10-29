@@ -164,3 +164,14 @@ test("each group carries a known status and unique ids", () => {
     ids.add(group.id);
   }
 });
+
+test("last year's rules fill all three requirement cards", () => {
+  for (const group of pendingProgramGroups) {
+    const overview = group.previousCycle?.overview;
+    if (!group.previousCycle) continue;
+    assert.ok(overview, `${group.id} has no overview`);
+    assert.ok(overview.applicationDocuments.length > 0);
+    assert.ok(overview.entranceRequirements.length > 0);
+    assert.ok(overview.afterAdmission.length > 0);
+  }
+});

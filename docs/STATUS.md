@@ -382,7 +382,10 @@ could not be opened by the tools.
 
 - PR #22 (2026-10-29): STU FIIT and TUKE FEI computing bachelors added as
   coming soon with their 2026/27 rules; new status "Rules not published
-  yet" shown on cards, the university page and How it works.
+  yet" shown on cards, the university page and How it works. On the
+  university page the three requirement cards (application documents,
+  entrance requirements, after admission) are filled from last year's
+  rules (`previousCycle.overview`), labelled "2026/27, for orientation".
 - PR #21 (2026-10-29): last year's approved rules for "coming soon"
   programs, starting with Comenius FMFI 2026/27 (deadline, fee, no entrance
   exam, grade/percentile thresholds per program, SCIO for non-EU schools,
@@ -503,7 +506,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (184 tests on 2026-10-29).
+- Unit tests: `npm test` (185 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

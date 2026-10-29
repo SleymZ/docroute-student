@@ -514,6 +514,31 @@
   line-height: 1.5;
 }
 
+.requirementPreviewFilled div {
+  border-style: solid;
+}
+
+.requirementPreviewFilled span {
+  font-size: 12px;
+}
+
+.requirementPreviewFilled p {
+  margin-top: 10px;
+  color: light-dark(#22211d, #f5f3ee);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.requirementPreviewFilled ul {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 16px;
+  color: light-dark(#38474d, #c2d3db);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .routePanel {
   position: sticky;
   top: 20px;
