@@ -23,7 +23,10 @@ import { PendingPrograms } from "./PendingPrograms";
 import { UniversityImage } from "./UniversityImage";
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
-import { findPendingProgramGroups } from "@/data/pending-programs";
+import {
+  findPendingProgramGroups,
+  pendingStatusLabel,
+} from "@/data/pending-programs";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -124,7 +127,10 @@ export function UniversityResults({
   );
 
   const pendingHosts = useMemo(
-    () => new Set(pendingGroups.map((group) => group.universityHost)),
+    () =>
+      new Map(
+        pendingGroups.map((group) => [group.universityHost, group.status] as const),
+      ),
     [pendingGroups],
   );
 
@@ -173,7 +179,7 @@ export function UniversityResults({
         return {
           ...university,
           matchingPrograms,
-          pending: pendingHosts.has(host),
+          pending: pendingHosts.get(host) ?? null,
           verified:
             mode === "route"
               ? matchingPrograms.length > 0
@@ -198,7 +204,7 @@ export function UniversityResults({
       .sort(
         (a, b) =>
           Number(b.verified) - Number(a.verified) ||
-          Number(b.pending) - Number(a.pending) ||
+          Number(Boolean(b.pending)) - Number(Boolean(a.pending)) ||
           a.name.localeCompare(b.name),
       );
   }, [
@@ -621,7 +627,7 @@ export function UniversityResults({
                       </span>
                     ) : university.pending ? (
                       <span className={styles.pendingBadge}>
-                        Rules awaiting approval
+                        {pendingStatusLabel(university.pending)}
                       </span>
                     ) : (
                       <span className={styles.pendingBadge}>
@@ -753,7 +759,7 @@ export function UniversityResults({
                   ) : (
                     <p className={styles.pendingText}>
                       {university.pending
-                        ? `${selectedProgram} programs here are listed as coming soon: the approved admission rules for the next intake are not published yet, so no personalised requirements are shown.`
+                        ? `${selectedProgram} programs here are listed as coming soon: the approved admission rules for the next intake are not published yet, so no personalised requirements are shown. Last year's rules are shown for orientation in the Coming soon block.`
                         : mode === "route" && profile
                         ? `We have not yet verified a ${formatDegreeLevel(
                             profile.degreeLevel,

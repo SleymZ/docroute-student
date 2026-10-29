@@ -88,7 +88,7 @@ test("pending groups cite official sources with a check date", () => {
   }
 });
 
-test("Comenius computing programs are listed for the exact scope only", () => {
+test("Slovak computing faculties are listed for the exact scope only", () => {
   const exact = findPendingProgramGroups({
     countryCode: "SK",
     category: "Computer Science",
@@ -97,7 +97,11 @@ test("Comenius computing programs are listed for the exact scope only", () => {
   });
   assert.deepEqual(
     exact.map((group) => group.id),
-    ["uniba-fmfi-computing-bsc-2027"],
+    [
+      "uniba-fmfi-computing-bsc-2027",
+      "stu-fiit-computing-bsc-2027",
+      "tuke-fei-computing-bsc-2027",
+    ],
   );
   assert.deepEqual(
     findPendingProgramGroups({
@@ -150,4 +154,13 @@ test("Comenius FMFI shows its approved 2026/27 rules for orientation", () => {
     (item) => item.localProgramName === "Informatika",
   );
   assert.match(informatika?.rule ?? "", /percentile 60\+/);
+});
+
+test("each group carries a known status and unique ids", () => {
+  const ids = new Set<string>();
+  for (const group of pendingProgramGroups) {
+    assert.ok(["rules-awaiting-approval", "rules-not-published"].includes(group.status));
+    assert.ok(!ids.has(group.id), `duplicate ${group.id}`);
+    ids.add(group.id);
+  }
 });

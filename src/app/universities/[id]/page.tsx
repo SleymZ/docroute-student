@@ -25,7 +25,10 @@ import { Header } from "@/components/Header";
 import { UniversityImage } from "@/components/UniversityImage";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { PendingPrograms } from "@/components/PendingPrograms";
-import { findPendingProgramGroups } from "@/data/pending-programs";
+import {
+  findPendingProgramGroups,
+  pendingStatusLabel,
+} from "@/data/pending-programs";
 import catalog from "@/data/universities.json";
 import { topUniversities } from "@/data/top-universities";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
@@ -256,7 +259,7 @@ export default async function UniversityPage({
     : verifiedProgram
       ? "Official program information"
       : pendingGroups.length > 0
-        ? "Rules awaiting approval"
+        ? pendingStatusLabel(pendingGroups[0].status)
         : "Verification pending";
 
   return (
