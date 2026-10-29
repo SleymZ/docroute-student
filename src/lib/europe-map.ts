@@ -58,14 +58,15 @@ const destinationById: Partial<Record<string, Destination>> = {
  * Featured countries stay highlighted even while another
  * European country is being explored. Slovakia (study and work)
  * and Czechia (residence for study and work) have verified routes;
- * Germany is highlighted for its "coming soon" TUM listing (no
- * residence route yet). Other countries return here once their
+ * Germany and Austria are highlighted for their "coming soon"
+ * listings (no residence route yet). Other countries return here once their
  * official rules are collected.
  */
 const highlightedCountryIds = new Set([
   "703", // Slovakia
   "203", // Czechia (residence routes for study and work)
-  "276", // Germany (TUM Informatics listed as coming soon; owner decision)
+  "276", // Germany (TUM and KIT listed as coming soon; owner decision)
+  "040", // Austria (TU Wien, Uni Wien, JKU, MedAT listed as coming soon; owner decision)
 ]);
 
 /*

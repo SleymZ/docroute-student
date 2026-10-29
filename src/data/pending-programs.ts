@@ -1090,6 +1090,437 @@ export const pendingProgramGroups: readonly PendingProgramGroup[] = [
       checkedAt: "2026-10-29",
     },
   },
+  {
+    id: "tuwien-informatics-bsc-2027",
+    universityId: "4d666144f4e39ea3f3ae",
+    universityHost: "tuwien.ac.at",
+    universityName: "TU Wien",
+    faculty: "Faculty of Informatics",
+    country: "Austria",
+    countryCode: "AT",
+    city: "Vienna",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "On 29 October 2026 TU Wien listed dates only for winter 2026/27; the 2027 admission dates are not out yet. DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+    programs: [{ programName: "Informatics", localProgramName: "Informatik" }],
+    sources: [
+      {
+        id: "tuwien-academic-calendar",
+        title: "Academic calendar: admission deadlines (lists 2026/27)",
+        publisher: "TU Wien",
+        url: "https://www.tuwien.at/en/studies/admission/academic-calendar",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote:
+        "TU Wien's admission pages for winter semester 2026/27 (news of 27 February 2026).",
+      facts: [
+        {
+          label: "Admission procedure",
+          value:
+            "Two stages for Informatics, Computer Engineering and Business Informatics: pre-registration in TISS with an online self-assessment and fee payment from 1 April to 4 May 2026, then an on-site ranking test in Vienna on 13 July 2026 (once a year, no alternative date). 670 places in the Informatics bachelor.",
+        },
+        {
+          label: "Application deadlines",
+          value:
+            "Non-EU/EEA applicants: complete application 16 January – 15 July 2026, no late applications. EU/EEA applicants without an equivalent certificate: early February – end of July 2026.",
+        },
+        {
+          label: "Language",
+          value:
+            "Taught in German: A2 when applying and C1 for admission for non-native speakers; at least B2 recommended because the test is in German.",
+        },
+        {
+          label: "Tuition",
+          value:
+            "Non-EU nationals €726.72 per semester from the first semester, plus the students' union (ÖH) fee; EU/EEA citizens pay no tuition for the standard duration plus two semesters (ÖH fee only). Ukrainian citizens are exempt.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Informatik", rule: "670 places; ranking test only once a year." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Pre-registration in TISS, self-assessment and fee by 4 May 2026.",
+          "Non-EU/EEA: full application 16 Jan – 15 Jul 2026.",
+          "German: A2 to apply, C1 for admission.",
+        ],
+        entranceRequirements: [
+          "On-site ranking test in German on 13 July 2026; 670 places.",
+        ],
+        afterAdmission: [
+          "Enrolment with the admission letter by 31 October 2026.",
+          "Tuition €726.72 per semester for non-EU nationals, plus ÖH fee.",
+        ],
+      },
+      sources: [
+        {
+          id: "tuwien-entrance-exam",
+          title: "Entrance exam for bachelor's programmes (2026/27)",
+          publisher: "TU Wien",
+          url: "https://www.tuwien.at/en/studies/admission/bachelors-programmes/entrance-exam",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "tuwien-cs-procedure-2026",
+          title: "News: selection procedure for computer science, 27 February 2026",
+          publisher: "TU Wien",
+          url: "https://www.tuwien.at/en/tu-wien/news/news/schon-gehoert-wichtige-aenderungen-beim-aufnahmeverfahren-fuer-informatik-architektur-und-raumplanung",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "tuwien-calendar-2026",
+          title: "Academic calendar: deadlines for winter semester 2026/27",
+          publisher: "TU Wien",
+          url: "https://www.tuwien.at/en/studies/admission/academic-calendar",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "tuwien-tuition",
+          title: "Tuition fee",
+          publisher: "TU Wien",
+          url: "https://www.tuwien.at/en/studies/admission/students-union-fee-and-tuition-fee/tuition-fee",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "univie-informatics-bsc-2027",
+    universityId: "32ffe57248ac6dc925b6",
+    universityHost: "univie.ac.at",
+    universityName: "University of Vienna",
+    faculty: "Faculty of Computer Science",
+    country: "Austria",
+    countryCode: "AT",
+    city: "Vienna",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "On 29 October 2026 the admission procedure page showed the 2026 dates. DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+    programs: [{ programName: "Computer Science", localProgramName: "Informatik" }],
+    sources: [
+      {
+        id: "univie-informatik-procedure",
+        title: "Informatik (bachelor): admission procedure",
+        publisher: "University of Vienna",
+        url: "https://aufnahmeverfahren.univie.ac.at/informatik",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "The University of Vienna's admission procedure page with the 2026 dates.",
+      facts: [
+        {
+          label: "Admission procedure",
+          value:
+            "Registration 2 March – 4 May 2026, fee €50. Written test on 13 July 2026 in Vienna (2 hours, in German with some parts in English, no substitute date). 415 places shared with Business Informatics. Once a year.",
+        },
+        {
+          label: "Language",
+          value: "German is required for admission (details on the university's German-skills page).",
+        },
+        {
+          label: "Help",
+          value: "Free test literature, sample tasks and an online self-assessment on the procedure page.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Informatik", rule: "415 places together with Wirtschaftsinformatik." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Registration for the admission procedure 2 March – 4 May 2026; fee €50.",
+          "Application for admission with your school certificate (separate pages for EU/EEA and non-EU certificates).",
+        ],
+        entranceRequirements: [
+          "Written test 13 July 2026 (German, partly English); 415 places.",
+          "German skills required.",
+        ],
+        afterAdmission: [
+          "Admission and enrolment steps follow the test result; check the university's admission pages.",
+        ],
+      },
+      sources: [
+        {
+          id: "univie-informatik-procedure-2026",
+          title: "Informatik (bachelor): admission procedure, 2026 dates",
+          publisher: "University of Vienna",
+          url: "https://aufnahmeverfahren.univie.ac.at/informatik",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "jku-ai-bsc-2027",
+    universityId: "aea8edad9af8fb5ed389",
+    universityHost: "jku.at",
+    universityName: "Johannes Kepler University Linz",
+    faculty: "Faculty of Engineering and Natural Sciences",
+    country: "Austria",
+    countryCode: "AT",
+    city: "Linz",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "Taught in English. On 29 October 2026 JKU listed deadlines only for winter 2026/27. DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+    programs: [{ programName: "Artificial Intelligence (English-taught)", localProgramName: "Artificial Intelligence" }],
+    sources: [
+      {
+        id: "jku-dates-deadlines",
+        title: "Dates & deadlines (lists winter 2026/27)",
+        publisher: "Johannes Kepler University Linz",
+        url: "https://www.jku.at/en/degree-programs/students/dates-deadlines/",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "JKU's programme page and dates for winter semester 2026/27.",
+      facts: [
+        {
+          label: "Programme",
+          value: "Bachelor of Science in Artificial Intelligence, 6 semesters, taught in English.",
+        },
+        {
+          label: "Requirements",
+          value:
+            "A higher education entrance qualification (e.g. Matura) and English at B2. The programme page mentions no entrance exam or place limit.",
+        },
+        {
+          label: "Admission period",
+          value:
+            "General period 8 July – 5 September 2026 (in special cases until 31 October). Special deadlines may apply depending on your school certificate: check with the Admissions Office.",
+        },
+        {
+          label: "Fees",
+          value: "Tuition (where it applies) and the students' union fee; amounts are not on the programme page.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Artificial Intelligence", rule: "English-taught; no entrance exam mentioned." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Online application at JKU; general admission period 8 Jul – 5 Sep 2026.",
+          "School-leaving certificate and English B2 proof.",
+        ],
+        entranceRequirements: [
+          "No entrance exam or place limit mentioned on the programme page.",
+        ],
+        afterAdmission: [
+          "Pay tuition (if it applies) and the students' union fee; ask the Admissions Office about special deadlines for foreign certificates.",
+        ],
+      },
+      sources: [
+        {
+          id: "jku-ai-programme",
+          title: "Artificial Intelligence, bachelor's degree",
+          publisher: "Johannes Kepler University Linz",
+          url: "https://www.jku.at/en/degree-programs/types-of-degree-programs/bachelors-and-diploma-degree-programs/ba-artificial-intelligence/",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "jku-dates-2026",
+          title: "Dates & deadlines, winter semester 2026/27",
+          publisher: "Johannes Kepler University Linz",
+          url: "https://www.jku.at/en/degree-programs/students/dates-deadlines/",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "meduniwien-medicine-2027",
+    universityId: "2ceeb8990f9f62b3f25e",
+    universityHost: "meduniwien.at",
+    universityName: "Medical University of Vienna",
+    faculty: "Human Medicine and Dentistry (MedAT)",
+    country: "Austria",
+    countryCode: "AT",
+    city: "Vienna",
+    category: "Medicine",
+    degreeLevel: "long-cycle",
+    intake: "2027/28",
+    status: "rules-published",
+    statusNote:
+      "The joint MedAT site of the Austrian medical universities already gives the expected 2027 dates (marked as not yet confirmed). DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+    programs: [
+      { programName: "Human Medicine", localProgramName: "Humanmedizin" },
+      { programName: "Dentistry", localProgramName: "Zahnmedizin" },
+    ],
+    sources: [
+      {
+        id: "medat-basics",
+        title: "MedAT basic information (expected 2027 dates)",
+        publisher: "Austrian medical universities (MedAT)",
+        url: "https://www.medizinstudieren.at/allgemeine-informationen/basic-infos-der-medat/",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2027/28",
+      approvedNote:
+        "MedAT information for 2027 on the medical universities' joint site; the dates are given as expected, not confirmed.",
+      facts: [
+        {
+          label: "Registration",
+          value:
+            "Online, about 1–31 March 2027, with the test fee paid in the same window. You choose the university (Vienna, Innsbruck, Graz or Linz for human medicine) when you register.",
+        },
+        {
+          label: "Test",
+          value:
+            "MedAT on about 9 July 2027 at all locations at once, once a year and only in German. Results in calendar week 32. School grades do not count; the Matura is shown only after a place is offered.",
+        },
+        {
+          label: "Who can apply",
+          value:
+            "Holders of a school-leaving certificate, or pupils in their final school year at registration. The test can be repeated in later years; a result counts only for that university and year.",
+        },
+        {
+          label: "After a place is offered (Vienna)",
+          value:
+            "Reserve the place in the MedAT account, then complete admission in person at the Studies and Examinations Department; winter semester only, by 5 September.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Humanmedizin", rule: "Places by MedAT ranking at the chosen university." },
+        { localProgramName: "Zahnmedizin", rule: "Places by MedAT ranking (Vienna, Innsbruck, Graz)." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "MedAT online registration and fee, about 1–31 March 2027.",
+          "Choose the university at registration.",
+        ],
+        entranceRequirements: [
+          "MedAT in German, about 9 July 2027; school grades do not count.",
+        ],
+        afterAdmission: [
+          "Reserve the place, then admission in person in Vienna by 5 September; show the Matura.",
+        ],
+      },
+      sources: [
+        {
+          id: "medat-basics-2027",
+          title: "MedAT basic information: registration, test day, who can apply",
+          publisher: "Austrian medical universities (MedAT)",
+          url: "https://www.medizinstudieren.at/allgemeine-informationen/basic-infos-der-medat/",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "meduniwien-admission-process",
+          title: "Admission process for the medicine and dentistry degree programmes",
+          publisher: "Medical University of Vienna",
+          url: "https://www.meduniwien.ac.at/web/en/studies-further-education/application-admission/medicine-and-dentistry-degree/admission-process/",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "kit-informatics-bsc-2027",
+    universityId: "072d650b38a6cb762286",
+    universityHost: "kit.edu",
+    universityName: "Karlsruhe Institute of Technology",
+    faculty: "KIT Department of Informatics",
+    country: "Germany",
+    countryCode: "DE",
+    city: "Karlsruhe",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "KIT's programme page does not state an intake year; its rules (selection statute, 15 July deadline) are standing and apply each winter term. DocRoute does not build a personalised route, and German residence rules are not covered yet.",
+    programs: [{ programName: "Informatics", localProgramName: "Informatik" }],
+    sources: [
+      {
+        id: "kit-informatics-programme",
+        title: "Informatics, Bachelor of Science: study programme page",
+        publisher: "Karlsruhe Institute of Technology",
+        url: "https://www.sle.kit.edu/english/vorstudium/bachelor-informatics.php",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "KIT's programme page and tuition rules as published for the 2026/27 cycle.",
+      facts: [
+        {
+          label: "Application deadline",
+          value: "15 July for the winter term (first semester only in winter), for EU and non-EU applicants.",
+        },
+        {
+          label: "Selection",
+          value:
+            "About 434–443 places: 10% by waiting time, 90% by selection. For German-equivalent certificates: overall grade (×2) and grades in maths, informatics and the best science subject, plus up to 5 points for vocational training or other achievements. Non-EU applicants are ranked on their entrance qualification (school grades, university results and/or the Feststellungsprüfung).",
+        },
+        {
+          label: "Language",
+          value: "Taught in German: C1 (e.g. DSH-2, TestDaF 4 in all parts, Goethe C1); B1 may be accepted provisionally if C1 follows by the end of enrolment.",
+        },
+        {
+          label: "Tuition",
+          value:
+            "Non-EU students €1,500 per semester (Baden-Württemberg); EU/EEA citizens and those with a German Abitur are exempt. Semester fees apply to everyone.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Informatik", rule: "Restricted admission; selection by grades, 15 July deadline." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Application by 15 July for the winter term.",
+          "School-leaving certificate with grades; German C1 proof (B1 provisionally).",
+        ],
+        entranceRequirements: [
+          "Selection by overall grade and maths/informatics/science grades (+ other achievements); 10% by waiting time.",
+        ],
+        afterAdmission: [
+          "Non-EU students pay €1,500 tuition per semester plus semester fees.",
+          "German residence rules are not covered by DocRoute yet.",
+        ],
+      },
+      sources: [
+        {
+          id: "kit-informatics-programme-2026",
+          title: "Informatics, Bachelor of Science: admission, selection, language",
+          publisher: "Karlsruhe Institute of Technology",
+          url: "https://www.sle.kit.edu/english/vorstudium/bachelor-informatics.php",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "kit-tuition",
+          title: "Tuition fees for international students",
+          publisher: "Karlsruhe Institute of Technology",
+          url: "https://www.intl.kit.edu/istudies/12606.php",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
 ];
 
 export function pendingStatusLabel(status: PendingProgramGroup["status"]) {

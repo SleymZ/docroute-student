@@ -27,7 +27,12 @@ const profile: ApplicantProfile = {
 };
 
 // Official domains a university moved to after the catalog import.
-const hostAliases: Record<string, string[]> = { "vutbr.cz": ["vut.cz"] };
+const hostAliases: Record<string, string[]> = {
+  "vutbr.cz": ["vut.cz"],
+  "tuwien.ac.at": ["tuwien.at"],
+  // MedAT is run jointly by the Austrian medical universities on its own site.
+  "meduniwien.at": ["meduniwien.ac.at", "medizinstudieren.at"],
+};
 
 function onUniversityDomain(hostname: string, universityHost: string) {
   return [universityHost, ...(hostAliases[universityHost] ?? [])].some(
@@ -211,9 +216,12 @@ test("Slovak medicine is listed as long-cycle and found from a bachelor profile"
   );
 });
 
-test("TUM Informatics is the only German entry and never matches", () => {
+test("German entries never match", () => {
   const german = findPendingProgramGroups({ countryCode: "DE" });
-  assert.deepEqual(german.map((group) => group.id), ["tum-informatics-bsc-2027"]);
+  assert.deepEqual(german.map((group) => group.id), [
+    "tum-informatics-bsc-2027",
+    "kit-informatics-bsc-2027",
+  ]);
   assert.equal(findVerifiedProgram("tum-informatics-bsc-2027"), null);
 });
 
@@ -233,4 +241,15 @@ test("Czech computing faculties with published 2027/28 rules are listed", () => 
     assert.equal(group.status, "rules-published");
     assert.equal(group.referenceRules?.intake, "2027/28");
   }
+});
+
+test("Austrian entries cover computing and MedAT medicine", () => {
+  assert.deepEqual(
+    findPendingProgramGroups({ countryCode: "AT", category: "Computer Science" }).map(
+      (group) => group.id,
+    ),
+    ["tuwien-informatics-bsc-2027", "univie-informatics-bsc-2027", "jku-ai-bsc-2027"],
+  );
+  const medat = findPendingProgramGroups({ countryCode: "AT", category: "Medicine", degreeLevel: "bachelor" });
+  assert.deepEqual(medat.map((group) => group.id), ["meduniwien-medicine-2027"]);
 });
