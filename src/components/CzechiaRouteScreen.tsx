@@ -21,8 +21,11 @@ import { applicantCountryOptions } from "@/data/applicant-countries";
 import { czechiaResidenceRules } from "@/data/czechia-residence";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import {
+  asksEuPermit,
   createCzechProfileSearchParams,
   getCzechProgressId,
+  type EuPermitIssuer,
+  type EuPermitPurpose,
   parseCzechProfile,
   type CzechProfile,
   type CzechPurpose,
@@ -102,6 +105,16 @@ const yesNoUnsure: ChoiceOption<YesNoUnsure>[] = [
   { value: "unsure", label: "Not sure" },
 ];
 
+const euPermitPurposes: ChoiceOption<EuPermitPurpose>[] = [
+  { value: "study", label: "Study (long-term residence permit or long-term visa)" },
+  { value: "other", label: "Another purpose (work, family, permanent…)" },
+];
+
+const euPermitIssuers: ChoiceOption<EuPermitIssuer>[] = [
+  { value: "eu", label: "An EU country other than Ireland and Denmark (e.g. Slovakia)" },
+  { value: "excluded", label: "Ireland, Denmark, Norway, Iceland, Liechtenstein or Switzerland" },
+];
+
 const read = <T extends string>(value: string | null, allowed: readonly T[]): T | "" =>
   allowed.includes(value as T) ? (value as T) : "";
 
@@ -113,12 +126,17 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
   const [offer, setOffer] = useState(read(initial.get("offer"), ["yes", "no"] as const));
   const [graduate, setGraduate] = useState(read(initial.get("czGraduate"), ["yes", "no"] as const));
   const [blueCard, setBlueCard] = useState(read(initial.get("blueCard"), ["yes", "no", "unsure"] as const));
+  const [euPermit, setEuPermit] = useState(read(initial.get("euPermit"), ["study", "other"] as const));
+  const [euIssuer, setEuIssuer] = useState(read(initial.get("euIssuer"), ["eu", "excluded"] as const));
+  const [exchange, setExchange] = useState(read(initial.get("exchange"), ["yes", "no", "unsure"] as const));
   const [error, setError] = useState("");
+  const askEu = asksEuPermit(purpose, status);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const workMissing = purpose === "work" && (!offer || !graduate || !blueCard);
-    if (!purpose || !citizenship || !status || workMissing) {
+    const euMissing = askEu && (!euPermit || !euIssuer || (euPermit === "study" && !exchange));
+    if (!purpose || !citizenship || !status || workMissing || euMissing) {
       setError("Answer every question to build your route.");
       return;
     }
@@ -132,6 +150,13 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
             jobOffer: offer as YesNo,
             czechGraduate: graduate as YesNo,
             blueCardConditions: blueCard as YesNoUnsure,
+          }
+        : {}),
+      ...(askEu
+        ? {
+            euPermitPurpose: euPermit as EuPermitPurpose,
+            euPermitIssuer: euIssuer as EuPermitIssuer,
+            ...(euPermit === "study" ? { exchangeProgramme: exchange as YesNoUnsure } : {}),
           }
         : {}),
     };
@@ -176,6 +201,36 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
           </select>
         </label>
       </div>
+
+      {askEu && (
+        <>
+          <ChoiceGroup
+            name="euPermit"
+            legend="What is your residence permit in the other country for?"
+            hint="Look at the purpose written on your residence card or visa."
+            value={euPermit}
+            options={euPermitPurposes}
+            onChange={setEuPermit}
+          />
+          <ChoiceGroup
+            name="euIssuer"
+            legend="Which country issued it?"
+            value={euIssuer}
+            options={euPermitIssuers}
+            onChange={setEuIssuer}
+          />
+          {euPermit === "study" && (
+            <ChoiceGroup
+              name="exchange"
+              legend="Was it issued for an exchange programme (e.g. Erasmus+) or a university agreement, with a note on the permit?"
+              hint="Answer No if you study a full degree there."
+              value={exchange}
+              options={yesNoUnsure}
+              onChange={setExchange}
+            />
+          )}
+        </>
+      )}
 
       {purpose === "work" && (
         <>
@@ -325,7 +380,13 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
               "The non-EU residence permit procedure does not apply to you. "
             )}
             For a citizen of {citizenshipName} with{" "}
-            {lowerFirst(getResidenceStatusLabel(profile.currentResidenceStatus, "Czechia"))}.
+            {lowerFirst(getResidenceStatusLabel(profile.currentResidenceStatus, "Czechia"))}
+            {profile.euPermitPurpose === "study" && profile.euPermitIssuer === "eu"
+              ? " issued for study"
+              : profile.euPermitPurpose === "other"
+                ? " issued for another purpose"
+                : ""}
+            .
           </p>
         </div>
         <Link href={`/route/czechia?${editParams.toString()}`} className={styles.editLink}>

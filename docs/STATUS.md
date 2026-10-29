@@ -201,10 +201,25 @@ still publish only their 2026/27 rules.
   days, optional certificate CZK 200.
 - Known gaps: the Blue Card page gives both 6 months and 1 year as minimum
   contract and no CZK salary amount (route asks to confirm); employee card
-  unemployment rules not described; holders of a residence permit from
-  another EU country may apply in Czechia only with a study permit/visa
-  (route says "confirm where to apply"); how a study-permit holder reports
+  unemployment rules not described; how a study-permit holder reports
   a change of university is not described.
+- Holders of a permit from another EU country (PR #17, checked
+  2026-10-28): for study, `/route/czechia` asks what the permit is for,
+  who issued it and whether it is an exchange permit. A long-term study
+  permit or visa from an EU country other than Ireland and Denmark (e.g.
+  Slovakia) → first application in person at a Ministry of the Interior
+  office in Czechia (no Czech visa needed; embassy also possible), with
+  first-application documents incl. criminal record. The route warns that
+  short stays on the current permit are limited to 90 days in 180 and a
+  pending application does not extend that (ipc "Travelling within the
+  Schengen Area", 28 Jul 2026), and that in Slovakia the end of the
+  residence purpose is reported within 3 working days (IOM). Exchange
+  permits with a programme note: up to 1 year visa-free in Czechia,
+  register with the Foreign Police within 3 days (ipc study-mobility page,
+  24 Aug 2026). Other purposes, Ireland, Denmark or non-EU issuers →
+  embassy. Older links without these answers stay "confirm where to
+  apply". The Charles MFF route (saved profile) cannot ask these questions
+  and still says "confirm", pointing to the Czechia route.
 - Planner uses calendar days (no Czech holidays needed).
 
 ## Work route sources and limits (checked 2026-10-23)
@@ -330,6 +345,8 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #17 (2026-10-28): Czech study permit for holders of a Slovak (or
+  other EU) study permit: where to file (see Czechia residence).
 - PR #16 (2026-10-28): waitlist "I want the full route" (see above).
 
 - PR #15 (2026-10-28): public beta legal basis — Terms, Privacy,
@@ -431,7 +448,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (169 tests on 2026-10-28).
+- Unit tests: `npm test` (173 tests on 2026-10-28).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

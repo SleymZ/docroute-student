@@ -122,3 +122,61 @@ test("every Czech task cites a listed source", () => {
     }
   }
 });
+
+const skStudent = (patch: Partial<CzechProfile> = {}) =>
+  study({
+    currentResidenceStatus: "other-eu-residence",
+    euPermitPurpose: "study",
+    euPermitIssuer: "eu",
+    exchangeProgramme: "no",
+    ...patch,
+  });
+
+test("EU permit answers survive a URL round trip and old links still parse", () => {
+  for (const profile of [skStudent(), skStudent({ exchangeProgramme: "unsure" }), study({ currentResidenceStatus: "other-eu-residence", euPermitPurpose: "other", euPermitIssuer: "excluded" })]) {
+    assert.deepEqual(parseCzechProfile(createCzechProfileSearchParams(profile)), profile);
+  }
+  const old = parseCzechProfile(new URLSearchParams("country=CZ&purpose=study&citizenship=UA&residenceStatus=other-eu-residence"));
+  assert.ok(old);
+  assert.equal(buildCzechiaRoute(old).filing, "unclear");
+  // Answers are ignored for other statuses.
+  const noise = parseCzechProfile(new URLSearchParams("country=CZ&purpose=study&citizenship=UA&residenceStatus=non-eu-passport-no-residence&euPermit=study&euIssuer=eu"));
+  assert.equal(noise?.euPermitPurpose, undefined);
+});
+
+test("a Slovak study permit holder files in Czechia with first-application documents", () => {
+  const route = buildCzechiaRoute(skStudent());
+  assert.equal(route.filing, "in-country");
+  assert.equal(route.euStudyHolder, true);
+  const tasks = route.stages.flatMap((stage) => stage.tasks);
+  const submission = tasks.find((task) => task.id === "cz-submission-place");
+  assert.match(submission?.title ?? "", /Ministry of the Interior office in Czechia/);
+  assert.match(submission?.description ?? "", /Ireland and Denmark/);
+  const list = tasks.map((task) => task.id);
+  assert.ok(list.includes("cz-criminal-record"));
+  assert.ok(list.includes("cz-eu-holder-stay"));
+  assert.ok(list.includes("cz-leave-permit-country"));
+  assert.ok(!list.includes("cz-study-mobility"));
+  assert.ok(route.sources.some((source) => source.id === "cz-ipc-study-mobility"));
+
+  const plan = planCzechiaDeadlines(route, "2027-09-01", "2026-10-28");
+  assert.ok(plan?.items.some((item) => item.id === "documents"));
+  assert.ok(plan?.warnings.some((warning) => /90 days in any 180/.test(warning)));
+});
+
+test("exchange students see the one-year mobility option", () => {
+  assert.ok(ids(skStudent({ exchangeProgramme: "yes" })).includes("cz-study-mobility"));
+  assert.ok(ids(skStudent({ exchangeProgramme: "unsure" })).includes("cz-study-mobility"));
+});
+
+test("other EU permits go to the embassy", () => {
+  for (const profile of [
+    skStudent({ euPermitPurpose: "other", exchangeProgramme: undefined }),
+    skStudent({ euPermitIssuer: "excluded" }),
+  ]) {
+    const route = buildCzechiaRoute(profile);
+    assert.equal(route.filing, "abroad");
+    assert.equal(route.euStudyHolder, false);
+    assert.ok(ids(profile).includes("cz-eu-permit-no-exception"));
+  }
+});
