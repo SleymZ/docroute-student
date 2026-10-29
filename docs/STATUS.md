@@ -15,8 +15,8 @@ three groups:
 - students already in Europe looking for requirements and deadlines
   (Explore).
 
-Purposes with a route today: **study** and **work** (Slovakia). The home
-form shows Family and Business as "coming soon" without routes.
+Purposes with a route today: **study**, **work**, **family** and
+**business** (family and business: Slovakia only, PR #28).
 
 - **Work route** (`/route/work`, "Work" on the home form): six questions
   (citizenship, current status, job offer, Slovak diploma, EU Blue Card
@@ -66,6 +66,8 @@ form shows Family and Business as "coming soon" without routes.
 | Coming soon (not verified) | Czechia · Computer Science · Bachelor · 2027/28, rules already published ("Rules published, route not built yet"): VUT Brno FIT Informační technologie (SCIO 75th percentile or preferential admission), Masaryk FI (4 programs, TSP, waiver for Informatika). Next step: verify them into routes like Charles MFF | 2026-10-29 |
 | Coming soon (not verified) | Austria: TU Wien Informatik, Uni Wien Informatik, JKU Artificial Intelligence (English), all with 2026/27 rules (2027 dates not out); MedUni Wien medicine via MedAT (expected 2027 dates published). Germany: KIT Informatik (standing rules, 15 July, €1,500 non-EU). No Austrian or German residence route. RWTH and LMU skipped: their pages did not give deadlines or requirements | 2026-10-29 |
 | Coming soon (not verified) | Law and Economics & Business (new fields, PR #27): Comenius Faculty of Law, Právo bachelor (2026/27 rules); Charles University Faculty of Law and Masaryk Faculty of Law, Právo a právní věda (5-year long-cycle, 2027/28 rules published); EUBA framework (2026/27 rules) and VŠE Faculty of Economics (2026/27 rules). Czech medicine: Charles First Faculty of Medicine (2027/28 rules published) and Masaryk Faculty of Medicine (2026/27 handbook) | 2026-10-29 |
+| Family residence | Slovakia, third-country citizens joining a non-EU relative with temporary/permanent residence or a Blue Card: spouse (both 18+), unmarried child under 18, dependent adult child, dependent parent (`src/data/slovakia-family-business.ts`, `src/lib/residence/slovakia-family-business.ts`, page `/route/family`) | 2026-10-29 |
+| Business residence | Slovakia, third-country citizens: sole trader with a trade licence or company executive (page `/route/business`) | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
@@ -338,6 +340,38 @@ could not be opened by the tools.
   proof while the employment page still lists an owner affidavit, so the
   route names examples and asks to recheck.
 
+## Family and business routes (PR #28, checked 2026-10-29)
+
+- Sources (IOM MIC): family reunification (SK page, 30 Jul 2026), right
+  to work of family members (2 Mar 2026), application for temporary
+  residence (23 Jul 2026), documenting the purpose (11 Aug 2026), business
+  by type of residence (19 Aug 2026), temporary-residence list (validity),
+  15 July 2026 changes (13 Aug 2026), trade business basics (2020). The
+  IOM business articles themselves (trade licence, company executive)
+  could not be opened by the tools.
+- Family: €200 (free under 18), card €10/€39, documents ≤90 days (civil
+  status exempt), apostille + Slovak/Czech translation, accommodation ≥6
+  months, decision 90 days (30 for Blue Card families filed together),
+  valid as long as the sponsor's residence, max 5 years; work permit
+  needed in the first 9 months (not for Blue Card families); no switch to
+  business for 24 months. Not covered (route says so, no dates): family of
+  Slovak or EU citizens, unmarried partners, spouses under 18.
+- Business: €350 embassy / €330 police; first application only at an
+  embassy (police only for a change of purpose from Slovak temporary
+  residence); business plan (Ministry of Economy template) with
+  feasibility documents; funds: subsistence minimum €295.22/month
+  (€3,542.64 for over a year), business account €5,904.40 (sole trader)
+  or €29,522 (executive); 90 days; 3 years. Renewal from 15 July 2026:
+  sole traders need taxable income above a threshold (IOM's reading: about
+  €2,876.90 for 2025), executives proof of tax (minimum €340–€11,520); no
+  debts. Study residence already allows business (shown to study holders);
+  permanent residents and EU citizens only need the trade licence or EU
+  registration.
+- Planner: `planPurposeResidenceDeadlines` (the work planner without
+  Labour Office steps). Waitlist/feedback route ids `family-sk`,
+  `business-sk`: migration `20261029120000_family_business_routes.sql`
+  must be run in Supabase.
+
 ## Code structure for residence
 
 - `src/lib/residence/slovakia.ts`: shared Slovak residence steps plus a
@@ -441,6 +475,10 @@ could not be opened by the tools.
   12 months.
 
 ## Recently shipped (October 2026)
+
+- PR #28 (2026-10-29): Slovakia family-reunification and business
+  (trade licence, company executive) routes; Family and Business enabled
+  on the home form.
 
 - PR #27 (2026-10-29): new fields Law and Economics & Business (replacing
   Dentistry and Pharmacy), with Comenius, Charles and Masaryk law faculties,
@@ -597,7 +635,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (200 tests on 2026-10-29).
+- Unit tests: `npm test` (212 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -648,5 +686,5 @@ text, which is unchanged from before).
 6. Add more "coming soon" faculties with last year's rules (next: other
    fields such as medicine in English, Czech computing faculties) while
    their 2027/28 rules are not out. Watch FIIT/FEI for 2027/28 rules.
-7. Define family or business purposes for Slovakia with official sources
-   before enabling them in the form.
+7. Family and business for Slovakia are live (PR #28). Next: family of
+   EU/Slovak citizens, and recheck the IOM business articles directly.

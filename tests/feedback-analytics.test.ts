@@ -19,7 +19,7 @@ test("feedback keeps only the path, a valid rating and trimmed text", () => {
   assert.equal(buildFeedbackInsert({ pathname: "/", rating: null, message: "   " }), null);
   assert.equal(buildFeedbackInsert({ pathname: "/", rating: 7, message: "" }), null);
   assert.equal(buildFeedbackInsert({ pathname: "/", message: "x".repeat(2001) }), null);
-  assert.equal(buildFeedbackInsert({ pathname: "/", route: "family-sk", rating: 2 })?.route, null);
+  assert.equal(buildFeedbackInsert({ pathname: "/", route: "pets-sk", rating: 2 })?.route, null);
 });
 
 test("feedback table is insert-only and rejects query strings", () => {

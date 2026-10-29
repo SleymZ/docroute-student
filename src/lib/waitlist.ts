@@ -8,7 +8,7 @@
  */
 
 /** Routes a signup can come from; the database checks the same list. */
-export const waitlistRoutes = ["study-sk", "study-cz", "work-sk", "work-cz"] as const;
+export const waitlistRoutes = ["study-sk", "study-cz", "work-sk", "work-cz", "family-sk", "business-sk"] as const;
 export type WaitlistRoute = (typeof waitlistRoutes)[number];
 
 /**

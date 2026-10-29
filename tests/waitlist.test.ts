@@ -42,7 +42,9 @@ test("a repeated signup looks the same as a new one", () => {
 });
 
 test("the database allows the same routes as the site", () => {
-  const listed = sql.match(/route in \(([^)]+)\)/)?.[1] ?? "";
+  // The latest migration that redefines the route check wins.
+  const latest = read("supabase/migrations/20261029120000_family_business_routes.sql");
+  const listed = latest.match(/route in \(([^)]+)\)/)?.[1] ?? "";
   const dbRoutes = [...listed.matchAll(/'([^']+)'/g)].map((m) => m[1]);
   assert.deepEqual([...dbRoutes].sort(), [...waitlistRoutes].sort());
 });
