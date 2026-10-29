@@ -10,7 +10,8 @@ import styles from "./LegalPage.module.css";
 type LegalPageProps = {
   eyebrow: string;
   title: string;
-  updated: string;
+  /** Omitted for pages that are not legal documents (e.g. feedback). */
+  updated?: string;
   summary: ReactNode;
   children: ReactNode;
 };
@@ -31,9 +32,11 @@ export function LegalPage({
         <header className={styles.hero}>
           <p className={styles.eyebrow}>{eyebrow}</p>
           <h1>{title}</h1>
-          <p className={styles.updated}>
-            Last updated {formatPlanDate(updated)}
-          </p>
+          {updated && (
+            <p className={styles.updated}>
+              Last updated {formatPlanDate(updated)}
+            </p>
+          )}
           <div className={styles.summary}>{summary}</div>
         </header>
 

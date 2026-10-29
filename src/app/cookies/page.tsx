@@ -9,7 +9,7 @@ import { browserStorageItems, contact, legalInfo } from "@/data/legal";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "DocRoute uses only strictly necessary cookies and browser storage: no analytics, advertising or tracking.",
+    "DocRoute uses strictly necessary browser storage, plus cookieless visit statistics only if you choose Accept all. No advertising or tracking.",
   alternates: { canonical: "/cookies" },
 };
 
@@ -21,11 +21,12 @@ export default function CookiesPage() {
       updated={legalInfo.cookiesUpdated}
       summary={
         <p>
-          <strong>In short.</strong> DocRoute uses only what is strictly
+          <strong>In short.</strong> DocRoute stores only what is strictly
           necessary for the site to work: staying signed in, your theme and
-          your progress on this device. There are no analytics, advertising
-          or tracking cookies, and nothing is shared with advertisers. You
-          can change your cookie choice below at any time.
+          your progress on this device. Only if you choose &ldquo;Accept
+          all&rdquo; do we count visits with anonymous statistics that use no
+          cookies. There are no advertising or tracking cookies. You can
+          change your choice below at any time.
         </p>
       }
     >
@@ -69,12 +70,16 @@ export default function CookiesPage() {
         so it is used whichever option you pick.
       </p>
       <p>
-        We still ask for your choice when you first visit. If you choose{" "}
-        <strong>Accept all</strong>, we may in future add optional,
-        privacy-friendly tools such as visit statistics; this page will list
-        them before they are switched on. If you choose{" "}
-        <strong>Necessary only</strong>, no optional cookie or tool will ever
-        be used. Today nothing optional exists, so both choices work the same.
+        One optional tool exists: <strong>visit statistics</strong> (Vercel
+        Web Analytics). It loads only if you choose{" "}
+        <strong>Accept all</strong>. It sets no cookie and stores nothing on
+        your device; Vercel recognises a visit by a hash of the request that
+        is discarded after 24 hours. For each page view it receives the page
+        address <em>without</em> the part after &ldquo;?&rdquo; (where your
+        route answers are), the referring site, country or region, browser,
+        operating system and device type, and shows us only totals. If you
+        choose <strong>Necessary only</strong>, it is never loaded, and
+        switching to Necessary only stops it from sending anything further.
         You can change your choice here at any time:
       </p>
       <CookieSettings />

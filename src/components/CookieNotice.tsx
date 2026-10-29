@@ -37,9 +37,9 @@ export function CookieNotice() {
         </p>
         <p>
           We use necessary cookies to keep you signed in and remember your
-          progress. With your permission we may later add privacy-friendly
-          statistics to improve the site; today nothing optional is used. No
-          ads, no tracking. <Link href="/cookies">Details and settings</Link>
+          progress. With &ldquo;Accept all&rdquo; we also count visits with
+          cookieless, anonymous statistics (Vercel Web Analytics) to improve
+          the site. No ads, no tracking across sites. <Link href="/cookies">Details and settings</Link>
         </p>
       </div>
       <div className={styles.buttons}>

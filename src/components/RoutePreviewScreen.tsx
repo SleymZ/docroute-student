@@ -29,6 +29,7 @@ import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
+import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import { planCzechiaDeadlines } from "@/lib/residence/czechia";
@@ -459,6 +460,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
               ))}
             </div>
           </section>
+          <FeedbackForm route={program.countryCode === "CZ" ? "study-cz" : "study-sk"} />
           <WaitlistCta route={program.countryCode === "CZ" ? "study-cz" : "study-sk"} />
         </div>
 
