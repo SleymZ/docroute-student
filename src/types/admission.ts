@@ -68,7 +68,14 @@ export type WaiverEvidence =
   | "mff-seminar"
   | "cz-matura-math-plus-68"
   | "sk-matura-math-75"
-  | "ap-exam-4-5";
+  | "ap-exam-4-5"
+  // ČVUT FIT 2027/28 waiver grounds.
+  | "cvut-cermat-math-75"
+  | "scio-math-90"
+  | "scio-osp-90"
+  | "mensa-130"
+  | "cvut-fiks"
+  | "cvut-national-competition";
 
 export const waiverEvidenceOptions: readonly WaiverEvidence[] = [
   "math-matura", // Legacy profiles: no percentile was collected.
@@ -85,6 +92,12 @@ export const waiverEvidenceOptions: readonly WaiverEvidence[] = [
   "cz-matura-math-plus-68",
   "sk-matura-math-75",
   "ap-exam-4-5",
+  "cvut-cermat-math-75",
+  "scio-math-90",
+  "scio-osp-90",
+  "mensa-130",
+  "cvut-fiks",
+  "cvut-national-competition",
 ];
 
 export type ApplicantProfile = {
@@ -125,6 +138,9 @@ export type ApplicationDocument = {
   due: "application" | "admission-day" | "enrolment";
   sourceIds: string[];
   conditional?: boolean;
+  // Overrides the generic "By <deadline>" label when the document has its
+  // own deadline (e.g. waiver evidence due after the application deadline).
+  dueLabel?: string;
 };
 
 export type AdmissionRequirement = {
@@ -161,6 +177,9 @@ export type AdmissionProgram = {
     feeEur?: number;
     // Shown when the fee is not in euros (e.g. "CZK 1,000").
     feeLabel?: string;
+    // Programme-specific labels for the route's language and waiver tasks.
+    languageProofDueLabel?: string;
+    waiverEvidenceDueLabel?: string;
     applicationUrl: string;
   };
   languagePolicy: {

@@ -156,6 +156,42 @@ const waiverOptions: Array<{
     label: waiverEvidenceLabels["ap-exam-4-5"],
     description: "AP Calculus AB/BC or AP Physics 1/2 taken by May 2026, confirmed through the Centre for Talented Youth",
   },
+  {
+    value: "cvut-cermat-math-75",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["cvut-cermat-math-75"],
+    description: "ČVUT FIT: CERMAT Matematika rozšiřující with at least 75%, in the 2025/26 or 2026/27 maturita year",
+  },
+  {
+    value: "scio-math-90",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["scio-math-90"],
+    description: "ČVUT FIT: SCIO National Comparative Exam in Mathematics (Czech or Slovak version), 30 Jan – 24 Apr 2027 dates",
+  },
+  {
+    value: "scio-osp-90",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["scio-osp-90"],
+    description: "ČVUT FIT: SCIO General Study Aptitude test (Czech or Slovak version), 5 Dec 2026 – 24 Apr 2027 dates",
+  },
+  {
+    value: "mensa-130",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["mensa-130"],
+    description: "ČVUT FIT: official Mensa Česko confirmation of an adult IQ test result of 130 or more",
+  },
+  {
+    value: "cvut-fiks",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["cvut-fiks"],
+    description: "ČVUT FIT: winner's diploma from the FIKS programming competition in the last 4 years",
+  },
+  {
+    value: "cvut-national-competition",
+    countryCode: "CZ",
+    label: waiverEvidenceLabels["cvut-national-competition"],
+    description: "ČVUT FIT: national round, or nomination from the regional round, of the maths, informatics or physics olympiad, SOČ or a comparable national contest in the last 3 years",
+  },
 ];
 
 function getCountry(code: string) {

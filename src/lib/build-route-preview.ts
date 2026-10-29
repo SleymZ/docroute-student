@@ -110,7 +110,7 @@ export function buildRoutePreview(
         title: document.title,
         description: document.conditional ? `Only if this entrance route is confirmed: ${document.description}` : document.description,
         status: document.conditional ? "attention" : "action",
-        dueLabel: `By ${applicationDeadline}`,
+        dueLabel: document.dueLabel ?? `By ${applicationDeadline}`,
         sourceIds: document.sourceIds,
       })),
     },
@@ -141,7 +141,7 @@ export function buildRoutePreview(
                   !languageDeadline
                     ? languageCheck.status === "met"
                       ? undefined
-                      : "Preferably by 31 July 2027"
+                      : program.application.languageProofDueLabel ?? "Confirm the deadline with the faculty"
                     : slovakTestRule(program, profile) === "exempt"
                       ? "Confirm before enrolment"
                       : `Complete by ${languageDeadline}`,
@@ -165,7 +165,7 @@ export function buildRoutePreview(
                 status: admissionTaskStatus(entranceCheck.status),
                 dueLabel:
                   match.entranceRoute === "waived"
-                    ? "Evidence with application"
+                    ? program.application.waiverEvidenceDueLabel ?? "Evidence with application"
                     : match.entranceRoute === "needs-information"
                       ? "Clarify before application; exam fallback on " + admissionDate
                       : admissionDate,
@@ -178,7 +178,7 @@ export function buildRoutePreview(
           title: document.title,
           description: document.conditional ? `Only if this entrance route is confirmed: ${document.description}` : document.description,
           status: document.conditional ? "attention" as const : "action" as const,
-          dueLabel: `By ${admissionDate}`,
+          dueLabel: document.dueLabel ?? `By ${admissionDate}`,
           sourceIds: document.sourceIds,
         })),
       ],
@@ -209,7 +209,7 @@ export function buildRoutePreview(
           title: document.title,
           description: document.conditional ? `Only if this entrance route is confirmed: ${document.description}` : document.description,
           status: "action" as const,
-          dueLabel: "By enrolment",
+          dueLabel: document.dueLabel ?? "By enrolment",
           sourceIds: document.sourceIds,
         })),
         {

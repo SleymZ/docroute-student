@@ -271,6 +271,159 @@ function matchCharlesMff(
   return { requiredDocuments, entranceRoute };
 }
 
+// ČVUT FIT Informatika, 2027/28 (conditions PDF, checked 2026-10-29). Own
+// grounds and documents; never reuse them for MFF or UNIZA, or theirs here.
+const cvutCzechOrSlovak = new Set(["CZ", "SK"]);
+const cvutSpecialConditionCitizens = new Set(["RU", "BY"]);
+
+function matchCvutFit(
+  profile: ApplicantProfile,
+  program: AdmissionProgram,
+  checks: MatchCheck[],
+  nextActions: string[],
+  sourceIds: string[],
+): Pick<ProgramMatch, "requiredDocuments" | "entranceRoute"> {
+  const check = (
+    id: string,
+    label: string,
+    status: MatchCheck["status"],
+    detail: string,
+  ) => checks.push({ id, label, status, detail, sourceIds });
+  const school = profile.educationCountryCode;
+  const evidence = new Set(profile.waiverEvidence);
+  const czechOrSlovakSchool = cvutCzechOrSlovak.has(school);
+  const czechOrSlovakCitizen = cvutCzechOrSlovak.has(profile.citizenshipCountryCode);
+  const osp90 = evidence.has("scio-osp-90");
+
+  if (cvutSpecialConditionCitizens.has(profile.citizenshipCountryCode)) {
+    check(
+      "citizenship-rules",
+      "Special conditions for Russian and Belarusian citizens",
+      "action",
+      "ČVUT applies extra admission and study conditions to citizens of Russia and Belarus (ČVUT information page and the FIT dean's decision). Read them before applying.",
+    );
+    nextActions.push("Read ČVUT's special conditions for Russian and Belarusian citizens.");
+  }
+
+  // Language: citizens or Czech/Slovak-language graduates are exempt; the
+  // OSP 90th-percentile ground also covers it. A school in Czechia or
+  // Slovakia is taken as Czech- or Slovak-language education.
+  const needsCzechProof = !czechOrSlovakCitizen && !czechOrSlovakSchool && !osp90;
+  if (!needsCzechProof) {
+    check(
+      "language",
+      "Czech: no separate proof needed",
+      "met",
+      czechOrSlovakCitizen
+        ? "Czech and Slovak citizens do not prove Czech. The programme is taught in Czech."
+        : czechOrSlovakSchool
+          ? "Graduates of a Czech- or Slovak-language school do not prove Czech (if your school taught in another language, ask the faculty). The programme is taught in Czech."
+          : "You report a SCIO OSP result at the 90th percentile or higher, which the conditions accept instead of the Czech certificate. Upload it by 24 May 2027.",
+    );
+  } else {
+    const enough = reachesLevel(bestLanguage(profile, ["cs"]), "B2");
+    check(
+      "language",
+      "Certified Czech exam at B2 or higher",
+      enough ? "action" : "missing",
+      enough
+        ? "Send a certified copy of your Czech exam certificate (B2 or higher) by the document deadline for your enrolment day."
+        : "You have not reported Czech at B2. Without Czech or Slovak citizenship or schooling, you need a Czech exam certificate at B2 or higher, or the SCIO OSP result at the 90th percentile.",
+    );
+    nextActions.push("Get a Czech exam certificate at B2 or higher before the June–September document deadlines.");
+  }
+
+  const foreignEducation = !czechOrSlovakSchool;
+  check(
+    "recognition",
+    "Secondary education recognition",
+    foreignEducation ? "action" : "met",
+    school === "SK"
+      ? "A Slovak maturita is treated like a Czech one; send a certified copy, no nostrifikace."
+      : school === "CZ"
+        ? "You report Czech secondary education; send a certified copy of the maturita certificate."
+        : "Your certificate needs nostrifikace or a ČVUT assessment issued in the admission procedure before your enrolment day.",
+  );
+  if (foreignEducation) {
+    nextActions.push("Arrange nostrifikace or a ČVUT assessment of your school certificate.");
+  }
+
+  // CERMAT counts only for a Czech maturita in 2025/26 or 2026/27; a
+  // "completed" profile does not say which year.
+  const cermat = evidence.has("cvut-cermat-math-75")
+    ? school === "CZ" && profile.educationStatus === "final-year"
+      ? "waived"
+      : "needs-information"
+    : null;
+  const other = (["scio-math-90", "scio-osp-90", "mensa-130", "cvut-fiks", "cvut-national-competition"] as const)
+    .some((item) => evidence.has(item))
+    ? "waived"
+    : null;
+  const entranceRoute: ProgramMatch["entranceRoute"] =
+    cermat === "waived" || other === "waived"
+      ? "waived"
+      : cermat === "needs-information"
+        ? "needs-information"
+        : "exam";
+
+  check(
+    "entrance-route",
+    "Entrance-exam route",
+    entranceRoute === "needs-information" ? "unknown" : "action",
+    entranceRoute === "waived"
+      ? "Your self-reported result matches a published waiver ground. Upload the request and proof by 24 May 2027; later documents are not considered. CERMAT, FIKS and competition grounds count only if you have not studied at FIT before."
+      : entranceRoute === "needs-information"
+        ? "The CERMAT ground needs a Czech maturita with Matematika rozšiřující 75%+ in 2025/26 or 2026/27. Your profile does not confirm this, so ask the faculty and prepare for the test."
+        : "No waiver ground is established. Take the maths test on 1 or 2 June 2027: 70 of 100 points guarantees admission, and the faculty may lower the threshold. Slovak maturita results are not a waiver ground here; a SCIO test by 24 April 2027 is.",
+  );
+  nextActions.push(
+    entranceRoute === "waived"
+      ? "Upload the waiver request and proof by 24 May 2027."
+      : entranceRoute === "needs-information"
+        ? "Confirm the CERMAT waiver with the faculty; keep the 1–2 June 2027 test as a fallback."
+        : "Prepare for the maths test on 1–2 June 2027 (or take SCIO Mathematics/OSP by 24 April 2027 for a waiver).",
+  );
+
+  const requiredDocuments = program.documents
+    .flatMap((document) => {
+      let applies = false;
+      let conditional = false;
+      switch (document.appliesWhen) {
+        case "always":
+          applies = true;
+          break;
+        case "foreign-education":
+          applies = foreignEducation;
+          break;
+        case "foreign-language-test":
+          applies = needsCzechProof;
+          break;
+        case "waiver-claim":
+          applies = entranceRoute !== "exam";
+          conditional = entranceRoute === "needs-information";
+          break;
+        case "entrance-exam":
+          applies = entranceRoute !== "waived";
+          conditional = entranceRoute === "needs-information";
+          break;
+        default:
+          applies = false;
+      }
+      return applies ? [{ ...document, conditional }] : [];
+    })
+    .sort((a, b) => {
+      const order = { application: 0, "admission-day": 1, enrolment: 2 };
+      return order[a.due] - order[b.due];
+    });
+
+  nextActions.push(
+    "Submit the online application and pay CZK 1,050 by " +
+      formatDate(program.application.deadline) +
+      ".",
+  );
+  return { requiredDocuments, entranceRoute };
+}
+
 export function matchProgram(
   profile: ApplicantProfile,
   program: AdmissionProgram,
@@ -362,9 +515,15 @@ export function matchProgram(
     program.countryCode === "CZ" &&
     program.degreeLevel === "bachelor" &&
     program.intake === "2027/28";
+  const cvutPolicy =
+    program.admissionPolicy === "cvut-fit-bachelor-2027" &&
+    program.countryCode === "CZ" &&
+    program.degreeLevel === "bachelor" &&
+    program.intake === "2027/28";
   const languageTest = program.languagePolicy.foreignApplicantTest;
   if (
     !mffPolicy &&
+    !cvutPolicy &&
     (program.admissionPolicy !== "uniza-fri-bachelor-2027" ||
       program.countryCode !== "SK" ||
       program.degreeLevel !== "bachelor" ||
@@ -441,6 +600,11 @@ export function matchProgram(
   if (mffPolicy) {
     return finishMatch(
       matchCharlesMff(profile, program, checks, nextActions, sourceIds, admissionDate),
+    );
+  }
+  if (cvutPolicy) {
+    return finishMatch(
+      matchCvutFit(profile, program, checks, nextActions, sourceIds),
     );
   }
   if (!languageTest) return unavailable("Missing language policy.", "more-information");

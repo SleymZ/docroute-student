@@ -60,9 +60,10 @@ form shows Family and Business as "coming soon" without routes.
 | Admission | Slovakia · Computer Science · Bachelor · 2027/28 · UNIZA FRI, 4 programs (`src/data/verified-programs.ts`) | 2026-10-19 |
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
 | Admission | Czechia · Computer Science · Bachelor · 2027/28 · Charles University MFF, Informatika (Czech-taught), policy `cuni-mff-bachelor-2027` | 2026-10-28 |
+| Admission | Czechia · Computer Science · Bachelor · 2027/28 · ČVUT FIT, Informatika (Czech-taught), policy `cvut-fit-bachelor-2027` | 2026-10-29 |
 | Coming soon (not verified) | Computer Science · Bachelor · 2027/28 (`src/data/pending-programs.ts`): Comenius FMFI (4 programs, rules awaiting approval), STU FIIT (Informatika) and TUKE FEI (5 programs), both "rules not published yet". Listed with last year's (2026/27) approved rules for orientation; no match, checklist or route | 2026-10-29 |
 | Coming soon (not verified) | Medicine (long-cycle, MUDr./MDDr.) · 2027/28: Comenius LF Bratislava (2026/27 rules), Comenius JLF Martin (2027/28 rules published, "Rules published, route not built yet"), UPJŠ LF Košice (2026/27 rules, Slovak and English tracks). Germany: TUM Informatics bachelor (2026 cycle rules, standing aptitude statute); no German residence route | 2026-10-29 |
-| Coming soon (not verified) | Czechia · Computer Science · Bachelor · 2027/28, rules already published ("Rules published, route not built yet"): ČVUT FIT Informatika (maths test 1–2 June 2027, waivers), VUT Brno FIT Informační technologie (SCIO 75th percentile or preferential admission), Masaryk FI (4 programs, TSP, waiver for Informatika). Next step: verify them into routes like Charles MFF | 2026-10-29 |
+| Coming soon (not verified) | Czechia · Computer Science · Bachelor · 2027/28, rules already published ("Rules published, route not built yet"): VUT Brno FIT Informační technologie (SCIO 75th percentile or preferential admission), Masaryk FI (4 programs, TSP, waiver for Informatika). Next step: verify them into routes like Charles MFF | 2026-10-29 |
 | Coming soon (not verified) | Austria: TU Wien Informatik, Uni Wien Informatik, JKU Artificial Intelligence (English), all with 2026/27 rules (2027 dates not out); MedUni Wien medicine via MedAT (expected 2027 dates published). Germany: KIT Informatik (standing rules, 15 July, €1,500 non-EU). No Austrian or German residence route. RWTH and LMU skipped: their pages did not give deadlines or requirements | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
@@ -217,6 +218,37 @@ could not be opened by the tools.
   was not found.
 - Matcher: `matchProgram` dispatches per policy; profile form shows waiver
   options per destination country.
+
+## ČVUT FIT Informatika (checked 2026-10-29)
+
+- Sources: the faculty's PDF "Podmínky přijímacího řízení … 2027/2028"
+  (bi-podminky-prijimaci-rizeni-2027.pdf; no approval date or decision
+  number in it), the bachelor admission page (Přijímací řízení 2027) and the
+  programme list bk.fit.cvut.cz (Informatika B0613A140029, 3 years).
+- Rules used: application 1 Jan – 31 Mar 2027 at prihlaska.cvut.cz; fee
+  CZK 1,050 by 31 Mar (non-refundable); maths test 1 or 2 June 2027
+  (90 min, 0–100), excuse by 7 June → make-up 9 June; 70 points guarantee
+  admission, remaining places by ranking (threshold may be lowered);
+  planned maximum 1,100 full-time. Waivers by 24 May 2027 (later proof
+  ignored): CERMAT Matematika rozšiřující 75%+ (2025/26–2026/27), SCIO
+  Mathematics or OSP 90th percentile (listed dates 5 Dec 2026 – 24 Apr
+  2027, CZ or SK version), Mensa IQ 130+, FIKS winner (4 years), national
+  round/regional nomination in the maths, informatics or physics olympiad,
+  SOČ or comparable (3 years); CERMAT, FIKS and competitions only for a
+  first study at FIT. Czech B2 certificate for non-CZ/SK citizens without
+  Czech/Slovak-language schooling, unless the OSP ground is met. Slovak
+  schools count as Czech (no nostrifikace); others need nostrifikace or a
+  ČVUT assessment. Documents by 16 Jun / 30 Jul / 13 Sep for online
+  enrolment 22 Jun / 3 Aug / 15 Sep 2027. Extra conditions for RU/BY
+  citizens (route warns); North Korean citizens cannot apply (not in the
+  country list).
+- Matcher: `matchCvutFit`; waiver values `cvut-cermat-math-75`,
+  `scio-math-90`, `scio-osp-90`, `mensa-130`, `cvut-fiks`,
+  `cvut-national-competition` (no DB change: `waiver_evidence` is a free
+  JSON array). A school in CZ/SK is taken as Czech/Slovak-language
+  schooling (the route asks to confirm otherwise).
+- Not verified: the English-taught Informatics bachelor (CZK 64,000 for
+  the first semester, same deadline) and the ČVUT assessment fee.
 
 ## Czechia residence (checked 2026-10-28)
 
@@ -393,6 +425,9 @@ could not be opened by the tools.
 
 ## Recently shipped (October 2026)
 
+- PR #26 (2026-10-29): ČVUT FIT Informatika 2027/28 is a verified route
+  with its own matching policy and tests; removed from "coming soon".
+
 - PR #25 (2026-10-29): Austria (TU Wien, Uni Wien, JKU AI, MedAT at MedUni
   Wien) and KIT as coming soon with reference rules; Austria highlighted.
   Test host aliases: tuwien.ac.at → tuwien.at, meduniwien.at →
@@ -541,7 +576,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (189 tests on 2026-10-29).
+- Unit tests: `npm test` (197 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

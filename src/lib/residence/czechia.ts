@@ -367,7 +367,7 @@ function studyStages(
     eyebrow: "ADMISSION",
     title: "Get admitted and obtain the confirmation of studies",
     description:
-      "The residence application needs the school's original confirmation of studies or enrolment. DocRoute has verified only Charles University's Informatika (2027/28) so far; build that route from the home page.",
+      "The residence application needs the school's original confirmation of studies or enrolment. DocRoute has verified Charles University MFF Informatika and ČVUT FIT Informatika (2027/28) so far; build those routes from the home page.",
     timing: "Before the residence application",
     tasks: [
       {
