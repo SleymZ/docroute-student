@@ -252,6 +252,8 @@ const charlesMffInformatics: AdmissionProgram = {
     admissionDate: "2027-06-07",
     feeLabel: "CZK 1,000",
     applicationUrl: "https://is.cuni.cz/studium/prihlaska/",
+    languageProofDueLabel: "Preferably by 31 July 2027",
+    waiverEvidenceDueLabel: "5 April – 23 May 2027, by ground",
   },
   languagePolicy: {
     generalStatement:
@@ -283,6 +285,7 @@ const charlesMffInformatics: AdmissionProgram = {
         "After the application is registered, request the waiver in the e-application (Žádosti – Upuštění od přijímací zkoušky) with a digitally signed confirmation or an authorised conversion of the proof. Deadlines: 5 April 2027 (maths average), 30 April 2027 (olympiads, seminars, AP), 23–24 May 2027 (maturita results; the page gives both dates, so use 23 May).",
       appliesWhen: "waiver-claim",
       due: "application",
+      dueLabel: "5 April – 23 May 2027, by ground",
       sourceIds: ["mff-rules-2027"],
     },
     {
@@ -411,6 +414,8 @@ const cvutFitInformatics: AdmissionProgram = {
     admissionDate: "2027-06-01",
     feeLabel: "CZK 1,050",
     applicationUrl: "https://prihlaska.cvut.cz/",
+    languageProofDueLabel: "By 16 June, 30 July or 13 September 2027 (for your enrolment day)",
+    waiverEvidenceDueLabel: "Upload by 24 May 2027",
   },
   languagePolicy: {
     generalStatement:
@@ -442,6 +447,7 @@ const cvutFitInformatics: AdmissionProgram = {
         "Upload the waiver request and proof to the application by 24 May 2027. Documents sent later are not considered, and the faculty may check them with the issuer.",
       appliesWhen: "waiver-claim",
       due: "application",
+      dueLabel: "By 24 May 2027",
       sourceIds: ["cvut-fit-conditions-2027"],
     },
     {
@@ -460,6 +466,7 @@ const cvutFitInformatics: AdmissionProgram = {
         "Needed if you are not a Czech or Slovak citizen, did not graduate in Czech or Slovak and do not use the SCIO OSP 90th-percentile ground. Send it by the document deadline for your enrolment day (16 June, 30 July or 13 September 2027).",
       appliesWhen: "foreign-language-test",
       due: "enrolment",
+      dueLabel: "By 16 June, 30 July or 13 September 2027 (for your enrolment day)",
       sourceIds: ["cvut-fit-conditions-2027"],
     },
     {
@@ -469,6 +476,7 @@ const cvutFitInformatics: AdmissionProgram = {
         "Upload a file with an authorised-conversion clause to the application, or bring or post a certified copy to the Study Department, by 16 June, 30 July or 13 September 2027 for enrolment on 22 June, 3 August or 15 September 2027.",
       appliesWhen: "always",
       due: "enrolment",
+      dueLabel: "By 16 June, 30 July or 13 September 2027 (for your enrolment day)",
       sourceIds: ["cvut-fit-conditions-2027", "cvut-fit-page-2027"],
     },
     {
@@ -478,6 +486,7 @@ const cvutFitInformatics: AdmissionProgram = {
         "A school outside Czechia and Slovakia needs a certified copy of the nostrifikace, or a ČVUT document recognising the education issued in the admission procedure (procedure and fee on cvut.cz). Same document deadlines as the maturita certificate.",
       appliesWhen: "foreign-education",
       due: "enrolment",
+      dueLabel: "By 16 June, 30 July or 13 September 2027 (for your enrolment day)",
       sourceIds: ["cvut-fit-conditions-2027"],
     },
     {
@@ -487,6 +496,7 @@ const cvutFitInformatics: AdmissionProgram = {
         "After admission, press “On-line zápis do studia” in the application at least one day before your enrolment day. Enrolment is electronic; you do not have to come in person.",
       appliesWhen: "always",
       due: "enrolment",
+      dueLabel: "A day before 22 June, 3 August or 15 September 2027",
       sourceIds: ["cvut-fit-conditions-2027"],
     },
   ],

@@ -138,6 +138,9 @@ export type ApplicationDocument = {
   due: "application" | "admission-day" | "enrolment";
   sourceIds: string[];
   conditional?: boolean;
+  // Overrides the generic "By <deadline>" label when the document has its
+  // own deadline (e.g. waiver evidence due after the application deadline).
+  dueLabel?: string;
 };
 
 export type AdmissionRequirement = {
@@ -174,6 +177,9 @@ export type AdmissionProgram = {
     feeEur?: number;
     // Shown when the fee is not in euros (e.g. "CZK 1,000").
     feeLabel?: string;
+    // Programme-specific labels for the route's language and waiver tasks.
+    languageProofDueLabel?: string;
+    waiverEvidenceDueLabel?: string;
     applicationUrl: string;
   };
   languagePolicy: {

@@ -125,3 +125,15 @@ test("the policy never applies to another country, degree or intake", () => {
     false,
   );
 });
+
+test("route labels use ČVUT's own deadlines, never MFF's 31 July", () => {
+  const p = profile({ educationCountryCode: "UA", gradeScale: "other", languages: [{ code: "cs", level: "B2", willingToStudyIn: true, proof: "none" }], waiverEvidence: ["scio-math-90"] });
+  const route = buildRoutePreview(p, run(p))!;
+  const tasks = route.stages.flatMap((stage) => stage.tasks);
+  const label = (id: string) => tasks.find((task) => task.id === id)?.dueLabel ?? "";
+  assert.match(label("route-language"), /16 June, 30 July or 13 September 2027/);
+  assert.match(label("route-entrance"), /24 May 2027/);
+  assert.equal(label("cvut-waiver-request"), "By 24 May 2027");
+  assert.match(label("later-cvut-maturita"), /16 June/);
+  assert.ok(!JSON.stringify(route).includes("31 July 2027"));
+});
