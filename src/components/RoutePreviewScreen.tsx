@@ -28,6 +28,7 @@ import {
 import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
+import { WaitlistCta } from "@/components/WaitlistCta";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import { planCzechiaDeadlines } from "@/lib/residence/czechia";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
@@ -456,6 +457,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
               ))}
             </div>
           </section>
+          <WaitlistCta route={program.countryCode === "CZ" ? "study-cz" : "study-sk"} />
         </div>
 
         <aside className={styles.controlPanel}>

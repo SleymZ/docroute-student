@@ -49,8 +49,9 @@ form shows Family and Business as "coming soon" without routes.
 - Site: https://docroute-student.vercel.app (Vercel, built from `main`).
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
-  Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`.
-  Function: `delete_my_account()` (migration `20261028150000`).
+  Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`,
+  `waitlist_signups`. Functions: `delete_my_account()` (migration
+  `20261028150000`, redefined in `20261028180000`), `leave_waitlist(email)`.
 
 ## Verified coverage
 
@@ -299,7 +300,37 @@ still publish only their 2026/27 rules.
   seller's name or business name, IČO and address on the site (selling
   cannot be anonymous).
 
+## Waitlist for the full route (PR #16)
+
+- "Want the full route?" block (`WaitlistCta`) at the end of every route
+  page: study SK/CZ (`RoutePreviewScreen`), work SK, Czechia. Email +
+  unticked consent box (16+, one email about the full route, kept at most
+  12 months, withdraw any time, link to `/privacy#waitlist`). Honeypot
+  field; a repeat signup shows the same success message. Nothing is stored
+  in the browser.
+- Table `waitlist_signups` (migration `20261028180000_waitlist.sql`):
+  email (lower-case), route (`study-sk`, `study-cz`, `work-sk`, `work-cz`),
+  consent version (`WAITLIST_CONSENT_VERSION` in `src/lib/waitlist.ts`;
+  change it when the consent wording changes), `consented_at` set by the
+  database. RLS: anon and signed-in users may only insert those three
+  columns; no one can read, change or delete rows through the API. The
+  owner reads the list in the Supabase dashboard (Table Editor).
+  `leave_waitlist(email)` removes an email without saying whether it was
+  listed (form on `/privacy#waitlist`); `delete_my_account()` also deletes
+  rows with the account's email.
+- Privacy Policy: waitlist row (consent, Art. 6(1)(a)), Supabase role,
+  summary line, deletion and security text, "Leaving the waitlist" form.
+- The migration was run twice on a local Postgres 16 with Supabase-like
+  roles: inserts work, reads/updates/deletes are denied, bad email or
+  route rejected, duplicates give 23505, leave and account deletion work.
+- Limits: no rate limit beyond the honeypot (bots could add fake emails);
+  "Download my data" does not include waitlist rows (they cannot be read
+  through the API). Delete rows after the one announcement email or after
+  12 months.
+
 ## Recently shipped (October 2026)
+
+- PR #16 (2026-10-28): waitlist "I want the full route" (see above).
 
 - PR #15 (2026-10-28): public beta legal basis — Terms, Privacy,
   Cookies, footer, BETA badge, sign-up consent line, data download and
@@ -400,7 +431,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (152 tests on 2026-10-28).
+- Unit tests: `npm test` (169 tests on 2026-10-28).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

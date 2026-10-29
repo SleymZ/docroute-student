@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { LegalPage } from "@/components/LegalPage";
 import styles from "@/components/LegalPage.module.css";
+import { WaitlistLeave } from "@/components/WaitlistLeave";
 import { contact, legalInfo } from "@/data/legal";
+import { WAITLIST_MAX_MONTHS } from "@/lib/waitlist";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -38,6 +40,12 @@ const dataRows = [
     kept: "Not stored by us, apart from technical logs below.",
   },
   {
+    what: "Waitlist (only if you press \u201cI want the full route\u201d and tick the consent box): your email address, which route you were viewing (for example study in Slovakia), the time you agreed and the version of the consent text.",
+    why: "To email you once if a fuller version of the route launches, and to count how many people want it for each route.",
+    basis: "Your consent (GDPR Art. 6(1)(a)). You can withdraw it at any time (see section 5); this does not affect what was done before.",
+    kept: `Until we send that one email, until you withdraw, or at most ${WAITLIST_MAX_MONTHS} months after you joined, whichever comes first. Then deleted.`,
+  },
+  {
     what: "Technical data: IP address, browser type, the page requested (including its address), time and errors, recorded automatically by our hosting and database providers.",
     why: "To deliver pages, keep the service secure and fix errors.",
     basis: "Legitimate interest in a secure, working service (Art. 6(1)(f)).",
@@ -54,7 +62,7 @@ const dataRows = [
 const processors = [
   {
     name: "Supabase, Inc.",
-    role: "Database and sign-in (stores your account, profile, saved universities and progress).",
+    role: "Database and sign-in (stores your account, profile, saved universities, progress and waitlist emails).",
     link: "https://supabase.com/privacy",
   },
   {
@@ -98,6 +106,10 @@ export default function PrivacyPage() {
               Nothing is shared with universities, employers or authorities.
             </li>
             <li>No documents are uploaded; you never send us your passport.</li>
+            <li>
+              A waitlist email is used only to write to you once about the
+              full route, never for newsletters or advertising.
+            </li>
             <li>
               You can download or delete everything from your{" "}
               <Link href="/account">Account</Link> page at any time.
@@ -220,12 +232,20 @@ export default function PrivacyPage() {
         use <strong>Download my data</strong> or{" "}
         <strong>Delete my account</strong> on the{" "}
         <Link href="/account">Account</Link> page. Deleting your account
-        removes your account, profile, saved universities and progress from
-        our database immediately; copies in our providers&apos; backups are
+        removes your account, profile, saved universities, progress and
+        waitlist entries made with the same email from our database
+        immediately; copies in our providers&apos; backups are
         overwritten within their backup cycle. For anything else, email{" "}
         <a href={contact.href}>{contact.label}</a>. We answer
         within one month.
       </p>
+      <h3 id="waitlist">Leaving the waitlist</h3>
+      <p>
+        You can withdraw your waitlist consent at any time, as easily as you
+        gave it: enter the email below and it is deleted at once. For your
+        privacy, the page does not say whether the email was on the list.
+      </p>
+      <WaitlistLeave />
       <p>
         You also have the right to lodge a complaint with a supervisory
         authority. In Slovakia this is the {supervisoryAuthority.name},{" "}
@@ -247,7 +267,8 @@ export default function PrivacyPage() {
       <p>
         Connections are encrypted (HTTPS). Each saved record is protected by
         database rules so that only you, when signed in, can read or change
-        it. Passwords are never stored in readable form. No system is
+        it. Waitlist emails cannot be read through the website at all; only
+        the operator sees them. Passwords are never stored in readable form. No system is
         perfectly secure; if a breach likely puts your rights at risk, we
         will notify the authority and, where required, you.
       </p>
