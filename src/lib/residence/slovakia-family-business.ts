@@ -236,7 +236,7 @@ function sharedGate(
   return null;
 }
 
-function documentsTasks(feeLine: string, extra: RouteTask[], feeSource: string): RouteTask[] {
+function documentsTasks(feeLine: string, extra: RouteTask[], feeSource: string, purposeSource: string): RouteTask[] {
   return [
     {
       id: "application-form",
@@ -253,7 +253,7 @@ function documentsTasks(feeLine: string, extra: RouteTask[], feeSource: string):
         "From your country of citizenship and every country where you stayed more than 90 days in 6 consecutive months during the last 3 years. Not needed under 14. No older than 90 days when you file.",
       status: "action",
       dueLabel: "No older than 90 days at filing",
-      sourceIds: ["iom-temporary-residence-application", "iom-family-reunification"],
+      sourceIds: ["iom-temporary-residence-application", purposeSource],
     },
     {
       id: "accommodation",
@@ -262,7 +262,7 @@ function documentsTasks(feeLine: string, extra: RouteTask[], feeSource: string):
         "A notarised owner affidavit (signed by all owners), the provider's electronic consent, a notarised lease naming you as tenant, or a hotel or dormitory confirmation. Covers 6 months or the whole stay if shorter.",
       status: "action",
       dueLabel: "No older than 90 days at filing",
-      sourceIds: ["iom-temporary-residence-application", "iom-family-reunification"],
+      sourceIds: ["iom-temporary-residence-application", purposeSource],
     },
     {
       id: "authentication-translation",
@@ -270,7 +270,7 @@ function documentsTasks(feeLine: string, extra: RouteTask[], feeSource: string):
       description:
         "Foreign official documents need an apostille or consular legalisation, and a translation into Slovak by a sworn translator (or into Czech). A translation made abroad must be confirmed by a Slovak embassy, except one made in Czechia. Bring notarised copies and keep your originals.",
       status: "action",
-      sourceIds: ["iom-family-reunification", "iom-temporary-residence-application"],
+      sourceIds: [purposeSource, "iom-temporary-residence-application"],
     },
     {
       id: "fees",
@@ -283,6 +283,7 @@ function documentsTasks(feeLine: string, extra: RouteTask[], feeSource: string):
 }
 
 function filingTask(filing: ResidenceFiling, businessFirstApplication: boolean): RouteTask {
+  const purposeSource = businessFirstApplication ? "iom-business-by-residence" : "iom-family-reunification";
   const description =
     filing === "in-country"
       ? "Book an appointment online and apply in person at the Foreign Police department in Slovakia."
@@ -301,7 +302,7 @@ function filingTask(filing: ResidenceFiling, businessFirstApplication: boolean):
           : "Confirm where to file",
     description,
     status: filing === "unclear" ? "attention" : "action",
-    sourceIds: ["iom-temporary-residence-application", "iom-family-reunification"],
+    sourceIds: ["iom-temporary-residence-application", purposeSource],
   };
 }
 
@@ -506,6 +507,7 @@ export function buildSlovakiaFamilyRoute(profile: FamilyProfile): PurposeRoute<F
           `The fee is €${rules.family.feeEur}${minor ? ", but not for children under 18" : ""}.`,
           relationDocs,
           "iom-family-reunification",
+          "iom-family-reunification",
         ),
       },
       {
@@ -640,6 +642,7 @@ export function buildSlovakiaBusinessRoute(profile: BusinessProfile): PurposeRou
         tasks: documentsTasks(
           `The fee is €${b.feeEurEmbassy} at an embassy or €${b.feeEurPolice} at the Foreign Police (you pay €${fee}).`,
           [fundsTask],
+          "iom-temporary-residence-application",
           "iom-temporary-residence-application",
         ),
       },

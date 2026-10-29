@@ -182,3 +182,9 @@ test("every task cites a source the route lists", () => {
         for (const id of task.sourceIds) assert.ok(ids.has(id), `${task.id} cites unknown ${id}`);
   }
 });
+
+test("the business route never cites the family-reunification page", () => {
+  for (const status of ["non-eu-passport-no-residence", "destination-residence"] as const) {
+    assert.doesNotMatch(text(buildSlovakiaBusinessRoute(business({ currentResidenceStatus: status })).stages), /iom-family-reunification/);
+  }
+});
