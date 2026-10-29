@@ -233,7 +233,6 @@ test("Czech computing faculties with published 2027/28 rules are listed", () => 
     intake: "2027/28",
   });
   assert.deepEqual(czech.map((group) => group.id), [
-    "cvut-fit-computing-bsc-2027",
     "vut-fit-computing-bsc-2027",
     "muni-fi-computing-bsc-2027",
   ]);

@@ -72,6 +72,12 @@ export const waiverEvidenceLabels: Record<WaiverEvidence, string> = {
   "cz-matura-math-plus-68": "Czech maturita: Matematika rozšiřující 68%+",
   "sk-matura-math-75": "Slovak maturita: external maths test 75%+",
   "ap-exam-4-5": "AP Calculus or Physics 1/2, score 4 or 5",
+  "cvut-cermat-math-75": "Czech maturita: Matematika rozšiřující 75%+ (ČVUT FIT)",
+  "scio-math-90": "SCIO Mathematics, 90th percentile or higher",
+  "scio-osp-90": "SCIO General study aptitude (OSP), 90th percentile or higher",
+  "mensa-130": "Mensa IQ test, 130 or higher",
+  "cvut-fiks": "FIKS competition winner's diploma (ČVUT FIT)",
+  "cvut-national-competition": "National-round olympiad or SOČ result (ČVUT FIT)",
 };
 
 // Older saved profiles may hold evidence that is too vague to confirm a waiver.

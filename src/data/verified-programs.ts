@@ -378,12 +378,181 @@ const charlesMffInformatics: AdmissionProgram = {
   verifiedAt: "2026-10-28",
 };
 
+const cvutConditions =
+  "https://fit.cvut.cz/uchazeci/podminky-pririz/bi-podminky-prijimaci-rizeni-2027.pdf";
+const cvutAdmissionPage =
+  "https://fit.cvut.cz/cs/uchazeci/prijimaci-rizeni-2/bakalarsky-studijni-program";
+const cvutProgrammes = "https://bk.fit.cvut.cz/cz/";
+
+// Czech Technical University in Prague, Faculty of Information Technology:
+// Czech-taught bachelor's programme Informatika (B0613A140029), 2027/28
+// (checked 2026-10-29). Own matching policy "cvut-fit-bachelor-2027":
+// never reuse MFF or UNIZA thresholds here, or these elsewhere.
+const cvutFitInformatics: AdmissionProgram = {
+  id: "cvut-fit-informatics-bsc-2027",
+  admissionPolicy: "cvut-fit-bachelor-2027",
+  universityId: "24f0a35fafd60166dbae",
+  universityHost: "cvut.cz",
+  universityName: "Czech Technical University in Prague",
+  faculty: "Faculty of Information Technology (FIT ČVUT)",
+  country: "Czechia",
+  countryCode: "CZ",
+  city: "Prague",
+  category: "Computer Science",
+  programName: "Informatics",
+  localProgramName: "Informatika",
+  degreeLevel: "bachelor",
+  intake: "2027/28",
+  durationYears: 3,
+  studyMode: "full-time",
+  instructionLanguages: [{ code: "cs", name: "Czech" }],
+  application: {
+    deadline: "2027-03-31",
+    admissionDate: "2027-06-01",
+    feeLabel: "CZK 1,050",
+    applicationUrl: "https://prihlaska.cvut.cz/",
+  },
+  languagePolicy: {
+    generalStatement:
+      "The programme is taught in Czech. Applicants who are not Czech or Slovak citizens and did not graduate from a Czech- or Slovak-language programme must send a certified copy of a Czech exam at B2 or higher, unless they meet the SCIO OSP waiver condition (90th percentile).",
+  },
+  documents: [
+    {
+      id: "cvut-e-application",
+      title: "Online application at prihlaska.cvut.cz",
+      description:
+        "Fill in the application for Informatika between 1 January and 31 March 2027. Waiver proof, the maturita certificate and other documents can be uploaded later.",
+      appliesWhen: "always",
+      due: "application",
+      sourceIds: ["cvut-fit-conditions-2027", "cvut-fit-page-2027"],
+    },
+    {
+      id: "cvut-fee",
+      title: "Application fee CZK 1,050",
+      description:
+        "Pay by 31 March 2027 (the payment gateway in the application works). The fee is not refunded.",
+      appliesWhen: "always",
+      due: "application",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+    {
+      id: "cvut-waiver-request",
+      title: "Request the exam waiver with proof",
+      description:
+        "Upload the waiver request and proof to the application by 24 May 2027. Documents sent later are not considered, and the faculty may check them with the issuer.",
+      appliesWhen: "waiver-claim",
+      due: "application",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+    {
+      id: "cvut-exam",
+      title: "Written maths test",
+      description:
+        "1 or 2 June 2027 at FIT, Thákurova 9, Prague 6 (your date is shown in the application): 90 minutes, multiple choice, 0–100 points; bring an ID or passport, no calculators or electronics. If you cannot come, email an excuse to prihlasky@fit.cvut.cz by 7 June 2027 for the make-up date on 9 June 2027.",
+      appliesWhen: "entrance-exam",
+      due: "admission-day",
+      sourceIds: ["cvut-fit-conditions-2027", "cvut-fit-page-2027"],
+    },
+    {
+      id: "cvut-czech-proof",
+      title: "Certified copy of a Czech exam at B2 or higher",
+      description:
+        "Needed if you are not a Czech or Slovak citizen, did not graduate in Czech or Slovak and do not use the SCIO OSP 90th-percentile ground. Send it by the document deadline for your enrolment day (16 June, 30 July or 13 September 2027).",
+      appliesWhen: "foreign-language-test",
+      due: "enrolment",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+    {
+      id: "cvut-maturita",
+      title: "Maturita certificate",
+      description:
+        "Upload a file with an authorised-conversion clause to the application, or bring or post a certified copy to the Study Department, by 16 June, 30 July or 13 September 2027 for enrolment on 22 June, 3 August or 15 September 2027.",
+      appliesWhen: "always",
+      due: "enrolment",
+      sourceIds: ["cvut-fit-conditions-2027", "cvut-fit-page-2027"],
+    },
+    {
+      id: "cvut-foreign-recognition",
+      title: "Nostrifikace or ČVUT assessment of your school certificate",
+      description:
+        "A school outside Czechia and Slovakia needs a certified copy of the nostrifikace, or a ČVUT document recognising the education issued in the admission procedure (procedure and fee on cvut.cz). Same document deadlines as the maturita certificate.",
+      appliesWhen: "foreign-education",
+      due: "enrolment",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+    {
+      id: "cvut-online-enrolment",
+      title: "Confirm enrolment online",
+      description:
+        "After admission, press “On-line zápis do studia” in the application at least one day before your enrolment day. Enrolment is electronic; you do not have to come in person.",
+      appliesWhen: "always",
+      due: "enrolment",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+  ],
+  minimumRequirements: [
+    {
+      id: "cvut-admission-rule",
+      title: "70 points guarantee admission",
+      description:
+        "At least 70 of 100 points in the maths test means admission. Remaining places go to applicants ranked by test points, so the threshold can be lower; the application shows it. Planned maximum: 1,100 full-time students (actual capacity usually lower).",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+    {
+      id: "cvut-waivers",
+      title: "Published exam-waiver grounds",
+      description:
+        "CERMAT Matematika rozšiřující 75%+ (maturita 2025/26 or 2026/27); SCIO Mathematics or OSP at the 90th percentile+ (listed dates, Czech or Slovak version); Mensa IQ 130+; FIKS winner in the last 4 years; national round or regional nomination in the maths, informatics or physics olympiad, SOČ or a comparable contest in the last 3 years. CERMAT, FIKS and competitions count only for a first study at the faculty.",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+    {
+      id: "cvut-language",
+      title: "Czech",
+      description:
+        "Czech or Slovak citizens and graduates of Czech- or Slovak-language schools need no proof. Others: Czech B2 certificate, or the SCIO OSP 90th-percentile result.",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+    {
+      id: "cvut-school",
+      title: "Slovak school = Czech school",
+      description:
+        "A Slovak maturita is treated like a Czech one (no nostrifikace). Schools elsewhere need nostrifikace or a ČVUT assessment.",
+      sourceIds: ["cvut-fit-conditions-2027"],
+    },
+  ],
+  sources: [
+    {
+      id: "cvut-fit-conditions-2027",
+      title: "Conditions for admission to the bachelor programme Informatika, 2027/2028",
+      publisher: "Faculty of Information Technology, Czech Technical University in Prague",
+      url: cvutConditions,
+      checkedAt: "2026-10-29",
+    },
+    {
+      id: "cvut-fit-page-2027",
+      title: "Admission procedure 2027: bachelor study programme",
+      publisher: "Faculty of Information Technology, Czech Technical University in Prague",
+      url: cvutAdmissionPage,
+      checkedAt: "2026-10-29",
+    },
+    {
+      id: "cvut-fit-programmes",
+      title: "Study programmes (Informatika, bachelor, 3 years)",
+      publisher: "Faculty of Information Technology, Czech Technical University in Prague",
+      url: cvutProgrammes,
+      checkedAt: "2026-10-29",
+    },
+  ],
+  verifiedAt: "2026-10-29",
+};
+
 export const verifiedPrograms: readonly AdmissionProgram[] = [
   ...programs.map((program) => ({
     ...sharedProgram,
     ...program,
   })),
   charlesMffInformatics,
+  cvutFitInformatics,
 ];
 
 export type VerifiedProgram = AdmissionProgram;

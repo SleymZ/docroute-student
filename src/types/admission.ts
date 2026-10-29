@@ -68,7 +68,14 @@ export type WaiverEvidence =
   | "mff-seminar"
   | "cz-matura-math-plus-68"
   | "sk-matura-math-75"
-  | "ap-exam-4-5";
+  | "ap-exam-4-5"
+  // ČVUT FIT 2027/28 waiver grounds.
+  | "cvut-cermat-math-75"
+  | "scio-math-90"
+  | "scio-osp-90"
+  | "mensa-130"
+  | "cvut-fiks"
+  | "cvut-national-competition";
 
 export const waiverEvidenceOptions: readonly WaiverEvidence[] = [
   "math-matura", // Legacy profiles: no percentile was collected.
@@ -85,6 +92,12 @@ export const waiverEvidenceOptions: readonly WaiverEvidence[] = [
   "cz-matura-math-plus-68",
   "sk-matura-math-75",
   "ap-exam-4-5",
+  "cvut-cermat-math-75",
+  "scio-math-90",
+  "scio-osp-90",
+  "mensa-130",
+  "cvut-fiks",
+  "cvut-national-competition",
 ];
 
 export type ApplicantProfile = {

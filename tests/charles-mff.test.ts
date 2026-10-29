@@ -29,10 +29,10 @@ function profile(patch: Partial<ApplicantProfile> = {}): ApplicantProfile {
 const check = (p: ApplicantProfile, id: string) =>
   matchProgram(p, program, today).checks.find((item) => item.id === id)!;
 
-test("only the Czech programme matches a Czech profile, and never a Slovak one", () => {
+test("only Czech programmes match a Czech profile, and never a Slovak one", () => {
   assert.deepEqual(
-    matchPrograms(profile(), verifiedPrograms, today).map((item) => item.program.id),
-    ["cuni-mff-informatics-bsc-2027"],
+    matchPrograms(profile(), verifiedPrograms, today).map((item) => item.program.id).sort(),
+    ["cuni-mff-informatics-bsc-2027", "cvut-fit-informatics-bsc-2027"],
   );
   assert.ok(
     matchPrograms(profile({ destinationCountryCode: "SK" }), verifiedPrograms, today).every(
