@@ -800,6 +800,296 @@ export const pendingProgramGroups: readonly PendingProgramGroup[] = [
       checkedAt: "2026-10-29",
     },
   },
+  {
+    id: "cvut-fit-computing-bsc-2027",
+    universityId: "24f0a35fafd60166dbae",
+    universityHost: "cvut.cz",
+    universityName: "Czech Technical University in Prague",
+    faculty: "Faculty of Information Technology (FIT ČVUT)",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Prague",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-published",
+    statusNote:
+      "The faculty published its admission conditions for 2027/28. They are summarised below for reference; DocRoute has not built a personalised route or document checklist from them yet. Czech residence steps are on the Czechia route.",
+    programs: [{ programName: "Informatics", localProgramName: "Informatika" }],
+    sources: [
+      {
+        id: "cvut-fit-admission-2027",
+        title: "Admission procedure 2027 (bachelor)",
+        publisher: "Faculty of Information Technology, Czech Technical University in Prague",
+        url: "https://fit.cvut.cz/cs/uchazeci/prijimaci-rizeni-2",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2027/28",
+      approvedNote:
+        "Conditions for admission to the bachelor programme Informatika for 2027/2028, published on the faculty's admission page (the page does not show an approval date).",
+      facts: [
+        {
+          label: "Application deadline",
+          value: "Online 1 January – 31 March 2027; fee CZK 1,050 by 31 March 2027.",
+        },
+        {
+          label: "Entrance exam",
+          value:
+            "Written maths test (90 minutes, multiple choice, 0–100 points) on 1 or 2 June 2027 at the faculty in Prague; make-up 9 June for excused absence (request by 7 June). 70 points guarantees admission; the threshold may be lowered.",
+        },
+        {
+          label: "Exam waiver",
+          value:
+            "Request by 24 May 2027 with one of: CERMAT Matematika rozšiřující 75%+ (2025/26 or 2026/27), SCIO NSZ maths or OSP 90th percentile+, Mensa IQ 130+, FIKS successful solver, or national round of the maths, informatics or physics olympiad or SOČ in the last 3 years.",
+        },
+        {
+          label: "Language",
+          value:
+            "Czech B2 for applicants who are not Czech or Slovak citizens and did not study in Czech or Slovak (an OSP result can replace it).",
+        },
+        {
+          label: "School certificate from abroad",
+          value:
+            "Nostrification, or an assessment by ČVUT, for schools outside Czechia and Slovakia.",
+        },
+      ],
+      programRules: [
+        {
+          localProgramName: "Informatika",
+          rule: "One application; the specialisation (e.g. security, software engineering, AI, web engineering) is chosen during studies.",
+        },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Online application 1 Jan – 31 Mar 2027; fee CZK 1,050.",
+          "Waiver request with proof by 24 May 2027.",
+          "Documents for enrolment by 16 June, 30 July or 13 September 2027 (for the matching enrolment day).",
+        ],
+        entranceRequirements: [
+          "Maths test 1–2 June 2027: 70+ of 100 admitted (threshold may be lowered).",
+          "Or a waiver: CERMAT maths 75%+, SCIO 90th percentile+, olympiads, FIKS, Mensa.",
+          "Czech B2 unless Czech/Slovak citizen or Czech/Slovak schooling.",
+        ],
+        afterAdmission: [
+          "Enrolment days 22 June, 3 August or 15 September 2027.",
+          "Nostrification or ČVUT assessment for a school outside Czechia/Slovakia.",
+        ],
+      },
+      sources: [
+        {
+          id: "cvut-fit-conditions-2027-28",
+          title: "Conditions for admission to the bachelor programme Informatika, 2027/2028",
+          publisher: "Faculty of Information Technology, Czech Technical University in Prague",
+          url: "https://fit.cvut.cz/uchazeci/podminky-pririz/bi-podminky-prijimaci-rizeni-2027.pdf",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "cvut-fit-admission-page-2027",
+          title: "Admission procedure 2027: deadlines, exam, waivers",
+          publisher: "Faculty of Information Technology, Czech Technical University in Prague",
+          url: "https://fit.cvut.cz/cs/uchazeci/prijimaci-rizeni-2",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "vut-fit-computing-bsc-2027",
+    universityId: "4b1db26791c5d27c91ac",
+    universityHost: "vutbr.cz",
+    universityName: "Brno University of Technology",
+    faculty: "Faculty of Information Technology (FIT VUT)",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Brno",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-published",
+    statusNote:
+      "The faculty published its bachelor admission rules for 2027/28. They are summarised below for reference; DocRoute has not built a personalised route or document checklist from them yet. The English-taught programme has separate rules, not covered here.",
+    programs: [{ programName: "Information Technology", localProgramName: "Informační technologie" }],
+    sources: [
+      {
+        id: "vut-fit-application-2027",
+        title: "Application: bachelor study in Czech (2027/2028)",
+        publisher: "Faculty of Information Technology, Brno University of Technology",
+        url: "https://www.fit.vut.cz/applicants/application/.en",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2027/28",
+      approvedNote:
+        "Rules and conditions for admission to the bachelor programme for 2027/2028 (faculty directive 2/2026), as summarised on the faculty's application page; the approval date was not checked.",
+      facts: [
+        {
+          label: "Application deadline",
+          value:
+            "File and pay by 31 March 2027 (the fee is not stated on the page). Claims for preferential admission by 31 March, or by 31 May if results are still pending.",
+        },
+        {
+          label: "No faculty exam",
+          value:
+            "Admission by the SCIO National Comparative Exams (OSP, maths or VŠP) with at least the 75th percentile; the dean may lower it. One free SCIO test on 24 April 2027 for those who applied and paid on time (make-up 22 May, OSP or VŠP only).",
+        },
+        {
+          label: "Preferential admission",
+          value:
+            "Without SCIO, e.g. IQ test 90th percentile+, a maths exam percentile 80+ (Mathematics+ 60+), olympiad success (maths, physics, informatics, logic), top 3 in the regional SOČ round, Kangaroo or Beaver, or the faculty's preparatory maths course; further conditions apply.",
+        },
+        {
+          label: "Language",
+          value:
+            "Basic Czech: Czech or Slovak citizenship, a Czech or Slovak maturita, a SCIO test in Czech or Slovak with 68th percentile+, or a Czech B2 exam or course at BUT.",
+        },
+        {
+          label: "School certificate from abroad",
+          value:
+            "Automatically equivalent for countries with an agreement (e.g. Slovakia, Poland, Germany); otherwise the faculty recognises it from a certified, translated diploma, transcript and study plan.",
+        },
+      ],
+      programRules: [
+        {
+          localProgramName: "Informační technologie",
+          rule: "3-year bachelor in Czech; admission by SCIO percentile or a preferential condition.",
+        },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Application filed and paid by 31 March 2027.",
+          "Proof for preferential admission by 31 March (31 May if pending).",
+          "Outside Slovakia/Poland/Germany etc.: translated diploma, transcript and study plan for recognition.",
+        ],
+        entranceRequirements: [
+          "SCIO OSP, maths or VŠP at the 75th percentile or higher (free test 24 April 2027).",
+          "Or preferential admission (IQ, maths percentile, olympiads, SOČ, preparatory course).",
+          "Basic Czech (Slovak citizens and Slovak maturita holders meet it).",
+        ],
+        afterAdmission: [
+          "Enrolment details are not on the application page: check the faculty's site.",
+        ],
+      },
+      sources: [
+        {
+          id: "vut-fit-application-page-2027",
+          title: "Application, admission criteria, language and recognition (2027/2028)",
+          publisher: "Faculty of Information Technology, Brno University of Technology",
+          url: "https://www.fit.vut.cz/applicants/application/.en",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "muni-fi-computing-bsc-2027",
+    universityId: "1def63b3ac858b190c04",
+    universityHost: "muni.cz",
+    universityName: "Masaryk University",
+    faculty: "Faculty of Informatics (FI MU)",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Brno",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-published",
+    statusNote:
+      "The faculty published its bachelor admission information for 2027/28. It is summarised below for reference; DocRoute has not built a personalised route or document checklist from it yet.",
+    programs: [
+      { programName: "Informatics", localProgramName: "Informatika" },
+      { programName: "Programming and Application Development", localProgramName: "Programování a vývoj aplikací" },
+      { programName: "Cybersecurity", localProgramName: "Kyberbezpečnost" },
+      { programName: "Bioinformatics", localProgramName: "Bioinformatika" },
+    ],
+    sources: [
+      {
+        id: "muni-fi-bachelor-2027",
+        title: "Bachelor admission information (2027/2028)",
+        publisher: "Faculty of Informatics, Masaryk University",
+        url: "https://www.fi.muni.cz/admission/info-bachelor.html.cs",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2027/28",
+      approvedNote:
+        "Approved by the Academic Senate of the Faculty of Informatics on 24 June 2026, for 2027/28 entry.",
+      facts: [
+        {
+          label: "Application deadline",
+          value:
+            "1 November 2026 – 28 February 2027, a separate e-application and fee per programme (amount not stated on the faculty page).",
+        },
+        {
+          label: "Entrance test (TSP)",
+          value:
+            "Masaryk University's study aptitude test: numerical-analytical thinking, reasoning in English and critical thinking. The numerical-analytical part must be in the top 30% at the university; ranking by all three parts. Two attempts possible: 29 November 2026 – 14 February 2027 (Brno) and 15 February – 25 April 2027 (also Bratislava and Žilina); book at least 14 days ahead and by 28 February.",
+        },
+        {
+          label: "Waiver (Informatika only)",
+          value:
+            "Request by 28 February 2027: SCIO NSZ overall percentile 80+, IQ 130+ with a school average of 1.5 or better, or results in olympiads and competitions, SAT, AP, SOČ, CyberGame Slovakia and others (from 2025 onwards).",
+        },
+        {
+          label: "Language and certificates",
+          value:
+            "Czech language and recognition rules are not on the faculty page: see the university's pages for Slovak applicants and for graduates of foreign schools.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Informatika", rule: "Planned intake 350 (single major); exam waiver possible." },
+        { localProgramName: "Programování a vývoj aplikací", rule: "Planned intake 150; TSP required." },
+        { localProgramName: "Kyberbezpečnost", rule: "Planned intake 150; TSP required." },
+        { localProgramName: "Bioinformatika", rule: "Planned intake 30; TSP required." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "E-application 1 Nov 2026 – 28 Feb 2027, one per programme.",
+          "Waiver request with proof by 28 February 2027 (Informatika).",
+          "TSP date booked and application paid at least 14 days before the test.",
+        ],
+        entranceRequirements: [
+          "TSP: numerical-analytical part in the top 30%, ranking by all three parts.",
+          "Informatika: waiver with SCIO 80th percentile+, IQ 130+ (average ≤1.5) or competition results.",
+        ],
+        afterAdmission: [
+          "Language and recognition steps: check the university's pages for Slovak and foreign applicants.",
+        ],
+      },
+      sources: [
+        {
+          id: "muni-fi-bachelor-info-2027",
+          title: "Bachelor admission information: programmes, TSP, dates (2027/2028)",
+          publisher: "Faculty of Informatics, Masaryk University",
+          url: "https://www.fi.muni.cz/admission/info-bachelor.html.cs",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "muni-fi-faq-2027",
+          title: "Admission FAQ: entrance exam waiver",
+          publisher: "Faculty of Informatics, Masaryk University",
+          url: "https://www.fi.muni.cz/admission/faq.html.cs",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "muni-tsp-dates",
+          title: "Admissions: TSP dates and booking",
+          publisher: "Masaryk University",
+          url: "https://www.muni.cz/uchazeci/bakalarske-a-magisterske-studium/prijimacky",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
 ];
 
 export function pendingStatusLabel(status: PendingProgramGroup["status"]) {
