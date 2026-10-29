@@ -696,3 +696,33 @@ a svg {
     opacity: 0.5;
   }
 }
+
+/* Printing / "Save as PDF" of a route: light colours, no site chrome,
+   panels in normal flow. */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  aside,
+  [data-print-static] {
+    position: static !important;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  section,
+  li {
+    break-inside: avoid;
+  }
+}

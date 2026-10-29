@@ -345,6 +345,12 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #18 (2026-10-28): "Save as PDF" on every route page (browser print
+  dialog; `@media print` in `globals.css` forces the light theme, hides
+  the header, breadcrumbs, waitlist, edit links, footer and cookie banner
+  via `data-print-hide`, and a print-only note gives the date and says
+  the rules may change). No PDF library, nothing leaves the device.
+  Accessibility fix for open question 6.
 - PR #17 (2026-10-28): Czech study permit for holders of a Slovak (or
   other EU) study permit: where to file (see Czechia residence).
 - PR #16 (2026-10-28): waitlist "I want the full route" (see above).
@@ -448,7 +454,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (173 tests on 2026-10-28).
+- Unit tests: `npm test` (176 tests on 2026-10-28).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -472,8 +478,8 @@ text, which is unchanged from before).
    Family members of EU citizens are not covered.
 5. **Signed-in flows on Previews**: email links may redirect to production
    because Preview URLs are not in the Supabase redirect allow list.
-6. Accessibility: the university image container uses `role="img"` while
-   containing credit links on the university page.
+6. (resolved in PR #18) The university image's `role="img"` is now on an
+   inner element; the photo credit links sit outside it.
 7. **Planner limits**: Slovak public holidays are counted only as listed in
    Act 241/1993 (future one-year exceptions must be added by hand); steps
    that start at card collection (insurance, medical report) are relative, not

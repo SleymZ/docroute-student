@@ -239,11 +239,14 @@ export function UniversityImage({
   }
 
   return (
-    <div
-      className={`${styles.root} ${className}`}
-      role="img"
-      aria-label={ariaLabel}
-    >
+    <div className={`${styles.root} ${className}`}>
+      {/* The picture is one image for assistive technology; the credit
+          links stay outside it so they remain reachable. */}
+      <div
+        className={styles.visual}
+        role="img"
+        aria-label={ariaLabel}
+      >
       <div
         className={`${styles.placeholder} ${visualClass}`}
         aria-hidden="true"
@@ -316,6 +319,7 @@ export function UniversityImage({
             `${country} city visual`}
         </span>
       )}
+      </div>
 
       {shouldShowCredit &&
         activeMedia?.sourcePage && (

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
+import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { WaitlistCta } from "@/components/WaitlistCta";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { czechiaResidenceRules } from "@/data/czechia-residence";
@@ -307,7 +308,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
   }
 
   const breadcrumb = (
-    <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+    <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
       <Link href="/#route-builder">
         <ArrowLeft size={15} aria-hidden="true" />
         Home
@@ -389,10 +390,14 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
             .
           </p>
         </div>
-        <Link href={`/route/czechia?${editParams.toString()}`} className={styles.editLink}>
-          Edit answers
-        </Link>
+        <div className={styles.headActions}>
+          <SaveRoutePdf title={title} />
+          <Link href={`/route/czechia?${editParams.toString()}`} className={styles.editLink} data-print-hide="">
+            Edit answers
+          </Link>
+        </div>
       </header>
+      <PrintNote asOfDate={asOfDate} />
 
       {route.procedure && (
         <ol className={styles.strip} aria-label="Route stages">

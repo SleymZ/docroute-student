@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
+import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { WaitlistCta } from "@/components/WaitlistCta";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { slovakiaWorkRules } from "@/data/slovakia-work";
@@ -300,7 +301,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
     const initial = new URLSearchParams(searchParams.toString());
     return (
       <div className={styles.page}>
-        <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+        <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
           <Link href="/?purpose=work#route-builder">
             <ArrowLeft size={15} aria-hidden="true" />
             Home
@@ -366,7 +367,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
 
   return (
     <div className={styles.page}>
-      <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+      <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
         <Link href="/?purpose=work#route-builder">
           <ArrowLeft size={15} aria-hidden="true" />
           Home
@@ -391,10 +392,14 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
             {statusPhrases[profile.currentResidenceStatus]}.
           </p>
         </div>
-        <Link href={editHref} className={styles.editLink}>
-          Edit answers
-        </Link>
+        <div className={styles.headActions}>
+          <SaveRoutePdf title="Working in Slovakia" />
+          <Link href={editHref} className={styles.editLink} data-print-hide="">
+            Edit answers
+          </Link>
+        </div>
       </header>
+      <PrintNote asOfDate={asOfDate} />
 
       {route.authorisation && (
         <ol className={styles.strip} aria-label="Route stages">
