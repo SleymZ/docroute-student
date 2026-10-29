@@ -246,7 +246,10 @@ export default function HowItWorksPage() {
               <p>
                 The faculty has announced or drafted rules for the intake, but
                 the final version is not published. The programs are listed so
-                you can plan ahead; no checklist is built from a draft.
+                you can plan ahead; no checklist is built from a draft. Where
+                the faculty published approved rules for the previous intake,
+                they are shown as &quot;Last year&apos;s rules&quot;, for
+                orientation only and never used for matching.
               </p>
             </article>
             <article className={styles.labelCard}>

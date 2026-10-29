@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ArrowRight, Clock3, ExternalLink } from "lucide-react";
+import { ArrowRight, Clock3, ExternalLink, History } from "lucide-react";
 
 import type { PendingProgramGroup } from "@/data/pending-programs";
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -14,12 +14,16 @@ type PendingProgramsProps = {
   // page itself shows the group without a link.
   universityHref?: (group: PendingProgramGroup) => string;
   heading?: string;
+  // Open the "last year's rules" block by default (the university page);
+  // results pages keep it collapsed so the list stays short.
+  previousCycleOpen?: boolean;
 };
 
 export function PendingPrograms({
   groups,
   universityHref,
   heading = "Coming soon",
+  previousCycleOpen = false,
 }: PendingProgramsProps) {
   if (groups.length === 0) {
     return null;
@@ -36,7 +40,8 @@ export function PendingPrograms({
           <p className={styles.lead}>
             Listed so you can plan ahead. No personalised route, checklist or
             match is shown until the approved rules for this intake are
-            published and checked.
+            published and checked. Where available, last year&apos;s approved
+            rules are shown for orientation only.
           </p>
         </div>
       </div>
@@ -68,6 +73,62 @@ export function PendingPrograms({
           </ul>
 
           <p className={styles.note}>{group.statusNote}</p>
+
+          {group.previousCycle && (
+            <details
+              className={styles.previous}
+              open={previousCycleOpen || undefined}
+            >
+              <summary>
+                <History size={15} aria-hidden="true" />
+                <span>
+                  Last year&apos;s rules ({group.previousCycle.intake}), for
+                  orientation
+                </span>
+              </summary>
+              <p className={styles.previousWarning} role="note">
+                These are <strong>not</strong> the rules for {group.intake}.
+                They often change little from year to year, but dates,
+                thresholds and fees can change. Check the {group.intake} rules
+                before you apply; DocRoute will replace this block once they are
+                approved and checked. {group.previousCycle.approvedNote}
+              </p>
+              <dl className={styles.facts}>
+                {group.previousCycle.facts.map((fact) => (
+                  <div key={fact.label}>
+                    <dt>{fact.label}</dt>
+                    <dd>{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <ul className={styles.programRules}>
+                {group.previousCycle.programRules.map((item) => {
+                  const program = group.programs.find(
+                    (entry) => entry.localProgramName === item.localProgramName,
+                  );
+                  return (
+                    <li key={item.localProgramName}>
+                      <strong>
+                        {program?.programName ?? item.localProgramName}
+                      </strong>
+                      <span>{item.rule}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <ul className={styles.sources}>
+                {group.previousCycle.sources.map((source) => (
+                  <li key={source.id}>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">
+                      {source.title}
+                      <ExternalLink size={13} aria-hidden="true" />
+                    </a>
+                    <small>checked {formatPlanDate(source.checkedAt)}</small>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
 
           <ul className={styles.sources}>
             {group.sources.map((source) => (
