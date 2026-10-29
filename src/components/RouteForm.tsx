@@ -24,10 +24,10 @@ import {
   Code2,
   Globe2,
   GraduationCap,
-  Pill,
+  Scale,
   ShieldCheck,
-  Smile,
   Stethoscope,
+  TrendingUp,
   UsersRound,
 } from "lucide-react";
 
@@ -101,8 +101,8 @@ function CountryFlag({ country }: { country: string }) {
 function ProgramIcon({ program }: { program: string }) {
   const icons = {
     Medicine: Stethoscope,
-    Dentistry: Smile,
-    Pharmacy: Pill,
+    Law: Scale,
+    "Economics & Business": TrendingUp,
     "Computer Science": Code2,
   };
 

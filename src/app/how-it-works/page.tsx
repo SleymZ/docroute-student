@@ -341,7 +341,7 @@ export default function HowItWorksPage() {
                       {group.universityName}, {group.faculty}
                     </strong>
                     <span>
-                      {group.city} · {formatPendingDegree(group.degreeLevel)} ·{" "}
+                      {group.city} · {formatPendingDegree(group.degreeLevel, group.category)} ·{" "}
                       {group.category} · {group.intake} ·{" "}
                       {group.programs.map((program) => program.programName).join(", ")}
                     </span>

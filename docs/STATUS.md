@@ -65,6 +65,7 @@ form shows Family and Business as "coming soon" without routes.
 | Coming soon (not verified) | Medicine (long-cycle, MUDr./MDDr.) · 2027/28: Comenius LF Bratislava (2026/27 rules), Comenius JLF Martin (2027/28 rules published, "Rules published, route not built yet"), UPJŠ LF Košice (2026/27 rules, Slovak and English tracks). Germany: TUM Informatics bachelor (2026 cycle rules, standing aptitude statute); no German residence route | 2026-10-29 |
 | Coming soon (not verified) | Czechia · Computer Science · Bachelor · 2027/28, rules already published ("Rules published, route not built yet"): VUT Brno FIT Informační technologie (SCIO 75th percentile or preferential admission), Masaryk FI (4 programs, TSP, waiver for Informatika). Next step: verify them into routes like Charles MFF | 2026-10-29 |
 | Coming soon (not verified) | Austria: TU Wien Informatik, Uni Wien Informatik, JKU Artificial Intelligence (English), all with 2026/27 rules (2027 dates not out); MedUni Wien medicine via MedAT (expected 2027 dates published). Germany: KIT Informatik (standing rules, 15 July, €1,500 non-EU). No Austrian or German residence route. RWTH and LMU skipped: their pages did not give deadlines or requirements | 2026-10-29 |
+| Coming soon (not verified) | Law and Economics & Business (new fields, PR #27): Comenius Faculty of Law, Právo bachelor (2026/27 rules); Charles University Faculty of Law and Masaryk Faculty of Law, Právo a právní věda (5-year long-cycle, 2027/28 rules published); EUBA framework (2026/27 rules) and VŠE Faculty of Economics (2026/27 rules). Czech medicine: Charles First Faculty of Medicine (2027/28 rules published) and Masaryk Faculty of Medicine (2026/27 handbook) | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
@@ -218,6 +219,22 @@ could not be opened by the tools.
   was not found.
 - Matcher: `matchProgram` dispatches per policy; profile form shows waiver
   options per destination country.
+
+## Fields: Law and Economics & Business (PR #27, checked 2026-10-29)
+
+- Owner decision 2026-10-29: the field list is Medicine (incl. dentistry),
+  Law, Economics & Business, Computer Science. Dentistry and Pharmacy were
+  removed as separate fields (no data; dentistry sits under Medicine).
+  Old links with `program=Dentistry/Pharmacy` show the invalid-field page.
+- Czech law (Právo a právní věda) is a five-year master's entered from
+  secondary school, stored as `long-cycle` (label "Long-cycle master's
+  (Mgr.)"); medicine keeps "(MUDr./MDDr.)".
+- Gaps: Charles PF fee amount not on the page; MU Law fee differs (CZK 800
+  in the leaflet, 850 on the faculty page) and its conditions PDF and
+  foreign-certificate rules could not be opened; UPJŠ Law skipped (2027/28
+  page has a blank exam date and no 2026/27 conditions found); EUBA tuition
+  for English programmes not checked; 1. LF test format and bonus rules not
+  on the checked pages; MU Medicine fee/intake are 2026/27.
 
 ## ČVUT FIT Informatika (checked 2026-10-29)
 
@@ -425,6 +442,10 @@ could not be opened by the tools.
 
 ## Recently shipped (October 2026)
 
+- PR #27 (2026-10-29): new fields Law and Economics & Business (replacing
+  Dentistry and Pharmacy), with Comenius, Charles and Masaryk law faculties,
+  EUBA and VŠE NF as coming soon; Charles 1. LF and Masaryk LF medicine.
+
 - PR #26 (2026-10-29): ČVUT FIT Informatika 2027/28 is a verified route
   with its own matching policy and tests; removed from "coming soon".
 
@@ -576,7 +597,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (197 tests on 2026-10-29).
+- Unit tests: `npm test` (200 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

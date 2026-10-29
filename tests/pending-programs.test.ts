@@ -252,3 +252,40 @@ test("Austrian entries cover computing and MedAT medicine", () => {
   const medat = findPendingProgramGroups({ countryCode: "AT", category: "Medicine", degreeLevel: "bachelor" });
   assert.deepEqual(medat.map((group) => group.id), ["meduniwien-medicine-2027"]);
 });
+
+test("law and economics are listed as fields with sourced coming-soon faculties", async () => {
+  const { programOptions } = await import("../src/data/demo-destinations");
+  assert.deepEqual([...programOptions], ["Medicine", "Law", "Economics & Business", "Computer Science"]);
+
+  const skLaw = findPendingProgramGroups({ countryCode: "SK", category: "Law", degreeLevel: "bachelor", intake: "2027/28" });
+  assert.deepEqual(skLaw.map((group) => group.id), ["uniba-praf-law-bsc-2027"]);
+  // Czech law is a five-year master's found from a bachelor-level profile.
+  const czLaw = findPendingProgramGroups({ countryCode: "CZ", category: "Law", degreeLevel: "bachelor", intake: "2027/28" });
+  assert.deepEqual(czLaw.map((group) => group.id), ["cuni-prf-law-2027", "muni-law-2027"]);
+  for (const group of czLaw) {
+    assert.equal(group.degreeLevel, "long-cycle");
+    assert.equal(group.status, "rules-published");
+  }
+  const economics = findPendingProgramGroups({ category: "Economics & Business", degreeLevel: "bachelor" });
+  assert.deepEqual(economics.map((group) => group.id), ["euba-economics-bsc-2027", "vse-nf-economics-bsc-2027"]);
+  for (const group of economics) assert.equal(group.status, "rules-not-published");
+});
+
+test("Czech medicine adds two faculties next to the Slovak ones", async () => {
+  const { formatPendingDegree } = await import("../src/data/pending-programs");
+  const czMedicine = findPendingProgramGroups({ countryCode: "CZ", category: "Medicine", degreeLevel: "bachelor" });
+  assert.deepEqual(czMedicine.map((group) => group.id), ["cuni-lf1-medicine-2027", "muni-lf-medicine-2027"]);
+  assert.equal(formatPendingDegree("long-cycle", "Medicine"), "Long-cycle master's (MUDr./MDDr.)");
+  assert.equal(formatPendingDegree("long-cycle", "Law"), "Long-cycle master's (Mgr.)");
+});
+
+test("no profile in a new field gets a verified match", () => {
+  for (const studyCategory of ["Law", "Economics & Business", "Medicine"]) {
+    for (const destinationCountryCode of ["SK", "CZ"]) {
+      assert.deepEqual(
+        matchPrograms({ ...profile, studyCategory, destinationCountryCode }, verifiedPrograms, "2026-10-29"),
+        [],
+      );
+    }
+  }
+});
