@@ -112,20 +112,26 @@ test("Slovak computing faculties are listed for the exact scope only", () => {
     [],
   );
   assert.deepEqual(
-    findPendingProgramGroups({ countryCode: "SK", category: "Medicine" }),
+    findPendingProgramGroups({ countryCode: "SK", category: "Dentistry" }),
     [],
   );
 });
 
-test("last year's rules are an earlier intake, sourced and name real programs", () => {
+test("reference rules are never later than the intake, sourced and name real programs", () => {
   for (const group of pendingProgramGroups) {
-    const previous = group.previousCycle;
+    const previous = group.referenceRules;
     if (!previous) continue;
     const startYear = (intake: string) => Number(intake.slice(0, 4));
     assert.match(previous.intake, /^\d{4}\/\d{2}$/);
     assert.ok(
-      startYear(previous.intake) < startYear(group.intake),
-      `${group.id}: previous cycle must be earlier than ${group.intake}`,
+      startYear(previous.intake) <= startYear(group.intake),
+      `${group.id}: reference rules must not be later than ${group.intake}`,
+    );
+    // Rules for the intake itself go with the "rules-published" status.
+    assert.equal(
+      previous.intake === group.intake,
+      group.status === "rules-published",
+      `${group.id}: status and reference intake disagree`,
     );
     assert.ok(previous.facts.length > 0);
     assert.ok(previous.sources.length > 0);
@@ -148,9 +154,9 @@ test("last year's rules are an earlier intake, sourced and name real programs", 
 
 test("Comenius FMFI shows its approved 2026/27 rules for orientation", () => {
   const [group] = findPendingProgramGroups({ universityHost: "uniba.sk" });
-  assert.equal(group.previousCycle?.intake, "2026/27");
-  assert.equal(group.previousCycle?.programRules.length, group.programs.length);
-  const informatika = group.previousCycle?.programRules.find(
+  assert.equal(group.referenceRules?.intake, "2026/27");
+  assert.equal(group.referenceRules?.programRules.length, group.programs.length);
+  const informatika = group.referenceRules?.programRules.find(
     (item) => item.localProgramName === "Informatika",
   );
   assert.match(informatika?.rule ?? "", /percentile 60\+/);
@@ -159,7 +165,11 @@ test("Comenius FMFI shows its approved 2026/27 rules for orientation", () => {
 test("each group carries a known status and unique ids", () => {
   const ids = new Set<string>();
   for (const group of pendingProgramGroups) {
-    assert.ok(["rules-awaiting-approval", "rules-not-published"].includes(group.status));
+    assert.ok(
+      ["rules-awaiting-approval", "rules-not-published", "rules-published"].includes(
+        group.status,
+      ),
+    );
     assert.ok(!ids.has(group.id), `duplicate ${group.id}`);
     ids.add(group.id);
   }
@@ -167,11 +177,35 @@ test("each group carries a known status and unique ids", () => {
 
 test("last year's rules fill all three requirement cards", () => {
   for (const group of pendingProgramGroups) {
-    const overview = group.previousCycle?.overview;
-    if (!group.previousCycle) continue;
+    const overview = group.referenceRules?.overview;
+    if (!group.referenceRules) continue;
     assert.ok(overview, `${group.id} has no overview`);
     assert.ok(overview.applicationDocuments.length > 0);
     assert.ok(overview.entranceRequirements.length > 0);
     assert.ok(overview.afterAdmission.length > 0);
   }
+});
+
+test("Slovak medicine is listed as long-cycle and found from a bachelor profile", () => {
+  const medicine = findPendingProgramGroups({
+    countryCode: "SK",
+    category: "Medicine",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+  });
+  assert.deepEqual(
+    medicine.map((group) => group.id).sort(),
+    ["uniba-jlf-medicine-2027", "uniba-lf-medicine-2027", "upjs-lf-medicine-2027"],
+  );
+  for (const group of medicine) assert.equal(group.degreeLevel, "long-cycle");
+  assert.deepEqual(
+    findPendingProgramGroups({ countryCode: "SK", category: "Medicine", degreeLevel: "master" }),
+    [],
+  );
+});
+
+test("TUM Informatics is the only German entry and never matches", () => {
+  const german = findPendingProgramGroups({ countryCode: "DE" });
+  assert.deepEqual(german.map((group) => group.id), ["tum-informatics-bsc-2027"]);
+  assert.equal(findVerifiedProgram("tum-informatics-bsc-2027"), null);
 });

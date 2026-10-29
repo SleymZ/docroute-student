@@ -514,6 +514,13 @@
   line-height: 1.5;
 }
 
+.requirementGroupTitle {
+  margin: 22px 0 -8px;
+  color: light-dark(#22211d, #f5f3ee);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .requirementPreviewFilled div {
   border-style: solid;
 }

@@ -61,6 +61,7 @@ form shows Family and Business as "coming soon" without routes.
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
 | Admission | Czechia · Computer Science · Bachelor · 2027/28 · Charles University MFF, Informatika (Czech-taught), policy `cuni-mff-bachelor-2027` | 2026-10-28 |
 | Coming soon (not verified) | Computer Science · Bachelor · 2027/28 (`src/data/pending-programs.ts`): Comenius FMFI (4 programs, rules awaiting approval), STU FIIT (Informatika) and TUKE FEI (5 programs), both "rules not published yet". Listed with last year's (2026/27) approved rules for orientation; no match, checklist or route | 2026-10-29 |
+| Coming soon (not verified) | Medicine (long-cycle, MUDr./MDDr.) · 2027/28: Comenius LF Bratislava (2026/27 rules), Comenius JLF Martin (2027/28 rules published, "Rules published, route not built yet"), UPJŠ LF Košice (2026/27 rules, Slovak and English tracks). Germany: TUM Informatics bachelor (2026 cycle rules, standing aptitude statute); no German residence route | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
@@ -71,8 +72,9 @@ The catalog (`src/data/universities.json`, 2,598 institutions in 46
 countries, imported 2026-09-16 from Hipo) lists institutions only. It is not
 evidence that a program exists or of its requirements.
 
-On the home map Slovakia and Czechia are highlighted (Czechia for its
-residence routes).
+On the home map Slovakia, Czechia and Germany are highlighted (Czechia for
+its residence routes; Germany only for the TUM "coming soon" listing, owner
+decision 2026-10-29 — no German residence or verified route).
 
 ## "Coming soon" programs
 
@@ -81,6 +83,14 @@ announced but not yet approved and published. They appear on results pages
 (a "Coming soon" block), on the university page and on How it works, with
 the label "Rules awaiting approval". They never go through `matchProgram`
 and must not carry thresholds, dates or fees from a draft.
+
+Reference rules (PR #23 renamed `previousCycle` to `referenceRules`): the
+rules may also be the faculty's already published rules for the intake
+itself (status `rules-published`, block "Published rules (2027/28), for
+reference"; a test ties the two together). Medicine groups use
+`degreeLevel: "long-cycle"` and are found from bachelor profiles. On the
+university page each faculty with reference rules gets its own row of
+three requirement cards.
 
 Last year's rules (PR #21, owner decision 2026-10-29): a group may carry
 `previousCycle`, the approved rules of the previous intake with their own
@@ -380,6 +390,11 @@ could not be opened by the tools.
 
 ## Recently shipped (October 2026)
 
+- PR #23 (2026-10-29): Slovak medicine (LF UK Bratislava, JLF UK Martin
+  with published 2027/28 rules, UPJŠ LF Košice) and TUM Informatics as
+  coming soon with reference rules; Germany highlighted on the home map;
+  status "Rules published, route not built yet".
+
 - PR #22 (2026-10-29): STU FIIT and TUKE FEI computing bachelors added as
   coming soon with their 2026/27 rules; new status "Rules not published
   yet" shown on cards, the university page and How it works. On the
@@ -506,7 +521,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (185 tests on 2026-10-29).
+- Unit tests: `npm test` (187 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

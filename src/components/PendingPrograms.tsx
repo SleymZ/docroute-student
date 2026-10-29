@@ -3,11 +3,12 @@ import Link from "next/link";
 import { ArrowRight, Clock3, ExternalLink, History } from "lucide-react";
 
 import {
+  formatPendingDegree,
+  isCurrentReference,
   pendingStatusLabel,
   type PendingProgramGroup,
 } from "@/data/pending-programs";
 import { formatPlanDate } from "@/lib/residence/deadlines";
-import { formatDegreeLevel } from "@/lib/profile-options";
 
 import styles from "./PendingPrograms.module.css";
 
@@ -19,14 +20,14 @@ type PendingProgramsProps = {
   heading?: string;
   // Open the "last year's rules" block by default (the university page);
   // results pages keep it collapsed so the list stays short.
-  previousCycleOpen?: boolean;
+  referenceOpen?: boolean;
 };
 
 export function PendingPrograms({
   groups,
   universityHref,
   heading = "Coming soon",
-  previousCycleOpen = false,
+  referenceOpen = false,
 }: PendingProgramsProps) {
   if (groups.length === 0) {
     return null;
@@ -43,8 +44,9 @@ export function PendingPrograms({
           <p className={styles.lead}>
             Listed so you can plan ahead. No personalised route, checklist or
             match is shown until the approved rules for this intake are
-            published and checked. Where available, last year&apos;s approved
-            rules are shown for orientation only.
+            published and checked. Where available, the faculty&apos;s
+            approved rules (last year&apos;s, or this intake&apos;s if already
+            published) are summarised for reference only.
           </p>
         </div>
       </div>
@@ -64,7 +66,7 @@ export function PendingPrograms({
           </div>
 
           <p className={styles.scope}>
-            {formatDegreeLevel(group.degreeLevel)} · {group.category} ·{" "}
+            {formatPendingDegree(group.degreeLevel)} · {group.category} ·{" "}
             {group.intake}
           </p>
 
@@ -79,27 +81,40 @@ export function PendingPrograms({
 
           <p className={styles.note}>{group.statusNote}</p>
 
-          {group.previousCycle && (
+          {group.referenceRules && (
             <details
               className={styles.previous}
-              open={previousCycleOpen || undefined}
+              open={referenceOpen || undefined}
             >
               <summary>
                 <History size={15} aria-hidden="true" />
                 <span>
-                  Last year&apos;s rules ({group.previousCycle.intake}), for
-                  orientation
+                  {isCurrentReference(group)
+                    ? `Published rules (${group.referenceRules.intake}), for reference`
+                    : `Last year's rules (${group.referenceRules.intake}), for orientation`}
                 </span>
               </summary>
               <p className={styles.previousWarning} role="note">
-                These are <strong>not</strong> the rules for {group.intake}.
-                They often change little from year to year, but dates,
-                thresholds and fees can change. Check the {group.intake} rules
-                before you apply; DocRoute will replace this block once they are
-                approved and checked. {group.previousCycle.approvedNote}
+                {isCurrentReference(group) ? (
+                  <>
+                    A short summary of the faculty&apos;s published rules for{" "}
+                    {group.intake}. DocRoute has not built a personalised route
+                    from them yet, so read the official document before you
+                    apply.{" "}
+                  </>
+                ) : (
+                  <>
+                    These are <strong>not</strong> the rules for {group.intake}.
+                    They often change little from year to year, but dates,
+                    thresholds and fees can change. Check the {group.intake}{" "}
+                    rules before you apply; DocRoute will replace this block
+                    once they are approved and checked.{" "}
+                  </>
+                )}
+                {group.referenceRules.approvedNote}
               </p>
               <dl className={styles.facts}>
-                {group.previousCycle.facts.map((fact) => (
+                {group.referenceRules.facts.map((fact) => (
                   <div key={fact.label}>
                     <dt>{fact.label}</dt>
                     <dd>{fact.value}</dd>
@@ -107,7 +122,7 @@ export function PendingPrograms({
                 ))}
               </dl>
               <ul className={styles.programRules}>
-                {group.previousCycle.programRules.map((item) => {
+                {group.referenceRules.programRules.map((item) => {
                   const program = group.programs.find(
                     (entry) => entry.localProgramName === item.localProgramName,
                   );
@@ -122,7 +137,7 @@ export function PendingPrograms({
                 })}
               </ul>
               <ul className={styles.sources}>
-                {group.previousCycle.sources.map((source) => (
+                {group.referenceRules.sources.map((source) => (
                   <li key={source.id}>
                     <a href={source.url} target="_blank" rel="noopener noreferrer">
                       {source.title}
