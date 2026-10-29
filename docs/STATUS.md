@@ -62,6 +62,7 @@ form shows Family and Business as "coming soon" without routes.
 | Admission | Czechia · Computer Science · Bachelor · 2027/28 · Charles University MFF, Informatika (Czech-taught), policy `cuni-mff-bachelor-2027` | 2026-10-28 |
 | Coming soon (not verified) | Computer Science · Bachelor · 2027/28 (`src/data/pending-programs.ts`): Comenius FMFI (4 programs, rules awaiting approval), STU FIIT (Informatika) and TUKE FEI (5 programs), both "rules not published yet". Listed with last year's (2026/27) approved rules for orientation; no match, checklist or route | 2026-10-29 |
 | Coming soon (not verified) | Medicine (long-cycle, MUDr./MDDr.) · 2027/28: Comenius LF Bratislava (2026/27 rules), Comenius JLF Martin (2027/28 rules published, "Rules published, route not built yet"), UPJŠ LF Košice (2026/27 rules, Slovak and English tracks). Germany: TUM Informatics bachelor (2026 cycle rules, standing aptitude statute); no German residence route | 2026-10-29 |
+| Coming soon (not verified) | Czechia · Computer Science · Bachelor · 2027/28, rules already published ("Rules published, route not built yet"): ČVUT FIT Informatika (maths test 1–2 June 2027, waivers), VUT Brno FIT Informační technologie (SCIO 75th percentile or preferential admission), Masaryk FI (4 programs, TSP, waiver for Informatika). Next step: verify them into routes like Charles MFF | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
@@ -390,6 +391,18 @@ could not be opened by the tools.
 
 ## Recently shipped (October 2026)
 
+- PR #24 (2026-10-29): Czech computing bachelors at ČVUT FIT, VUT Brno FIT
+  and Masaryk FI as coming soon with their published 2027/28 rules. FIT
+  VUT sources are on vut.cz (the catalog still says vutbr.cz; the test
+  allows this alias). Not checked: FIT VUT fee and the directive PDF, MU
+  fee and Czech-language rules (pages not reachable or silent).
+  Results pages no longer show the separate "Coming soon" block (owner
+  request): those universities are ordinary cards in the list with a
+  "Coming soon" badge (exact status in the tooltip) and a line saying
+  whether the next intake's rules are out; the rules summary stays on the
+  university page. The block is still shown when a route profile has no
+  verified match, and on the university page.
+
 - PR #23 (2026-10-29): Slovak medicine (LF UK Bratislava, JLF UK Martin
   with published 2027/28 rules, UPJŠ LF Košice) and TUM Informatics as
   coming soon with reference rules; Germany highlighted on the home map;
@@ -521,7 +534,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (187 tests on 2026-10-29).
+- Unit tests: `npm test` (188 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

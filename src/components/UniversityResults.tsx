@@ -541,11 +541,6 @@ export function UniversityResults({
         </p>
       </div>
 
-      <PendingPrograms
-        groups={pendingGroups}
-        universityHref={(group) => pendingUniversityHref(group.universityId)}
-      />
-
       <div className={styles.resultMeta} role="status">
         Showing {Math.min(visibleCount, universityResults.length)}{" "}
         of {universityResults.length}
@@ -626,8 +621,11 @@ export function UniversityResults({
                         Program verified
                       </span>
                     ) : university.pending ? (
-                      <span className={styles.pendingBadge}>
-                        {pendingStatusLabel(university.pending)}
+                      <span
+                        className={styles.pendingBadge}
+                        title={pendingStatusLabel(university.pending)}
+                      >
+                        Coming soon
                       </span>
                     ) : (
                       <span className={styles.pendingBadge}>
@@ -758,8 +756,10 @@ export function UniversityResults({
                     </div>
                   ) : (
                     <p className={styles.pendingText}>
-                      {university.pending
-                        ? `${selectedProgram} programs here are listed as coming soon: the approved admission rules for the next intake are not published yet, so no personalised requirements are shown. Last year's rules are shown for orientation in the Coming soon block.`
+                      {university.pending === "rules-published"
+                        ? `This faculty has published its ${selectedProgram} admission rules for the next intake. Open the university for a summary; a personalised route is not built yet.`
+                        : university.pending
+                        ? `${selectedProgram} admission rules for the next intake are not out yet. Open the university to see last year's rules, for orientation.`
                         : mode === "route" && profile
                         ? `We have not yet verified a ${formatDegreeLevel(
                             profile.degreeLevel,

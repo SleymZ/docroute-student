@@ -26,6 +26,15 @@ const profile: ApplicantProfile = {
   waiverEvidence: [],
 };
 
+// Official domains a university moved to after the catalog import.
+const hostAliases: Record<string, string[]> = { "vutbr.cz": ["vut.cz"] };
+
+function onUniversityDomain(hostname: string, universityHost: string) {
+  return [universityHost, ...(hostAliases[universityHost] ?? [])].some(
+    (domain) => hostname === domain || hostname.endsWith("." + domain),
+  );
+}
+
 function host(website: string) {
   return new URL(website).hostname.replace(/^www\./, "");
 }
@@ -79,8 +88,7 @@ test("pending groups cite official sources with a check date", () => {
       const url = new URL(source.url);
       assert.equal(url.protocol, "https:");
       assert.ok(
-        url.hostname === group.universityHost ||
-          url.hostname.endsWith("." + group.universityHost),
+        onUniversityDomain(url.hostname, group.universityHost),
         `${source.url} is not on the university's own domain`,
       );
       assert.match(source.checkedAt, /^\d{4}-\d{2}-\d{2}$/);
@@ -140,8 +148,7 @@ test("reference rules are never later than the intake, sourced and name real pro
       const url = new URL(source.url);
       assert.equal(url.protocol, "https:");
       assert.ok(
-        url.hostname === group.universityHost ||
-          url.hostname.endsWith("." + group.universityHost),
+        onUniversityDomain(url.hostname, group.universityHost),
         `${source.url} is not on the university's own domain`,
       );
     }
@@ -208,4 +215,22 @@ test("TUM Informatics is the only German entry and never matches", () => {
   const german = findPendingProgramGroups({ countryCode: "DE" });
   assert.deepEqual(german.map((group) => group.id), ["tum-informatics-bsc-2027"]);
   assert.equal(findVerifiedProgram("tum-informatics-bsc-2027"), null);
+});
+
+test("Czech computing faculties with published 2027/28 rules are listed", () => {
+  const czech = findPendingProgramGroups({
+    countryCode: "CZ",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+  });
+  assert.deepEqual(czech.map((group) => group.id), [
+    "cvut-fit-computing-bsc-2027",
+    "vut-fit-computing-bsc-2027",
+    "muni-fi-computing-bsc-2027",
+  ]);
+  for (const group of czech) {
+    assert.equal(group.status, "rules-published");
+    assert.equal(group.referenceRules?.intake, "2027/28");
+  }
 });
