@@ -66,7 +66,7 @@ export function PendingPrograms({
           </div>
 
           <p className={styles.scope}>
-            {formatPendingDegree(group.degreeLevel)} · {group.category} ·{" "}
+            {formatPendingDegree(group.degreeLevel, group.category)} · {group.category} ·{" "}
             {group.intake}
           </p>
 

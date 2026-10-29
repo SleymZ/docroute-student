@@ -42,8 +42,9 @@ export type PendingProgramGroup = {
   countryCode: string;
   city: string;
   category: string;
-  // "long-cycle": medicine and dentistry (combined first and second cycle,
-  // MUDr./MDDr.), entered straight from secondary school like a bachelor's.
+  // "long-cycle": medicine and dentistry (MUDr./MDDr.) or Czech law (Mgr.),
+  // combined first and second cycle entered straight from secondary school
+  // like a bachelor's.
   degreeLevel: DegreeLevel | "long-cycle";
   intake: StudyIntake;
   // "rules-awaiting-approval": a draft for the intake exists;
@@ -1424,6 +1425,653 @@ export const pendingProgramGroups: readonly PendingProgramGroup[] = [
       checkedAt: "2026-10-29",
     },
   },
+  // Law and economics (PR #27, checked 2026-10-29). Czech law is a
+  // five-year long-cycle master's entered from secondary school.
+  {
+    id: "uniba-praf-law-bsc-2027",
+    universityId: "79e938c73e40ae20dfe7",
+    universityHost: "uniba.sk",
+    universityName: "Comenius University Bratislava",
+    faculty: "Faculty of Law",
+    country: "Slovakia",
+    countryCode: "SK",
+    city: "Bratislava",
+    category: "Law",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "On 29 October 2026 the faculty's bachelor admission page still showed the 2026/27 conditions only. DocRoute does not build a personalised route or document checklist until the 2027/28 conditions are published.",
+    programs: [{ programName: "Law", localProgramName: "Právo" }],
+    sources: [
+      {
+        id: "praf-uk-bachelor-page",
+        title: "Bachelor's study: admission",
+        publisher: "Faculty of Law, Comenius University Bratislava",
+        url: "https://www.flaw.uniba.sk/studium/uchadzac-prijimacie-konanie/bakalarske-studium/",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote:
+        "Admission conditions for the bachelor programme Právo (full-time bPRV17, external bPRVx25), academic year 2026/2027. The document gives no approval date.",
+      facts: [
+        {
+          label: "Application deadline",
+          value:
+            "Full-time, no exam: 15 June 2026 (round I), 7 August 2026 (round II). Full-time with exam: 30 April 2026 (round I), 7 August (round II). Electronic application, fee €70 (non-refundable).",
+        },
+        {
+          label: "Who takes the exam",
+          value:
+            "No exam if you have Slovak or Czech, a maturita in history and civics (or equivalent content) and a foreign-language maturita at B2 or higher. Otherwise a written test in civics (basics of law, philosophy, economics) and history; at least 60% needed.",
+        },
+        {
+          label: "Planned intake",
+          value: "600 full-time (free for the standard 3 years), 200 external (about €1,499 a year).",
+        },
+        {
+          label: "Language",
+          value:
+            "Slovak (or Czech good enough to study in Slovak), plus English, German or French at B2.",
+        },
+        {
+          label: "School certificate from abroad",
+          value:
+            "Recognition note (doložka) on the foreign certificate with certified copies and translations, or a decision on equivalence.",
+        },
+      ],
+      programRules: [
+        {
+          localProgramName: "Právo",
+          rule: "Bachelor's, 3 years, Slovak. Followed by a 2-year master's for the Mgr. degree.",
+        },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application and €70 fee by 30 April (with exam) or 15 June 2026 (no exam).",
+          "Certified copy of the maturita certificate (by 15 June 2026 if you take the exam).",
+        ],
+        entranceRequirements: [
+          "No exam with Slovak/Czech, history and civics maturita and a B2 foreign-language maturita.",
+          "Otherwise civics and history test, 60% minimum.",
+          "English, German or French at B2.",
+        ],
+        afterAdmission: [
+          "Foreign certificate: recognition note or equivalence decision.",
+          "Full-time study free for the standard length; external about €1,499 a year.",
+        ],
+      },
+      sources: [
+        {
+          id: "praf-uk-conditions-2026-27",
+          title: "Admission conditions, bachelor Právo, 2026/2027",
+          publisher: "Faculty of Law, Comenius University Bratislava",
+          url: "https://www.flaw.uniba.sk/fileadmin/praf/Studium/uchadzac/2026-2027/PK_bPRV17_bPRVx25_2026_2027.pdf",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "cuni-prf-law-2027",
+    universityId: "82010c9cd5813db075bc",
+    universityHost: "cuni.cz",
+    universityName: "Charles University",
+    faculty: "Faculty of Law",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Prague",
+    category: "Law",
+    degreeLevel: "long-cycle",
+    intake: "2027/28",
+    status: "rules-published",
+    statusNote:
+      "The faculty published its admission conditions for 2027/28. They are summarised below for reference; DocRoute has not built a personalised route or document checklist from them yet. Czech residence steps are on the Czechia route.",
+    programs: [{ programName: "Law and Legal Science", localProgramName: "Právo a právní věda" }],
+    sources: [
+      {
+        id: "prf-uk-conditions-page-2027",
+        title: "Conditions for admission 2027/2028",
+        publisher: "Faculty of Law, Charles University",
+        url: "https://prf.cuni.cz/magisterske-studium-mgr/podminky-pro-prijeti-ke-studiu-20272028",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2027/28",
+      approvedNote:
+        "Conditions for admission to the master's programme Právo a právní věda for 2027/2028, approved by the faculty's Academic Senate (the page gives no date).",
+      facts: [
+        {
+          label: "Application deadline",
+          value:
+            "31 March 2027. The fee is due on the third day after the deadline (the page does not state the amount); unpaid applications are withdrawn.",
+        },
+        {
+          label: "Entrance exam",
+          value:
+            "SCIO National Comparative Exams: OSP (general aptitude) and ZSV (social sciences), in person or online, December 2026 – May 2027; the best result counts. Score = OSP percentile × 1.25 + ZSV percentile × 0.75, plus up to 15 bonus points (C1+ language certificate, national SOČ, national olympiad; 5 each).",
+        },
+        {
+          label: "Admission",
+          value:
+            "Planned intake 750 (plus ties); the dean sets the minimum score and may lower it if fewer than 94% enrol. Results 16 June 2027, enrolment 21–24 June 2027.",
+        },
+        {
+          label: "Waiver",
+          value: "Only for applicants who already studied part of this programme with an average of 1.50 or better (request by 31 March 2027).",
+        },
+        {
+          label: "School certificate from abroad",
+          value:
+            "Slovak, Polish, Hungarian and Slovenian certificates are recognised automatically; others need nostrifikace, IB/EB or a faculty assessment (CZK 1,050), by 1 September 2027.",
+        },
+      ],
+      programRules: [
+        {
+          localProgramName: "Právo a právní věda",
+          rule: "Five-year master's (Mgr.) taught in Czech, entered straight from secondary school.",
+        },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application by 31 March 2027; fee due 3 days later.",
+          "Language certificates for bonus points by 1 June 2027.",
+          "Maturita certificate uploaded by 18 June 2027 for June enrolment.",
+        ],
+        entranceRequirements: [
+          "SCIO OSP and ZSV, December 2026 – May 2027.",
+          "Score OSP × 1.25 + ZSV × 0.75 + up to 15 bonus points.",
+          "About 750 admitted; threshold set by the dean.",
+        ],
+        afterAdmission: [
+          "Enrolment 21–24 June 2027 (substitute 6 September).",
+          "Recognition of a foreign certificate by 1 September 2027 (Slovak maturita automatic).",
+        ],
+      },
+      sources: [
+        {
+          id: "prf-uk-conditions-2027-28",
+          title: "Conditions for admission 2027/2028 (Právo a právní věda)",
+          publisher: "Faculty of Law, Charles University",
+          url: "https://prf.cuni.cz/magisterske-studium-mgr/podminky-pro-prijeti-ke-studiu-20272028",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "muni-law-2027",
+    universityId: "1def63b3ac858b190c04",
+    universityHost: "muni.cz",
+    universityName: "Masaryk University",
+    faculty: "Faculty of Law",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Brno",
+    category: "Law",
+    degreeLevel: "long-cycle",
+    intake: "2027/28",
+    status: "rules-published",
+    statusNote:
+      "The faculty published its 2027/28 admission information. It is summarised below for reference; DocRoute has not built a personalised route or document checklist from it yet. Rules for foreign school certificates were not checked.",
+    programs: [{ programName: "Law and Legal Science", localProgramName: "Právo a právní věda" }],
+    sources: [
+      {
+        id: "muni-law-admission-page",
+        title: "Admission procedure (master's)",
+        publisher: "Faculty of Law, Masaryk University",
+        url: "https://www.law.muni.cz/content/cs/chci-studovat/magisterske-studium/prijimaci-rizeni/",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2027/28",
+      approvedNote:
+        "Admission information for Právo a právní věda, academic year 2027/2028, published by the faculty. The full conditions PDF could not be opened by DocRoute's tools.",
+      facts: [
+        {
+          label: "Application deadline",
+          value:
+            "Electronic application 1 November 2026 – 28 February 2027. Fee per programme: CZK 800 in the information leaflet, CZK 850 on the faculty's admission page (check before paying).",
+        },
+        {
+          label: "Entrance exam",
+          value:
+            "MU Test of Study Potential (TSP), up to two attempts (29 Nov 2026 – 14 Feb 2027 and 15 Feb – 25 Apr 2027), better result counts. Weighted percentiles: numerical-analytical 40%, reasoning in English 20%, critical thinking 40%. Maturita results are not considered.",
+        },
+        {
+          label: "Admission",
+          value: "Expected intake 575. Last year the last admitted applicant had a weighted percentile of about 70.",
+        },
+        {
+          label: "Waiver",
+          value:
+            "The dean may waive the TSP, e.g. for SCIO OSP and ZSV both at the 90th percentile (tests 1 Nov 2026 – 31 Mar 2027, up to 200 applicants) or listed competition results.",
+        },
+        {
+          label: "Enrolment",
+          value: "Full-time enrolment 21–23 June 2027.",
+        },
+      ],
+      programRules: [
+        {
+          localProgramName: "Právo a právní věda",
+          rule: "Five-year master's (Mgr.) taught in Czech, entered straight from secondary school.",
+        },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application by 28 February 2027; fee CZK 800–850 (sources differ).",
+          "Waiver request with SCIO or competition proof, if eligible.",
+        ],
+        entranceRequirements: [
+          "MU TSP: up to two attempts, 29 Nov 2026 – 25 Apr 2027.",
+          "Expected intake 575; last year's cut-off about the 70th percentile.",
+        ],
+        afterAdmission: [
+          "Enrolment 21–23 June 2027.",
+          "Foreign certificates: see the faculty's guidance (not checked by DocRoute).",
+        ],
+      },
+      sources: [
+        {
+          id: "muni-law-leaflet-2027-28",
+          title: "Information on admission to the Faculty of Law, 2027/2028",
+          publisher: "Faculty of Law, Masaryk University",
+          url: "https://www.law.muni.cz/dokumenty/66888",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "muni-law-admission-page-2027",
+          title: "Admission procedure: TSP, fee and waivers",
+          publisher: "Faculty of Law, Masaryk University",
+          url: "https://www.law.muni.cz/content/cs/chci-studovat/magisterske-studium/prijimaci-rizeni/",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "euba-economics-bsc-2027",
+    universityId: "c5f6d6f7307d1b892cb5",
+    universityHost: "euba.sk",
+    universityName: "Bratislava University of Economics and Business",
+    faculty: "University-wide framework (faculties set further conditions)",
+    country: "Slovakia",
+    countryCode: "SK",
+    city: "Bratislava",
+    category: "Economics & Business",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "On 29 October 2026 the university's 2027/28 page gave only the English-programme exam date (23 March 2027); the bachelor application dates and conditions were still “to be announced”. DocRoute shows the approved 2026/27 framework for orientation.",
+    programs: [
+      { programName: "Slovak-taught bachelor's programmes", localProgramName: "Bakalárske študijné programy" },
+      { programName: "English-taught bachelor's programmes", localProgramName: "English-taught programmes" },
+    ],
+    sources: [
+      {
+        id: "euba-general-2027",
+        title: "General information on the admission procedure (2027/2028)",
+        publisher: "Bratislava University of Economics and Business",
+        url: "https://euba.sk/en/applicant/admission-procedure/general-information",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote:
+        "EUBA regulation B/2/2025, framework admission conditions for 2026/2027, approved by the Academic Senate on 16 May 2025.",
+      facts: [
+        {
+          label: "Application deadline",
+          value:
+            "Slovak-taught: 15 November 2025 – 30 April 2026, fee €40 (€60 for Economics and Law). English-taught: until 28 February 2026, fee €90. Electronic only, one application and fee per faculty.",
+        },
+        {
+          label: "Entrance exam",
+          value:
+            "Written tests: general study aptitude and one foreign language, 100 points each (some programmes add a subject). Slovak programmes 15–19 June 2026, English 24 March 2026, no make-up date. School grades are not considered; the dean sets the minimum.",
+        },
+        {
+          label: "Exam waiver",
+          value:
+            "National round of listed olympiads/competitions (2022/23–2025/26), or SCIO NPS aptitude and foreign-language tests at the 60th percentile+ each (by 1 May 2026; 15 March for English programmes).",
+        },
+        {
+          label: "Language",
+          value:
+            "Foreign applicants (except Czech) take the exam in Slovak and must show a Slovak certificate or completed accredited Slovak course by enrolment.",
+        },
+        {
+          label: "School certificate from abroad",
+          value: "Recognised documents plus confirmation from the ministry's recognition centre (except Czech applicants).",
+        },
+      ],
+      programRules: [
+        {
+          localProgramName: "Bakalárske študijné programy",
+          rule: "Faculties (National Economy, Commerce, Business Management, Economic Informatics, Applied Languages, Business Economics in Košice, International Relations) add their own conditions.",
+        },
+        {
+          localProgramName: "English-taught programmes",
+          rule: "2027/28 list: Applied Economy, Finance, Banking and Investment, Business Economics and Management, and others; admission procedure 23 March 2027. Tuition not checked.",
+        },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application and fee (€40–€90) by 30 April 2026 (Slovak) or 28 February 2026 (English).",
+          "Certified maturita copy on the exam day or by enrolment.",
+        ],
+        entranceRequirements: [
+          "Aptitude + foreign-language test, 15–19 June 2026 (English programmes 24 March).",
+          "Waiver: national olympiad round or SCIO 60th percentile+ in both tests.",
+          "Exam in Slovak for foreigners except Czech applicants.",
+        ],
+        afterAdmission: [
+          "Slovak certificate or accredited course by enrolment.",
+          "Recognised foreign documents with the ministry centre's confirmation.",
+          "Enrolment in person.",
+        ],
+      },
+      sources: [
+        {
+          id: "euba-framework-2026-27",
+          title: "Framework admission conditions, academic year 2026/2027 (B/2/2025)",
+          publisher: "Bratislava University of Economics and Business",
+          url: "https://www.euba.sk/www_write/files/SK/docs/vnutorne-predpisy/2025/2025_b_2_2025_ramcove_podmienky_prijatia_na_studium_na_ak._rok_2026_2027.pdf",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "vse-nf-economics-bsc-2027",
+    universityId: "aa8f2e91b2d0d7cc779d",
+    universityHost: "vse.cz",
+    universityName: "Prague University of Economics and Business",
+    faculty: "Faculty of Economics (NF VŠE)",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Prague",
+    category: "Economics & Business",
+    degreeLevel: "bachelor",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "On 29 October 2026 the faculty's bachelor admission page described entry in 2026/27 (updated 9 May 2026). DocRoute shows those rules for orientation until the 2027/28 rules are out.",
+    programs: [
+      { programName: "Economics", localProgramName: "Ekonomie" },
+      { programName: "National Economy", localProgramName: "Národní hospodářství" },
+      { programName: "Public Administration and Regional Development", localProgramName: "Veřejná správa a regionální rozvoj" },
+    ],
+    sources: [
+      {
+        id: "nf-vse-admission-page",
+        title: "Bachelor's admission: detailed information for applicants",
+        publisher: "Faculty of Economics, Prague University of Economics and Business",
+        url: "https://nf.vse.cz/homepage/zajemci-o-studium/bakalarske-studium/prijimaci-rizeni-podrobne-informace-pro-uchazece/",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "Admission rules for bachelor entry from the 2026/2027 winter semester, as published on the faculty page (updated 9 May 2026).",
+      facts: [
+        {
+          label: "Application deadline",
+          value: "One electronic application by 31 May 2026; fee CZK 990 (non-refundable) by the same date.",
+        },
+        {
+          label: "Entrance exam",
+          value:
+            "SCIO OSP or VŠP result from the last three years (1 June 2023 – 31 May 2026), best counts; verbal × 0.3 + analytical × 0.7, up to 100 points, +10 for a B2+ foreign-language certificate. Share results with NF VŠE in your SCIO profile.",
+        },
+        {
+          label: "Admission without exam",
+          value:
+            "Average of 1.50 or better in all compulsory subjects (last year-end and current half-year reports), top 10 in the dean's competition, or a high national SOČ/olympiad placing.",
+        },
+        {
+          label: "Thresholds 2026/27",
+          value: "Ekonomie 75 points; Národní hospodářství and Veřejná správa a regionální rozvoj 60 points.",
+        },
+        {
+          label: "Language and certificates",
+          value:
+            "No separate Czech test: the SCIO test is enough. Foreign certificates: VŠE internal recognition or nostrifikace by enrolment.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Ekonomie", rule: "Threshold 75 points in 2026/27." },
+        { localProgramName: "Národní hospodářství", rule: "Threshold 60 points in 2026/27." },
+        { localProgramName: "Veřejná správa a regionální rozvoj", rule: "Threshold 60 points in 2026/27." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "One electronic application and CZK 990 fee by 31 May 2026.",
+          "B2+ language certificate (digitally converted) for bonus points.",
+        ],
+        entranceRequirements: [
+          "SCIO OSP/VŠP: verbal 30%, analytical 70%, up to 100 points.",
+          "Or admission without exam: average 1.50 or better, competitions.",
+          "No separate Czech test.",
+        ],
+        afterAdmission: [
+          "Foreign certificate: VŠE recognition or nostrifikace by enrolment.",
+          "Slovak applicants upload the full ASICE container.",
+        ],
+      },
+      sources: [
+        {
+          id: "nf-vse-rules-2026-27",
+          title: "Bachelor's admission rules from the winter semester 2026/2027",
+          publisher: "Faculty of Economics, Prague University of Economics and Business",
+          url: "https://nf.vse.cz/homepage/zajemci-o-studium/bakalarske-studium/prijimaci-rizeni-podrobne-informace-pro-uchazece/",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  // Czech medicine (PR #27, checked 2026-10-29).
+  {
+    id: "cuni-lf1-medicine-2027",
+    universityId: "82010c9cd5813db075bc",
+    universityHost: "cuni.cz",
+    universityName: "Charles University",
+    faculty: "First Faculty of Medicine",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Prague",
+    category: "Medicine",
+    degreeLevel: "long-cycle",
+    intake: "2027/28",
+    status: "rules-published",
+    statusNote:
+      "The faculty published its 2027/28 admission conditions and dates. They are summarised below for reference; the test format, bonus and waiver details were not all on the checked pages, so DocRoute has not built a route yet.",
+    programs: [
+      { programName: "General Medicine", localProgramName: "Všeobecné lékařství" },
+      { programName: "Dentistry", localProgramName: "Zubní lékařství" },
+    ],
+    sources: [
+      {
+        id: "lf1-conditions-2027",
+        title: "Admission conditions at the First Faculty of Medicine (2027/2028)",
+        publisher: "First Faculty of Medicine, Charles University",
+        url: "https://www.lf1.cuni.cz/podminky-prijimaciho-rizeni-na-1-lf",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2027/28",
+      approvedNote: "Admission conditions for 2027/2028, valid 1 October 2026 – 30 September 2027, as published by the faculty.",
+      facts: [
+        {
+          label: "Application deadline",
+          value: "Electronic, 1 December 2026 – 28 February 2027, no attachments. Fee CZK 1,000 per application, due by the third day after the deadline.",
+        },
+        {
+          label: "Entrance exam",
+          value:
+            "Written test in physics, chemistry and biology, in Czech, on 17 June 2027 (substitute date 23 June 2027 on request). Invitations about 20 days before.",
+        },
+        {
+          label: "Waiver and bonus points",
+          value: "Exam waiver and bonus points (school maths results, olympiads, SOČ, selected international olympiads) by request until 24 May 2027.",
+        },
+        {
+          label: "Language",
+          value: "Certified Czech C1 certificate at enrolment for applicants who finished school abroad; other language certificates do not count.",
+        },
+        {
+          label: "School certificate from abroad",
+          value: "Nostrifikace, or a faculty assessment (CZK 1,050) requested by 30 June 2027.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Všeobecné lékařství", rule: "Six-year MUDr., Czech-taught." },
+        { localProgramName: "Zubní lékařství", rule: "Five-year MDDr., same exam date." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application 1 Dec 2026 – 28 Feb 2027; fee CZK 1,000.",
+          "Waiver or bonus request by 24 May 2027.",
+        ],
+        entranceRequirements: [
+          "Physics, chemistry and biology test in Czech, 17 June 2027.",
+          "Substitute date 23 June 2027 on request.",
+        ],
+        afterAdmission: [
+          "At enrolment: maturita, nostrifikace if needed, Czech C1, medical certificate, hepatitis B vaccination.",
+        ],
+      },
+      sources: [
+        {
+          id: "lf1-conditions-2027-28",
+          title: "Admission conditions 2027/2028",
+          publisher: "First Faculty of Medicine, Charles University",
+          url: "https://www.lf1.cuni.cz/podminky-prijimaciho-rizeni-na-1-lf",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "lf1-dates-2027-28",
+          title: "Admission dates 2027/2028",
+          publisher: "First Faculty of Medicine, Charles University",
+          url: "https://www.lf1.cuni.cz/terminy-prijimaciho-rizeni",
+          checkedAt: "2026-10-29",
+        },
+        {
+          id: "lf1-cuni-is-2027",
+          title: "First Faculty of Medicine: application fee and general conditions",
+          publisher: "Charles University information system",
+          url: "https://is.cuni.cz/studium/prijimacky/index.php?do=info_fakulta&fak=11110",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
+  {
+    id: "muni-lf-medicine-2027",
+    universityId: "1def63b3ac858b190c04",
+    universityHost: "muni.cz",
+    universityName: "Masaryk University",
+    faculty: "Faculty of Medicine",
+    country: "Czechia",
+    countryCode: "CZ",
+    city: "Brno",
+    category: "Medicine",
+    degreeLevel: "long-cycle",
+    intake: "2027/28",
+    status: "rules-not-published",
+    statusNote:
+      "On 29 October 2026 the faculty's admission page described the 2026 cycle; MU applications for 2027/28 open on 1 November 2026. DocRoute shows the 2026/27 handbook for orientation.",
+    programs: [
+      { programName: "General Medicine", localProgramName: "Všeobecné lékařství" },
+      { programName: "Dentistry", localProgramName: "Zubní lékařství" },
+    ],
+    sources: [
+      {
+        id: "muni-lf-admission-page",
+        title: "Admission procedure",
+        publisher: "Faculty of Medicine, Masaryk University",
+        url: "https://www.med.muni.cz/chci-studovat/prijimaci-rizeni",
+        checkedAt: "2026-10-29",
+      },
+    ],
+    checkedAt: "2026-10-29",
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "Faculty handbook “Studuj na LF MU” for 2026/2027.",
+      facts: [
+        {
+          label: "Application deadline",
+          value: "Electronic, 1 November 2025 – 28 February 2026; fee CZK 900 per application.",
+        },
+        {
+          label: "Entrance exam",
+          value:
+            "11 or 12 June 2026: biology, chemistry and physics, 40 multiple-choice questions each in 50 minutes, 1 point per correct answer, no penalty. No substitute dates.",
+        },
+        {
+          label: "Planned intake",
+          value: "About 430 places in General Medicine (3,671 applications the year before).",
+        },
+        {
+          label: "Without exam",
+          value:
+            "General Medicine only: excellent school grades (paper request with certified reports by 28 February) or bonus-based admission (SOČ, competitions, language certificates).",
+        },
+        {
+          label: "School certificate from abroad",
+          value: "Nostrifikace for a maturita from outside Slovakia; the admission decision is issued only after the converted certificate is uploaded.",
+        },
+      ],
+      programRules: [
+        { localProgramName: "Všeobecné lékařství", rule: "Six-year MUDr.; waiver and bonus routes exist." },
+        { localProgramName: "Zubní lékařství", rule: "Five-year MDDr.; bonus points, no waiver." },
+      ],
+      overview: {
+        applicationDocuments: [
+          "Electronic application 1 Nov – 28 Feb; fee CZK 900.",
+          "Waiver or bonus request on paper with certified copies.",
+        ],
+        entranceRequirements: [
+          "Biology, chemistry, physics: 3 × 40 questions, 11–12 June 2026.",
+          "About 430 places in General Medicine.",
+        ],
+        afterAdmission: [
+          "Distance enrolment by 30 June 2026 (by 9 June if admitted without exam).",
+          "Nostrifikace unless the school is Czech or Slovak.",
+        ],
+      },
+      sources: [
+        {
+          id: "muni-lf-handbook-2026-27",
+          title: "Studuj na LF MU, 2026/2027",
+          publisher: "Faculty of Medicine, Masaryk University",
+          url: "https://www.med.muni.cz/do/med/web_lf_mu/uchazeci/spolecne_dokumenty_bc_mgr_nmgr/prirucka_Studuj_na_LF_MU/Prirucka_Studuj_na_LF_MU_-_2026_2027.pdf",
+          checkedAt: "2026-10-29",
+        },
+      ],
+      checkedAt: "2026-10-29",
+    },
+  },
 ];
 
 export function pendingStatusLabel(status: PendingProgramGroup["status"]) {
@@ -1432,8 +2080,13 @@ export function pendingStatusLabel(status: PendingProgramGroup["status"]) {
   return "Rules awaiting approval";
 }
 
-export function formatPendingDegree(level: PendingProgramGroup["degreeLevel"]) {
-  if (level === "long-cycle") return "Long-cycle master's (MUDr./MDDr.)";
+export function formatPendingDegree(
+  level: PendingProgramGroup["degreeLevel"],
+  category?: string,
+) {
+  if (level === "long-cycle") {
+    return category === "Medicine" ? "Long-cycle master's (MUDr./MDDr.)" : "Long-cycle master's (Mgr.)";
+  }
   return level === "bachelor" ? "Bachelor's" : "Master's";
 }
 

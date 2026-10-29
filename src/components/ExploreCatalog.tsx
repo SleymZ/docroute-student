@@ -14,10 +14,10 @@ import {
   GraduationCap,
   Globe2,
   MapPin,
-  Pill,
+  Scale,
   Search,
-  Smile,
   Stethoscope,
+  TrendingUp,
   Trophy,
   X,
 } from "lucide-react";
@@ -98,17 +98,17 @@ const programMeta: Record<
 > = {
   Medicine: {
     icon: Stethoscope,
-    description: "Medical and health sciences",
+    description: "General medicine and dentistry",
   },
 
-  Dentistry: {
-    icon: Smile,
-    description: "Dental medicine and oral health",
+  Law: {
+    icon: Scale,
+    description: "Law and legal science",
   },
 
-  Pharmacy: {
-    icon: Pill,
-    description: "Pharmaceutical sciences",
+  "Economics & Business": {
+    icon: TrendingUp,
+    description: "Economics, finance and management",
   },
 
   "Computer Science": {

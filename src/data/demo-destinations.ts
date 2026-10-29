@@ -41,7 +41,7 @@ export const documentCountryOptions = [
 
 export const programOptions = [
   "Medicine",
-  "Dentistry",
-  "Pharmacy",
+  "Law",
+  "Economics & Business",
   "Computer Science",
 ];
