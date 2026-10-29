@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-10-28. Keep this file factual: describe what exists and
+Last updated: 2026-10-29. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -60,7 +60,7 @@ form shows Family and Business as "coming soon" without routes.
 | Admission | Slovakia · Computer Science · Bachelor · 2027/28 · UNIZA FRI, 4 programs (`src/data/verified-programs.ts`) | 2026-10-19 |
 | Study residence | Slovakia, third-country citizens (`src/data/slovakia-residence.ts`) | 2026-10-23 |
 | Admission | Czechia · Computer Science · Bachelor · 2027/28 · Charles University MFF, Informatika (Czech-taught), policy `cuni-mff-bachelor-2027` | 2026-10-28 |
-| Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed only; no match, checklist or route | 2026-10-23 |
+| Coming soon (not verified) | Comenius University Bratislava, FMFI · Computer Science · Bachelor · 2027/28: Computer Science, Applied Informatics, Data Science, Bioinformatics (`src/data/pending-programs.ts`). Listed with last year's (2026/27) approved rules for orientation; no match, checklist or route | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
@@ -80,16 +80,29 @@ residence routes).
 announced but not yet approved and published. They appear on results pages
 (a "Coming soon" block), on the university page and on How it works, with
 the label "Rules awaiting approval". They never go through `matchProgram`
-and must not carry thresholds, dates or fees from a draft or another year.
+and must not carry thresholds, dates or fees from a draft.
 
-Comenius FMFI status (checked 2026-10-23): the 2027/28 bachelor conditions
+Last year's rules (PR #21, owner decision 2026-10-29): a group may carry
+`previousCycle`, the approved rules of the previous intake with their own
+sources. They are shown in a "Last year's rules (2026/27), for orientation"
+block (collapsed on results pages, open on the university page) with a
+warning that they are not the rules for the intake and may change. The
+matcher never reads them; tests check the intake is earlier, sources are on
+the university's domain and program names exist. Replace the block when the
+new rules are verified.
+
+Comenius FMFI status (checked 2026-10-23, rechecked 2026-10-29: the
+bachelor admission page, updated 21 Sep 2026, still describes 2026/27; the
+2026/27 conditions were approved on 1 Dec 2025, so 2027/28 approval may come
+around Nov–Dec 2026): the 2027/28 bachelor conditions
 were item 4 of the Academic Senate session of 19 October 2026 as a draft
 ("návrh uznesenia"). No resolution was published, and the draft has two
 different versions of Art. 2 (3)–(5) (which math tests are accepted; the
 second also allows English-language tests such as SAT). The fee and
 foreign-qualification recognition are not in the draft. The faculty's
 applications page still shows 2026/27. When the approved 2027/28 rules
-appear on https://fmph.uniba.sk/prihlasky/, move the group into
+appear on https://fmph.uniba.sk/studium/prijimacie-konanie/bakalarske-studium/
+(the old /prihlasky/ link is not reachable by the tools), move the group into
 `verified-programs.ts` with its own matching policy (percentile/grade/
 competition criteria differ completely from UNIZA's) and delete the
 pending entry; a test fails if both exist.
@@ -357,6 +370,11 @@ still publish only their 2026/27 rules.
 
 ## Recently shipped (October 2026)
 
+- PR #21 (2026-10-29): last year's approved rules for "coming soon"
+  programs, starting with Comenius FMFI 2026/27 (deadline, fee, no entrance
+  exam, grade/percentile thresholds per program, SCIO for non-EU schools,
+  Slovak B1, recognition of foreign certificates).
+
 - PR #20 (2026-10-28): README rewritten as an English case study for the
   portfolio (beta results section to fill after interviews);
   `docs/launch-kit.md` with the beta post (RU/EN), interview questions and
@@ -472,7 +490,7 @@ still publish only their 2026/27 rules.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (181 tests on 2026-10-28).
+- Unit tests: `npm test` (183 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -507,7 +525,7 @@ text, which is unchanged from before).
 
 ## Next steps
 
-1. Watch https://fmph.uniba.sk/prihlasky/ for the approved Comenius FMFI
+1. Watch the FMFI bachelor admission page for the approved Comenius FMFI
    2027/28 rules; then verify and add the four programs with their own
    matching policy.
 2. Ask UNIZA FRI in writing how the Czech exemption applies to mixed
@@ -520,5 +538,8 @@ text, which is unchanged from before).
 5. Update the Top 100 list when the Leiden Ranking 2026 is published
    (4 Nov 2026) and recheck deadlines once universities publish 2027/28
    rules.
-6. Define family or business purposes for Slovakia with official sources
+6. Add more "coming soon" faculties with last year's rules (STU FIIT,
+   TUKE FEI, then other fields such as medicine in English) while their
+   2027/28 rules are not out.
+7. Define family or business purposes for Slovakia with official sources
    before enabling them in the form.

@@ -112,3 +112,42 @@ test("Comenius computing programs are listed for the exact scope only", () => {
     [],
   );
 });
+
+test("last year's rules are an earlier intake, sourced and name real programs", () => {
+  for (const group of pendingProgramGroups) {
+    const previous = group.previousCycle;
+    if (!previous) continue;
+    const startYear = (intake: string) => Number(intake.slice(0, 4));
+    assert.match(previous.intake, /^\d{4}\/\d{2}$/);
+    assert.ok(
+      startYear(previous.intake) < startYear(group.intake),
+      `${group.id}: previous cycle must be earlier than ${group.intake}`,
+    );
+    assert.ok(previous.facts.length > 0);
+    assert.ok(previous.sources.length > 0);
+    assert.match(previous.checkedAt, /^\d{4}-\d{2}-\d{2}$/);
+    for (const source of previous.sources) {
+      const url = new URL(source.url);
+      assert.equal(url.protocol, "https:");
+      assert.ok(
+        url.hostname === group.universityHost ||
+          url.hostname.endsWith("." + group.universityHost),
+        `${source.url} is not on the university's own domain`,
+      );
+    }
+    const names = new Set(group.programs.map((program) => program.localProgramName));
+    for (const item of previous.programRules) {
+      assert.ok(names.has(item.localProgramName), `${item.localProgramName} is not in ${group.id}`);
+    }
+  }
+});
+
+test("Comenius FMFI shows its approved 2026/27 rules for orientation", () => {
+  const [group] = findPendingProgramGroups({ universityHost: "uniba.sk" });
+  assert.equal(group.previousCycle?.intake, "2026/27");
+  assert.equal(group.previousCycle?.programRules.length, group.programs.length);
+  const informatika = group.previousCycle?.programRules.find(
+    (item) => item.localProgramName === "Informatika",
+  );
+  assert.match(informatika?.rule ?? "", /percentile 60\+/);
+});

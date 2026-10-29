@@ -791,7 +791,11 @@ export default async function UniversityPage({
                   </div>
                 </div>
 
-                <PendingPrograms groups={pendingGroups} heading="Programs coming soon" />
+                <PendingPrograms
+                  groups={pendingGroups}
+                  heading="Programs coming soon"
+                  previousCycleOpen
+                />
 
                 <div className={styles.requirementPreview}>
                   <div>
