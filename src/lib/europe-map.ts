@@ -58,8 +58,9 @@ const destinationById: Partial<Record<string, Destination>> = {
  * Featured countries stay highlighted even while another
  * European country is being explored. Slovakia (study and work)
  * and Czechia (residence for study and work) have verified routes;
- * Germany and Austria are highlighted for their "coming soon"
- * listings (no residence route yet). Other countries return here once their
+ * Germany, Austria and (PR #29) the Netherlands, Poland, Hungary,
+ * Croatia, Italy, Finland, Lithuania and Ireland are highlighted for their
+ * "coming soon" listings (no residence route yet). Other countries return here once their
  * official rules are collected.
  */
 const highlightedCountryIds = new Set([
@@ -67,6 +68,15 @@ const highlightedCountryIds = new Set([
   "203", // Czechia (residence routes for study and work)
   "276", // Germany (TUM and KIT listed as coming soon; owner decision)
   "040", // Austria (TU Wien, Uni Wien, JKU, MedAT listed as coming soon; owner decision)
+  // Coming-soon listings only (PR #29); no residence routes for these.
+  "528", // Netherlands
+  "616", // Poland
+  "348", // Hungary
+  "191", // Croatia
+  "380", // Italy
+  "246", // Finland
+  "440", // Lithuania
+  "372", // Ireland
 ]);
 
 /*

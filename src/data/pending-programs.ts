@@ -1,3 +1,4 @@
+import { europePendingGroups } from "@/data/pending-programs-europe";
 import type { DegreeLevel, OfficialSource, StudyIntake } from "@/types/admission";
 
 // Programs whose admission rules for the intake are announced but not yet
@@ -62,7 +63,7 @@ export type PendingProgramGroup = {
   referenceRules?: ReferenceRules;
 };
 
-export const pendingProgramGroups: readonly PendingProgramGroup[] = [
+const centralEuropeGroups: readonly PendingProgramGroup[] = [
   {
     id: "uniba-fmfi-computing-bsc-2027",
     universityId: "79e938c73e40ae20dfe7",
@@ -2072,6 +2073,13 @@ export const pendingProgramGroups: readonly PendingProgramGroup[] = [
       checkedAt: "2026-10-29",
     },
   },
+];
+
+// Slovakia, Czechia, Austria and Germany first; further European listings
+// live in pending-programs-europe.ts.
+export const pendingProgramGroups: readonly PendingProgramGroup[] = [
+  ...centralEuropeGroups,
+  ...europePendingGroups,
 ];
 
 export function pendingStatusLabel(status: PendingProgramGroup["status"]) {

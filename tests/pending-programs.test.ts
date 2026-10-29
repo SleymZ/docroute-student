@@ -32,6 +32,9 @@ const hostAliases: Record<string, string[]> = {
   "tuwien.ac.at": ["tuwien.at"],
   // MedAT is run jointly by the Austrian medical universities on its own site.
   "meduniwien.at": ["meduniwien.ac.at", "medizinstudieren.at"],
+  // Semmelweis and WU moved to new domains after the catalog import.
+  "sote.hu": ["semmelweis.hu"],
+  "wu-wien.ac.at": ["wu.ac.at"],
 };
 
 function onUniversityDomain(hostname: string, universityHost: string) {
@@ -217,7 +220,7 @@ test("Slovak medicine is listed as long-cycle and found from a bachelor profile"
 });
 
 test("German entries never match", () => {
-  const german = findPendingProgramGroups({ countryCode: "DE" });
+  const german = findPendingProgramGroups({ countryCode: "DE", category: "Computer Science" });
   assert.deepEqual(german.map((group) => group.id), [
     "tum-informatics-bsc-2027",
     "kit-informatics-bsc-2027",
@@ -266,7 +269,9 @@ test("law and economics are listed as fields with sourced coming-soon faculties"
     assert.equal(group.degreeLevel, "long-cycle");
     assert.equal(group.status, "rules-published");
   }
-  const economics = findPendingProgramGroups({ category: "Economics & Business", degreeLevel: "bachelor" });
+  const economics = ["SK", "CZ"].flatMap((countryCode) =>
+    findPendingProgramGroups({ countryCode, category: "Economics & Business", degreeLevel: "bachelor" }),
+  );
   assert.deepEqual(economics.map((group) => group.id), ["euba-economics-bsc-2027", "vse-nf-economics-bsc-2027"]);
   for (const group of economics) assert.equal(group.status, "rules-not-published");
 });
@@ -274,7 +279,7 @@ test("law and economics are listed as fields with sourced coming-soon faculties"
 test("Czech medicine adds two faculties next to the Slovak ones", async () => {
   const { formatPendingDegree } = await import("../src/data/pending-programs");
   const czMedicine = findPendingProgramGroups({ countryCode: "CZ", category: "Medicine", degreeLevel: "bachelor" });
-  assert.deepEqual(czMedicine.map((group) => group.id), ["cuni-lf1-medicine-2027", "muni-lf-medicine-2027"]);
+  assert.deepEqual(czMedicine.map((group) => group.id), ["cuni-lf1-medicine-2027", "muni-lf-medicine-2027", "upol-md-english-2027"]);
   assert.equal(formatPendingDegree("long-cycle", "Medicine"), "Long-cycle master's (MUDr./MDDr.)");
   assert.equal(formatPendingDegree("long-cycle", "Law"), "Long-cycle master's (Mgr.)");
 });
@@ -288,4 +293,33 @@ test("no profile in a new field gets a verified match", () => {
       );
     }
   }
+});
+
+test("European listings cover many countries, each with sources on the university's own domain", async () => {
+  const { europePendingGroups } = await import("../src/data/pending-programs-europe");
+  assert.ok(europePendingGroups.length >= 25);
+  const countries = new Set(europePendingGroups.map((group) => group.countryCode));
+  for (const code of ["NL", "PL", "HU", "HR", "IT", "FI", "LT", "IE"]) assert.ok(countries.has(code), code);
+  for (const group of europePendingGroups) {
+    assert.equal(group.intake, "2027/28");
+    for (const item of [...group.sources, ...(group.referenceRules?.sources ?? [])]) {
+      assert.ok(onUniversityDomain(new URL(item.url).hostname, group.universityHost), `${group.id}: ${item.url}`);
+    }
+    // Rules for the intake itself must be marked as published, and vice versa.
+    assert.equal(group.referenceRules?.intake === "2027/28", group.status === "rules-published", group.id);
+  }
+  // Every listed field exists in the form.
+  const { programOptions } = await import("../src/data/demo-destinations");
+  for (const group of europePendingGroups) assert.ok(programOptions.includes(group.category as never), group.category);
+});
+
+test("Dutch computing listings are found from a Netherlands profile", () => {
+  const nl = findPendingProgramGroups({ countryCode: "NL", category: "Computer Science", degreeLevel: "bachelor", intake: "2027/28" });
+  assert.deepEqual(nl.map((group) => group.id), [
+    "tudelft-cse-bsc-2027",
+    "tue-cse-bsc-2027",
+    "rug-cs-bsc-2027",
+    "utwente-tcs-bsc-2027",
+    "vu-cs-bsc-2027",
+  ]);
 });

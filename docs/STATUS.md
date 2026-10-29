@@ -68,6 +68,7 @@ Purposes with a route today: **study**, **work**, **family** and
 | Coming soon (not verified) | Law and Economics & Business (new fields, PR #27): Comenius Faculty of Law, Právo bachelor (2026/27 rules); Charles University Faculty of Law and Masaryk Faculty of Law, Právo a právní věda (5-year long-cycle, 2027/28 rules published); EUBA framework (2026/27 rules) and VŠE Faculty of Economics (2026/27 rules). Czech medicine: Charles First Faculty of Medicine (2027/28 rules published) and Masaryk Faculty of Medicine (2026/27 handbook) | 2026-10-29 |
 | Family residence | Slovakia, third-country citizens joining a non-EU relative with temporary/permanent residence or a Blue Card: spouse (both 18+), unmarried child under 18, dependent adult child, dependent parent (`src/data/slovakia-family-business.ts`, `src/lib/residence/slovakia-family-business.ts`, page `/route/family`) | 2026-10-29 |
 | Business residence | Slovakia, third-country citizens: sole trader with a trade licence or company executive (page `/route/business`) | 2026-10-29 |
+| Coming soon (not verified) | Europe (PR #29, `src/data/pending-programs-europe.ts`), 25 programmes: Netherlands (TU Delft CSE, TU/e CSE, Groningen Computing Science, Twente TCS, VU Computer Science; Erasmus IBEB, UvA Economics & Business; Groningen International & European Law), Poland (Warsaw UT CS & IS, AGH CS, Jagiellonian MD), Hungary (ELTE CS, BME Computer Engineering, Semmelweis and Szeged medicine, Corvinus), Czechia (Palacký Olomouc medicine in English), Croatia (Zagreb medicine in English), Italy (Padua medicine, IMAT), Finland (Aalto Science & Technology, Helsinki Science), Lithuania (Vilnius Software Engineering), Ireland (Trinity CS), Germany (Charité medicine), Austria (WU BBE). 14 with rules for the 2027 intake, the rest with the latest published rules | 2026-10-29 |
 | Work residence | Slovakia, third-country citizens: single permit, EU Blue Card, Slovak graduates (`src/data/slovakia-work.ts`, `src/lib/residence/slovakia-work.ts`) | 2026-10-23 |
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
@@ -221,6 +222,24 @@ could not be opened by the tools.
   was not found.
 - Matcher: `matchProgram` dispatches per policy; profile form shows waiver
   options per destination country.
+
+## European coming-soon listings (PR #29, checked 2026-10-29)
+
+- Each entry cites only the university's own pages; tuition is the non-EU
+  rate (a non-EU citizen with Slovak residence usually pays it). Status
+  `rules-published` only when the page states the 2027 intake; otherwise
+  the latest rules with a "Source describes" year (a test ties the two).
+- Map: NL, PL, HU, HR, IT, FI, LT and IE highlighted for these listings
+  (same rule as DE/AT); no residence routes for them.
+- Test host aliases: sote.hu → semmelweis.hu, wu-wien.ac.at → wu.ac.at.
+- Skipped (pages did not give deadlines or requirements, or the
+  programme is not taught in English): UvA Informatica (Dutch), Maastricht
+  European Law School, Politecnico di Milano, Ljubljana FRI, Tartu CS
+  (Estonian), Pécs and Debrecen medicine, ETH Zurich, TU Berlin, RWTH,
+  DTU (engineering, not CS), UCD, Poznań, Sapienza.
+- Known gaps: VU non-EU fee, TU/e and Trinity teaching language/fees,
+  BME tuition, Padua IMAT dates; Jagiellonian page shows the exam year as
+  2026 in one line; Zagreb package gives 50 and 60 places.
 
 ## Fields: Law and Economics & Business (PR #27, checked 2026-10-29)
 
@@ -476,6 +495,10 @@ could not be opened by the tools.
 
 ## Recently shipped (October 2026)
 
+- PR #29 (2026-10-29): 25 coming-soon programmes across 12 European
+  countries (computing, medicine, law, economics) in a separate data file;
+  eight more countries highlighted on the map.
+
 - PR #28 (2026-10-29): Slovakia family-reunification and business
   (trade licence, company executive) routes; Family and Business enabled
   on the home form.
@@ -635,7 +658,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (213 tests on 2026-10-29).
+- Unit tests: `npm test` (215 tests on 2026-10-29).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
