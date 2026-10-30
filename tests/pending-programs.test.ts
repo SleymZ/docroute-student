@@ -35,6 +35,10 @@ const hostAliases: Record<string, string[]> = {
   // Semmelweis and WU moved to new domains after the catalog import.
   "sote.hu": ["semmelweis.hu"],
   "wu-wien.ac.at": ["wu.ac.at"],
+  // Added 2026-10-30: TalTech, TU Liberec and Salzburg use newer domains.
+  "ttu.ee": ["taltech.ee"],
+  "vslib.cz": ["tul.cz"],
+  "sbg.ac.at": ["plus.ac.at"],
 };
 
 function onUniversityDomain(hostname: string, universityHost: string) {
@@ -117,6 +121,9 @@ test("Slovak computing faculties are listed for the exact scope only", () => {
       "uniba-fmfi-computing-bsc-2027",
       "stu-fiit-computing-bsc-2027",
       "tuke-fei-computing-bsc-2027",
+      "ukf-fpvai-ai-bsc-2027",
+      "upjs-pf-informatika-bsc-2027",
+      "stu-fei-ai-bsc-2027",
     ],
   );
   assert.deepEqual(
@@ -228,7 +235,7 @@ test("German entries never match", () => {
   assert.equal(findVerifiedProgram("tum-informatics-bsc-2027"), null);
 });
 
-test("Czech computing faculties with published 2027/28 rules are listed", () => {
+test("Czech computing faculties are listed with their rule status", () => {
   const czech = findPendingProgramGroups({
     countryCode: "CZ",
     category: "Computer Science",
@@ -238,10 +245,14 @@ test("Czech computing faculties with published 2027/28 rules are listed", () => 
   assert.deepEqual(czech.map((group) => group.id), [
     "vut-fit-computing-bsc-2027",
     "muni-fi-computing-bsc-2027",
+    "upce-fei-it-bsc-2027",
+    "mendelu-pef-oi-bsc-2027",
+    "tul-fm-it-bsc-2027",
+    "zcu-fav-bsc-2027",
   ]);
   for (const group of czech) {
-    assert.equal(group.status, "rules-published");
-    assert.equal(group.referenceRules?.intake, "2027/28");
+    const published = group.status === "rules-published";
+    assert.equal(group.referenceRules?.intake, published ? "2027/28" : "2026/27", group.id);
   }
 });
 
@@ -250,7 +261,14 @@ test("Austrian entries cover computing and MedAT medicine", () => {
     findPendingProgramGroups({ countryCode: "AT", category: "Computer Science" }).map(
       (group) => group.id,
     ),
-    ["tuwien-informatics-bsc-2027", "univie-informatics-bsc-2027", "jku-ai-bsc-2027"],
+    [
+      "tuwien-informatics-bsc-2027",
+      "univie-informatics-bsc-2027",
+      "jku-ai-bsc-2027",
+      "tugraz-informatik-bsc-2027",
+      "uibk-informatik-bsc-2027",
+      "plus-informatik-bsc-2027",
+    ],
   );
   const medat = findPendingProgramGroups({ countryCode: "AT", category: "Medicine", degreeLevel: "bachelor" });
   assert.deepEqual(medat.map((group) => group.id), ["meduniwien-medicine-2027"]);
@@ -324,11 +342,11 @@ test("Dutch computing listings are found from a Netherlands profile", () => {
   ]);
 });
 
-test("Switzerland: ETH, EPFL and UZH are coming-soon computing listings with the latest published rules", () => {
+test("Switzerland: ETH, EPFL, UZH, Bern and Basel are coming-soon computing listings with the latest published rules", () => {
   const swiss = findPendingProgramGroups({ countryCode: "CH", category: "Computer Science", degreeLevel: "bachelor", intake: "2027/28" });
   assert.deepEqual(
     swiss.map((group) => group.universityHost).sort(),
-    ["epfl.ch", "ethz.ch", "uzh.ch"],
+    ["epfl.ch", "ethz.ch", "unibas.ch", "unibe.ch", "uzh.ch"],
   );
   for (const group of swiss) {
     assert.equal(group.status, "rules-not-published", group.id);
