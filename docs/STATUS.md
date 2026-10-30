@@ -269,6 +269,35 @@ latest rules" (owner rule 2026-10-30):
   "Computer science in English" on the page. Not verified routes.
 - 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
   PSL do not (the catalog has only predecessor institutions).
+- Recheck 2026-10-30 (11 universities): new or updated facts for KU Leuven
+  (Dutch-taught non-EEA deadline 1 Feb 2027, final 22 Sep 2027), Ghent
+  (visa applicants by 1 April, no year on page; school rule), Bern (30 April,
+  medicine 15 Feb, late only without visa), Lausanne (now its 2026/27
+  deadline page: 28 Feb visa/ECUS, 30 April others), UCD (Fall 2027:
+  priority 1 Dec 2026, final 1 July 2027; €60 on that page vs €70 in the
+  FAQ), Helsinki (Studyinfo, admission groups, SAT/ACT), MedUni Wien
+  (expected MedAT 2027 dates, 5% non-EU quota); Vienna, Edinburgh,
+  Politecnico di Milano and Trinity rechecked unchanged (still describe
+  2026/27 or the 2025–2026 cycle). Not yet published for 2027/28 on the
+  checked pages: Italian calls (Polimi, Bologna, PoliTo, Milan), Vienna
+  2027/28 periods, UK English pages (2026 entry), Trinity (2025 page),
+  DTU dates. Greek universities: no current official procedure found for
+  non-EU applicants (the ministry's call found describes 2024). KU Leuven,
+  UNIL and Bern pages were read in the built-in browser (robots block the
+  fetch tool).
+- Second pass 2026-10-30: Florence (2026/27 intake rounds), Charles
+  University (e-application, MFF example 31 March 2027, CZK 1,000), NTNU
+  (Samordna opptak, 15 April), Utrecht (example 1 April); Hamburg, Porto
+  and PSL rechecked unchanged (PSL's FAQ still shows 2025 dates and 2022/23
+  fees). German, Dutch, Spanish, Swedish and Danish entries rely on the
+  sourced country rules plus university facts checked on 2026-10-27; most
+  UK pages still describe 2026 entry. Unreadable by the tools: Federico II,
+  Goethe Frankfurt deadline page (semester dates only).
+- Third pass 2026-10-30: Padua (second 2027/28 call, 1 Dec 2026–1 Mar
+  2027); rechecked unchanged ETH, EPFL, Zurich, Karolinska, Copenhagen,
+  Lund, Paris-Saclay, Paris Cité, Aarhus, Aalborg, Pisa, Turin, Bari (the
+  Italian pages still describe 2026/27). Geneva blocked the tool; Basel's
+  deadline page text was not readable.
 - Known gaps: Federico II (Naples) and KU Leuven pages could not be read
   by the tools; Spanish universities mostly show the national procedure;
   Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.
@@ -621,6 +650,10 @@ latest rules" (owner rule 2026-10-30):
   removes avatar files through the Storage API, then `delete_my_account()`
   (redefined) deletes stories and profile. Terms §7 "Your public profile and
   stories" and Privacy (data row, `#stories`) updated, dates 2026-10-30.
+- Review fixes (PR #35): migration `20261030130000_story_limit_lock.sql`
+  locks the profile row before counting, so concurrent submissions cannot
+  exceed 5 (tested with two sessions); account deletion stops with a
+  retryable message if the photo cannot be removed from Storage.
 - Explore shows "Verified routes" (SK, CZ) and an amber "Rules checked"
   group/badge for countries with official-rule listings; How it works shows
   each listing's status and the CZ/AT guides.
@@ -818,7 +851,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (230 tests on 2026-10-30).
+- Unit tests: `npm test` (231 tests on 2026-10-30).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

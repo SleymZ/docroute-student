@@ -85,22 +85,33 @@ export function AccountDataControls() {
     setMessage(null);
     const supabase = createSupabaseBrowserClient();
     // Profile photos live in Storage, which SQL cannot delete: remove the
-    // account's folder first, then the account itself.
+    // account's folder first. If that fails, stop before deleting the
+    // account, so the person can retry and no public photo is left behind.
+    let photosRemoved = false;
     try {
-      const { data: userData } = await supabase.auth.getUser();
+      const { data: userData, error: userError } = await supabase.auth.getUser();
       const userId = userData.user?.id;
-      if (userId) {
-        const { data: files } = await supabase.storage
+      if (userError || !userId) throw userError ?? new Error("No user");
+      const { data: files, error: listError } = await supabase.storage
+        .from(AVATAR_BUCKET)
+        .list(userId);
+      if (listError) throw listError;
+      if (files?.length) {
+        const { error: removeError } = await supabase.storage
           .from(AVATAR_BUCKET)
-          .list(userId);
-        if (files?.length) {
-          await supabase.storage
-            .from(AVATAR_BUCKET)
-            .remove(files.map((file) => `${userId}/${file.name}`));
-        }
+          .remove(files.map((file) => `${userId}/${file.name}`));
+        if (removeError) throw removeError;
       }
+      photosRemoved = true;
     } catch {
-      // Continue: the account deletion below must not depend on Storage.
+      photosRemoved = false;
+    }
+    if (!photosRemoved) {
+      setBusy(null);
+      setMessage(
+        "Your profile photo could not be removed, so nothing was deleted. Try again in a moment.",
+      );
+      return;
     }
     const { error } = await supabase.rpc("delete_my_account");
     if (error) {
