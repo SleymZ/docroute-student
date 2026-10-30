@@ -254,7 +254,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
         {
           label: "Points",
           value:
-            "Points = percentile in the external maturita in mathematics and/or in the faculty's entrance exam, plus competition points (olympiads, SOČ and others, up to 90). School grades are not used. Entrance exams on 22 January 2027 (register by 15 January) and 16 April 2027 (register by 9 April).",
+            "Points = the better of two percentiles (external maturita in mathematics or the faculty's entrance exam; they are not added), plus competition points (olympiads, SOČ and others, up to 90). School grades are not used. Entrance exams on 22 January 2027 (register by 15 January) and 16 April 2027 (register by 9 April).",
         },
         {
           label: "Admission thresholds",
@@ -285,7 +285,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
           "School outside Slovakia/Czechia: Slovak translation, recognition decision or doložka, Slovak B2.",
         ],
         entranceRequirements: [
-          "External maturita maths percentile or the faculty exam (22 January or 16 April 2027), plus competition points.",
+          "The better of the external maturita maths percentile or the faculty exam percentile (22 January or 16 April 2027), plus competition points.",
           "70+ admitted, below 50 rejected; no school grades needed.",
         ],
         afterAdmission: [

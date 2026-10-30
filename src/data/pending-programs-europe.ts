@@ -965,14 +965,14 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
       approvedNote: "EPFL bachelor admission pages (no year stated) and EPFL's tuition page.",
       facts: [
         { label: "Application deadline", value: "Mid-November to 30 April for the September start; documents in two steps (30 April and 10 July). Fee CHF 150 for foreign certificates." },
-        { label: "Selection", value: "EU/EFTA/UK certificates: admission within available places if subject and result requirements are met, ranked by the general average. First-year cap of 3,000 students from 2025 for at least four years." },
+        { label: "Selection", value: "EU/EFTA certificates: mathematics and physics studied and examined at the highest level available, final grades in both and the general average at least 80% of the maximum; then admission within available places, ranked by the general average. First-year cap of 3,000 students from 2025 for at least four years." },
         { label: "Language", value: "French B2 required (C1 recommended); attest it on application if you did not study French at school." },
         { label: "Tuition", value: "CHF 2,190 a semester for foreign students who move to Switzerland to study (from autumn 2025; invoice CHF 2,240)." },
       ],
       programRules: [{ localProgramName: "Computer Science", rule: "Shared first year with Communication Systems; section chosen at the end of year one." }],
       overview: {
         applicationDocuments: ["Online form mid-November – 30 April: ID, photo, last two years' grade sheets, French certificate.", "By 10 July: school-leaving certificate and final grades.", "CHF 150 fee."],
-        entranceRequirements: ["EU certificate with the required subjects; ranking by general average.", "French B2."],
+        entranceRequirements: ["Maths and physics at the highest level, each and the general average at least 80%.", "Ranking by general average within the places; French B2."],
         afterAdmission: ["Tuition CHF 2,190 a semester.", "Swiss student residence permit (not covered by DocRoute)."],
       },
       sources: [
