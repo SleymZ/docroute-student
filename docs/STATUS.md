@@ -172,6 +172,34 @@ latest rules" (owner rule 2026-10-30):
 - Still not opened: FIT VUT directive 2/2026 (URL too long for the fetch
   tool), FIIT English-taught programme, UNIZA FRI rules page.
 
+## Second recheck and new listings (2026-10-30, "check 30 more")
+
+- Rechecked against the universities' own pages, no changes needed: TU
+  Delft, TU/e, Groningen (Computing Science, International and European
+  Law), Erasmus IBEB, UvA EBE, Jagiellonian MD (exam line still shows
+  "2027, 2026"), Semmelweis, Szeged, Corvinus, Palacký MD, Aalto, Helsinki,
+  Trinity. Twente: matching events 12 Mar / 4 Jun 2027 added.
+- New coming-soon listings (13): **UKF Nitra** FPVaI Aplikovaná
+  informatika (2027/28 rules of 29 Sep 2026: 31 Mar 2027, €25, no exam,
+  up to 40 points for the grade average of years 2–4 + 10 for activities;
+  missing grades = no points, committee may admit conditionally), **UPJŠ**
+  PF Informatika (2026/27: average ≤1.80), **STU FEI** Aplikovaná
+  informatika (2026/27; 2027/28 Slovak testing only via July Group),
+  **Pardubice** FEI Informační technologie (2027: to 31 May 2027, CZK 650,
+  test 16 Jun or waiver with Czech maths maturita), **Mendel University**
+  Otevřená informatika (2027 start, 200 places, deadline not on page),
+  **TU Liberec** FM (2026/27), **ZČU** FAV (2026: average ≤1.5 or SCIO,
+  Czech B2), **TU Graz**, **Innsbruck** (ordinance suspended 2026/27),
+  **Salzburg** (2026/27), **Bern** and **Basel** (2026/27; Basel needs a
+  Slovak university admission confirmation), **TalTech** Cyber Security
+  Engineering (2027/28 calendar: third-country citizens by 22 Mar 2027;
+  €3,500/semester non-EU). Estonia is not highlighted on the map (owner:
+  map unchanged except Switzerland).
+- Test host aliases: ttu.ee → taltech.ee, vslib.cz → tul.cz, sbg.ac.at →
+  plus.ac.at.
+- Not added (no usable data): VŠB-TUO FEI (only 2026/27 PDF links, not
+  readable), UMB (page error), UHK FIM (only master pages found).
+
 ## Switzerland (added 2026-10-30)
 
 - Coming soon, latest published rules (pages state no 2027 intake): **ETH
