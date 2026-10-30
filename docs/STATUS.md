@@ -172,6 +172,33 @@ latest rules" (owner rule 2026-10-30):
 - Still not opened: FIT VUT directive 2/2026 (URL too long for the fetch
   tool), FIIT English-taught programme, UNIZA FRI rules page.
 
+## EU-wide additions (2026-10-30, third batch, 30 listings)
+
+- Coming soon, sources on each university's own site; "2027/28 if
+  published, else latest". Published 2027/28: Bocconi BAI (sessions to
+  26 Jan 2027, €17,700), KTU Informatics (1 Jun 2027, €4,201), AUBG (1 Mar /
+  1 Jun, €7,100/semester), IE University CS & AI (rounds Sep 2026 – Mar
+  2027), DCU (€23,800 non-EU 2027-28), Constructor University (to 31 Jul
+  2027, €11,925/semester), STU FIIT English B-INFOxA (28 Feb 2027, maths
+  test 12 Mar, €4,000 + €3,500), Tampere (7–21 Jan 2027), LSMU medicine
+  (to 6 Jul 2027), Vilnius medicine (to 1 Jul 2027, €14,100), Galway, UCC
+  (31 May 2027). Latest (2026/27 or undated): Luxembourg, Saarland, ITU
+  Copenhagen, Malta, PoliTo, RTU (Liepāja), Babeș-Bolyai, Debrecen,
+  Sapienza ACSAI, PJAIT, Jönköping, Milan/Pavia AI, Nicosia, University of
+  Latvia, Wrocław medicine, Masaryk medicine in English, Limerick, Twente
+  Business & IT.
+- New countries without map highlight (owner rule): LU, DK, MT, LV, RO,
+  BG, ES, SE, CY. Test host aliases added (aubg.edu, tuni.fi,
+  constructor.university, unibocconi.it, ktu.edu, ju.se, pja.edu.pl,
+  umw.edu.pl, lsmu.lt, saarland-informatics-campus.de).
+- Not added: ČVUT FIT/FEL English and Charles MFF English (same university
+  and field as a verified route; the data model allows only one), RSU Riga
+  (not in the catalog), Óbuda, UPB, Primorska, SDU, Gdańsk, LUT, Maastricht
+  DSAI (pages unreadable or without data).
+- Supabase migration 20261029120000 confirmed on 2026-10-30: test feedback
+  with route family-sk and business-sk was accepted from the Preview (two
+  rows "TEST DocRoute … delete" in `feedback`).
+
 ## Second recheck and new listings (2026-10-30, "check 30 more")
 
 - Rechecked against the universities' own pages, no changes needed: TU
