@@ -269,6 +269,22 @@ latest rules" (owner rule 2026-10-30):
   "Computer science in English" on the page. Not verified routes.
 - 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
   PSL do not (the catalog has only predecessor institutions).
+- Recheck 2026-10-30 (11 universities): new or updated facts for KU Leuven
+  (Dutch-taught non-EEA deadline 1 Feb 2027, final 22 Sep 2027), Ghent
+  (visa applicants by 1 April, no year on page; school rule), Bern (30 April,
+  medicine 15 Feb, late only without visa), Lausanne (now its 2026/27
+  deadline page: 28 Feb visa/ECUS, 30 April others), UCD (Fall 2027:
+  priority 1 Dec 2026, final 1 July 2027; €60 on that page vs €70 in the
+  FAQ), Helsinki (Studyinfo, admission groups, SAT/ACT), MedUni Wien
+  (expected MedAT 2027 dates, 5% non-EU quota); Vienna, Edinburgh,
+  Politecnico di Milano and Trinity rechecked unchanged (still describe
+  2026/27 or the 2025–2026 cycle). Not yet published for 2027/28 on the
+  checked pages: Italian calls (Polimi, Bologna, PoliTo, Milan), Vienna
+  2027/28 periods, UK English pages (2026 entry), Trinity (2025 page),
+  DTU dates. Greek universities: no current official procedure found for
+  non-EU applicants (the ministry's call found describes 2024). KU Leuven,
+  UNIL and Bern pages were read in the built-in browser (robots block the
+  fetch tool).
 - Known gaps: Federico II (Naples) and KU Leuven pages could not be read
   by the tools; Spanish universities mostly show the national procedure;
   Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.
