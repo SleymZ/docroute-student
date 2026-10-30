@@ -285,6 +285,14 @@ latest rules" (owner rule 2026-10-30):
   non-EU applicants (the ministry's call found describes 2024). KU Leuven,
   UNIL and Bern pages were read in the built-in browser (robots block the
   fetch tool).
+- Second pass 2026-10-30: Florence (2026/27 intake rounds), Charles
+  University (e-application, MFF example 31 March 2027, CZK 1,000), NTNU
+  (Samordna opptak, 15 April), Utrecht (example 1 April); Hamburg, Porto
+  and PSL rechecked unchanged (PSL's FAQ still shows 2025 dates and 2022/23
+  fees). German, Dutch, Spanish, Swedish and Danish entries rely on the
+  sourced country rules plus university facts checked on 2026-10-27; most
+  UK pages still describe 2026 entry. Unreadable by the tools: Federico II,
+  Goethe Frankfurt deadline page (semester dates only).
 - Known gaps: Federico II (Naples) and KU Leuven pages could not be read
   by the tools; Spanish universities mostly show the national procedure;
   Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.
