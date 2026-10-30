@@ -493,7 +493,7 @@ latest rules" (owner rule 2026-10-30):
 - Planner: `planPurposeResidenceDeadlines` (the work planner without
   Labour Office steps). Waitlist/feedback route ids `family-sk`,
   `business-sk`: migration `20261029120000_family_business_routes.sql`
-  must be run in Supabase.
+  was run by the owner (confirmed 2026-10-30).
 
 ## Czechia and Austria residence guides (checked 2026-10-30)
 
