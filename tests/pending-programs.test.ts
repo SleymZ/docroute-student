@@ -39,6 +39,17 @@ const hostAliases: Record<string, string[]> = {
   "ttu.ee": ["taltech.ee"],
   "vslib.cz": ["tul.cz"],
   "sbg.ac.at": ["plus.ac.at"],
+  "aubg.bg": ["aubg.edu"],
+  // Saarland's computer science faculty runs its own campus site.
+  "uni-saarland.de": ["saarland-informatics-campus.de"],
+  "uta.fi": ["tuni.fi"],
+  "jacobs-university.de": ["constructor.university"],
+  "unibocconi.eu": ["unibocconi.it"],
+  "en.ktu.edu": ["ktu.edu"],
+  "hj.se": ["ju.se"],
+  "pjwstk.edu.pl": ["pja.edu.pl"],
+  "am.wroc.pl": ["umw.edu.pl"],
+  "info.kma.lt": ["lsmu.lt"],
 };
 
 function onUniversityDomain(hostname: string, universityHost: string) {
@@ -124,6 +135,7 @@ test("Slovak computing faculties are listed for the exact scope only", () => {
       "ukf-fpvai-ai-bsc-2027",
       "upjs-pf-informatika-bsc-2027",
       "stu-fei-ai-bsc-2027",
+      "stu-fiit-en-bsc-2027",
     ],
   );
   assert.deepEqual(
@@ -231,6 +243,8 @@ test("German entries never match", () => {
   assert.deepEqual(german.map((group) => group.id), [
     "tum-informatics-bsc-2027",
     "kit-informatics-bsc-2027",
+    "saarland-cs-bsc-2027",
+    "constructor-cs-bsc-2027",
   ]);
   assert.equal(findVerifiedProgram("tum-informatics-bsc-2027"), null);
 });
@@ -297,7 +311,7 @@ test("law and economics are listed as fields with sourced coming-soon faculties"
 test("Czech medicine adds two faculties next to the Slovak ones", async () => {
   const { formatPendingDegree } = await import("../src/data/pending-programs");
   const czMedicine = findPendingProgramGroups({ countryCode: "CZ", category: "Medicine", degreeLevel: "bachelor" });
-  assert.deepEqual(czMedicine.map((group) => group.id), ["cuni-lf1-medicine-2027", "muni-lf-medicine-2027", "upol-md-english-2027"]);
+  assert.deepEqual(czMedicine.map((group) => group.id), ["cuni-lf1-medicine-2027", "muni-lf-medicine-2027", "upol-md-english-2027", "muni-md-english-2027"]);
   assert.equal(formatPendingDegree("long-cycle", "Medicine"), "Long-cycle master's (MUDr./MDDr.)");
   assert.equal(formatPendingDegree("long-cycle", "Law"), "Long-cycle master's (Mgr.)");
 });
@@ -339,6 +353,7 @@ test("Dutch computing listings are found from a Netherlands profile", () => {
     "rug-cs-bsc-2027",
     "utwente-tcs-bsc-2027",
     "vu-cs-bsc-2027",
+    "utwente-bit-bsc-2027",
   ]);
 });
 
