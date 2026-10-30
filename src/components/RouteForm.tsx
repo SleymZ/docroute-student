@@ -73,6 +73,7 @@ const countryCodes: Record<string, string> = {
   "United Kingdom": "gb",
   Slovakia: "sk",
   Czechia: "cz",
+  Austria: "at",
   Romania: "ro",
   Bulgaria: "bg",
 };
@@ -565,9 +566,9 @@ export function RouteForm({
               ? "Residence route verified · University admission not verified yet"
               : "Verified route available · Official sources included"
             : purpose === "work"
-              ? "Work routes are verified for Slovakia and Czechia so far"
+              ? "Work routes cover Slovakia, Czechia and Austria so far"
               : purpose !== "study"
-                ? "Family and business routes cover Slovakia so far"
+                ? "Family and business routes cover Slovakia, Czechia and Austria so far"
               : "Personalised route coverage in progress · Public directory available"}
         </span>
       </div>

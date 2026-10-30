@@ -1,6 +1,7 @@
 export type Destination =
   | "Slovakia"
   | "Czechia"
+  | "Austria"
   | "Romania"
   | "Bulgaria";
 

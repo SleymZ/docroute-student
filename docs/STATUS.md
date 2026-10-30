@@ -16,7 +16,9 @@ three groups:
   (Explore).
 
 Purposes with a route today: **study**, **work**, **family** and
-**business** (family and business: Slovakia only, PR #28).
+**business** (family and business: Slovakia, PR #28; source-linked
+checklists for Czechia family/business and Austria work/family/business,
+page `/route/guide`, 2026-10-30).
 
 - **Work route** (`/route/work`, "Work" on the home form): six questions
   (citizenship, current status, job offer, Slovak diploma, EU Blue Card
@@ -438,6 +440,34 @@ latest rules" (owner rule 2026-10-30):
   `business-sk`: migration `20261029120000_family_business_routes.sql`
   must be run in Supabase.
 
+## Czechia and Austria residence guides (checked 2026-10-30)
+
+- Page `/route/guide?country=CZ|AT&purpose=work|family|business&variant=…`
+  (`src/lib/residence/country-guides.ts`, `CountryGuideScreen.tsx`):
+  checklists with progress ticks and key figures, no dated planner, no
+  waitlist; feedback form without a route id (no database change). Czech
+  work stays on `/route/czechia`. Austria is now a home-form destination
+  (study in Austria still goes to Explore).
+- Czechia (ipc.gov.cz): family reunification (updated 15 Jul 2026): sponsor
+  conditions (15 months + both spouses 20+, employee card 6 months, Blue
+  Card/ICT/investment, research, job-seeking/business applicants), CZK 2,500
+  (1,000 under 15), 60 days in Czechia / 270 via embassy, validity tied to
+  the sponsor (min 1 year), work allowed; income = living minimum +
+  normative housing cost (from 1 Oct 2026). Business: long-term visa (28 Jul
+  2026; CZK 5,000, 90/120 days, up to 1 year, funds CZK 156,500 = 50 ×
+  3,130; the page gives both embassy and Ministry filing) then the permit
+  (27 Jul 2026; Ministry office, CZK 2,500, 60 days, up to 2 years).
+- Austria (migration.gv.at, no page dates): EU Blue Card (€55,678 gross
+  2026), RWR very highly qualified (70 points, job-seeker visa 6 months
+  €195), shortage occupations (55 points), other key workers (55 points,
+  €3,465/month 2026); family: RWR Card plus (no quota) or settlement permit
+  (quota, German A1), spouses 21+, income €1,308.39 / €2,064.12 / +€201.88
+  per child (2026); business: self-employed key worker (e.g. €100,000,
+  AMS opinion 3 weeks), start-up founder (€30,000, 50 points). Fee €218;
+  address registration within 3 days (oesterreich.gv.at, 13 Jan 2026).
+- Not covered: family of Czech/Austrian/EU citizens, Czech job-seeking and
+  investment permits, Austrian seasonal/ICT/graduate routes, Swiss residence.
+
 ## Code structure for residence
 
 - `src/lib/residence/slovakia.ts`: shared Slovak residence steps plus a
@@ -705,7 +735,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (217 tests on 2026-10-30).
+- Unit tests: `npm test` (220 tests on 2026-10-30).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

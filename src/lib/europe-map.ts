@@ -50,6 +50,7 @@ const pathGenerator = geoPath(projection);
 const destinationById: Partial<Record<string, Destination>> = {
   "703": "Slovakia",
   "203": "Czechia",
+  "040": "Austria",
   "642": "Romania",
   "100": "Bulgaria",
 };
@@ -185,6 +186,7 @@ const capitalCoordinates: Record<
 > = {
   Slovakia: [17.1077, 48.1486],
   Czechia: [14.4378, 50.0755],
+  Austria: [16.3738, 48.2082],
   Romania: [26.1025, 44.4268],
   Bulgaria: [23.3219, 42.6977],
 };
@@ -195,6 +197,7 @@ export const destinationPoints: Record<
 > = {
   Slovakia: projectPoint(capitalCoordinates.Slovakia),
   Czechia: projectPoint(capitalCoordinates.Czechia),
+  Austria: projectPoint(capitalCoordinates.Austria),
   Romania: projectPoint(capitalCoordinates.Romania),
   Bulgaria: projectPoint(capitalCoordinates.Bulgaria),
 };
