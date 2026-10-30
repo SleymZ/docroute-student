@@ -293,6 +293,11 @@ latest rules" (owner rule 2026-10-30):
   sourced country rules plus university facts checked on 2026-10-27; most
   UK pages still describe 2026 entry. Unreadable by the tools: Federico II,
   Goethe Frankfurt deadline page (semester dates only).
+- Third pass 2026-10-30: Padua (second 2027/28 call, 1 Dec 2026–1 Mar
+  2027); rechecked unchanged ETH, EPFL, Zurich, Karolinska, Copenhagen,
+  Lund, Paris-Saclay, Paris Cité, Aarhus, Aalborg, Pisa, Turin, Bari (the
+  Italian pages still describe 2026/27). Geneva blocked the tool; Basel's
+  deadline page text was not readable.
 - Known gaps: Federico II (Naples) and KU Leuven pages could not be read
   by the tools; Spanish universities mostly show the national procedure;
   Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.
