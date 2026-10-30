@@ -227,97 +227,90 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
     category: "Computer Science",
     degreeLevel: "bachelor",
     intake: "2027/28",
-    status: "rules-not-published",
+    status: "rules-published",
     statusNote:
-      "STU opened its 2027/28 admission pages (e-application in the university information system), but on 29 October 2026 the latest FIIT bachelor conditions found were for 2026/27. DocRoute does not build a personalised route or document checklist until the 2027/28 conditions are published and checked.",
+      "FIIT published its bachelor admission conditions for 2027/28 (faculty regulation 2/2026, approved by the Academic Senate on 30 September 2026). They are summarised below for reference; DocRoute has not built a personalised route or document checklist from them yet. The English-taught Informatics bachelor (B-INFOxA) has its own dates and is not covered here.",
     programs: [{ programName: "Computer Science", localProgramName: "Informatika" }],
     sources: [
       {
-        id: "stu-conditions-2027-28",
-        title: "STU admission conditions for 2027/2028 (university-wide; faculty rules differ)",
-        publisher: "Slovak University of Technology in Bratislava",
-        url: "https://www.stuba.sk/sk/uchadzaci/ako-zacat-studovat/podmienky-prijatia-na-akademicky-rok-2027-2028.html?page_id=187",
-        checkedAt: "2026-10-29",
+        id: "fiit-bachelor-sk-2027",
+        title: "Bachelor admission, Slovak-taught programme (2027/2028)",
+        publisher: "Faculty of Informatics and Information Technologies, Slovak University of Technology in Bratislava",
+        url: "https://www.fiit.stuba.sk/sk/uchadzaci/ako-zacat-studovat/prijimanie-na-studium/prijimacie-konanie-na-bakalarske-studium/prijimacie-konanie-bakalarske-studium-v-slovenskom-jazyku",
+        checkedAt: "2026-10-30",
       },
     ],
-    checkedAt: "2026-10-29",
+    checkedAt: "2026-10-30",
     referenceRules: {
-      intake: "2026/27",
+      intake: "2027/28",
       approvedNote:
-        "FIIT internal regulation No. 4/2025, dated 18 November 2025 and signed by the dean and the chair of the faculty's Academic Senate, for 2026/27 entry.",
+        "FIIT regulation 2/2026 “Further admission conditions for bachelor programmes, 2027/2028”, dated 30 September 2026, approved by the faculty's Academic Senate and signed by its chair and the dean.",
       facts: [
         {
           label: "Application deadline",
           value:
-            "Electronic application by the date set by the dean; paper applications posted by 31 March 2026. The fee amount is not in the conditions.",
+            "Two rounds: 1 October – 30 November 2026 (committee 14 December 2026) and 1 December 2026 – 31 March 2027, 23:59 (committee 10 May 2027). Fee €30 to FIIT STU, not refunded after the deadline.",
         },
         {
           label: "Points",
           value:
-            "The better of two maths results counts: the percentile in the external part of the maturita in mathematics, or the percentile in the faculty's entrance exam. Olympiads and competitions add points (up to 90). Without a maturita maths result or competition diplomas, only the entrance exam counts.",
+            "Points = percentile in the external maturita in mathematics and/or in the faculty's entrance exam, plus competition points (olympiads, SOČ and others, up to 90). School grades are not used. Entrance exams on 22 January 2027 (register by 15 January) and 16 April 2027 (register by 9 April).",
         },
         {
-          label: "Early exam for third-year pupils",
+          label: "Admission thresholds",
           value:
-            "FIIT let pupils in the penultimate school year take its entrance exam (maths and informatics) on 23 January 2026; passing guaranteed a place for 2027/28 entry, subject to the maturita certificate. In October 2026 the faculty announced it again; check its site for dates.",
+            "70 points or more: admitted. Below 50: not admitted. In between the admissions committee ranks applicants. The dean may lower the thresholds (published at least 10 days before the committee). Planned intake for 3-year Informatika: 400 (table labelled 2026/27 on the page).",
         },
         {
           label: "Language",
           value:
-            "Without a Slovak or Czech maturita: Slovak B2, assessed by the STU language centre (ICV STU); otherwise admission is conditional.",
+            "Without a Slovak or Czech maturita: Slovak B2, assessed by the STU language centre (ICV STU). Meeting the points threshold without it gives conditional admission.",
         },
         {
           label: "School certificate from abroad",
           value:
-            "A decision recognising the foreign school certificate under Act No. 422/2015.",
+            "By enrolment, on paper: notarised copy of the official Slovak translation of the certificate and a recognition decision or a “doložka” on recognition of the level of education (Act No. 422/2015).",
         },
       ],
       programRules: [
         {
           localProgramName: "Informatika",
-          rule: "3-year study: admitted automatically with 70+ points, rejected below 50; in between the admissions committee ranks applicants. 4-year study: 50+ admitted, below 35 rejected. The dean could lower these thresholds. An English-taught Informatics bachelor also exists (fee-paying; not covered here).",
+          rule: "3-year bachelor in Slovak. 70+ points admitted, below 50 rejected, committee ranks the rest. Enrolment of third-country applicants on 25 August 2027.",
         },
       ],
       overview: {
         applicationDocuments: [
-          "Electronic application in the STU information system (paper posted by 31 March 2026); admission fee (amount not in the conditions).",
-          "Certified copy of the maturita certificate and external maturita results in maths and Slovak or Czech, if taken; olympiad diplomas optional.",
-          "Without a Slovak or Czech maturita: Slovak B2 assessment from the STU language centre. School abroad: recognition decision.",
+          "Electronic application by 30 November 2026 (round 1) or 31 March 2027 (round 2); fee €30.",
+          "Certified copy of the maturita certificate (2027 graduates: send it right after receiving it in May). Competition diplomas uploaded by the deadline.",
+          "School outside Slovakia/Czechia: Slovak translation, recognition decision or doložka, Slovak B2.",
         ],
         entranceRequirements: [
-          "Points = the better of the external maturita maths percentile or the faculty's exam percentile, plus competition points (up to 90).",
-          "3-year study: 70+ admitted, below 50 rejected; 4-year study: 50+ admitted, below 35 rejected; in between the committee ranks.",
+          "External maturita maths percentile or the faculty exam (22 January or 16 April 2027), plus competition points.",
+          "70+ admitted, below 50 rejected; no school grades needed.",
         ],
         afterAdmission: [
-          "Admission can be conditional until the maturita or Slovak B2 is proven.",
-          "A review of the dean's decision can be requested within 8 days of delivery.",
-          "Enrolment steps are not in the conditions: check the faculty's site.",
+          "Conditional admission until the maturita or Slovak B2 is proven.",
+          "Review of the dean's decision within 8 days of delivery.",
+          "Enrolment of Slovak applicants by 9 July 2027; third-country applicants 25 August 2027.",
         ],
       },
       sources: [
         {
-          id: "fiit-conditions-2026-27",
-          title: "Further admission conditions for FIIT bachelor programmes, 2026/2027 (regulation 4/2025, 18 Nov 2025)",
+          id: "fiit-conditions-2027-28",
+          title: "Further admission conditions for FIIT bachelor programmes, 2027/2028 (regulation 2/2026, 30 Sep 2026)",
           publisher: "Faculty of Informatics and Information Technologies, Slovak University of Technology in Bratislava",
-          url: "https://www.fiit.stuba.sk/dokumenty/docs//Studium/Prijimacky/bak/dalsie-podmienky-prij-bak_2025-11-18.pdf",
-          checkedAt: "2026-10-29",
+          url: "https://www.fiit.stuba.sk/dokumenty/docs/Studium/Prijimacky/bak/Dalsie_podmienky_prijatia_na_BC-30_09_2026.pdf",
+          checkedAt: "2026-10-30",
         },
         {
-          id: "fiit-early-exam-2026",
-          title: "Press release: FIIT entrance exam for third-year secondary pupils (7 January 2026)",
+          id: "fiit-bachelor-dates-2027",
+          title: "Important dates of admission to bachelor studies (2027/2028)",
           publisher: "Faculty of Informatics and Information Technologies, Slovak University of Technology in Bratislava",
-          url: "https://www.fiit.stuba.sk/tlacova-sprava-07012026.html?page_id=6879",
-          checkedAt: "2026-10-29",
-        },
-        {
-          id: "fiit-bachelor-programmes",
-          title: "FIIT bachelor programmes",
-          publisher: "Faculty of Informatics and Information Technologies, Slovak University of Technology in Bratislava",
-          url: "https://www.fiit.stuba.sk/studijne-programy/bakalarske-studium.html?page_id=1674",
-          checkedAt: "2026-10-29",
+          url: "https://www.fiit.stuba.sk/en/applicants/how-to-start-studying/admission-to-study/admission-for-bachelors-studies/important-dates-of-admission-to-bachelor-studies",
+          checkedAt: "2026-10-30",
         },
       ],
-      checkedAt: "2026-10-29",
+      checkedAt: "2026-10-30",
     },
   },
   {
@@ -528,7 +521,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
       {
         id: "jlf-admission-page",
         title: "Doctoral-degree study (MUDr., MDDr.): applicants",
-        publisher: "JFaculty of Medicine, Comenius University Bratislava",
+        publisher: "Jessenius Faculty of Medicine in Martin, Comenius University Bratislava",
         url: "https://www.jfmed.uniba.sk/studium/uchadzaci/doktorske-studium-mudr-mddr/",
         checkedAt: "2026-10-29",
       },
@@ -836,7 +829,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
         {
           label: "Application deadline",
           value:
-            "File and pay by 31 March 2027 (the fee is not stated on the page). Claims for preferential admission by 31 March, or by 31 May if results are still pending.",
+            "File and pay by 31 March 2027. Fee CZK 700 (EUR 28 when paying from abroad), per the BUT admissions page. Claims for preferential admission by 31 March, or by 31 May if results are still pending.",
         },
         {
           label: "No faculty exam",
@@ -867,7 +860,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
       ],
       overview: {
         applicationDocuments: [
-          "Application filed and paid by 31 March 2027.",
+          "Application filed and fee (CZK 700 / EUR 28) paid by 31 March 2027.",
           "Proof for preferential admission by 31 March (31 May if pending).",
           "Outside Slovakia/Poland/Germany etc.: translated diploma, transcript and study plan for recognition.",
         ],
@@ -877,10 +870,17 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
           "Basic Czech (Slovak citizens and Slovak maturita holders meet it).",
         ],
         afterAdmission: [
-          "Enrolment details are not on the application page: check the faculty's site.",
+          "Electronic enrolment in June, July or September 2027; matriculation 17 September, winter semester from 20 September 2027.",
         ],
       },
       sources: [
+        {
+          id: "vut-but-admission-fee",
+          title: "Admission procedure (application fee CZK 700)",
+          publisher: "Brno University of Technology",
+          url: "https://www.vut.cz/studuj/proc-na-vut/prijimaci-rizeni",
+          checkedAt: "2026-10-30",
+        },
         {
           id: "vut-fit-application-page-2027",
           title: "Application, admission criteria, language and recognition (2027/2028)",
@@ -931,7 +931,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
         {
           label: "Application deadline",
           value:
-            "1 November 2026 – 28 February 2027, a separate e-application and fee per programme (amount not stated on the faculty page).",
+            "1 November 2026 – 28 February 2027, a separate e-application and fee per programme: CZK 900 (Masaryk University fee table for admission procedures opened in 2026/27, i.e. for 2027/28 entry).",
         },
         {
           label: "Entrance test (TSP)",
@@ -983,6 +983,13 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
           publisher: "Faculty of Informatics, Masaryk University",
           url: "https://www.fi.muni.cz/admission/faq.html.cs",
           checkedAt: "2026-10-29",
+        },
+        {
+          id: "muni-fees-2026-27-fi",
+          title: "Application fees for admission procedures opened in 2026/2027",
+          publisher: "Masaryk University",
+          url: "https://www.muni.cz/o-univerzite/uredni-deska/poplatky-za-prijimaci-rizeni",
+          checkedAt: "2026-10-30",
         },
         {
           id: "muni-tsp-dates",
@@ -1641,7 +1648,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
         {
           label: "Application deadline",
           value:
-            "Electronic application 1 November 2026 – 28 February 2027. Fee per programme: CZK 800 in the information leaflet, CZK 850 on the faculty's admission page (check before paying).",
+            "Electronic application 1 November 2026 – 28 February 2027. Fee per programme CZK 850 (Masaryk University fee table for admission procedures opened in 2026/27; the older leaflet said CZK 800).",
         },
         {
           label: "Entrance exam",
@@ -1670,7 +1677,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
       ],
       overview: {
         applicationDocuments: [
-          "Electronic application by 28 February 2027; fee CZK 800–850 (sources differ).",
+          "Electronic application by 28 February 2027; fee CZK 850.",
           "Waiver request with SCIO or competition proof, if eligible.",
         ],
         entranceRequirements: [
@@ -1689,6 +1696,13 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
           publisher: "Faculty of Law, Masaryk University",
           url: "https://www.law.muni.cz/dokumenty/66888",
           checkedAt: "2026-10-29",
+        },
+        {
+          id: "muni-fees-2026-27-law",
+          title: "Application fees for admission procedures opened in 2026/2027",
+          publisher: "Masaryk University",
+          url: "https://www.muni.cz/o-univerzite/uredni-deska/poplatky-za-prijimaci-rizeni",
+          checkedAt: "2026-10-30",
         },
         {
           id: "muni-law-admission-page-2027",
