@@ -9,21 +9,22 @@ import type { PendingProgramGroup, ReferenceRules } from "@/data/pending-program
 // pays the non-EU rate; the university confirms the fee status.
 
 const checked = "2026-10-29";
+const rechecked = "2026-10-30";
 
-function source(id: string, title: string, publisher: string, url: string): OfficialSource {
-  return { id, title, publisher, url, checkedAt: checked };
+function source(id: string, title: string, publisher: string, url: string, at = checked): OfficialSource {
+  return { id, title, publisher, url, checkedAt: at };
 }
 
 type GroupInput = Omit<PendingProgramGroup, "intake" | "checkedAt" | "referenceRules"> & {
   referenceRules: Omit<ReferenceRules, "checkedAt">;
 };
 
-function group(input: GroupInput): PendingProgramGroup {
+function group(input: GroupInput, at = checked): PendingProgramGroup {
   return {
     ...input,
     intake: "2027/28" as StudyIntake,
-    checkedAt: checked,
-    referenceRules: { ...input.referenceRules, checkedAt: checked },
+    checkedAt: at,
+    referenceRules: { ...input.referenceRules, checkedAt: at },
   };
 }
 
@@ -362,30 +363,32 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
     city: "Kraków",
     category: "Computer Science",
     degreeLevel: "bachelor",
-    status: "rules-not-published",
-    statusNote: standingNote("AGH lists its English bachelor offer for 2026/27; the teaching language is inferred from the international offer page."),
+    status: "rules-published",
+    statusNote: publishedNote("The Senate's 2027/28 conditions set the scoring; the fee and tuition for 2027/28 are set separately and were not published yet (2026/27 amounts shown). The recruitment calendar is expected around May 2027."),
     programs: [{ programName: "Computer Science (English)", localProgramName: "Computer Science" }],
-    sources: [source("agh-bsc-offer", "Education offer: bachelor studies", "AGH University of Krakow", "https://www.international.agh.edu.pl/en/studies/education-offer-bachelor-studies")],
+    sources: [source("agh-senate-82-2026", "Senate resolution 82/2026 of 27 May 2026: recruitment conditions 2027/2028", "AGH University of Krakow", "https://rekrutacja.agh.edu.pl/wp-content/uploads/2026/06/uchwala_2027_2028_warunki_rekrutacji.pdf", rechecked)],
     referenceRules: {
-      intake: "2026/27",
-      approvedNote: "AGH recruitment rules, offer and fees for 2026/2027 (Senate resolution 76/2025).",
+      intake: "2027/28",
+      approvedNote: "AGH Senate resolution 82/2026 of 27 May 2026 on recruitment conditions for 2027/2028.",
       facts: [
-        { label: "Application", value: "Recruitment June–September; studies start 1 October. Fee PLN 85 (PLN 100 with AGH's maths exam)." },
-        { label: "Selection", value: "Admission rate up to 1,000 points (subjects: maths, physics, computer science or a foreign language); at least 300 needed. 2026/27 Computer Science thresholds: 685, 501 and 600 points in the three rounds. Non-EU/EFTA/OECD certificates: AGH maths exam, minimum 30%." },
-        { label: "Tuition", value: "€3,000 a semester (2026/27); 7 semesters." },
+        { label: "Application", value: "Summer recruitment 1 June – 30 September 2027. Fee set by the Rector separately (2026/27: PLN 85, PLN 100 with AGH's maths exam)." },
+        { label: "Selection", value: "Admission rate WR = 2·M + 6·P1 + 2·P2 + bonuses, up to 1,000 points; at least 300 needed for full-time study. For Informatyka P1 and P2 are two different subjects from maths, physics, computer science." },
+        { label: "Foreign certificates", value: "Results count at 50% (basic level), 75% (level not stated) or 100% (extended level). Without an extended-level maths result you may take AGH's maths exam; below 30% excludes you. Non-EU applicants on foreign documents need B2 in the language of study." },
+        { label: "Tuition", value: "€3,000 a semester in 2026/27; 2027/28 amount not published yet. 7 semesters." },
       ],
       programRules: [{ localProgramName: "Computer Science", rule: "Seven-semester engineering bachelor." }],
       overview: {
-        applicationDocuments: ["Online registration June–September; PLN 85–100 fee.", "School certificate and transcript scans."],
-        entranceRequirements: ["Admission rate from maturita results (300+ points).", "AGH maths exam for some foreign certificates."],
-        afterAdmission: ["First-semester tuition by 15 October.", "€3,000 a semester."],
+        applicationDocuments: ["Online registration 1 June – 30 September 2027.", "School certificate and transcript; B2 language proof."],
+        entranceRequirements: ["Admission rate from school-leaving results (300+ of 1,000).", "AGH maths exam if the certificate has no extended-level maths (30% minimum)."],
+        afterAdmission: ["First-semester tuition (2026/27: €3,000).", "Rector's decision for foreign applicants."],
       },
       sources: [
-        source("agh-bsc-rules", "Recruitment rules: bachelor", "AGH University of Krakow", "https://www.international.agh.edu.pl/en/studies/recruitment/recruitment-rules-bachelor"),
-        source("agh-fees", "Fees", "AGH University of Krakow", "https://www.international.agh.edu.pl/en/studies/fees"),
+        source("agh-senate-82-2026-ref", "Recruitment conditions 2027/2028 (Senate resolution 82/2026)", "AGH University of Krakow", "https://rekrutacja.agh.edu.pl/wp-content/uploads/2026/06/uchwala_2027_2028_warunki_rekrutacji.pdf", rechecked),
+        source("agh-deadlines-bachelor", "Deadlines: bachelor studies", "AGH University of Krakow", "https://www.international.agh.edu.pl/en/studies/recruitment/deadlines-bachelor-studies", rechecked),
+        source("agh-fees", "Fees", "AGH University of Krakow", "https://www.international.agh.edu.pl/en/studies/fees", rechecked),
       ],
     },
-  }),
+  }, rechecked),
   group({
     id: "uj-md-english-2027",
     universityId: "c46aed503ac87fafc82c",
@@ -436,28 +439,30 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
     city: "Budapest",
     category: "Computer Science",
     degreeLevel: "bachelor",
-    status: "rules-not-published",
-    statusNote: standingNote("The faculty's apply page is dated 4 December 2024 and states no intake year."),
+    status: "rules-published",
+    statusNote: publishedNote("ELTE's application portal lists the September 2027/28 intake; the entrance exam format is described on the faculty page without a year."),
     programs: [{ programName: "Computer Science BSc (English)", localProgramName: "Computer Science BSc" }],
-    sources: [source("elte-cs-apply", "Computer Science BSc: apply", "ELTE Faculty of Informatics", "https://www.inf.elte.hu/apply-computer-science-bsc")],
+    sources: [source("elte-cs-apply-2027", "[BSc] Computer Science: apply (September 2027/28)", "Eötvös Loránd University", "https://apply.elte.hu/courses/course/149-bsc-computer-science", rechecked)],
     referenceRules: {
-      intake: "2025/26",
-      approvedNote: "ELTE Faculty of Informatics apply page (dated 4 December 2024).",
+      intake: "2027/28",
+      approvedNote: "ELTE application portal, intake September 2027/28 (checked 30 October 2026), and the faculty's apply page for the exam format.",
       facts: [
-        { label: "Application deadline", value: "30 April for the September start; incomplete files are rejected." },
-        { label: "Entrance exam", value: "Two 30-minute online tests (high-school maths; algorithmic thinking). 75%+ leads to an English interview (intermediate level)." },
-        { label: "Fees", value: "Application €150 (non-refundable); tuition €3,200 a semester." },
-        { label: "Documents", value: "School certificate and transcripts, CV, motivation letter, passport, photo, medical certificate; English translations." },
+        { label: "Application deadline", value: "1 February – 30 April 2027 (23:59:59 CET); start 1 September 2027." },
+        { label: "Entrance exam", value: "Required; invitation only after the fee is paid. Faculty page (no year): two 30-minute online tests (high-school maths; algorithmic thinking), 75%+ leads to an English interview." },
+        { label: "Fees", value: "Application €150 (one-time, non-refundable); tuition €3,200 a semester." },
       ],
       programRules: [{ localProgramName: "Computer Science BSc", rule: "Six semesters, taught in English." }],
       overview: {
-        applicationDocuments: ["Application with documents by 30 April.", "€150 fee."],
+        applicationDocuments: ["Online application 1 February – 30 April 2027.", "€150 fee before the exam invitation."],
         entranceRequirements: ["Online maths and algorithmic tests.", "English interview."],
-        afterAdmission: ["Tuition €3,200 a semester before the term (or by the visa deadline)."],
+        afterAdmission: ["Tuition €3,200 a semester.", "Start 1 September 2027."],
       },
-      sources: [source("elte-cs-apply-ref", "Computer Science BSc: apply", "ELTE Faculty of Informatics", "https://www.inf.elte.hu/apply-computer-science-bsc")],
+      sources: [
+        source("elte-cs-apply-2027-ref", "[BSc] Computer Science (September 2027/28)", "Eötvös Loránd University", "https://apply.elte.hu/courses/course/149-bsc-computer-science", rechecked),
+        source("elte-cs-apply-faculty", "Computer Science BSc: apply (entrance exam)", "ELTE Faculty of Informatics", "https://www.inf.elte.hu/apply-computer-science-bsc", rechecked),
+      ],
     },
-  }),
+  }, rechecked),
   group({
     id: "bme-ce-bsc-2027",
     universityId: "d454a3153be0bb52d6df",
@@ -770,27 +775,31 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
     city: "Vilnius",
     category: "Computer Science",
     degreeLevel: "bachelor",
-    status: "rules-not-published",
-    statusNote: standingNote("The programme page states no year for its deadlines and fees."),
+    status: "rules-published",
+    statusNote: publishedNote("The application portal shows 1 July 2027 as the deadline, while the programme page gives 1 May for non-EU applicants (no year): use 1 May to be safe."),
     programs: [{ programName: "Software Engineering (English)", localProgramName: "Software Engineering" }],
-    sources: [source("vu-lt-se-page", "Software Engineering (bachelor)", "Vilnius University", "https://www.vu.lt/en/studies/bachelor-studies/software-engineering")],
+    sources: [source("vu-lt-se-apply-2027", "Software Engineering: apply (Fall 2027/28)", "Vilnius University", "https://apply.vu.lt/courses/course/145-software-engineering", rechecked)],
     referenceRules: {
-      intake: "2026/27",
-      approvedNote: "Programme page (no year stated).",
+      intake: "2027/28",
+      approvedNote: "Vilnius University application portal for the Fall 2027/28 intake (applications open 1 December 2026).",
       facts: [
-        { label: "Application deadline", value: "Non-EU/EFTA: 1 May; EU/EFTA (and visa-free non-EU within 90 days): 1 July. Fee €100." },
-        { label: "Requirements", value: "Secondary education (non-EU within the last 5 years), motivation letter, possible interview; English B2 (e.g. IELTS 6.5, TOEFL iBT 81)." },
-        { label: "Tuition", value: "€4,560 a year non-EU, €4,201 EU (non-state-funded place)." },
+        { label: "Application deadline", value: "Applications open 1 December 2026. Portal deadline 1 July 2027 (23:59:59 EET); the programme page says 1 May for non-EU/EFTA applicants. Fee €100." },
+        { label: "Requirements", value: "Secondary education (non-EU/EFTA: completed within the last 5 years), motivation letter, possible interview; English B2 (e.g. IELTS Academic 6.0+)." },
+        { label: "Tuition", value: "€4,800 a year on the portal (subject to national rules); the programme page shows €4,560 non-EU." },
       ],
-      programRules: [{ localProgramName: "Software Engineering", rule: "English-taught bachelor; one intake each September." }],
+      programRules: [{ localProgramName: "Software Engineering", rule: "English-taught bachelor; studies start 1 September 2027." }],
       overview: {
-        applicationDocuments: ["Application by 1 May (non-EU), €100.", "Motivation letter and English B2."],
-        entranceRequirements: ["Possible interview."],
-        afterAdmission: ["Tuition €4,560 a year (non-EU)."],
+        applicationDocuments: ["Online application from 1 December 2026 (by 1 May 2027 to be safe), €100.", "Motivation letter and English B2."],
+        entranceRequirements: ["Possible interview with the admissions committee."],
+        afterAdmission: ["Tuition about €4,800 a year.", "Start 1 September 2027."],
       },
-      sources: [source("vu-lt-se-page-ref", "Software Engineering", "Vilnius University", "https://www.vu.lt/en/studies/bachelor-studies/software-engineering")],
+      sources: [
+        source("vu-lt-se-apply-2027-ref", "Software Engineering (Fall 2027/28)", "Vilnius University", "https://apply.vu.lt/courses/course/145-software-engineering", rechecked),
+        source("vu-lt-plan-2027", "Plan ahead for 2027/2028 (applications open 1 December 2026)", "Vilnius University", "https://apply.vu.lt/news/new/189-missed-deadline-plan-ahead-20272028", rechecked),
+        source("vu-lt-se-page-ref", "Software Engineering (programme page)", "Vilnius University", "https://www.vu.lt/en/studies/bachelor-studies/software-engineering", rechecked),
+      ],
     },
-  }),
+  }, rechecked),
 
   // ---------------- Ireland ----------------
   group({
@@ -893,4 +902,122 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
       sources: [source("wu-bbe-selection-ref", "Selection procedure BBE (2026/27)", "WU Vienna", "https://www.wu.ac.at/en/programs/bachelors-programs/business-and-economics/overview/selection-procedure-bbe-1")],
     },
   }),
+
+  // ---------------- Switzerland (added 2026-10-30) ----------------
+  // Swiss universities publish country-specific admission requirements once
+  // a year; the checked pages do not state the 2027 intake, so these are the
+  // latest published rules. Tuition: foreign students pay the higher fee.
+  group({
+    id: "ethz-informatik-bsc-2027",
+    universityId: "332ca34489295ed7ab4d",
+    universityHost: "ethz.ch",
+    universityName: "ETH Zurich",
+    faculty: "Department of Computer Science (D-INFK)",
+    country: "Switzerland",
+    countryCode: "CH",
+    city: "Zurich",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    status: "rules-not-published",
+    statusNote: standingNote("ETH's country requirements list is for 2026/27; ETH says its admission rules will change from autumn 2028 (details from spring 2027)."),
+    programs: [{ programName: "Computer Science (German, later English)", localProgramName: "Informatik" }],
+    sources: [source("ethz-bsc-how-to-apply", "Bachelor application with a non-Swiss certificate", "ETH Zurich", "https://ethz.ch/en/studies/bachelor/application/non-swiss-matriculation-certificate/how-to-apply.html", rechecked)],
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "ETH application pages (no year) and ETH's admission requirements by country for the 2026/27 academic year.",
+      facts: [
+        { label: "Application deadline", value: "eApply from 1 December to 31 March (23:59 CET); non-refundable fee (amount not on the page). Autumn start only." },
+        { label: "Slovak certificate", value: "Vysvedčenie o maturitnej skúške from a gymnázium: maths, a natural science and a language in the final exam with a 70% average, four more listed subjects in the last three years, and a certificate of admission to this subject at a recognised Slovak university. Otherwise the reduced ETH entrance exam." },
+        { label: "Language", value: "Teaching starts in German (more English from year 2): German C1 certificate by 31 March, not older than 2 years." },
+        { label: "Tuition", value: "CHF 2,190 a semester for foreign students (threefold fee from autumn 2025); CHF 730 for Swiss students." },
+      ],
+      programRules: [{ localProgramName: "Informatik", rule: "Three-year BSc; first year (56 credits) all compulsory, in German." }],
+      overview: {
+        applicationDocuments: ["eApply 1 December – 31 March: passport, CV, certificate and last three years' reports.", "German C1 certificate by 31 March.", "Slovak university admission certificate for the subject."],
+        entranceRequirements: ["Slovak gymnázium maturita meeting the subject and 70% rules, or the reduced ETH entrance exam."],
+        afterAdmission: ["Tuition CHF 2,190 a semester (foreign students).", "Swiss student residence permit (not covered by DocRoute)."],
+      },
+      sources: [
+        source("ethz-country-requirements-2026-27", "Admission requirements by country, academic year 2026/27", "ETH Zurich", "https://ethz.ch/content/dam/ethz/main/education/admission/bachelor/andere-qual/ETH-ZulassungsbedingungenHS2026_EN.pdf", rechecked),
+        source("ethz-language-requirements", "Language requirements (bachelor)", "ETH Zurich", "https://ethz.ch/en/studies/bachelor/application/non-swiss-matriculation-certificate/language-requirements.html", rechecked),
+        source("ethz-tuition-fees", "Tuition fees", "ETH Zurich", "https://ethz.ch/students/en/studies/financial/tuition-fees.html", rechecked),
+        source("ethz-inf-bachelor", "Computer Science bachelor's programme", "ETH Zurich", "https://inf.ethz.ch/studies/bachelor.html", rechecked),
+      ],
+    },
+  }, rechecked),
+  group({
+    id: "epfl-cs-bsc-2027",
+    universityId: "1c2b226aae85805ef4d6",
+    universityHost: "epfl.ch",
+    universityName: "EPFL",
+    faculty: "School of Computer and Communication Sciences (IC)",
+    country: "Switzerland",
+    countryCode: "CH",
+    city: "Lausanne",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    status: "rules-not-published",
+    statusNote: standingNote("EPFL updates its country-specific list once a year in December."),
+    programs: [{ programName: "Computer Science (French-taught first year)", localProgramName: "Computer Science" }],
+    sources: [source("epfl-bsc-how-to-apply", "Bachelor: how to apply", "EPFL", "https://www.epfl.ch/education/admission/admission-2/bachelor-admission-criteria-and-application/how-to-apply/", rechecked)],
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "EPFL bachelor admission pages (no year stated) and EPFL's tuition page.",
+      facts: [
+        { label: "Application deadline", value: "Mid-November to 30 April for the September start; documents in two steps (30 April and 10 July). Fee CHF 150 for foreign certificates." },
+        { label: "Selection", value: "EU/EFTA certificates: mathematics and physics studied and examined at the highest level available, final grades in both and the general average at least 80% of the maximum; then admission within available places, ranked by the general average. First-year cap of 3,000 students from 2025 for at least four years." },
+        { label: "Language", value: "French B2 required (C1 recommended); attest it on application if you did not study French at school." },
+        { label: "Tuition", value: "CHF 2,190 a semester for foreign students who move to Switzerland to study (from autumn 2025; invoice CHF 2,240)." },
+      ],
+      programRules: [{ localProgramName: "Computer Science", rule: "Shared first year with Communication Systems; section chosen at the end of year one." }],
+      overview: {
+        applicationDocuments: ["Online form mid-November – 30 April: ID, photo, last two years' grade sheets, French certificate.", "By 10 July: school-leaving certificate and final grades.", "CHF 150 fee."],
+        entranceRequirements: ["Maths and physics at the highest level, each and the general average at least 80%.", "Ranking by general average within the places; French B2."],
+        afterAdmission: ["Tuition CHF 2,190 a semester.", "Swiss student residence permit (not covered by DocRoute)."],
+      },
+      sources: [
+        source("epfl-bsc-criteria", "Bachelor admission criteria and application", "EPFL", "https://www.epfl.ch/education/admission/admission-2/bachelor-admission-criteria-and-application/", rechecked),
+        source("epfl-admission-faq", "Admission: frequently asked questions", "EPFL", "https://www.epfl.ch/education/admission/admission-2/frequently-asked-questions/", rechecked),
+        source("epfl-tuition", "Tuition fee and other fees", "EPFL", "https://www.epfl.ch/education/studies/en/rules-and-procedures/study-taxes/tuition-fee-other-fees/", rechecked),
+        source("epfl-ic-bachelor", "Bachelor in Computer Science", "EPFL", "https://www.epfl.ch/schools/ic/education/bachelor/", rechecked),
+      ],
+    },
+  }, rechecked),
+  group({
+    id: "uzh-informatik-bsc-2027",
+    universityId: "44e6a65d88712ea76c45",
+    universityHost: "uzh.ch",
+    universityName: "University of Zurich",
+    faculty: "Faculty of Business, Economics and Informatics (Department of Informatics)",
+    country: "Switzerland",
+    countryCode: "CH",
+    city: "Zurich",
+    category: "Computer Science",
+    degreeLevel: "bachelor",
+    status: "rules-not-published",
+    statusNote: standingNote("UZH's deadlines recur each year without a year on the page; country requirements are published per academic year by swissuniversities."),
+    programs: [{ programName: "Informatics (German)", localProgramName: "Informatik" }],
+    sources: [source("uzh-bachelor-admission", "Admission to bachelor's studies", "University of Zurich", "https://www.uzh.ch/de/studies/application/bachelor.html", rechecked)],
+    referenceRules: {
+      intake: "2026/27",
+      approvedNote: "UZH admission, deadline and fee pages (no year stated) and the Department of Informatics bachelor page.",
+      facts: [
+        { label: "Application deadline", value: "Foreign certificates: 1 January – 30 April; 1 January – 28 February if you need a visa. Statutory, not extended. No spring start for Informatics." },
+        { label: "Admission", value: "Country-specific requirements (swissuniversities list). If the certificate does not give automatic access to all university studies, proof of a study place in the same field in the issuing country is needed; certificates from non-Lisbon-Convention countries need the ECUS exam (August)." },
+        { label: "Language", value: "German C1 for non-native speakers; many modules in German, some only in English." },
+        { label: "Fees", value: "Application CHF 150; semester fee CHF 1,220 for bachelor students with a foreign certificate, plus CHF 59 compulsory contributions." },
+      ],
+      programRules: [{ localProgramName: "Informatik", rule: "Three-year BSc (major 150 ECTS + minor 30); majors in Information Systems, Software Systems or Informatics with natural sciences." }],
+      overview: {
+        applicationDocuments: ["Online application 1 January – 30 April (28 February with visa).", "CHF 150 fee; German C1 certificate."],
+        entranceRequirements: ["Certificate meeting the country requirements, or a study-place confirmation from the home country."],
+        afterAdmission: ["Semester fee CHF 1,220 + CHF 59.", "Swiss student residence permit (not covered by DocRoute)."],
+      },
+      sources: [
+        source("uzh-deadlines", "Application deadlines", "University of Zurich", "https://www.uzh.ch/de/studies/application/deadlines.html", rechecked),
+        source("uzh-fees", "Fees and contributions", "University of Zurich", "https://www.uzh.ch/de/studies/application/fees.html", rechecked),
+        source("uzh-ifi-bsc", "Bachelor's studies in Informatics", "University of Zurich", "https://www.ifi.uzh.ch/en/studies/bsc.html", rechecked),
+      ],
+    },
+  }, rechecked),
 ];

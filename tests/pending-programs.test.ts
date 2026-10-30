@@ -323,3 +323,23 @@ test("Dutch computing listings are found from a Netherlands profile", () => {
     "vu-cs-bsc-2027",
   ]);
 });
+
+test("Switzerland: ETH, EPFL and UZH are coming-soon computing listings with the latest published rules", () => {
+  const swiss = findPendingProgramGroups({ countryCode: "CH", category: "Computer Science", degreeLevel: "bachelor", intake: "2027/28" });
+  assert.deepEqual(
+    swiss.map((group) => group.universityHost).sort(),
+    ["epfl.ch", "ethz.ch", "uzh.ch"],
+  );
+  for (const group of swiss) {
+    assert.equal(group.status, "rules-not-published", group.id);
+    assert.equal(group.referenceRules?.intake, "2026/27", group.id);
+    assert.ok(group.referenceRules?.facts.some((fact) => fact.value.includes("CHF")), `${group.id}: fee in CHF`);
+  }
+});
+
+test("STU FIIT 2027/28 rules (regulation 2/2026) are published, not last year's", () => {
+  const [fiit] = pendingProgramGroups.filter((group) => group.id === "stu-fiit-computing-bsc-2027");
+  assert.equal(fiit.status, "rules-published");
+  assert.equal(fiit.referenceRules?.intake, "2027/28");
+  assert.match(fiit.referenceRules?.approvedNote ?? "", /30 September 2026/);
+});

@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-10-29. Keep this file factual: describe what exists and
+Last updated: 2026-10-30. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -79,7 +79,8 @@ The catalog (`src/data/universities.json`, 2,598 institutions in 46
 countries, imported 2026-09-16 from Hipo) lists institutions only. It is not
 evidence that a program exists or of its requirements.
 
-On the home map Slovakia, Czechia, Germany and Austria are highlighted (Czechia for
+On the home map Slovakia, Czechia, Germany and Austria (and the PR #29
+countries plus Switzerland) are highlighted (Czechia for
 its residence routes; Germany only for the TUM "coming soon" listing, owner
 decision 2026-10-29 — no German residence or verified route; Austria the
 same, for its coming-soon listings, PR #25).
@@ -137,6 +138,51 @@ early exam for third-year pupils) and FEI TUKE 2026/27 conditions (deadline
 Slovak A1, planned intakes). FIIT's English-taught Informatics (fee-paying)
 is not covered. The FIIT bachelor admission page and STU's schedule PDF
 could not be opened by the tools.
+
+## Recheck of listed universities (2026-10-30)
+
+Rechecked on the universities' own sites; "2027/28 if published, else the
+latest rules" (owner rule 2026-10-30):
+
+- Now published for 2027/28 and updated: **STU FIIT** Informatika
+  (regulation 2/2026 of 30 Sep 2026: two rounds to 30 Nov 2026 and
+  31 Mar 2027, €30, external maturita maths percentile or faculty exam
+  22 Jan / 16 Apr 2027 + competition points, 70+ admitted, <50 rejected, no
+  school grades, Slovak B2 without SK/CZ maturita), **ELTE** CS BSc (portal:
+  1 Feb – 30 Apr 2027, €150), **AGH** (Senate resolution 82/2026: WR formula,
+  300-point minimum, foreign-certificate weights; fee and tuition still
+  2026/27), **Vilnius** Software Engineering (portal opens 1 Dec 2026;
+  portal deadline 1 Jul 2027 vs 1 May on the programme page; €4,800 vs €4,560).
+- Gaps closed: FIT VUT application fee CZK 700 (EUR 28 from abroad, BUT
+  admissions page, no year stated); Masaryk fees for procedures opened in
+  2026/27 (= 2027/28 entry): FI CZK 900, LF CZK 900, Law CZK 850 (the CZK 800
+  leaflet was older). JLF publisher typo fixed.
+- Unchanged (still 2026/27 or no new data): Comenius FMFI (page updated
+  21 Sep 2026, still 2026/27), TUKE FEI, LF UK Bratislava, UPJŠ LF, Comenius
+  Law, VŠE NF, MU LF, TU Wien / Uni Wien / JKU (2026 procedures), TUM, KIT,
+  Charité, WU BBE (2027/28 details "mid-November"), Zagreb, Padua, Warsaw UT
+  (2027 dates "to be updated"), BME. JLF Martin, MedAT 2027, Charles PF and
+  1. LF matched the stored data (Charles PF fee still not stated).
+- Verified routes: Charles MFF and ČVUT FIT 2027 pages match the stored
+  rules (MFF also now mentions 22 Oct 2027 for autumn maturita and a
+  10-task, 75-minute exam). UNIZA FRI pages could not be opened by the tools
+  this time (robots/allowlist); data from 2026-10-19/27 kept.
+- Still not opened: FIT VUT directive 2/2026 (URL too long for the fetch
+  tool), FIIT English-taught programme, UNIZA FRI rules page.
+
+## Switzerland (added 2026-10-30)
+
+- Coming soon, latest published rules (pages state no 2027 intake): **ETH
+  Zurich** Informatik (1 Dec – 31 Mar, German C1 by 31 Mar, Slovak
+  gymnázium maturita with 70% in maths/science/language plus a Slovak
+  university admission certificate or the reduced entrance exam, CHF 2,190
+  a semester for foreign students; ETH rules change from autumn 2028),
+  **EPFL** Computer Science (mid-Nov – 30 Apr, CHF 150, French B2, ranking by
+  general average, 3,000 first-year cap, CHF 2,190), **University of Zurich**
+  Informatik (1 Jan – 30 Apr, 28 Feb with visa, CHF 150, German C1, semester
+  fee CHF 1,220 + 59). No Swiss residence route.
+- Map: Switzerland (756) added to the highlighted set (owner request); the
+  other highlighted countries are unchanged.
 
 ## Top 100 universities (checked 2026-10-27)
 
@@ -236,7 +282,8 @@ could not be opened by the tools.
   programme is not taught in English): UvA Informatica (Dutch), Maastricht
   European Law School, Politecnico di Milano, Ljubljana FRI, Tartu CS
   (Estonian), Pécs and Debrecen medicine, ETH Zurich, TU Berlin, RWTH,
-  DTU (engineering, not CS), UCD, Poznań, Sapienza.
+  DTU (engineering, not CS), UCD, Poznań, Sapienza. (ETH Zurich was added later as Informatik in German, see
+  Switzerland.)
 - Known gaps: VU non-EU fee, TU/e and Trinity teaching language/fees,
   BME tuition, Padua IMAT dates; Jagiellonian page shows the exam year as
   2026 in one line; Zagreb package gives 50 and 60 places.
@@ -658,7 +705,7 @@ could not be opened by the tools.
 
 ## How changes are verified
 
-- Unit tests: `npm test` (215 tests on 2026-10-29).
+- Unit tests: `npm test` (217 tests on 2026-10-30).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
