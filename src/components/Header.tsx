@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import {
   Compass,
+  MessageSquareHeart,
   MapPinned,
   Route,
   Signpost,
@@ -25,6 +26,11 @@ const navigation = [
     label: "Residence routes",
     href: "/#residence",
     icon: MapPinned,
+  },
+  {
+    label: "Stories",
+    href: "/stories",
+    icon: MessageSquareHeart,
   },
   {
     label: "How it works",

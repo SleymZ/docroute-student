@@ -23,6 +23,7 @@ import { movePurposes } from "@/data/move-purposes";
 import {
   formatPendingDegree,
   pendingProgramGroups,
+  pendingStatusLabel,
 } from "@/data/pending-programs";
 import { czechiaResidenceRules } from "@/data/czechia-residence";
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
@@ -345,7 +346,10 @@ export default function HowItWorksPage() {
                       {group.category} · {group.intake} ·{" "}
                       {group.programs.map((program) => program.programName).join(", ")}
                     </span>
-                    <small>Approved rules not yet published</small>
+                    <small>
+                      {pendingStatusLabel(group.status)} · checked{" "}
+                      {formatPlanDate(group.checkedAt)}
+                    </small>
                   </li>
                 ))}
               </ul>
@@ -413,11 +417,30 @@ export default function HowItWorksPage() {
                   <span>
                     Long-term residence permit for study, employee card and EU
                     Blue Card, EU registration and current residents, with a
-                    date planner. Czech university admission is not verified.
+                    date planner. Czech admission is verified for the
+                    programmes listed under &ldquo;Verified admission&rdquo;.
                   </span>
                   <small>
                     Checked {formatPlanDate(czechiaResidenceRules.checkedAt)}
                   </small>
+                </li>
+                <li>
+                  <strong>Slovakia: family and business</strong>
+                  <span>
+                    Joining a non-EU relative with residence or a Blue Card;
+                    sole trader or company executive. For citizens of
+                    countries outside the EU, EEA and Switzerland.
+                  </span>
+                  <small>Checked 29 October 2026</small>
+                </li>
+                <li>
+                  <strong>Czechia and Austria: work, family and business</strong>
+                  <span>
+                    Source-linked checklists (Czechia: family and business;
+                    Austria: EU Blue Card and Red-White-Red Card, family,
+                    self-employment and start-ups). No date planner yet.
+                  </span>
+                  <small>Checked 30 October 2026</small>
                 </li>
               </ul>
             </article>
@@ -427,7 +450,12 @@ export default function HowItWorksPage() {
               <ul>
                 <li>
                   <strong>{availablePurposes.join(", ")}</strong>
-                  <span>Available now for Slovakia; residence routes for Czechia.</span>
+                  <span>
+                    Study: verified admission in Slovakia and Czechia, official
+                    rules checked in {new Set(pendingProgramGroups.map((group) => group.countryCode)).size}{" "}
+                    countries. Work: Slovakia, Czechia and Austria. Family and
+                    business: Slovakia, Czechia and Austria.
+                  </span>
                 </li>
                 <li>
                   <strong>{comingPurposes.join(", ")}</strong>

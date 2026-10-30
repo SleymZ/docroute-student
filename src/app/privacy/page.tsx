@@ -35,6 +35,12 @@ const dataRows = [
     kept: "Until you remove them or delete your account.",
   },
   {
+    what: "Public profile and stories (only if you create them): the name you choose, an optional photo and short text about you, and the stories you send with their countries, year, reason for moving and optional university or employer. This information is visible to everyone on DocRoute once published; your email and applicant profile are never shown.",
+    why: "To show your story and profile on the Stories page so others can learn from your move.",
+    basis: "Contract — publishing what you asked us to publish (Art. 6(1)(b)). Please do not include health, religion or other special-category data.",
+    kept: "Until you delete it or your account. Stories we decline or hide stay visible only to you until you delete them.",
+  },
+  {
     what: "Answers to route questions and your move date when you are not signed in. These live only in the page address (URL) and on your device; we do not save them in our database.",
     why: "So the route can be built and shared as a link without an account.",
     basis: "Contract (Art. 6(1)(b)).",
@@ -75,7 +81,7 @@ const dataRows = [
 const processors = [
   {
     name: "Supabase, Inc.",
-    role: "Database and sign-in (stores your account, profile, saved universities, progress, waitlist emails and feedback).",
+    role: "Database, file storage and sign-in (stores your account, profile, saved universities, progress, public profile, photo and stories, waitlist emails and feedback).",
     link: "https://supabase.com/privacy",
   },
   {
@@ -122,7 +128,15 @@ export default function PrivacyPage() {
             <li>
               Nothing is shared with universities, employers or authorities.
             </li>
-            <li>No documents are uploaded; you never send us your passport.</li>
+            <li>
+              No documents are uploaded; you never send us your passport. The
+              only file you can add is an optional profile photo.
+            </li>
+            <li>
+              Your public name, photo and stories are visible to everyone only
+              if you create them; see{" "}
+              <Link href="#stories">Public profile and stories</Link>.
+            </li>
             <li>
               A waitlist email is used only to write to you once about the
               full route, never for newsletters or advertising.
@@ -192,6 +206,18 @@ export default function PrivacyPage() {
         religion or ethnic origin). Citizenship and residence status are
         needed because the rules depend on them; please do not enter
         anything the forms do not ask for.
+      </p>
+
+      <h3 id="stories">Public profile and stories</h3>
+      <p>
+        A public profile and stories are optional. Your photo is cropped and
+        re-saved in your browser before upload, which removes hidden photo
+        data such as GPS location. Stories are read by the operator before
+        they appear. Anyone can read and copy what is published, so share only
+        what you are comfortable with. You can change or remove your name,
+        photo and stories on your <Link href="/account">Account</Link> page and
+        on <Link href="/stories/new">Share your story</Link>; deleting your
+        account removes them all.
       </p>
 
       <h2>3. Automated matching</h2>

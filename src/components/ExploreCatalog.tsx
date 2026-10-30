@@ -24,6 +24,7 @@ import {
 
 import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
+import { pendingProgramGroups } from "@/data/pending-programs";
 import { verifiedPrograms } from "@/data/verified-programs";
 
 import styles from "./ExploreCatalog.module.css";
@@ -78,6 +79,30 @@ const countryOptions: CountryOption[] = [
 const verifiedCountryCodes = new Set(
   verifiedPrograms.map((program) => program.countryCode),
 );
+
+/* Countries where DocRoute has checked a university's official rules
+   ("coming soon" listings) but has not built a verified route yet. */
+const checkedCountryCodes = new Set(
+  pendingProgramGroups
+    .map((group) => group.countryCode)
+    .filter((code) => !verifiedCountryCodes.has(code)),
+);
+
+const checkedListingCount = pendingProgramGroups.length;
+
+const verifiedCountryNames = countryOptions
+  .filter((country) => verifiedCountryCodes.has(country.code))
+  .map((country) => country.name)
+  .join(" and ");
+
+function checkedCountriesFor(field: string) {
+  const verified = new Set(verifiedCountriesFor(field).map((country) => country.code));
+  return new Set(
+    pendingProgramGroups
+      .filter((group) => group.category === field && !verified.has(group.countryCode))
+      .map((group) => group.countryCode),
+  );
+}
 
 function verifiedCountriesFor(field: string) {
   return countryOptions.filter((country) =>
@@ -184,9 +209,17 @@ export function ExploreCatalog() {
         ),
       },
       {
+        title: "Official rules checked · route coming",
+        countries: visible.filter((country) =>
+          checkedCountryCodes.has(country.code),
+        ),
+      },
+      {
         title: countrySearch ? "Other matches" : "All destinations",
         countries: visible.filter(
-          (country) => !verifiedCountryCodes.has(country.code),
+          (country) =>
+            !verifiedCountryCodes.has(country.code) &&
+            !checkedCountryCodes.has(country.code),
         ),
       },
     ].filter((group) => group.countries.length > 0);
@@ -235,8 +268,11 @@ export function ExploreCatalog() {
 
           <p>
             Pick a destination and a field. We show every institution in
-            the catalog and mark the programs whose admission rules are
-            verified from official sources.
+            the catalog. Verified routes exist in{" "}
+            {verifiedCountryNames}; official admission rules are checked for{" "}
+            {checkedListingCount} more university listings in{" "}
+            {checkedCountryCodes.size} other countries, with their routes
+            coming.
           </p>
 
           <Link href="/explore/top" className={styles.atlasTopLink}>
@@ -300,6 +336,7 @@ export function ExploreCatalog() {
                   {group.countries.map((country) => {
                     const selected = country.code === countryCode;
                     const verified = verifiedCountryCodes.has(country.code);
+                    const checked = checkedCountryCodes.has(country.code);
 
                     return (
                       <button
@@ -329,6 +366,14 @@ export function ExploreCatalog() {
                           <span className={styles.atlasBadge}>
                             <BadgeCheck size={13} aria-hidden="true" />
                             Verified
+                          </span>
+                        )}
+
+                        {checked && (
+                          <span
+                            className={`${styles.atlasBadge} ${styles.atlasBadgeChecked}`}
+                          >
+                            Rules checked
                           </span>
                         )}
 
@@ -384,6 +429,7 @@ export function ExploreCatalog() {
                 const Icon = meta?.icon ?? GraduationCap;
                 const selected = option === program;
                 const verifiedIn = verifiedCountriesFor(option);
+                const checkedIn = checkedCountriesFor(option);
 
                 return (
                   <button
@@ -403,13 +449,23 @@ export function ExploreCatalog() {
                         {meta?.description ?? "University programs"}
                       </small>
 
-                      {verifiedIn.length > 0 && (
-                        <span className={styles.atlasBadge}>
-                          <BadgeCheck size={13} aria-hidden="true" />
-                          Verified in{" "}
-                          {verifiedIn.map((country) => country.name).join(", ")}
-                        </span>
-                      )}
+                      <span className={styles.atlasBadgeRow}>
+                        {verifiedIn.length > 0 && (
+                          <span className={styles.atlasBadge}>
+                            <BadgeCheck size={13} aria-hidden="true" />
+                            Verified in{" "}
+                            {verifiedIn.map((country) => country.name).join(", ")}
+                          </span>
+                        )}
+                        {checkedIn.size > 0 && (
+                          <span
+                            className={`${styles.atlasBadge} ${styles.atlasBadgeChecked}`}
+                          >
+                            Rules checked in {checkedIn.size}{" "}
+                            {checkedIn.size === 1 ? "country" : "countries"}
+                          </span>
+                        )}
+                      </span>
                     </span>
 
                     <span
@@ -433,8 +489,10 @@ export function ExploreCatalog() {
           <p className={styles.atlasDeckNote}>
             <BadgeCheck size={15} aria-hidden="true" />
             <span>
-              A field is marked verified only after its admission rules are
-              checked against the university&apos;s official sources.{" "}
+              &ldquo;Verified&rdquo; means a full route built from the
+              university&apos;s official rules for the intake. &ldquo;Rules
+              checked&rdquo; means we read the official rules and list them,
+              but the route is not built yet.{" "}
               <Link href="/how-it-works">How we check</Link>
             </span>
           </p>

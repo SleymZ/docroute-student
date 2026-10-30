@@ -183,6 +183,23 @@ export default function TermsPage() {
         to those universities and are used only to identify them.
       </p>
 
+      <h3 id="stories">Your public profile and stories</h3>
+      <p>
+        If you create a public profile or share a story, you stay the owner of
+        what you write and of your photo. You allow DocRoute, free of charge
+        and for as long as you keep it on the site, to show it publicly on
+        DocRoute and to shorten it or fix obvious typos for display. You
+        confirm that it describes your own experience, that you may use the
+        photo, and that it contains no other person&apos;s personal data, ID
+        or document numbers, advertising, links to paid services or anything
+        unlawful or offensive. Stories are read before they are published; we
+        may refuse, hide or remove any story or photo without giving a reason.
+        A story is personal experience, not advice, and rules change: always
+        check your own route. You can delete your stories and photo at any
+        time on your account; report a problem with someone else&apos;s story
+        through the contact in section 12.
+      </p>
+
       <h2>8. Links to other websites</h2>
       <p>
         DocRoute links to official and third-party websites. We do not

@@ -30,8 +30,8 @@ export const legalInfo = {
   /** Minimum age to create an account (GDPR digital-consent age in Slovakia). */
   minimumAccountAge: 16,
   /** Date the current versions of the documents take effect. */
-  termsUpdated: "2026-10-28",
-  privacyUpdated: "2026-10-28",
+  termsUpdated: "2026-10-30",
+  privacyUpdated: "2026-10-30",
   cookiesUpdated: "2026-10-28",
   /** Slovak data protection authority, where anyone can complain. */
   supervisoryAuthority: {

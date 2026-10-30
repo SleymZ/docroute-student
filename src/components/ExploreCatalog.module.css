@@ -1177,3 +1177,16 @@
     filter: brightness(1.08);
   }
 }
+
+/* Countries and fields with official rules checked but no verified route
+   yet ("coming soon" listings). Amber, so it never reads as "Verified". */
+.atlasBadgeChecked {
+  background: light-dark(rgba(166, 106, 0, 0.1), rgba(255, 196, 92, 0.12));
+  color: light-dark(#7a5300, #ffd27a);
+}
+
+.atlasBadgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

@@ -23,7 +23,9 @@ import {
 
 import { AccountBackdrop } from "./AccountBackdrop";
 import { AccountDataControls } from "@/components/AccountDataControls";
+import { Avatar } from "@/components/Avatar";
 import { AccountSignOut } from "@/components/AccountSignOut";
+import { PublicProfileEditor } from "@/components/PublicProfileEditor";
 import { Header } from "@/components/Header";
 import catalog from "@/data/universities.json";
 import { verifiedPrograms } from "@/data/verified-programs";
@@ -40,6 +42,7 @@ import { createProfileSearchParams } from "@/lib/profile-query";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { loadPublicProfile } from "@/lib/supabase/stories";
 import { loadSavedUniversityIds } from "@/lib/supabase/user-memory";
 import type { ApplicantProfile } from "@/types/admission";
 
@@ -161,6 +164,12 @@ export default async function AccountPage() {
   }
 
   const memory = await loadWorkspaceMemory(supabase, user.id);
+  const publicProfile = await loadPublicProfile(supabase, user.id).catch(
+    () => null,
+  );
+  const publicProfileEditor = (
+    <PublicProfileEditor userId={user.id} initialProfile={publicProfile} />
+  );
   const savedUniversities = memory.savedIds
     .map((id) => catalog.universities.find((university) => university.id === id))
     .filter((university) => university !== undefined);
@@ -168,7 +177,15 @@ export default async function AccountPage() {
   const identityCard = (
     <aside className={styles.identityCard}>
       <span>
-        <UserRound size={22} aria-hidden="true" />
+        {publicProfile?.avatar_path ? (
+          <Avatar
+            name={publicProfile.display_name}
+            path={publicProfile.avatar_path}
+            size={44}
+          />
+        ) : (
+          <UserRound size={22} aria-hidden="true" />
+        )}
       </span>
       <div>
         <small>SIGNED IN AS</small>
@@ -219,6 +236,7 @@ export default async function AccountPage() {
             )}
           </section>
 
+          {publicProfileEditor}
           <AccountDataControls />
         </div>
       </main>
@@ -607,7 +625,8 @@ export default async function AccountPage() {
           )}
         </section>
 
-        <AccountDataControls />
+        {publicProfileEditor}
+          <AccountDataControls />
       </div>
     </main>
   );

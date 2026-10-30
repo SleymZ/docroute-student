@@ -148,6 +148,65 @@ export type Database = {
         };
         Relationships: [];
       };
+      public_profiles: {
+        Row: {
+          user_id: string;
+          display_name: string;
+          bio: string | null;
+          avatar_path: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          display_name: string;
+          bio?: string | null;
+          avatar_path?: string | null;
+        };
+        Update: {
+          display_name?: string;
+          bio?: string | null;
+          avatar_path?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      success_stories: {
+        Row: {
+          id: string;
+          user_id: string;
+          title: string;
+          body: string;
+          purpose: "study" | "work" | "family" | "business";
+          from_country_code: string;
+          to_country_code: string;
+          moved_year: number;
+          university: string | null;
+          status: "pending" | "published" | "hidden";
+          created_at: string;
+          updated_at: string;
+          published_at: string | null;
+        };
+        Insert: {
+          user_id: string;
+          title: string;
+          body: string;
+          purpose: "study" | "work" | "family" | "business";
+          from_country_code: string;
+          to_country_code: string;
+          moved_year: number;
+          university?: string | null;
+        };
+        Update: {
+          title?: string;
+          body?: string;
+          purpose?: "study" | "work" | "family" | "business";
+          from_country_code?: string;
+          to_country_code?: string;
+          moved_year?: number;
+          university?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
