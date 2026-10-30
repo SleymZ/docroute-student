@@ -17,6 +17,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${siteUrl}/stories`,
+      changeFrequency: "daily",
+      priority: 0.6,
+    },
+    {
       url: `${siteUrl}/how-it-works`,
       changeFrequency: "monthly",
       priority: 0.7,

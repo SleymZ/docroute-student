@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Download, Trash2 } from "lucide-react";
 
+import { AVATAR_BUCKET } from "@/lib/stories";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 import styles from "./AccountDataControls.module.css";
@@ -30,12 +31,16 @@ export function AccountDataControls() {
       if (userError || !userData.user) throw userError ?? new Error("No user");
       const user = userData.user;
 
-      const [profile, saved, progress] = await Promise.all([
+      const [profile, saved, progress, publicProfile, stories] = await Promise.all([
         supabase.from("applicant_profiles").select("*").eq("user_id", user.id),
         supabase.from("saved_universities").select("*").eq("user_id", user.id),
         supabase.from("route_task_progress").select("*").eq("user_id", user.id),
+        supabase.from("public_profiles").select("*").eq("user_id", user.id),
+        supabase.from("success_stories").select("*").eq("user_id", user.id),
       ]);
-      const failed = [profile, saved, progress].find((result) => result.error);
+      const failed = [profile, saved, progress, publicProfile, stories].find(
+        (result) => result.error,
+      );
       if (failed?.error) throw failed.error;
 
       const exportData = {
@@ -51,6 +56,8 @@ export function AccountDataControls() {
         applicantProfile: profile.data?.[0] ?? null,
         savedUniversities: saved.data ?? [],
         routeTaskProgress: progress.data ?? [],
+        publicProfile: publicProfile.data?.[0] ?? null,
+        stories: stories.data ?? [],
       };
 
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
@@ -77,6 +84,24 @@ export function AccountDataControls() {
     setBusy("delete");
     setMessage(null);
     const supabase = createSupabaseBrowserClient();
+    // Profile photos live in Storage, which SQL cannot delete: remove the
+    // account's folder first, then the account itself.
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
+      if (userId) {
+        const { data: files } = await supabase.storage
+          .from(AVATAR_BUCKET)
+          .list(userId);
+        if (files?.length) {
+          await supabase.storage
+            .from(AVATAR_BUCKET)
+            .remove(files.map((file) => `${userId}/${file.name}`));
+        }
+      }
+    } catch {
+      // Continue: the account deletion below must not depend on Storage.
+    }
     const { error } = await supabase.rpc("delete_my_account");
     if (error) {
       setBusy(null);
@@ -102,8 +127,8 @@ export function AccountDataControls() {
         <h2 id="your-data-heading">Your data</h2>
         <p>
           Download a copy of everything DocRoute stores for your account, or
-          delete the account with your profile, saved universities and
-          progress. See the <Link href="/privacy">Privacy Policy</Link>.
+          delete the account with your profile, saved universities, public
+          profile, photo, stories and progress. See the <Link href="/privacy">Privacy Policy</Link>.
         </p>
       </div>
 
