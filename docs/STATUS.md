@@ -52,7 +52,8 @@ page `/route/guide`, 2026-10-30).
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
   Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`,
-  `waitlist_signups`, `feedback`. Functions: `delete_my_account()` (migration
+  `waitlist_signups`, `feedback`, `public_profiles`, `success_stories`;
+  Storage bucket `avatars`. Functions: `delete_my_account()` (migration
   `20261028150000`, redefined in `20261028180000`), `leave_waitlist(email)`.
 
 ## Verified coverage
@@ -597,6 +598,33 @@ latest rules" (owner rule 2026-10-30):
   seller's name or business name, IČO and address on the site (selling
   cannot be anonymous).
 
+## Public profiles and moving stories (PR #34, 2026-10-30)
+
+- Migration `20261030120000_profiles_and_stories.sql` (owner must run it in
+  the Supabase SQL editor; until then `/stories` shows "Stories could not be
+  loaded"). Tested twice on local Postgres 16 with anon/authenticated roles
+  and a storage stub.
+- `public_profiles`: display name (2–40, no `<>@`), optional bio (≤280) and
+  avatar path; public read, own-row writes. Avatar files in the public
+  bucket `avatars` (1 MB, webp/jpeg/png), only inside `<user id>/`; the
+  browser crops to 256×256 WebP (drops EXIF/GPS) before upload.
+- `success_stories`: title, text (80–4000), reason (study/work/family/
+  business), from/to country, year, optional university/employer. A trigger
+  forces every author insert or edit to `pending`; the owner publishes by
+  setting `status = 'published'` (or `hidden`) in Table Editor. Max 5 per
+  account. Public sees only published rows; authors see their own.
+- Pages: `/stories` (filters `?purpose=`, `?to=`), `/stories/new` (needs
+  login and a public profile; own stories with status and delete),
+  `/u/<id>` (public profile, noindex without published stories). Profile
+  editor on `/account`; "Stories" in the header nav; `/stories` in sitemap.
+- Download my data includes the profile and stories; account deletion
+  removes avatar files through the Storage API, then `delete_my_account()`
+  (redefined) deletes stories and profile. Terms §7 "Your public profile and
+  stories" and Privacy (data row, `#stories`) updated, dates 2026-10-30.
+- Explore shows "Verified routes" (SK, CZ) and an amber "Rules checked"
+  group/badge for countries with official-rule listings; How it works shows
+  each listing's status and the CZ/AT guides.
+
 ## Waitlist for the full route (PR #16)
 
 - "Want the full route?" block (`WaitlistCta`) at the end of every route
@@ -790,7 +818,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (220 tests on 2026-10-30).
+- Unit tests: `npm test` (230 tests on 2026-10-30).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
