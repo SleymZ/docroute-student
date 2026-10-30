@@ -650,6 +650,10 @@ latest rules" (owner rule 2026-10-30):
   removes avatar files through the Storage API, then `delete_my_account()`
   (redefined) deletes stories and profile. Terms §7 "Your public profile and
   stories" and Privacy (data row, `#stories`) updated, dates 2026-10-30.
+- Review fixes (PR #35): migration `20261030130000_story_limit_lock.sql`
+  locks the profile row before counting, so concurrent submissions cannot
+  exceed 5 (tested with two sessions); account deletion stops with a
+  retryable message if the photo cannot be removed from Storage.
 - Explore shows "Verified routes" (SK, CZ) and an amber "Rules checked"
   group/badge for countries with official-rule listings; How it works shows
   each listing's status and the CZ/AT guides.
@@ -847,7 +851,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (230 tests on 2026-10-30).
+- Unit tests: `npm test` (231 tests on 2026-10-30).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

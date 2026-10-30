@@ -98,6 +98,13 @@ test("deleting an account also deletes the public profile and stories", () => {
   const controls = read("src/components/AccountDataControls.tsx");
   assert.match(controls, /storage\s*\.from\(AVATAR_BUCKET\)\s*\.remove/);
   assert.match(controls, /from\("success_stories"\)/);
+  // A failed photo removal stops before the account is deleted.
+  assert.ok(controls.indexOf("if (!photosRemoved)") < controls.indexOf('rpc("delete_my_account")'));
+});
+
+test("the story limit locks the profile row before counting", () => {
+  const fix = read("supabase/migrations/20261030130000_story_limit_lock.sql");
+  assert.match(fix, /public_profiles p where p\.user_id = new\.user_id for update;\s+if \(select count/);
 });
 
 test("helpers", () => {
