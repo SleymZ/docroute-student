@@ -1447,13 +1447,13 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
       approvedNote: "Rector's directive No 15 of 22 April 2026 (admission calendar 2027/28) and the programme page.",
       facts: [
         { label: "Application deadline", value: "DreamApply from 1 February 2027: third-country citizens by 22 March 2027; non-EU citizens with a legal basis to stay in Estonia (and OECD, Ukraine, Georgia) by 1 May; EU/EEA/Swiss by 1 June 2027. Offers until 15 August, confirm by 20 August 2027." },
-        { label: "Selection", value: "Secondary average at least 60% of the maximum; online proctored test (logic, algorithms, maths), motivation letter and interview, each 60+ points. Olympiad or listed competition results can give maximum points." },
+        { label: "Selection", value: "Secondary average at least 60% of the maximum; online proctored test (logic, algorithms, maths) with 60+ points to reach the interview, then at least 60 points for the motivation letter and online interview together (the page does not say whether each part needs 60). Olympiad or listed competition results can give maximum points." },
         { label: "Tuition", value: "€3,500 a semester for non-EU students (2026/27 rates, two semesters paid before enrolment); free for EU/EEA citizens." },
       ],
       programRules: [{ localProgramName: "Cyber Security Engineering", rule: "3-year BSc in English, 180 ECTS." }],
       overview: {
         applicationDocuments: ["DreamApply by 22 March 2027 (third-country citizens).", "Motivation letter (no AI-written text)."],
-        entranceRequirements: ["Proctored test, motivation letter and interview, 60+ each."],
+        entranceRequirements: ["Proctored test 60+ to reach the interview.", "Motivation letter and interview: 60+ points together."],
         afterAdmission: ["Non-EU: pay two semesters (€7,000) before enrolment.", "Estonian residence not covered by DocRoute."],
       },
       sources: [
