@@ -157,7 +157,7 @@ const czFamily: CountryGuide = {
       id: "non-eu-sponsor",
       label: "My relative is a non-EU resident of Czechia",
       summary:
-        "Apply at a Czech embassy (processing up to 270 days) or, if you are already lawfully in Czechia, at a Ministry of the Interior office (60 days). The permit lasts as long as your relative's permit (at least one year) and lets you work without a work permit.",
+        "Apply at a Czech embassy (processing up to 270 days). Filing at a Ministry of the Interior office in Czechia (60 days) is only for holders of a Czech long-term visa or long-term residence permit, and for some family of Blue Card, intra-company transfer card or research permit holders coming from another EU state; visa-free visitors file at an embassy. The permit lasts as long as your relative's permit (at least one year) and lets you work without a work permit.",
       keyFacts: [
         { label: "Fee", value: "CZK 2,500 in Czechia (CZK 1,000 under 15); consular fee abroad" },
         { label: "Decision", value: "60 days in Czechia, 270 days via an embassy" },
@@ -198,7 +198,7 @@ const czFamily: CountryGuide = {
             task(
               "cz-family-where",
               "Choose where to file",
-              "From abroad: in person at a Czech embassy, which forwards the file to the Ministry (up to 270 days). In Czechia: in person at your local Ministry of the Interior office if you stay there lawfully (60 days). Family of a Blue Card or intra-company transfer card holder from another EU state can file in Czechia within 30 or 90 days of entry.",
+              "Without a Czech long-term visa or long-term residence permit (e.g. visa-free or on a Schengen visa): in person at a Czech embassy, which forwards the file to the Ministry (up to 270 days). With a Czech long-term visa or permit: in person at your local Ministry of the Interior office, by the last day of its validity (60 days). Family of a Blue Card or intra-company transfer card holder who lived in another EU state can file in Czechia within 30 or 90 days of entry; some family of research-permit holders too.",
               ["cz-ipc-family-reunification", "cz-ipc-time-limits"],
             ),
             task(
@@ -506,9 +506,9 @@ const atFamily: CountryGuide = {
   variants: [
     {
       id: "rwr-or-blue-card-sponsor",
-      label: "Relative holds a Red-White-Red Card or EU Blue Card",
+      label: "Relative holds an RWR Card, Blue Card, RWR Card plus or a settlement permit for self-employed or researchers",
       summary:
-        "Red-White-Red Card plus: no quota and unrestricted labour-market access. Some family members of these card holders are exempt from the German A1 requirement.",
+        "Red-White-Red Card plus with unrestricted labour-market access. Also for family of holders of a long-term residence title, a residence card or a refugee/subsidiary protection status (those cases have extra rules DocRoute does not cover). No quota for family of RWR Card, Blue Card and researcher sponsors; some are exempt from German A1.",
       keyFacts: [
         { label: "Title", value: "Red-White-Red Card plus" },
         { label: "Quota", value: "None" },
@@ -536,9 +536,9 @@ const atFamily: CountryGuide = {
     },
     {
       id: "settlement-sponsor",
-      label: "Relative holds a settlement permit",
+      label: "Relative holds another settlement permit (e.g. ordinary, dependant or artist)",
       summary:
-        "Settlement Permit for family members: subject to the annual quota and the general requirements, with German A1 at first application.",
+        "Settlement Permit for family members: subject to the annual quota and the general requirements, with German A1 at first application. If your relative's settlement permit is for self-employment or research, choose the Red-White-Red Card plus option instead.",
       keyFacts: [
         { label: "Title", value: "Settlement Permit (quota)" },
         { label: "German", value: "A1 before the first application" },
