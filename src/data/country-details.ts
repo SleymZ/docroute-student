@@ -44,6 +44,20 @@ export const countryDetails: Record<
     zoom: 1.95,
   },
 
+  Austria: {
+    code: "AT",
+    flag: "🇦🇹",
+    capital: "Vienna",
+    region: "Central Europe",
+    language: "German",
+    studentCities: ["Vienna", "Graz", "Linz"],
+    description:
+      "Austria's universities are listed as coming soon. DocRoute has residence checklists for work, family and business in Austria; student residence is not covered yet.",
+    searchTerms:
+      "austria österreich osterreich австрия вена vienna wien",
+    zoom: 1.95,
+  },
+
   Romania: {
     code: "RO",
     flag: "🇷🇴",

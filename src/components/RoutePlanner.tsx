@@ -9,6 +9,7 @@ import {
   programOptions,
 } from "@/data/demo-destinations";
 import { verifiedPrograms } from "@/data/verified-programs";
+import { hasCountryGuide } from "@/lib/residence/country-guides";
 import type { MovePurpose } from "@/data/move-purposes";
 
 import type { Destination } from "@/types/destination";
@@ -18,6 +19,7 @@ import { EuropeMap } from "@/components/EuropeMap";
 const destinationCountryCodes: Record<Destination, string> = {
   Slovakia: "SK",
   Czechia: "CZ",
+  Austria: "AT",
   Romania: "RO",
   Bulgaria: "BG",
 };
@@ -54,8 +56,14 @@ export function RoutePlanner() {
     purpose === "study" &&
     !hasVerifiedProgram &&
     studyResidenceRouteCountries.has(destinationCountryCode);
+  // Source-linked residence checklists (Czechia family/business, Austria
+  // work/family/business) at /route/guide.
+  const guideAvailable =
+    purpose !== "study" && hasCountryGuide(destinationCountryCode, purpose);
   const routeAvailable =
-    purpose === "family" || purpose === "business"
+    guideAvailable
+      ? true
+      : purpose === "family" || purpose === "business"
       ? destinationCountryCode === "SK"
       : purpose === "work"
       ? workRouteCountries.has(destinationCountryCode)
@@ -106,6 +114,13 @@ export function RoutePlanner() {
       const citizenship = educationCountryCodes[documentCountry];
       if (citizenship) czParams.set("citizenship", citizenship);
       router.push(`/route/czechia?${czParams.toString()}`);
+      return;
+    }
+
+    if (guideAvailable) {
+      router.push(
+        `/route/guide?${new URLSearchParams({ country: destinationCountryCode, purpose }).toString()}`,
+      );
       return;
     }
 

@@ -50,6 +50,7 @@ const pathGenerator = geoPath(projection);
 const destinationById: Partial<Record<string, Destination>> = {
   "703": "Slovakia",
   "203": "Czechia",
+  "040": "Austria",
   "642": "Romania",
   "100": "Bulgaria",
 };

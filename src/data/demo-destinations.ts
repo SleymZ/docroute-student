@@ -14,6 +14,10 @@ export const demoDestinations: Record<Destination, DestinationPreview> = {
     sourceDocuments: 12,
     requirements: 28,
   },
+  Austria: {
+    sourceDocuments: 9,
+    requirements: 20,
+  },
   Romania: {
     sourceDocuments: 12,
     requirements: 34,
@@ -27,6 +31,7 @@ export const demoDestinations: Record<Destination, DestinationPreview> = {
 export const destinationOptions: Destination[] = [
   "Slovakia",
   "Czechia",
+  "Austria",
   "Romania",
   "Bulgaria",
 ];
