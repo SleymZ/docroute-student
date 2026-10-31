@@ -64,6 +64,11 @@ test("another destination never claims residence in that country", () => {
   assert.equal(cz.destinationCountryCode, "CZ");
   assert.equal(cz.currentResidenceStatus, "other-eu-residence");
   assert.equal(profileForDestination(sk, "SK"), sk);
+  // A UK permit is not EU/EEA residence: the route must ask instead.
+  const uk = { ...profile, destinationCountryCode: "GB", currentResidenceStatus: "destination-residence" as const };
+  assert.equal(profileForDestination(uk, "SK").currentResidenceStatus, "other");
   const visaFree = { ...profile, currentResidenceStatus: "visa-free-entry" as const };
-  assert.equal(profileForDestination(visaFree, "CZ").currentResidenceStatus, "visa-free-entry");
+  assert.equal(profileForDestination(visaFree, "CZ").currentResidenceStatus, "other");
+  const noPermit = { ...profile, currentResidenceStatus: "non-eu-passport-no-residence" as const };
+  assert.equal(profileForDestination(noPermit, "CZ").currentResidenceStatus, "non-eu-passport-no-residence");
 });

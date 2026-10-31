@@ -18,30 +18,40 @@ export type RouteOptions = {
   pending: PendingProgramGroup[];
 };
 
-// Residence statuses that describe the destination country itself. When an
-// option sits in another country, they become residence elsewhere in the EU.
-const destinationRelative = new Set<ApplicantProfile["currentResidenceStatus"]>([
+// EU and EEA member states (residence there counts as "another EU / EEA
+// country"). Switzerland and the UK are not in this list.
+const euEea = new Set([
+  "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+  "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+  "SI", "ES", "SE", "IS", "LI", "NO",
+]);
+
+// Residence statuses that describe the destination country itself.
+const destinationPermits = new Set<ApplicantProfile["currentResidenceStatus"]>([
   "destination-study-residence",
   "destination-residence",
   "destination-permanent-residence",
   "destination-national-visa",
 ]);
 
-/** The same profile with another destination country. Destination-relative
- *  residence ("study residence in the destination") is translated to
- *  residence in another EU country, so it never claims the new country. */
+/** The same profile with another destination country. A permit or visa for
+ *  the old destination becomes "residence in another EU / EEA country" when
+ *  that destination is in the EU/EEA, otherwise "another status / not sure"
+ *  so the route asks for clarification. A visa-free stay is tied to the old
+ *  destination as well and also becomes "not sure". */
 export function profileForDestination(
   profile: ApplicantProfile,
   countryCode: string,
 ): ApplicantProfile {
   if (countryCode === profile.destinationCountryCode) return profile;
-  return {
-    ...profile,
-    destinationCountryCode: countryCode,
-    currentResidenceStatus: destinationRelative.has(profile.currentResidenceStatus)
-      ? "other-eu-residence"
-      : profile.currentResidenceStatus,
-  };
+  const status = profile.currentResidenceStatus;
+  let translated = status;
+  if (destinationPermits.has(status)) {
+    translated = euEea.has(profile.destinationCountryCode) ? "other-eu-residence" : "other";
+  } else if (status === "visa-free-entry") {
+    translated = "other";
+  }
+  return { ...profile, destinationCountryCode: countryCode, currentResidenceStatus: translated };
 }
 
 /** A verified match the person can act on: everything except programmes

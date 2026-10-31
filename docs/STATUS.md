@@ -743,8 +743,9 @@ latest rules" (owner rule 2026-10-30):
   "Current profile options" (steps-remaining only) tab is gone. For an
   option in another country the profile's destination becomes that country
   and destination-relative residence (study/temporary/permanent residence,
-  national visa) becomes "other EU residence" (`profileForDestination`),
-  both in matching and in the card's links.
+  national visa) becomes "other EU/EEA residence" when the old destination is
+  in the EU/EEA, otherwise "not sure" (visa-free stays too), so the route asks
+  (`profileForDestination`), both in matching and in the card's links.
 - Avatar: "Add photo" works before the profile is saved (the typed name is
   saved first), the round avatar itself opens the picker, drag and drop,
   instant preview, EXIF orientation respected, JPEG fallback where the
