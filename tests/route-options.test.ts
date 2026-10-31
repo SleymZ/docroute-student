@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { verifiedPrograms } from "../src/data/verified-programs";
-import { findRouteOptions, isRouteOption } from "../src/lib/route-options";
+import { findRouteOptions, isRouteOption, profileForDestination } from "../src/lib/route-options";
 import type { ApplicantProfile } from "../src/types/admission";
 
 const profile: ApplicantProfile = {
@@ -56,4 +56,14 @@ test("only programmes that are unavailable for the route are left out of the opt
   for (const match of matches) {
     assert.equal(isRouteOption(match), match.status !== "unavailable");
   }
+});
+
+test("another destination never claims residence in that country", () => {
+  const sk = { ...profile, currentResidenceStatus: "destination-study-residence" as const };
+  const cz = profileForDestination(sk, "CZ");
+  assert.equal(cz.destinationCountryCode, "CZ");
+  assert.equal(cz.currentResidenceStatus, "other-eu-residence");
+  assert.equal(profileForDestination(sk, "SK"), sk);
+  const visaFree = { ...profile, currentResidenceStatus: "visa-free-entry" as const };
+  assert.equal(profileForDestination(visaFree, "CZ").currentResidenceStatus, "visa-free-entry");
 });

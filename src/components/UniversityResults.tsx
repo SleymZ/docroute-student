@@ -36,7 +36,11 @@ import { formatPlanDate } from "@/lib/residence/deadlines";
 import { useSavedUniversities } from "@/hooks/useSavedUniversities";
 import { createProfileSearchParams } from "@/lib/profile-query";
 import { matchStatusLabels } from "@/lib/match-programs";
-import { findRouteOptions, isRouteOption } from "@/lib/route-options";
+import {
+  findRouteOptions,
+  isRouteOption,
+  profileForDestination,
+} from "@/lib/route-options";
 import { formatDegreeLevel } from "@/lib/profile-options";
 import type { ProgramMatch } from "@/types/admission";
 
@@ -705,12 +709,19 @@ export function UniversityResults({
                 (group) => group.universityId === university.id,
               )?.universityName ??
               university.name;
-            const universityParams = new URLSearchParams(resultsParams);
             // An option in another country is matched with that country as
-            // the destination; the linked profile must say so too.
-            if (mode === "route" && university.countryCode !== countryCode) {
-              universityParams.set("country", university.countryCode);
-            }
+            // the destination (and residence translated); the linked profile
+            // must say the same, or the university page re-matches differently.
+            const universityParams =
+              mode === "route" && profile && university.countryCode !== countryCode
+                ? (() => {
+                    const params = createProfileSearchParams(
+                      profileForDestination(profile, university.countryCode),
+                    );
+                    params.set("flow", mode);
+                    return params;
+                  })()
+                : new URLSearchParams(resultsParams);
 
             if (firstMatch) {
               universityParams.set("programId", firstMatch.program.id);

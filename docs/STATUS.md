@@ -740,7 +740,11 @@ latest rules" (owner rule 2026-10-30):
   directory**. Coming-soon cards say the profile was not checked against
   them (their rules are not approved; the matcher never reads them). Logic in
   `src/lib/route-options.ts`, test `tests/route-options.test.ts`. The old
-  "Current profile options" (steps-remaining only) tab is gone.
+  "Current profile options" (steps-remaining only) tab is gone. For an
+  option in another country the profile's destination becomes that country
+  and destination-relative residence (study/temporary/permanent residence,
+  national visa) becomes "other EU residence" (`profileForDestination`),
+  both in matching and in the card's links.
 - Avatar: "Add photo" works before the profile is saved (the typed name is
   saved first), the round avatar itself opens the picker, drag and drop,
   instant preview, EXIF orientation respected, JPEG fallback where the
@@ -940,7 +944,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (238 tests on 2026-10-31).
+- Unit tests: `npm test` (239 tests on 2026-10-31).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

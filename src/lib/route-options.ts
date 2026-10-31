@@ -18,6 +18,32 @@ export type RouteOptions = {
   pending: PendingProgramGroup[];
 };
 
+// Residence statuses that describe the destination country itself. When an
+// option sits in another country, they become residence elsewhere in the EU.
+const destinationRelative = new Set<ApplicantProfile["currentResidenceStatus"]>([
+  "destination-study-residence",
+  "destination-residence",
+  "destination-permanent-residence",
+  "destination-national-visa",
+]);
+
+/** The same profile with another destination country. Destination-relative
+ *  residence ("study residence in the destination") is translated to
+ *  residence in another EU country, so it never claims the new country. */
+export function profileForDestination(
+  profile: ApplicantProfile,
+  countryCode: string,
+): ApplicantProfile {
+  if (countryCode === profile.destinationCountryCode) return profile;
+  return {
+    ...profile,
+    destinationCountryCode: countryCode,
+    currentResidenceStatus: destinationRelative.has(profile.currentResidenceStatus)
+      ? "other-eu-residence"
+      : profile.currentResidenceStatus,
+  };
+}
+
 /** A verified match the person can act on: everything except programmes
  *  that are not available for this route at all. */
 export function isRouteOption(match: ProgramMatch) {
@@ -46,11 +72,7 @@ export function findRouteOptions(
         program.intake === profile.intake,
     )
     .map((program) =>
-      matchProgram(
-        { ...profile, destinationCountryCode: program.countryCode },
-        program,
-        asOfDate,
-      ),
+      matchProgram(profileForDestination(profile, program.countryCode), program, asOfDate),
     )
     .sort(
       (a, b) =>
