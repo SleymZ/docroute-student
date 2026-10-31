@@ -309,6 +309,61 @@
   gap: 16px;
 }
 
+.avatarRow[data-dragging="true"] {
+  outline: 2px dashed light-dark(#1b8696, #79ddef);
+  outline-offset: 6px;
+  border-radius: 14px;
+}
+
+.avatarButton {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.avatarButton:disabled {
+  cursor: progress;
+  opacity: 0.8;
+}
+
+.avatarButton:focus-visible {
+  outline: 2px solid light-dark(#1b8696, #79ddef);
+  outline-offset: 3px;
+}
+
+.avatarPreview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarBadge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid light-dark(#ffffff, #0d1f29);
+  border-radius: 50%;
+  background: light-dark(#1b8696, #79ddef);
+  color: light-dark(#ffffff, #06222b);
+}
+
+.avatarSide {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 260px;
+}
+
 .field {
   display: grid;
   gap: 6px;

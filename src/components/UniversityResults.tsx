@@ -35,7 +35,8 @@ import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { useSavedUniversities } from "@/hooks/useSavedUniversities";
 import { createProfileSearchParams } from "@/lib/profile-query";
-import { matchPrograms, matchStatusLabels } from "@/lib/match-programs";
+import { matchStatusLabels } from "@/lib/match-programs";
+import { findRouteOptions, isRouteOption } from "@/lib/route-options";
 import { formatDegreeLevel } from "@/lib/profile-options";
 import type { ProgramMatch } from "@/types/admission";
 
@@ -104,9 +105,11 @@ export function UniversityResults({
     requestedProgram || profile?.studyCategory || "";
 
   const [query, setQuery] = useState("");
+  // Explore: "all" | "verified". Route: "options" (destination country),
+  // "europe" (other countries) or "all" (the whole country directory).
   const [scope, setScope] =
-    useState<"all" | "verified" | "current">(() =>
-      mode === "route" ? "current" : "all",
+    useState<"all" | "verified" | "options" | "europe">(() =>
+      mode === "route" ? "options" : "all",
     );
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
@@ -135,18 +138,35 @@ export function UniversityResults({
     [anyCountry, anyProgram, countryCode, selectedProgram],
   );
 
+  // Route flow: every verified programme for the profile's field, degree
+  // and intake (matched against the profile) and every coming-soon listing,
+  // in the destination country and elsewhere in Europe.
+  const routeOptions = useMemo(
+    () =>
+      mode === "route" && profile
+        ? findRouteOptions(profile, verifiedPrograms, asOfDate)
+        : null,
+    [mode, profile, asOfDate],
+  );
+
   // Programs whose approved rules for the intake are not published yet.
-  // In the route flow they must also match the exact degree and intake.
   const pendingGroups = useMemo(
     () =>
-      findPendingProgramGroups({
-        countryCode: anyCountry ? undefined : countryCode,
-        category: anyProgram ? undefined : selectedProgram,
-        ...(mode === "route" && profile
-          ? { degreeLevel: profile.degreeLevel, intake: profile.intake }
-          : {}),
-      }),
-    [anyCountry, anyProgram, countryCode, selectedProgram, mode, profile],
+      routeOptions
+        ? routeOptions.pending
+        : findPendingProgramGroups({
+            countryCode: anyCountry ? undefined : countryCode,
+            category: anyProgram ? undefined : selectedProgram,
+          }),
+    [routeOptions, anyCountry, anyProgram, countryCode, selectedProgram],
+  );
+
+  const pendingById = useMemo(
+    () =>
+      new Map(
+        pendingGroups.map((group) => [group.universityId, group.status] as const),
+      ),
+    [pendingGroups],
   );
 
   const pendingHosts = useMemo(
@@ -181,16 +201,10 @@ export function UniversityResults({
     : catalog.universities.find((university) => university.countryCode === countryCode)
         ?.country ?? "";
 
-  const profileMatches = useMemo(
-    () =>
-      profile ? matchPrograms(profile, verifiedPrograms, asOfDate) : [],
-    [profile, asOfDate],
-  );
-
   const verifiedByHost = useMemo(() => {
     const matchesByHost = new Map<string, ProgramMatch[]>();
 
-    for (const match of profileMatches) {
+    for (const match of routeOptions?.matches ?? []) {
       const existing =
         matchesByHost.get(match.program.universityHost) ?? [];
 
@@ -199,22 +213,48 @@ export function UniversityResults({
     }
 
     return matchesByHost;
-  }, [profileMatches]);
+  }, [routeOptions]);
+
+  // Universities listed under a route tab: those with a verified option or
+  // a coming-soon listing, in the destination country ("options") or in the
+  // other countries ("europe").
+  const routeUniversities = useMemo(() => {
+    const pick = (inDestination: boolean) =>
+      catalog.universities.filter((university) => {
+        if ((university.countryCode === countryCode) !== inDestination) return false;
+        const host = getWebsiteHost(university.website);
+        return (
+          (verifiedByHost.get(host) ?? []).some(isRouteOption) ||
+          pendingHosts.has(host) ||
+          pendingById.has(university.id)
+        );
+      });
+    return mode === "route"
+      ? { options: pick(true), europe: pick(false) }
+      : { options: [], europe: [] };
+  }, [mode, countryCode, verifiedByHost, pendingHosts, pendingById]);
 
   const universityResults = useMemo(() => {
     const normalizedQuery = normalize(query);
 
-    return countryUniversities
+    const base =
+      mode === "route" && scope === "options"
+        ? routeUniversities.options
+        : mode === "route" && scope === "europe"
+          ? routeUniversities.europe
+          : countryUniversities;
+
+    return base
       .map((university) => {
         const host = getWebsiteHost(university.website);
         const matchingPrograms = (verifiedByHost.get(host) ?? []).filter(
-          (match) => scope !== "current" || match.status === "conditional",
+          (match) => mode !== "route" || scope === "all" || isRouteOption(match),
         );
 
         return {
           ...university,
           matchingPrograms,
-          pending: pendingHosts.get(host) ?? null,
+          pending: pendingHosts.get(host) ?? pendingById.get(university.id) ?? null,
           verified:
             mode === "route"
               ? matchingPrograms.length > 0
@@ -222,7 +262,7 @@ export function UniversityResults({
         };
       })
       .filter((university) => {
-        if (scope !== "all" && !university.verified) {
+        if (mode === "explore" && scope === "verified" && !university.verified) {
           return false;
         }
 
@@ -239,13 +279,17 @@ export function UniversityResults({
       .sort(
         (a, b) =>
           Number(b.verified) - Number(a.verified) ||
+          Number(b.matchingPrograms[0]?.status === "conditional") -
+            Number(a.matchingPrograms[0]?.status === "conditional") ||
           Number(Boolean(b.pending)) - Number(Boolean(a.pending)) ||
           a.name.localeCompare(b.name),
       );
   }, [
     countryUniversities,
+    routeUniversities,
     mode,
     pendingHosts,
+    pendingById,
     query,
     scope,
     verifiedByHost,
@@ -276,12 +320,9 @@ export function UniversityResults({
         : verifiedCatalogHosts.has(host);
     },
   ).length;
-  const currentCount = countryUniversities.filter((university) =>
-    verifiedByHost.get(getWebsiteHost(university.website))?.some(
-      (match) => match.status === "conditional",
-    ),
-  ).length;
-  const noCurrentOptions = mode === "route" && scope === "current" && currentCount === 0;
+  const optionsCount = routeUniversities.options.length;
+  const europeCount = routeUniversities.europe.length;
+  const noRouteOptions = mode === "route" && scope === "options" && optionsCount === 0;
 
   if (mode === "route" && profileState.loading) {
     return (
@@ -345,7 +386,13 @@ export function UniversityResults({
     );
   }
 
-  if (mode === "route" && profile && profileMatches.length === 0) {
+  if (
+    mode === "route" &&
+    profile &&
+    routeOptions &&
+    routeOptions.matches.length === 0 &&
+    routeOptions.pending.length === 0
+  ) {
     const profileParams = createProfileSearchParams(profile);
     const directoryParams = new URLSearchParams({
       country: countryCode,
@@ -565,30 +612,57 @@ export function UniversityResults({
           className={styles.scopeTabs}
           aria-label="Result type"
         >
-          <button
-            type="button"
-            aria-pressed={scope === (mode === "route" ? "current" : "all")}
-            onClick={() => {
-              setScope(mode === "route" ? "current" : "all");
-              setVisibleCount(PAGE_SIZE);
-            }}
-          >
-            {mode === "route" ? "Current profile options" : "All institutions"}
-            <span>{mode === "route" ? currentCount : countryUniversities.length}</span>
-          </button>
+          {mode === "route" ? (
+            <>
+              {(
+                [
+                  ["options", `My options in ${countryName}`, optionsCount],
+                  ["europe", "Other countries", europeCount],
+                  ["all", "Whole directory", countryUniversities.length],
+                ] as const
+              ).map(([value, label, count]) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={scope === value}
+                  onClick={() => {
+                    setScope(value);
+                    setVisibleCount(PAGE_SIZE);
+                  }}
+                >
+                  {label}
+                  <span>{count}</span>
+                </button>
+              ))}
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                aria-pressed={scope === "all"}
+                onClick={() => {
+                  setScope("all");
+                  setVisibleCount(PAGE_SIZE);
+                }}
+              >
+                All institutions
+                <span>{countryUniversities.length}</span>
+              </button>
 
-          <button
-            type="button"
-            disabled={verifiedCount === 0}
-            aria-pressed={scope === "verified"}
-            onClick={() => {
-              setScope("verified");
-              setVisibleCount(PAGE_SIZE);
-            }}
-          >
-            {mode === "route" ? "All verified options" : "Verified program data"}
-            <span>{verifiedCount}</span>
-          </button>
+              <button
+                type="button"
+                disabled={verifiedCount === 0}
+                aria-pressed={scope === "verified"}
+                onClick={() => {
+                  setScope("verified");
+                  setVisibleCount(PAGE_SIZE);
+                }}
+              >
+                Verified program data
+                <span>{verifiedCount}</span>
+              </button>
+            </>
+          )}
         </div>
       </section>
 
@@ -597,7 +671,7 @@ export function UniversityResults({
 
         <p>
           {mode === "route"
-            ? `Coverage: ${profileMatches.length} verified programs at ${verifiedByHost.size} faculty/university for your exact subject, degree and intake. Current profile options exclude known education/language gaps and unresolved evidence. All verified options also shows preparation routes and closed deadlines. Checked as of ${asOfDate}; admission is never guaranteed.`
+            ? `Your options: verified programmes for your exact subject, degree and intake, checked against your profile (ready, preparation needed or needs clarification), plus "coming soon" programmes whose rules for this intake are not approved yet. Coming-soon programmes are listed but not checked against your profile. Checked as of ${asOfDate}; admission is never guaranteed.`
             : anyCountry
               ? "Only institutions with checked information for this field are listed. Pick a country to see its complete directory."
               : "Verified program information is based on published admissions rules. Other institutions remain visible in the complete country directory."}
@@ -828,7 +902,11 @@ export function UniversityResults({
                     </div>
                   ) : (
                     <p className={styles.pendingText}>
-                      {university.pending === "rules-published"
+                      {university.pending && mode === "route"
+                        ? university.pending === "rules-published"
+                          ? `Coming soon: the faculty has published its ${programLabel} rules for ${profile?.intake ?? "the next intake"}, but DocRoute has not checked them against your profile yet. Open the university for a summary.`
+                          : `Coming soon: the ${programLabel} rules for ${profile?.intake ?? "the next intake"} are not approved yet, so your profile has not been checked. Open the university to see last year's rules, for orientation.`
+                        : university.pending === "rules-published"
                         ? `This faculty has published its ${programLabel} admission rules for the next intake. Open the university for a summary; a personalised route is not built yet.`
                         : university.pending
                         ? `${selectedProgram ? `${selectedProgram} admission` : 'Admission'} rules for the next intake are not out yet. Open the university to see last year's rules, for orientation.`
@@ -881,11 +959,11 @@ export function UniversityResults({
 
       {universityResults.length === 0 && (
         <div className={styles.noResults}>
-          <h2>{noCurrentOptions ? "No current profile options yet" : "No universities found"}</h2>
-          <p>{noCurrentOptions ? "Your choices are saved. Review verified preparation options to see exactly what is missing; this does not mean there are no other programs in the country." : "Try changing the search or result type."}</p>
-          {noCurrentOptions && (
-            <button type="button" className={styles.loadMore} onClick={() => setScope("verified")}>
-              Show preparation and clarification options
+          <h2>{noRouteOptions ? `No options in ${countryName} yet` : "No universities found"}</h2>
+          <p>{noRouteOptions ? "Your choices are saved. DocRoute has no verified or coming-soon programme for this subject, degree and intake in this country yet." : "Try changing the search or result type."}</p>
+          {noRouteOptions && europeCount > 0 && (
+            <button type="button" className={styles.loadMore} onClick={() => setScope("europe")}>
+              Show options in other countries
             </button>
           )}
         </div>

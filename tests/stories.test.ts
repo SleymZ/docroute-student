@@ -67,6 +67,8 @@ test("avatar paths fit the database rule and stay in the owner's folder", () => 
   const path = avatarPath(userId, 1793379187697);
   assert.equal(path, `${userId}/avatar-1793379187697.webp`);
   assert.match(path, /^[0-9a-f-]{36}\/avatar-[0-9]{10,16}\.(webp|jpg|png)$/);
+  // Browsers that cannot encode WebP (older Safari) upload a JPEG instead.
+  assert.match(avatarPath(userId, 1793379187697, "jpg"), /^[0-9a-f-]{36}\/avatar-[0-9]{10,16}\.jpg$/);
   assert.equal(
     avatarPublicUrl("https://x.supabase.co/", path),
     `https://x.supabase.co/storage/v1/object/public/avatars/${path}`,

@@ -148,8 +148,8 @@ export function validateStory(input: StoryInput, currentYear: number) {
 
 // Path inside the avatars bucket: "<user id>/avatar-<timestamp>.webp". The
 // database only accepts this shape inside the owner's folder.
-export function avatarPath(userId: string, now: number) {
-  return `${userId}/avatar-${now}.webp`;
+export function avatarPath(userId: string, now: number, extension: "webp" | "jpg" = "webp") {
+  return `${userId}/avatar-${now}.${extension}`;
 }
 
 export function avatarPublicUrl(supabaseUrl: string, path: string | null) {
