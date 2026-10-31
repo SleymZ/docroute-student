@@ -1034,7 +1034,7 @@ function TopRequirementsBlock({
 }: {
   requirements: (typeof topAdmissionRequirements)[number];
 }) {
-  const label = requirements.intake ?? "Reference";
+  const label = requirements.intake ?? "All programmes";
   return (
     <>
       <div
