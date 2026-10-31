@@ -703,3 +703,70 @@
     padding: 21px;
   }
 }
+
+/* Top 100 reference facts (same content as the /explore/top card) */
+.topPanel {
+  margin-top: 16px;
+  padding: clamp(20px, 3.5vw, 32px);
+  border: 1px solid light-dark(#8aa6b2, #294957);
+  border-radius: 16px;
+  background: linear-gradient(145deg, light-dark(#f3fbff, #0d2632), light-dark(#f2f8fc, #091d28));
+}
+
+.topHeading {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.topHeading h2 {
+  margin: 0;
+  color: light-dark(#22211d, #f5f3ee);
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 500;
+}
+
+.topRank {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 64px;
+  height: 64px;
+  padding: 0 10px;
+  border: 1px solid light-dark(rgba(10, 112, 125, 0.35), rgba(118, 220, 237, 0.35));
+  border-radius: 16px;
+  color: light-dark(#0a707d, #76dced);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.topMeta {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: light-dark(#506772, #92abb7);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.topBody {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.topLink {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 6px;
+  color: light-dark(#0a707d, #76dced);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .topHeading {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -51,3 +51,25 @@ export type TopComputerScience = {
   note?: string;
   checkedAt: string;
 };
+
+// Published entry requirements for one field at one Top 100 university,
+// as the university states them (A-levels, IB, tests…). Nothing is
+// converted between grading systems. A `note` without `url` explains why
+// there is no entry (for example, no such bachelor's programme).
+export type TopFieldKey =
+  | "computer-science"
+  | "mathematics"
+  | "medicine"
+  | "law"
+  | "economics";
+
+export type TopFieldRequirement = {
+  programme?: string;
+  url?: string;
+  requirements?: string;
+  note?: string;
+  intake?: string;
+  checkedAt: string;
+};
+
+export type TopFieldRequirements = Partial<Record<TopFieldKey, TopFieldRequirement>>;

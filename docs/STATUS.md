@@ -267,6 +267,31 @@ latest rules" (owner rule 2026-10-30):
   English, UK/IE by default), and notes; 5 have none (Karolinska, Erasmus,
   Lausanne, Medical University of Vienna, Lund in English). Filter
   "Computer science in English" on the page. Not verified routes.
+- University page (`/universities/[id]`): a Top 100 university shows a
+  "Europe's top 100" block with its rank, top-10% paper count and the same
+  facts and sources as its card (shared component
+  `src/components/TopUniversityFacts.tsx`). Without a verified route the
+  data status reads "Reference facts" with the latest check date; the empty
+  01/02/03 placeholders are hidden. Still reference only, never a match.
+- Entry requirements by field (`src/data/top-field-requirements.ts`,
+  types `TopFieldKey`/`TopFieldRequirement`, test
+  `tests/top-field-requirements.test.ts`): computer science, mathematics,
+  medicine, law, economics, quoted as each course page publishes them
+  (A-levels, IB, admissions tests, sometimes fee); grades are never
+  converted between systems. First batch 2026-10-31: all 20 UK
+  universities, 96 entries (Glasgow: only CS and medicine readable; QMUL:
+  no 2027 medicine page; Imperial has no law; Warwick medicine is
+  graduate-entry only). Shown in the Top 100 card and on the university
+  page under "Entry requirements by field". Next: other countries, where
+  requirements look different (NL maths B, DE HZB/NC, IT tests, FR
+  dossier, ES admission grade).
+- Explore filters (2026-10-31): country and field are each optional ("Any
+  country" / "Any field"). One country with any field shows its whole
+  directory (verified/coming soon in any field first); one field across
+  Europe lists only institutions with something checked for that field
+  (verified route, coming-soon listing or Top 100 requirements by field).
+  The personal route flow still needs both. Result cards show a
+  "Top 100 · #N" badge linking to the list.
 - 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
   PSL do not (the catalog has only predecessor institutions).
 - Recheck 2026-10-30 (11 universities): new or updated facts for KU Leuven
@@ -298,6 +323,30 @@ latest rules" (owner rule 2026-10-30):
   Lund, Paris-Saclay, Paris Cité, Aarhus, Aalborg, Pisa, Turin, Bari (the
   Italian pages still describe 2026/27). Geneva blocked the tool; Basel's
   deadline page text was not readable.
+- Fourth pass 2026-10-31 (60 universities): every Top 100 entry whose
+  sources were all from 2026-10-27 was reopened on official pages; 91 of
+  100 now carry a source checked on 2026-10-30 or later (93 with Oxford
+  and Cardiff, added the same day). Changes worth
+  knowing: Göttingen restricted programmes for non-EU applicants close on
+  30 April (1 March–30 April, €65 fee), not 15 July; Lisbon now has a
+  central 2027/28 call (phases 4 Jan–5 Feb, 5 Apr–21 May 2027; fees by
+  programme €1,500–11,000); Freiburg publishes winter 2027/28 dates; Oslo
+  Technology Systems closes 1 December; Sorbonne Sciences DAP 1 Oct 2026–15
+  Jan 2027 with French B2; Leiden, Maastricht (CS 2027/28), UvA, Radboud,
+  VU: non-EU deadline 1 April (Wageningen: Studielink 15 April);
+  Frankfurt, HU Berlin, Tübingen, Geneva and Basel read in the built-in
+  browser (Frankfurt 1 June–15 July / 30 Sept; HU 1 June–15 July via
+  uni-assist, German C1 to apply). UK: 2027-entry computer science pages
+  (IELTS, fees, admissions tests: UCL TARA, Imperial and Cambridge TMUA)
+  added as notes and the CS links rechecked. Oxford: the fetch tool served
+  a cached 2023 course page, but the live page (built-in browser) shows 2027
+  entry: TMUA, A*AA, £66,580 overseas, IELTS now 7.5 (7.0 each; old English
+  page is a 404). Not rechecked in this pass: TUM (no WS 2027/28 bachelor
+  dates yet), Bologna, Milan, PoliTo (only 2026/27 calls), Barcelona
+  (found page covers finished degrees only),
+  AUTh (robots), Charles (rechecked 2026-10-30, sources not re-dated).
+  Federico II's international site stays unreadable (also in the browser);
+  its enrolment page is used instead.
 - Known gaps: Federico II (Naples) and KU Leuven pages could not be read
   by the tools; Spanish universities mostly show the national procedure;
   Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.

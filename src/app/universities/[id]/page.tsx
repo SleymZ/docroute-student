@@ -31,7 +31,11 @@ import {
   pendingStatusLabel,
 } from "@/data/pending-programs";
 import catalog from "@/data/universities.json";
-import { topUniversities } from "@/data/top-universities";
+import { topRankingSource, topUniversities } from "@/data/top-universities";
+import { topComputerScience } from "@/data/top-computer-science";
+import { topFieldRequirements } from "@/data/top-field-requirements";
+import { resolveTopAdmissions } from "@/lib/top-universities";
+import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniversityFacts";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
@@ -146,6 +150,16 @@ export default async function UniversityPage({
   const topEntry = topUniversities.find(
     (entry) => entry.catalogId === university.id,
   );
+  // Top 100 reference facts: the same text and sources as the card on
+  // /explore/top. They are not a verified route and never produce a match.
+  const topAdmissions = topEntry ? resolveTopAdmissions(topEntry) : null;
+  const topCs = topEntry ? topComputerScience[topEntry.rank] : undefined;
+  const topCheckedAt = topAdmissions
+    ? topAdmissions.sources.reduce(
+        (latest, source) => (source.checkedAt > latest ? source.checkedAt : latest),
+        "",
+      )
+    : null;
 
   const selectedProgram = firstValue(query.program)?.trim() || null;
   const requestedProgram = findVerifiedProgram(
@@ -263,7 +277,9 @@ export default async function UniversityPage({
       ? "Official program information"
       : pendingGroups.length > 0
         ? pendingStatusLabel(pendingGroups[0].status)
-        : "Verification pending";
+        : topAdmissions
+          ? "Reference facts"
+          : "Verification pending";
 
   return (
     <main>
@@ -422,7 +438,9 @@ export default async function UniversityPage({
                   ? `Bachelor · ${verifiedProgram.durationYears} years · full-time`
                   : pendingGroups.length > 0
                     ? `${pendingProgramCount} programs listed for ${pendingGroups[0].intake}`
-                    : "Program availability requires verification"}
+                    : topCs?.name
+                      ? `Computer science: ${topCs.name}`
+                      : "Program availability requires verification"}
               </p>
             </div>
           </article>
@@ -440,11 +458,51 @@ export default async function UniversityPage({
                   ? `Official rules checked ${formatDate(verifiedProgram.verifiedAt)}`
                   : pendingGroups.length > 0
                     ? `Status checked ${formatDate(pendingGroups[0].checkedAt)}`
-                    : "Admissions verification in progress"}
+                    : topCheckedAt
+                      ? `Top 100 facts checked ${formatDate(topCheckedAt)}`
+                      : "Admissions verification in progress"}
               </p>
             </div>
           </article>
         </section>
+
+        {topEntry && topAdmissions && (
+          <section
+            id="top-100"
+            className={styles.topPanel}
+            aria-label="Europe's top 100 facts"
+          >
+            <div className={styles.topHeading}>
+              <span className={styles.topRank}>#{topEntry.rank}</span>
+              <div>
+                <p className={styles.eyebrow}>EUROPE&apos;S TOP 100</p>
+                <h2>
+                  Rank {topEntry.rank} of 100 in Europe
+                </h2>
+                <p className={styles.topMeta}>
+                  {topEntry.leiden.topTenPublications.toLocaleString("en-US")}{" "}
+                  papers among the 10% most cited ({topRankingSource.title},{" "}
+                  {topRankingSource.period}). Bachelor&apos;s admission facts for a
+                  non-EU applicant, each from an official page. Reference only: not
+                  a verified route.
+                </p>
+              </div>
+            </div>
+
+            <div className={styles.topBody}>
+              <TopUniversityFacts
+                admissions={topAdmissions}
+                computerScience={topCs}
+                fields={topFieldRequirements[topEntry.rank]}
+              />
+              <TopUniversitySources sources={topAdmissions.sources} />
+              <Link href={`/explore/top#rank-${topEntry.rank}`} className={styles.topLink}>
+                See all top 100 universities
+                <ArrowRight size={15} aria-hidden="true" />
+              </Link>
+            </div>
+          </section>
+        )}
 
         <div className={styles.contentLayout}>
           <section
@@ -793,6 +851,9 @@ export default async function UniversityPage({
                     <p>
                       Document requirements will only appear here after they
                       have been checked against an official university source.
+                      {topEntry && pendingGroups.length === 0 && (
+                        <> Until then, use the Top 100 admission facts above.</>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -842,7 +903,7 @@ export default async function UniversityPage({
                       </div>
                     );
                   })
-                ) : (
+                ) : topEntry ? null : (
                   <div className={styles.requirementPreview}>
                     <div>
                       <span>01</span>
