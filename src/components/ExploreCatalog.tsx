@@ -188,7 +188,9 @@ function SearchBox({
 
 export function ExploreCatalog() {
   const [countryCode, setCountryCode] = useState("");
-  const [program, setProgram] = useState(programOptions[0]);
+  // "" means "any": you can browse one country across all fields, or one
+  // field across all countries.
+  const [program, setProgram] = useState("");
   const [countrySearch, setCountrySearch] = useState("");
   const [programSearch, setProgramSearch] = useState("");
 
@@ -240,16 +242,15 @@ export function ExploreCatalog() {
       verifiedPrograms.some(
         (item) =>
           item.countryCode === selectedCountry.code &&
-          item.category === program,
+          (!program || item.category === program),
       ),
   );
 
-  const resultsHref = selectedCountry
-    ? `/explore/universities?${new URLSearchParams({
-        country: selectedCountry.code,
-        program,
-      }).toString()}`
-    : null;
+  const resultsQuery = new URLSearchParams({
+    ...(selectedCountry ? { country: selectedCountry.code } : {}),
+    ...(program ? { program } : {}),
+  }).toString();
+  const resultsHref = resultsQuery ? `/explore/universities?${resultsQuery}` : null;
 
   return (
     <div className={styles.atlasPage}>
@@ -267,7 +268,7 @@ export function ExploreCatalog() {
           </h1>
 
           <p>
-            Pick a destination and a field. We show every institution in
+            Pick a destination, a field, or both. We show every institution in
             the catalog. Verified routes exist in{" "}
             {verifiedCountryNames}; official admission rules are checked for{" "}
             {checkedListingCount} more university listings in{" "}
@@ -328,6 +329,26 @@ export function ExploreCatalog() {
           )}
 
           <div className={styles.atlasList}>
+            {!countrySearch && (
+              <button
+                type="button"
+                aria-pressed={countryCode === ""}
+                className={styles.atlasCountryRow}
+                onClick={() => setCountryCode("")}
+              >
+                <span className={styles.atlasAnyIcon} aria-hidden="true">
+                  <Globe2 size={18} />
+                </span>
+                <span className={styles.atlasRowText}>
+                  <strong>Any country</strong>
+                  <small>Search one field across Europe</small>
+                </span>
+                <span className={styles.atlasCheck} aria-hidden="true">
+                  {countryCode === "" && <Check size={13} />}
+                </span>
+              </button>
+            )}
+
             {countryGroups.map((group) => (
               <div key={group.title} className={styles.atlasGroup}>
                 <p className={styles.atlasGroupTitle}>{group.title}</p>
@@ -424,6 +445,25 @@ export function ExploreCatalog() {
 
           <div className={styles.atlasList}>
             <div className={styles.atlasProgramGrid}>
+              {!programSearch && (
+                <button
+                  type="button"
+                  aria-pressed={program === ""}
+                  className={styles.atlasProgramTile}
+                  onClick={() => setProgram("")}
+                >
+                  <span className={styles.atlasProgramIcon}>
+                    <Compass size={19} aria-hidden="true" />
+                  </span>
+                  <span className={styles.atlasRowText}>
+                    <strong>Any field</strong>
+                    <small>Every institution in the chosen country</small>
+                  </span>
+                  <span className={styles.atlasCheck} aria-hidden="true">
+                    {program === "" && <Check size={13} />}
+                  </span>
+                </button>
+              )}
               {visiblePrograms.map((option) => {
                 const meta = programMeta[option];
                 const Icon = meta?.icon ?? GraduationCap;
@@ -520,7 +560,7 @@ export function ExploreCatalog() {
             )}
 
             <strong>
-              {selectedCountry ? selectedCountry.name : "Not selected"}
+              {selectedCountry ? selectedCountry.name : "Any country"}
             </strong>
           </div>
         </div>
@@ -536,7 +576,7 @@ export function ExploreCatalog() {
 
           <div className={styles.atlasRouteValue}>
             <GraduationCap size={18} aria-hidden="true" />
-            <strong>{program}</strong>
+            <strong>{program || "Any field"}</strong>
           </div>
         </div>
 
@@ -546,11 +586,13 @@ export function ExploreCatalog() {
           <span className={styles.atlasRouteLabel}>YOUR NEXT STEP</span>
 
           <strong>
-            {!selectedCountry
-              ? "Choose a destination"
-              : selectionVerified
-                ? "Verified programs available"
-                : `${selectedCountry.universityCount} institutions to explore`}
+            {!selectedCountry && !program
+              ? "Choose a country, a field or both"
+              : !selectedCountry
+                ? `${program} across Europe`
+                : selectionVerified
+                  ? "Verified programs available"
+                  : `${selectedCountry.universityCount} institutions to explore`}
           </strong>
         </div>
 
@@ -565,7 +607,7 @@ export function ExploreCatalog() {
             className={styles.atlasContinue}
             disabled
           >
-            Select a country
+            Choose a filter
             <ArrowRight size={17} aria-hidden="true" />
           </button>
         )}

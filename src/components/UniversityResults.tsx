@@ -28,6 +28,9 @@ import {
   pendingStatusLabel,
 } from "@/data/pending-programs";
 import { verifiedPrograms } from "@/data/verified-programs";
+import { topUniversities } from "@/data/top-universities";
+import { topFieldRequirements } from "@/data/top-field-requirements";
+import type { TopFieldKey } from "@/types/top-universities";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { useSavedUniversities } from "@/hooks/useSavedUniversities";
@@ -53,6 +56,21 @@ function normalize(value: string) {
     .toLowerCase()
     .trim();
 }
+
+// Top 100 rank by catalog id, shown as a badge on result cards.
+const topRankByCatalogId = new Map(
+  topUniversities
+    .filter((entry) => entry.catalogId)
+    .map((entry) => [entry.catalogId!, entry.rank] as const),
+);
+
+// Explore fields that have Top 100 entry requirements by field.
+const topFieldByProgram: Record<string, TopFieldKey> = {
+  Medicine: "medicine",
+  Law: "law",
+  "Economics & Business": "economics",
+  "Computer Science": "computer-science",
+};
 
 function getWebsiteHost(website: string) {
   try {
@@ -95,8 +113,13 @@ export function UniversityResults({
   const savedMemory = useSavedUniversities();
   const saved = savedMemory.values;
 
+  // In Explore either filter may be left as "any" (empty); the personal
+  // route flow always needs both.
+  const anyCountry = mode === "explore" && !countryCode;
+  const anyProgram = mode === "explore" && !selectedProgram;
   const validProgram =
-    programOptions.includes(selectedProgram);
+    anyProgram || programOptions.includes(selectedProgram);
+  const programLabel = selectedProgram || "this field";
 
   const verifiedCatalogHosts = useMemo(
     () =>
@@ -104,12 +127,12 @@ export function UniversityResults({
         verifiedPrograms
           .filter(
             (program) =>
-              program.countryCode === countryCode &&
-              program.category === selectedProgram,
+              (anyCountry || program.countryCode === countryCode) &&
+              (anyProgram || program.category === selectedProgram),
           )
           .map((program) => program.universityHost),
       ),
-    [countryCode, selectedProgram],
+    [anyCountry, anyProgram, countryCode, selectedProgram],
   );
 
   // Programs whose approved rules for the intake are not published yet.
@@ -117,13 +140,13 @@ export function UniversityResults({
   const pendingGroups = useMemo(
     () =>
       findPendingProgramGroups({
-        countryCode,
-        category: selectedProgram,
+        countryCode: anyCountry ? undefined : countryCode,
+        category: anyProgram ? undefined : selectedProgram,
         ...(mode === "route" && profile
           ? { degreeLevel: profile.degreeLevel, intake: profile.intake }
           : {}),
       }),
-    [countryCode, selectedProgram, mode, profile],
+    [anyCountry, anyProgram, countryCode, selectedProgram, mode, profile],
   );
 
   const pendingHosts = useMemo(
@@ -134,17 +157,29 @@ export function UniversityResults({
     [pendingGroups],
   );
 
-  const countryUniversities = useMemo(
-    () =>
-      catalog.universities.filter(
-        (university) =>
-          university.countryCode === countryCode,
-      ),
-    [countryCode],
-  );
+  // One country: its whole directory. One field across Europe: only the
+  // institutions where we hold something checked for that field (a verified
+  // route, a coming-soon listing or Top 100 requirements by field).
+  const countryUniversities = useMemo(() => {
+    if (!anyCountry) {
+      return catalog.universities.filter(
+        (university) => university.countryCode === countryCode,
+      );
+    }
+    const field = topFieldByProgram[selectedProgram];
+    return catalog.universities.filter((university) => {
+      const host = getWebsiteHost(university.website);
+      if (verifiedCatalogHosts.has(host) || pendingHosts.has(host)) return true;
+      const rank = topRankByCatalogId.get(university.id);
+      const entry = rank && field ? topFieldRequirements[rank]?.[field] : undefined;
+      return Boolean(entry?.url);
+    });
+  }, [anyCountry, countryCode, pendingHosts, selectedProgram, verifiedCatalogHosts]);
 
-  const countryName =
-    countryUniversities[0]?.country ?? "";
+  const countryName = anyCountry
+    ? "Europe"
+    : catalog.universities.find((university) => university.countryCode === countryCode)
+        ?.country ?? "";
 
   const profileMatches = useMemo(
     () =>
@@ -217,10 +252,16 @@ export function UniversityResults({
     verifiedCatalogHosts,
   ]);
 
+  const filterParams = () =>
+    new URLSearchParams({
+      ...(countryCode ? { country: countryCode } : {}),
+      ...(selectedProgram ? { program: selectedProgram } : {}),
+    });
+
   const pendingUniversityHref = (universityId: string) => {
     const params = profile
       ? createProfileSearchParams(profile)
-      : new URLSearchParams({ country: countryCode, program: selectedProgram });
+      : filterParams();
     params.set("flow", mode);
     params.delete("programId");
     return `/universities/${encodeURIComponent(universityId)}?${params.toString()}`;
@@ -279,7 +320,12 @@ export function UniversityResults({
     );
   }
 
-  if (!countryCode || !validProgram || !countryName) {
+  const missingFilters =
+    mode === "route"
+      ? !countryCode || !selectedProgram
+      : anyCountry && anyProgram;
+
+  if (missingFilters || !validProgram || !countryName) {
     return (
       <div className={styles.invalidPage}>
         <Building2 size={34} aria-hidden="true" />
@@ -287,8 +333,8 @@ export function UniversityResults({
         <h1>Choose your filters first</h1>
 
         <p>
-          Return to Explore and select a country and study
-          interest.
+          Return to Explore and select a country, a study field, or
+          both.
         </p>
 
         <Link href="/explore">
@@ -335,10 +381,7 @@ export function UniversityResults({
 
   const resultsParams = profile
     ? createProfileSearchParams(profile)
-    : new URLSearchParams({
-        country: countryCode,
-        program: selectedProgram,
-      });
+    : filterParams();
   resultsParams.set("flow", mode);
 
   return (
@@ -350,9 +393,9 @@ export function UniversityResults({
         </Link>
 
         <span>/</span>
-        <span>{countryName}</span>
+        <span>{anyCountry ? "Any country" : countryName}</span>
         <span>/</span>
-        <strong>{selectedProgram}</strong>
+        <strong>{selectedProgram || "Any field"}</strong>
       </nav>
 
       <header className={styles.resultsHeader}>
@@ -362,7 +405,15 @@ export function UniversityResults({
           </p>
 
           <h1>
-            Universities in <span>{countryName}</span>
+            {anyCountry ? (
+              <>
+                {selectedProgram} <span>across Europe</span>
+              </>
+            ) : (
+              <>
+                Universities in <span>{countryName}</span>
+              </>
+            )}
           </h1>
 
           <p>
@@ -376,22 +427,37 @@ export function UniversityResults({
                 languages.
               </>
             ) : (
-              <>
-                Browse the country directory for <strong>{selectedProgram}</strong>.
-                Subject availability is only confirmed where official program data is available.
-              </>
+              anyCountry ? (
+                <>
+                  Institutions in every country where we have checked something
+                  for <strong>{selectedProgram}</strong>: a verified route, a
+                  coming-soon listing or published entry requirements.
+                </>
+              ) : anyProgram ? (
+                <>
+                  The whole directory for {countryName}, in every field. Open a
+                  university to see the programmes we have checked there.
+                </>
+              ) : (
+                <>
+                  Browse the country directory for <strong>{selectedProgram}</strong>.
+                  Subject availability is only confirmed where official program data is available.
+                </>
+              )
             )}
           </p>
         </div>
 
-        <Image
-          src={`https://flagcdn.com/w160/${countryCode.toLowerCase()}.png`}
-          alt={`${countryName} flag`}
-          width={80}
-          height={60}
-          unoptimized
-          className={styles.resultsFlag}
-        />
+        {!anyCountry && (
+          <Image
+            src={`https://flagcdn.com/w160/${countryCode.toLowerCase()}.png`}
+            alt={`${countryName} flag`}
+            width={80}
+            height={60}
+            unoptimized
+            className={styles.resultsFlag}
+          />
+        )}
       </header>
 
       {mode === "route" && profile && (
@@ -457,12 +523,7 @@ export function UniversityResults({
               <strong>Browse institutions without an applicant profile.</strong>
             </p>
           </div>
-          <Link
-            href={`/route/profile?${new URLSearchParams({
-              country: countryCode,
-              program: selectedProgram,
-            }).toString()}`}
-          >
+          <Link href={`/route/profile?${filterParams().toString()}`}>
             Build a personal route
             <ArrowRight size={15} aria-hidden="true" />
           </Link>
@@ -537,7 +598,9 @@ export function UniversityResults({
         <p>
           {mode === "route"
             ? `Coverage: ${profileMatches.length} verified programs at ${verifiedByHost.size} faculty/university for your exact subject, degree and intake. Current profile options exclude known education/language gaps and unresolved evidence. All verified options also shows preparation routes and closed deadlines. Checked as of ${asOfDate}; admission is never guaranteed.`
-            : "Verified program information is based on published admissions rules. Other institutions remain visible in the complete country directory."}
+            : anyCountry
+              ? "Only institutions with checked information for this field are listed. Pick a country to see its complete directory."
+              : "Verified program information is based on published admissions rules. Other institutions remain visible in the complete country directory."}
         </p>
       </div>
 
@@ -557,7 +620,7 @@ export function UniversityResults({
             const firstMatch = university.matchingPrograms[0];
             const directoryProgram = mode === "explore" ? verifiedPrograms.find(
               (program) => program.universityHost === getWebsiteHost(university.website) &&
-                program.countryCode === countryCode && program.category === selectedProgram,
+                (anyProgram || program.category === selectedProgram),
             ) : undefined;
             // Catalog names come from an imported list and can be inaccurate
             // ("University of Zilinska"); prefer the name from checked data.
@@ -601,7 +664,7 @@ export function UniversityResults({
                   </span>
 
                   <Image
-                    src={`https://flagcdn.com/w80/${countryCode.toLowerCase()}.png`}
+                    src={`https://flagcdn.com/w80/${university.countryCode.toLowerCase()}.png`}
                     alt=""
                     width={34}
                     height={25}
@@ -631,6 +694,15 @@ export function UniversityResults({
                       <span className={styles.pendingBadge}>
                         Program review pending
                       </span>
+                    )}
+
+                    {topRankByCatalogId.has(university.id) && (
+                      <Link
+                        href={`/explore/top#rank-${topRankByCatalogId.get(university.id)}`}
+                        className={linkStyles.topBadge}
+                      >
+                        Top 100 · #{topRankByCatalogId.get(university.id)}
+                      </Link>
                     )}
 
                     <button
@@ -757,15 +829,19 @@ export function UniversityResults({
                   ) : (
                     <p className={styles.pendingText}>
                       {university.pending === "rules-published"
-                        ? `This faculty has published its ${selectedProgram} admission rules for the next intake. Open the university for a summary; a personalised route is not built yet.`
+                        ? `This faculty has published its ${programLabel} admission rules for the next intake. Open the university for a summary; a personalised route is not built yet.`
                         : university.pending
-                        ? `${selectedProgram} admission rules for the next intake are not out yet. Open the university to see last year's rules, for orientation.`
+                        ? `${selectedProgram ? `${selectedProgram} admission` : 'Admission'} rules for the next intake are not out yet. Open the university to see last year's rules, for orientation.`
                         : mode === "route" && profile
                         ? `We have not yet verified a ${formatDegreeLevel(
                             profile.degreeLevel,
                           ).toLowerCase()} ${selectedProgram} programme here for the ${profile.intake} intake. The institution remains visible in the country directory.`
                         : university.verified
-                        ? `Published ${selectedProgram} program information is available. Build a route to see requirements for your profile.`
+                        ? `Published ${selectedProgram ? `${selectedProgram} ` : ''}program information is available. Build a route to see requirements for your profile.`
+                        : anyProgram
+                        ? "Open the university to see the programmes we have checked there."
+                        : anyCountry
+                        ? `Published ${selectedProgram} entry requirements are listed on the university page (Top 100).`
                         : `We have not yet verified whether this institution offers ${selectedProgram}. It is shown as part of the complete country directory.`}
                     </p>
                   )}

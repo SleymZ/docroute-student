@@ -1190,3 +1190,15 @@
   flex-wrap: wrap;
   gap: 6px;
 }
+
+/* "Any country" row: same footprint as a flag */
+.atlasAnyIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 23px;
+  border-radius: 4px;
+  background: light-dark(rgba(13, 122, 139, 0.1), rgba(118, 220, 237, 0.1));
+  color: light-dark(#0d7a8b, #76dced);
+}
