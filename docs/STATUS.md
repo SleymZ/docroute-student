@@ -729,6 +729,29 @@ latest rules" (owner rule 2026-10-30):
   group/badge for countries with official-rule listings; How it works shows
   each listing's status and the CZ/AT guides.
 
+## Route results and avatar upload (2026-10-31)
+
+- "Continue university matching" (`/route/universities`) now opens on
+  **My options in <country>**: every verified programme for the profile's
+  field, degree and intake that is not "unavailable" (ready, preparation
+  needed, needs clarification), plus every coming-soon listing for the same
+  field, degree and intake. Tabs: **Other countries** (the same across
+  Europe, e.g. Czech verified routes for a Slovakia profile) and **Whole
+  directory**. Coming-soon cards say the profile was not checked against
+  them (their rules are not approved; the matcher never reads them). Logic in
+  `src/lib/route-options.ts`, test `tests/route-options.test.ts`. The old
+  "Current profile options" (steps-remaining only) tab is gone. For an
+  option in another country the profile's destination becomes that country
+  and destination-relative residence (study/temporary/permanent residence,
+  national visa) becomes "other EU/EEA residence" when the old destination is
+  in the EU/EEA, otherwise "not sure" (visa-free stays too), so the route asks
+  (`profileForDestination`), both in matching and in the card's links.
+- Avatar: "Add photo" works before the profile is saved (the typed name is
+  saved first), the round avatar itself opens the picker, drag and drop,
+  instant preview, EXIF orientation respected, JPEG fallback where the
+  browser cannot encode WebP (older Safari); the DB rule already allows
+  `.jpg`.
+
 ## Waitlist for the full route (PR #16)
 
 - "Want the full route?" block (`WaitlistCta`) at the end of every route
@@ -922,7 +945,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (235 tests on 2026-10-31).
+- Unit tests: `npm test` (239 tests on 2026-10-31).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
