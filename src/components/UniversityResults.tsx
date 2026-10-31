@@ -692,7 +692,7 @@ export function UniversityResults({
                       </span>
                     ) : (
                       <span className={styles.pendingBadge}>
-                        Program review pending
+                        {anyCountry ? "Requirements listed" : "Program review pending"}
                       </span>
                     )}
 
