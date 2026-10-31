@@ -218,6 +218,18 @@ export type Database = {
         Args: { p_email: string };
         Returns: undefined;
       };
+      is_story_moderator: {
+        Args: never;
+        Returns: boolean;
+      };
+      moderate_story: {
+        Args: {
+          p_story_id: string;
+          p_status: "pending" | "published" | "hidden";
+          p_reviewed_at: string;
+        };
+        Returns: undefined;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

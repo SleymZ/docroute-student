@@ -4,8 +4,7 @@ import { redirect } from "next/navigation";
 
 import { Header } from "@/components/Header";
 import { PublicProfileEditor } from "@/components/PublicProfileEditor";
-import { StoryCard } from "@/components/StoryCard";
-import { DeleteStoryButton, StoryForm } from "@/components/StoryForm";
+import { OwnStory, StoryForm } from "@/components/StoryForm";
 import styles from "@/components/Stories.module.css";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -74,17 +73,17 @@ export default async function NewStoryPage() {
 
         {ownStories.length > 0 && (
           <>
-            <h2 className={styles.sectionTitle}>Your stories</h2>
+            <h2 className={styles.sectionTitle} id="your-stories">
+              Your stories
+            </h2>
             <p className={styles.notice}>
-              Edited or new stories wait for review before they appear. To
-              change a published story, delete it and send a new one.
+              Only you can see stories that are waiting for review. New and
+              edited stories appear on the Stories page after review; you can
+              edit or delete your stories at any time.
             </p>
             <div className={styles.grid}>
               {ownStories.map((story) => (
-                <div key={story.id} className={styles.form}>
-                  <StoryCard story={story} author={profile} showStatus headingLevel={3} />
-                  <DeleteStoryButton storyId={story.id} />
-                </div>
+                <OwnStory key={story.id} story={story} author={profile} userId={user.id} />
               ))}
             </div>
           </>

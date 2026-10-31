@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Send, Trash2 } from "lucide-react";
+import { Pencil, Send, Trash2 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
+import { StoryCard } from "@/components/StoryCard";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
@@ -13,26 +14,40 @@ import {
   storyPurposeLabels,
   storyPurposes,
   validateStory,
+  type PublicProfile,
+  type SuccessStory,
 } from "@/lib/stories";
 
 import styles from "./Stories.module.css";
 
-export function StoryForm({ userId, storyCount }: { userId: string; storyCount: number }) {
+export function StoryForm({
+  userId,
+  storyCount,
+  story,
+  onDone,
+}: {
+  userId: string;
+  storyCount: number;
+  // when given, the form edits this story instead of creating a new one
+  story?: SuccessStory;
+  onDone?: () => void;
+}) {
   const router = useRouter();
   const currentYear = new Date().getFullYear();
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [purpose, setPurpose] = useState("study");
-  const [fromCountry, setFromCountry] = useState("");
-  const [toCountry, setToCountry] = useState("");
-  const [movedYear, setMovedYear] = useState(String(currentYear));
-  const [university, setUniversity] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const editing = Boolean(story);
+  const [title, setTitle] = useState(story?.title ?? "");
+  const [body, setBody] = useState(story?.body ?? "");
+  const [purpose, setPurpose] = useState<string>(story?.purpose ?? "study");
+  const [fromCountry, setFromCountry] = useState(story?.from_country_code ?? "");
+  const [toCountry, setToCountry] = useState(story?.to_country_code ?? "");
+  const [movedYear, setMovedYear] = useState(String(story?.moved_year ?? currentYear));
+  const [university, setUniversity] = useState(story?.university ?? "");
+  const [agreed, setAgreed] = useState(editing);
   const [errors, setErrors] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
 
-  const limitReached = storyCount >= storyLimits.perAccount;
+  const limitReached = !editing && storyCount >= storyLimits.perAccount;
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -54,16 +69,23 @@ export function StoryForm({ userId, storyCount }: { userId: string; storyCount: 
 
     setBusy(true);
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase
-      .from("success_stories")
-      .insert({ user_id: userId, ...value });
+    const { error } = story
+      ? await supabase.from("success_stories").update(value).eq("id", story.id)
+      : await supabase.from("success_stories").insert({ user_id: userId, ...value });
     setBusy(false);
     if (error) {
       setErrors([
         error.message.includes("limit")
           ? `You can keep at most ${storyLimits.perAccount} stories. Delete one first.`
-          : "The story could not be sent. Try again in a moment.",
+          : editing
+            ? "The changes could not be saved. Try again in a moment."
+            : "The story could not be sent. Try again in a moment.",
       ]);
+      return;
+    }
+    if (editing) {
+      onDone?.();
+      router.refresh();
       return;
     }
     setSent(true);
@@ -106,7 +128,13 @@ export function StoryForm({ userId, storyCount }: { userId: string; storyCount: 
   return (
     <form className={styles.panel} onSubmit={submit} noValidate>
       <div>
-        <h2>Your story</h2>
+        <h2>{editing ? "Edit your story" : "Your story"}</h2>
+        {editing && story?.status === "published" && (
+          <p className={styles.message} data-tone="error">
+            After saving, the story leaves the Stories page until it is
+            reviewed again.
+          </p>
+        )}
         <p className={styles.panelLead}>
           What helped, what surprised you, what you would tell someone starting
           now. Do not include documents, ID numbers, addresses or other
@@ -187,20 +215,22 @@ export function StoryForm({ userId, storyCount }: { userId: string; storyCount: 
         </small>
       </label>
 
-      <label className={styles.consent}>
-        <input
-          type="checkbox"
-          checked={agreed}
-          onChange={(event) => setAgreed(event.target.checked)}
-        />
-        <span>
-          This is my own experience. I agree that DocRoute publishes it
-          publicly with my public name and photo after review, as described in
-          the <Link href="/terms#stories">Terms</Link> and{" "}
-          <Link href="/privacy#stories">Privacy Policy</Link>. I can delete it
-          at any time.
-        </span>
-      </label>
+      {!editing && (
+        <label className={styles.consent}>
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(event) => setAgreed(event.target.checked)}
+          />
+          <span>
+            This is my own experience. I agree that DocRoute publishes it
+            publicly with my public name and photo after review, as described in
+            the <Link href="/terms#stories">Terms</Link> and{" "}
+            <Link href="/privacy#stories">Privacy Policy</Link>. I can delete it
+            at any time.
+          </span>
+        </label>
+      )}
 
       {errors.length > 0 && (
         <ul className={styles.errors} role="alert">
@@ -213,8 +243,13 @@ export function StoryForm({ userId, storyCount }: { userId: string; storyCount: 
       <div className={styles.actions}>
         <button type="submit" className={styles.primary} disabled={busy}>
           <Send size={16} aria-hidden="true" />
-          {busy ? "Sending…" : "Send for review"}
+          {busy ? "Sending…" : editing ? "Save and send for review" : "Send for review"}
         </button>
+        {editing && (
+          <button type="button" className={styles.secondary} onClick={onDone} disabled={busy}>
+            Cancel
+          </button>
+        )}
       </div>
     </form>
   );
@@ -261,6 +296,46 @@ export function DeleteStoryButton({ storyId }: { storyId: string }) {
           Deleting failed. Try again.
         </p>
       )}
+    </div>
+  );
+}
+
+// One of the author's own stories: the card with its status, plus edit and
+// delete. Editing sends the story back to review.
+export function OwnStory({
+  story,
+  author,
+  userId,
+}: {
+  story: SuccessStory;
+  author: PublicProfile | null;
+  userId: string;
+}) {
+  const [editing, setEditing] = useState(false);
+
+  if (editing) {
+    return (
+      <div className={`${styles.form} ${styles.wide}`}>
+        <StoryForm
+          userId={userId}
+          storyCount={0}
+          story={story}
+          onDone={() => setEditing(false)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.form}>
+      <StoryCard story={story} author={author} showStatus headingLevel={3} />
+      <div className={styles.actions}>
+        <button type="button" className={styles.secondary} onClick={() => setEditing(true)}>
+          <Pencil size={15} aria-hidden="true" />
+          Edit story
+        </button>
+        <DeleteStoryButton storyId={story.id} />
+      </div>
     </div>
   );
 }

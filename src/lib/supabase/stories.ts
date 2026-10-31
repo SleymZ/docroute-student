@@ -6,7 +6,7 @@ import type { Database } from "@/types/database";
 type Client = SupabaseClient<Database>;
 
 const storyColumns =
-  "id, user_id, title, body, purpose, from_country_code, to_country_code, moved_year, university, status, created_at, published_at";
+  "id, user_id, title, body, purpose, from_country_code, to_country_code, moved_year, university, status, created_at, updated_at, published_at";
 
 export async function loadPublishedStories(
   supabase: Client,
@@ -36,6 +36,42 @@ export async function loadOwnStories(supabase: Client, userId: string) {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as SuccessStory[];
+}
+
+// Every story in one status, newest first. Only moderators get rows for
+// other people's pending or hidden stories (RLS).
+export const reviewPageSize = 30;
+
+export async function loadStoriesForReview(
+  supabase: Client,
+  status: SuccessStory["status"],
+  page = 1,
+) {
+  const from = (page - 1) * reviewPageSize;
+  const { data, error, count } = await supabase
+    .from("success_stories")
+    .select(storyColumns, { count: "exact" })
+    .eq("status", status)
+    .order(status === "published" ? "published_at" : "created_at", { ascending: false })
+    .order("id")
+    .range(from, from + reviewPageSize - 1);
+  if (error) throw error;
+  return { stories: (data ?? []) as SuccessStory[], total: count ?? 0 };
+}
+
+export async function countPendingStories(supabase: Client) {
+  const { count, error } = await supabase
+    .from("success_stories")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export async function isStoryModerator(supabase: Client) {
+  const { data, error } = await supabase.rpc("is_story_moderator");
+  if (error) return false;
+  return data === true;
 }
 
 export async function loadPublicProfiles(supabase: Client, userIds: string[]) {
