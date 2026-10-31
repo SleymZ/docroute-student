@@ -86,8 +86,8 @@ export function TopUniversityFacts({
   );
 }
 
-// Entry requirements by field, as each course page states them. Reference
-// only: typical offers, not a guarantee and not a verified route.
+// Entry requirements by field, as each programme page states them. Reference
+// only: not a guarantee and not a verified route.
 function TopFieldRequirementsList({ fields }: { fields: TopFieldRequirements }) {
   const rows = fieldLabels.filter(({ key }) => fields[key]);
   if (rows.length === 0) return null;
@@ -101,9 +101,10 @@ function TopFieldRequirementsList({ fields }: { fields: TopFieldRequirements }) 
     <section className={styles.fieldBlock} aria-label="Entry requirements by field">
       <h3 className={styles.fieldTitle}>Entry requirements by field</h3>
       <p className={styles.fieldLead}>
-        As published on each course page (typical offers, checked{" "}
-        {formatPlanDate(checked)}). Grades are not converted between school
-        systems; the university decides how it reads yours.
+        As published on each programme page (checked{" "}
+        {formatPlanDate(checked)}; UK grades are typical offers). Grades are
+        not converted between school systems; the university decides how it
+        reads yours.
       </p>
       <dl className={styles.facts}>
         {rows.map(({ key, label }) => {
