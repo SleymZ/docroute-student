@@ -6,7 +6,7 @@ import type { TopComputerScience } from "@/types/top-universities";
 
 export const topComputerScience: Record<number, TopComputerScience> = {
   1: {"checkedAt": "2026-10-31", "name": "Computer Science BSc", "url": "https://www.ucl.ac.uk/study/prospective-students/undergraduate/courses/computer-science-bsc", "language": "English"},
-  2: {"checkedAt": "2026-10-28", "name": "Computer Science (BA)", "url": "https://www.ox.ac.uk/admissions/undergraduate/courses/course-listing/computer-science", "language": "English"},
+  2: {"checkedAt": "2026-10-31", "name": "Computer Science (BA)", "url": "https://www.ox.ac.uk/admissions/undergraduate/courses/course-listing/computer-science", "language": "English"},
   3: {"checkedAt": "2026-10-31", "name": "Computer Science (BA Hons and MEng)", "url": "https://www.undergraduate.study.cam.ac.uk/courses/computer-science-ba-hons-meng", "language": "English"},
   4: {"checkedAt": "2026-10-31", "name": "Computing BEng", "url": "https://www.imperial.ac.uk/study/courses/undergraduate/computing-beng/", "language": "English"},
   5: {"checkedAt": "2026-10-28", "name": "Bachelor i datalogi", "url": "https://www.ku.dk/studier/bachelor/datalogi", "language": "Danish", "note": "Some courses may be taught in English."},
