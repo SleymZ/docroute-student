@@ -495,3 +495,24 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.fieldBlock {
+  display: grid;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid light-dark(rgba(66, 105, 121, 0.2), rgba(136, 188, 211, 0.18));
+}
+
+.fieldTitle {
+  margin: 0;
+  color: light-dark(#22211d, #f2f1ec);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.fieldLead {
+  margin: 0;
+  color: light-dark(#5b6f78, #93aab6);
+  font-size: 12.5px;
+  line-height: 1.5;
+}

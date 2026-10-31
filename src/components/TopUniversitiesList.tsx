@@ -4,9 +4,13 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, Search, X } from "lucide-react";
 
-import { formatPlanDate } from "@/lib/residence/deadlines";
+import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniversityFacts";
 import type { resolveTopAdmissions } from "@/lib/top-universities";
-import type { TopComputerScience, TopUniversity } from "@/types/top-universities";
+import type {
+  TopComputerScience,
+  TopFieldRequirements,
+  TopUniversity,
+} from "@/types/top-universities";
 
 import styles from "@/app/explore/top/TopUniversities.module.css";
 
@@ -14,6 +18,7 @@ type Entry = {
   university: TopUniversity;
   admissions: ReturnType<typeof resolveTopAdmissions>;
   computerScience?: TopComputerScience;
+  fields?: TopFieldRequirements;
 };
 
 // Formatted by hand so the server and the browser always print the same.
@@ -112,7 +117,7 @@ export function TopUniversitiesList({
         <p className={styles.empty}>No university matches this search.</p>
       ) : (
         <ol className={styles.list}>
-          {visible.map(({ university, admissions, computerScience }) => (
+          {visible.map(({ university, admissions, computerScience, fields }) => (
             <li key={university.rank} id={`rank-${university.rank}`} className={styles.item}>
               <details className={styles.card}>
                 <summary className={styles.summary}>
@@ -129,57 +134,11 @@ export function TopUniversitiesList({
                 </summary>
 
                 <div className={styles.body}>
-                  {admissions.intake && (
-                    <p className={styles.intake}>
-                      Source describes: {admissions.intake}
-                    </p>
-                  )}
-
-                  <dl className={styles.facts}>
-                    {computerScience && (
-                      <div>
-                        <dt>
-                          Computer science bachelor
-                          {computerScience.language && (
-                            <span className={styles.scope}>{computerScience.language}</span>
-                          )}
-                        </dt>
-                        <dd>
-                          {computerScience.url ? (
-                            <a href={computerScience.url} target="_blank" rel="noreferrer">
-                              {computerScience.name}
-                              <ExternalLink size={12} aria-hidden="true" />
-                            </a>
-                          ) : (
-                            "None found"
-                          )}
-                          {computerScience.note && <> · {computerScience.note}</>}
-                          {computerScience.url && !computerScience.language && (
-                            <> · The checked page does not state the teaching language; see the country rule below.</>
-                          )}
-                        </dd>
-                      </div>
-                    )}
-                    {admissions.fields.map((item) => (
-                      <div key={item.field}>
-                        <dt>
-                          {item.label}
-                          {item.scope === "country" && (
-                            <span className={styles.scope}>Country rule</span>
-                          )}
-                        </dt>
-                        <dd>{item.text}</dd>
-                      </div>
-                    ))}
-                  </dl>
-
-                  {admissions.missing.length > 0 && (
-                    <p className={styles.missing}>
-                      Not checked yet: {admissions.missing.join(", ").toLowerCase()}.
-                      See the university&apos;s own pages.
-                    </p>
-                  )}
-                  {admissions.notes && <p className={styles.note}>{admissions.notes}</p>}
+                  <TopUniversityFacts
+                    admissions={admissions}
+                    computerScience={computerScience}
+                    fields={fields}
+                  />
 
                   <div className={styles.links}>
                     <a href={university.website} target="_blank" rel="noreferrer">
@@ -193,16 +152,7 @@ export function TopUniversitiesList({
                     )}
                   </div>
 
-                  <ul className={styles.sources}>
-                    {admissions.sources.map((source) => (
-                      <li key={source.url}>
-                        <a href={source.url} target="_blank" rel="noreferrer">
-                          {source.title}
-                        </a>
-                        <span> · checked {formatPlanDate(source.checkedAt)}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <TopUniversitySources sources={admissions.sources} />
                 </div>
               </details>
             </li>

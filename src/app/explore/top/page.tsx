@@ -11,6 +11,7 @@ import {
 } from "@/data/top-universities";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { topComputerScience } from "@/data/top-computer-science";
+import { topFieldRequirements } from "@/data/top-field-requirements";
 import { resolveTopAdmissions } from "@/lib/top-universities";
 
 import styles from "./TopUniversities.module.css";
@@ -27,6 +28,7 @@ export default function TopUniversitiesPage() {
     university,
     admissions: resolveTopAdmissions(university),
     computerScience: topComputerScience[university.rank],
+    fields: topFieldRequirements[university.rank],
   }));
   const countries = [...new Set(topUniversities.map((item) => item.country))]
     .sort((a, b) => a.localeCompare(b, "en"));

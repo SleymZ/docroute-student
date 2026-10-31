@@ -335,3 +335,18 @@
     animation: none;
   }
 }
+
+/* Top 100 rank badge on result cards */
+.topBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 8px;
+  padding: 4px 9px;
+  border: 1px solid light-dark(rgba(10, 112, 125, 0.3), rgba(118, 220, 237, 0.3));
+  border-radius: 999px;
+  color: light-dark(#0a707d, #76dced);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
