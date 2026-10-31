@@ -298,6 +298,27 @@ latest rules" (owner rule 2026-10-30):
   Lund, Paris-Saclay, Paris Cité, Aarhus, Aalborg, Pisa, Turin, Bari (the
   Italian pages still describe 2026/27). Geneva blocked the tool; Basel's
   deadline page text was not readable.
+- Fourth pass 2026-10-31 (60 universities): every Top 100 entry whose
+  sources were all from 2026-10-27 was reopened on official pages; 91 of
+  100 now carry a source checked on 2026-10-30 or later. Changes worth
+  knowing: Göttingen restricted programmes for non-EU applicants close on
+  30 April (1 March–30 April, €65 fee), not 15 July; Lisbon now has a
+  central 2027/28 call (phases 4 Jan–5 Feb, 5 Apr–21 May 2027; fees by
+  programme €1,500–11,000); Freiburg publishes winter 2027/28 dates; Oslo
+  Technology Systems closes 1 December; Sorbonne Sciences DAP 1 Oct 2026–15
+  Jan 2027 with French B2; Leiden, Maastricht (CS 2027/28), UvA, Radboud,
+  VU: non-EU deadline 1 April (Wageningen: Studielink 15 April);
+  Frankfurt, HU Berlin, Tübingen, Geneva and Basel read in the built-in
+  browser (Frankfurt 1 June–15 July / 30 Sept; HU 1 June–15 July via
+  uni-assist, German C1 to apply). UK: 2027-entry computer science pages
+  (IELTS, fees, admissions tests: UCL TARA, Imperial and Cambridge TMUA)
+  added as notes and the CS links rechecked. Not rechecked in this pass:
+  Oxford (CS page served a 2023 version), TUM (no WS 2027/28 bachelor
+  dates yet), Bologna, Milan, PoliTo (only 2026/27 calls), Barcelona
+  (found page covers finished degrees only), Cardiff (stale course page),
+  AUTh (robots), Charles (rechecked 2026-10-30, sources not re-dated).
+  Federico II's international site stays unreadable (also in the browser);
+  its enrolment page is used instead.
 - Known gaps: Federico II (Naples) and KU Leuven pages could not be read
   by the tools; Spanish universities mostly show the national procedure;
   Italian, Austrian and Portuguese deadlines are from the 2026/27 cycle.
