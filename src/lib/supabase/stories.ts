@@ -6,7 +6,7 @@ import type { Database } from "@/types/database";
 type Client = SupabaseClient<Database>;
 
 const storyColumns =
-  "id, user_id, title, body, purpose, from_country_code, to_country_code, moved_year, university, status, created_at, published_at";
+  "id, user_id, title, body, purpose, from_country_code, to_country_code, moved_year, university, status, created_at, updated_at, published_at";
 
 export async function loadPublishedStories(
   supabase: Client,
@@ -40,15 +40,23 @@ export async function loadOwnStories(supabase: Client, userId: string) {
 
 // Every story in one status, newest first. Only moderators get rows for
 // other people's pending or hidden stories (RLS).
-export async function loadStoriesForReview(supabase: Client, status: SuccessStory["status"]) {
-  const { data, error } = await supabase
+export const reviewPageSize = 30;
+
+export async function loadStoriesForReview(
+  supabase: Client,
+  status: SuccessStory["status"],
+  page = 1,
+) {
+  const from = (page - 1) * reviewPageSize;
+  const { data, error, count } = await supabase
     .from("success_stories")
-    .select(storyColumns)
+    .select(storyColumns, { count: "exact" })
     .eq("status", status)
     .order(status === "published" ? "published_at" : "created_at", { ascending: false })
-    .limit(100);
+    .order("id")
+    .range(from, from + reviewPageSize - 1);
   if (error) throw error;
-  return (data ?? []) as SuccessStory[];
+  return { stories: (data ?? []) as SuccessStory[], total: count ?? 0 };
 }
 
 export async function countPendingStories(supabase: Client) {

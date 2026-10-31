@@ -47,6 +47,7 @@ export type SuccessStory = {
   university: string | null;
   status: StoryStatus;
   created_at: string;
+  updated_at: string;
   published_at: string | null;
 };
 

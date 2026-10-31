@@ -13,6 +13,7 @@ import {
   isStoryModerator,
   loadPublicProfiles,
   loadStoriesForReview,
+  reviewPageSize,
 } from "@/lib/supabase/stories";
 
 export const dynamic = "force-dynamic";
@@ -48,18 +49,30 @@ export default async function ReviewStoriesPage({
   const raw = await searchParams;
   const param = Array.isArray(raw.status) ? raw.status[0] : raw.status;
   const status = tabs.find((tab) => tab.status === param)?.status ?? "pending";
+  const pageParam = Number(Array.isArray(raw.page) ? raw.page[0] : raw.page);
+  const page = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1;
 
   let stories: SuccessStory[] = [];
+  let total = 0;
   let authors = new Map<string, PublicProfile>();
   let failed = false;
   try {
-    stories = await loadStoriesForReview(supabase, status);
+    ({ stories, total } = await loadStoriesForReview(supabase, status, page));
     authors = await loadPublicProfiles(
       supabase,
       stories.map((story) => story.user_id),
     );
   } catch {
     failed = true;
+  }
+
+  const pages = Math.max(1, Math.ceil(total / reviewPageSize));
+  function pageHref(next: number) {
+    const params = new URLSearchParams();
+    if (status !== "pending") params.set("status", status);
+    if (next > 1) params.set("page", String(next));
+    const query = params.toString();
+    return query ? `/stories/review?${query}` : "/stories/review";
   }
 
   return (
@@ -130,10 +143,32 @@ export default async function ReviewStoriesPage({
                   })}
                   {story.user_id === user.id ? " · your own story" : ""}
                 </p>
-                <StoryModerationActions storyId={story.id} status={story.status} />
+                <StoryModerationActions
+                  storyId={story.id}
+                  status={story.status}
+                  reviewedAt={story.updated_at}
+                />
               </div>
             ))}
           </div>
+        )}
+
+        {pages > 1 && (
+          <nav className={styles.filters} aria-label="Pages" style={{ marginTop: 22 }}>
+            {page > 1 && (
+              <Link href={pageHref(page - 1)} className={styles.chip}>
+                ← Newer
+              </Link>
+            )}
+            <span className={styles.chip}>
+              Page {page} of {pages} · {total} stories
+            </span>
+            {page < pages && (
+              <Link href={pageHref(page + 1)} className={styles.chip}>
+                Older →
+              </Link>
+            )}
+          </nav>
         )}
       </div>
     </main>

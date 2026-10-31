@@ -13,25 +13,29 @@ import styles from "./Stories.module.css";
 export function StoryModerationActions({
   storyId,
   status,
+  reviewedAt,
 }: {
   storyId: string;
   status: StoryStatus;
+  // updated_at of the version on screen; publishing fails if it changed
+  reviewedAt: string;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<"" | "error" | "changed">("");
 
   async function setStatus(next: StoryStatus) {
     setBusy(true);
-    setFailed(false);
+    setFailed("");
     const { error } = await createSupabaseBrowserClient().rpc("moderate_story", {
       p_story_id: storyId,
       p_status: next,
+      p_reviewed_at: reviewedAt,
     });
     setBusy(false);
     if (error) {
-      setFailed(true);
+      setFailed(error.message.includes("changed") ? "changed" : "error");
       return;
     }
     router.refresh();
@@ -39,14 +43,14 @@ export function StoryModerationActions({
 
   async function remove() {
     setBusy(true);
-    setFailed(false);
+    setFailed("");
     const { error } = await createSupabaseBrowserClient()
       .from("success_stories")
       .delete()
       .eq("id", storyId);
     setBusy(false);
     if (error) {
-      setFailed(true);
+      setFailed("error");
       return;
     }
     router.refresh();
@@ -115,7 +119,9 @@ export function StoryModerationActions({
       )}
       {failed && (
         <p className={styles.message} data-tone="error">
-          That did not work. Reload the page and try again.
+          {failed === "changed"
+            ? "The author changed this story after you opened the page. Reload and read the new version."
+            : "That did not work. Reload the page and try again."}
         </p>
       )}
     </div>

@@ -49,8 +49,15 @@ create policy "Moderators delete stories"
   using ((select public.is_story_moderator()));
 
 -- Publishing or hiding runs as the function owner, so the moderation trigger
--- does not reset the status to "pending".
-create or replace function public.moderate_story(p_story_id uuid, p_status text)
+-- does not reset the status to "pending". p_reviewed_at is the updated_at the
+-- moderator saw: if the author edited the story since, nothing changes and
+-- the moderator has to read the new version first.
+drop function if exists public.moderate_story(uuid, text);
+create or replace function public.moderate_story(
+  p_story_id uuid,
+  p_status text,
+  p_reviewed_at timestamptz
+)
 returns void
 language plpgsql
 security definer
@@ -67,16 +74,20 @@ begin
   update public.success_stories
   set status = p_status,
       published_at = case when p_status = 'published' then coalesce(published_at, now()) end
-  where id = p_story_id;
+  where id = p_story_id
+    and updated_at = p_reviewed_at;
 
   if not found then
+    if exists (select 1 from public.success_stories s where s.id = p_story_id) then
+      raise exception 'Story changed since it was loaded' using errcode = '40001';
+    end if;
     raise exception 'Story not found' using errcode = 'P0002';
   end if;
 end;
 $$;
 
-revoke all on function public.moderate_story(uuid, text) from public;
-revoke all on function public.moderate_story(uuid, text) from anon;
-grant execute on function public.moderate_story(uuid, text) to authenticated;
+revoke all on function public.moderate_story(uuid, text, timestamptz) from public;
+revoke all on function public.moderate_story(uuid, text, timestamptz) from anon;
+grant execute on function public.moderate_story(uuid, text, timestamptz) to authenticated;
 
 notify pgrst, 'reload schema';

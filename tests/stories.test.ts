@@ -127,7 +127,8 @@ const moderatorSql = read("supabase/migrations/20261031120000_story_moderators.s
 test("only moderators can publish, and no email is stored in the repository", () => {
   assert.match(moderatorSql, /create policy "Moderators see all stories"/);
   assert.match(moderatorSql, /if not public\.is_story_moderator\(\) then/);
+  assert.match(moderatorSql, /and updated_at = p_reviewed_at/);
   assert.match(moderatorSql, /revoke all on table public\.story_moderators from public, anon, authenticated/);
-  assert.match(moderatorSql, /revoke all on function public\.moderate_story\(uuid, text\) from anon/);
+  assert.match(moderatorSql, /revoke all on function public\.moderate_story\(uuid, text, timestamptz\) from anon/);
   assert.doesNotMatch(moderatorSql, /@[a-z0-9-]+\.[a-z]{2,}/i);
 });

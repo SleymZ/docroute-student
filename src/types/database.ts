@@ -223,7 +223,11 @@ export type Database = {
         Returns: boolean;
       };
       moderate_story: {
-        Args: { p_story_id: string; p_status: "pending" | "published" | "hidden" };
+        Args: {
+          p_story_id: string;
+          p_status: "pending" | "published" | "hidden";
+          p_reviewed_at: string;
+        };
         Returns: undefined;
       };
     };
