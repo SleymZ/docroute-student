@@ -6,7 +6,11 @@ import { ExternalLink, Search, X } from "lucide-react";
 
 import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniversityFacts";
 import type { resolveTopAdmissions } from "@/lib/top-universities";
-import type { TopComputerScience, TopUniversity } from "@/types/top-universities";
+import type {
+  TopComputerScience,
+  TopFieldRequirements,
+  TopUniversity,
+} from "@/types/top-universities";
 
 import styles from "@/app/explore/top/TopUniversities.module.css";
 
@@ -14,6 +18,7 @@ type Entry = {
   university: TopUniversity;
   admissions: ReturnType<typeof resolveTopAdmissions>;
   computerScience?: TopComputerScience;
+  fields?: TopFieldRequirements;
 };
 
 // Formatted by hand so the server and the browser always print the same.
@@ -112,7 +117,7 @@ export function TopUniversitiesList({
         <p className={styles.empty}>No university matches this search.</p>
       ) : (
         <ol className={styles.list}>
-          {visible.map(({ university, admissions, computerScience }) => (
+          {visible.map(({ university, admissions, computerScience, fields }) => (
             <li key={university.rank} id={`rank-${university.rank}`} className={styles.item}>
               <details className={styles.card}>
                 <summary className={styles.summary}>
@@ -132,6 +137,7 @@ export function TopUniversitiesList({
                   <TopUniversityFacts
                     admissions={admissions}
                     computerScience={computerScience}
+                    fields={fields}
                   />
 
                   <div className={styles.links}>

@@ -273,6 +273,18 @@ latest rules" (owner rule 2026-10-30):
   `src/components/TopUniversityFacts.tsx`). Without a verified route the
   data status reads "Reference facts" with the latest check date; the empty
   01/02/03 placeholders are hidden. Still reference only, never a match.
+- Entry requirements by field (`src/data/top-field-requirements.ts`,
+  types `TopFieldKey`/`TopFieldRequirement`, test
+  `tests/top-field-requirements.test.ts`): computer science, mathematics,
+  medicine, law, economics, quoted as each course page publishes them
+  (A-levels, IB, admissions tests, sometimes fee); grades are never
+  converted between systems. First batch 2026-10-31: all 20 UK
+  universities, 96 entries (Glasgow: only CS and medicine readable; QMUL:
+  no 2027 medicine page; Imperial has no law; Warwick medicine is
+  graduate-entry only). Shown in the Top 100 card and on the university
+  page under "Entry requirements by field". Next: other countries, where
+  requirements look different (NL maths B, DE HZB/NC, IT tests, FR
+  dossier, ES admission grade).
 - 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
   PSL do not (the catalog has only predecessor institutions).
 - Recheck 2026-10-30 (11 universities): new or updated facts for KU Leuven
@@ -306,8 +318,8 @@ latest rules" (owner rule 2026-10-30):
   deadline page text was not readable.
 - Fourth pass 2026-10-31 (60 universities): every Top 100 entry whose
   sources were all from 2026-10-27 was reopened on official pages; 91 of
-  100 now carry a source checked on 2026-10-30 or later (92 with Oxford,
-  added the same day). Changes worth
+  100 now carry a source checked on 2026-10-30 or later (93 with Oxford
+  and Cardiff, added the same day). Changes worth
   knowing: Göttingen restricted programmes for non-EU applicants close on
   30 April (1 March–30 April, €65 fee), not 15 July; Lisbon now has a
   central 2027/28 call (phases 4 Jan–5 Feb, 5 Apr–21 May 2027; fees by
@@ -324,7 +336,7 @@ latest rules" (owner rule 2026-10-30):
   entry: TMUA, A*AA, £66,580 overseas, IELTS now 7.5 (7.0 each; old English
   page is a 404). Not rechecked in this pass: TUM (no WS 2027/28 bachelor
   dates yet), Bologna, Milan, PoliTo (only 2026/27 calls), Barcelona
-  (found page covers finished degrees only), Cardiff (stale course page),
+  (found page covers finished degrees only),
   AUTh (robots), Charles (rechecked 2026-10-30, sources not re-dated).
   Federico II's international site stays unreadable (also in the browser);
   its enrolment page is used instead.

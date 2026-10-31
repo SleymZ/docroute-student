@@ -33,6 +33,7 @@ import {
 import catalog from "@/data/universities.json";
 import { topRankingSource, topUniversities } from "@/data/top-universities";
 import { topComputerScience } from "@/data/top-computer-science";
+import { topFieldRequirements } from "@/data/top-field-requirements";
 import { resolveTopAdmissions } from "@/lib/top-universities";
 import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniversityFacts";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
@@ -492,6 +493,7 @@ export default async function UniversityPage({
               <TopUniversityFacts
                 admissions={topAdmissions}
                 computerScience={topCs}
+                fields={topFieldRequirements[topEntry.rank]}
               />
               <TopUniversitySources sources={topAdmissions.sources} />
               <Link href={`/explore/top#rank-${topEntry.rank}`} className={styles.topLink}>

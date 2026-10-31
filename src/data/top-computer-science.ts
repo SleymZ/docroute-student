@@ -79,7 +79,7 @@ export const topComputerScience: Record<number, TopComputerScience> = {
   72: {"checkedAt": "2026-10-28", "name": "Informatik (Bachelor)", "url": "https://www.informatik.hu-berlin.de/de/studium/interesse/monobachelor-informatik/informatik-bachelor"},
   73: {"checkedAt": "2026-10-28", "name": "Informatik (B.Sc.)", "url": "https://www.osa.uni-freiburg.de/informatik/studienfach/kurzprofil-informatik-bsc/"},
   74: {"checkedAt": "2026-10-28", "note": "DocRoute found no computer science bachelor at the University of Lausanne (computing in Lausanne is taught at EPFL)."},
-  75: {"checkedAt": "2026-10-28", "name": "Computer Science (BSc)", "url": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/computer-science-bsc", "language": "English"},
+  75: {"checkedAt": "2026-10-31", "name": "Computer Science (BSc)", "url": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/computer-science-bsc", "language": "English"},
   76: {"checkedAt": "2026-10-28", "name": "Informatics (Informatik) B.Sc.", "url": "https://www.sle.kit.edu/english/vorstudium/bachelor-informatics.php"},
   77: {"checkedAt": "2026-10-28", "name": "Bachelor Informatik", "url": "https://tu-dresden.de/ing/informatik/studium/studienangebot/bachelor-studiengaenge/bachelor-informatik/index?set_language=de"},
   78: {"checkedAt": "2026-10-28", "name": "Angewandte Informatik (B.Sc.)", "url": "https://www.uni-goettingen.de/de/640717.html"},
