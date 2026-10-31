@@ -267,6 +267,12 @@ latest rules" (owner rule 2026-10-30):
   English, UK/IE by default), and notes; 5 have none (Karolinska, Erasmus,
   Lausanne, Medical University of Vienna, Lund in English). Filter
   "Computer science in English" on the page. Not verified routes.
+- University page (`/universities/[id]`): a Top 100 university shows a
+  "Europe's top 100" block with its rank, top-10% paper count and the same
+  facts and sources as its card (shared component
+  `src/components/TopUniversityFacts.tsx`). Without a verified route the
+  data status reads "Reference facts" with the latest check date; the empty
+  01/02/03 placeholders are hidden. Still reference only, never a match.
 - 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
   PSL do not (the catalog has only predecessor institutions).
 - Recheck 2026-10-30 (11 universities): new or updated facts for KU Leuven
@@ -300,7 +306,8 @@ latest rules" (owner rule 2026-10-30):
   deadline page text was not readable.
 - Fourth pass 2026-10-31 (60 universities): every Top 100 entry whose
   sources were all from 2026-10-27 was reopened on official pages; 91 of
-  100 now carry a source checked on 2026-10-30 or later. Changes worth
+  100 now carry a source checked on 2026-10-30 or later (92 with Oxford,
+  added the same day). Changes worth
   knowing: Göttingen restricted programmes for non-EU applicants close on
   30 April (1 March–30 April, €65 fee), not 15 July; Lisbon now has a
   central 2027/28 call (phases 4 Jan–5 Feb, 5 Apr–21 May 2027; fees by
@@ -312,8 +319,10 @@ latest rules" (owner rule 2026-10-30):
   browser (Frankfurt 1 June–15 July / 30 Sept; HU 1 June–15 July via
   uni-assist, German C1 to apply). UK: 2027-entry computer science pages
   (IELTS, fees, admissions tests: UCL TARA, Imperial and Cambridge TMUA)
-  added as notes and the CS links rechecked. Not rechecked in this pass:
-  Oxford (CS page served a 2023 version), TUM (no WS 2027/28 bachelor
+  added as notes and the CS links rechecked. Oxford: the fetch tool served
+  a cached 2023 course page, but the live page (built-in browser) shows 2027
+  entry: TMUA, A*AA, £66,580 overseas, IELTS now 7.5 (7.0 each; old English
+  page is a 404). Not rechecked in this pass: TUM (no WS 2027/28 bachelor
   dates yet), Bologna, Milan, PoliTo (only 2026/27 calls), Barcelona
   (found page covers finished degrees only), Cardiff (stale course page),
   AUTh (robots), Charles (rechecked 2026-10-30, sources not re-dated).
