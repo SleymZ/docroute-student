@@ -862,9 +862,11 @@ export default async function UniversityPage({
                     </h3>
                     {pendingGroups.length === 0 && topRequirements ? (
                       <p>
-                        Read on the university&apos;s own pages for bachelor&apos;s
-                        applicants with a foreign school certificate (checked{" "}
-                        {formatDate(topRequirementsCheckedAt!)}). This is reference
+                        Read on the university&apos;s own pages for non-EU
+                        bachelor&apos;s applicants with a school certificate from
+                        abroad (checked {formatDate(topRequirementsCheckedAt!)}).
+                        With a school certificate from an EU/EEA country, a
+                        different procedure may apply. This is reference
                         information, not a verified route: DocRoute does not check
                         your profile against it. Confirm details on the programme
                         page before you apply.
