@@ -706,6 +706,11 @@ export function UniversityResults({
               )?.universityName ??
               university.name;
             const universityParams = new URLSearchParams(resultsParams);
+            // An option in another country is matched with that country as
+            // the destination; the linked profile must say so too.
+            if (mode === "route" && university.countryCode !== countryCode) {
+              universityParams.set("country", university.countryCode);
+            }
 
             if (firstMatch) {
               universityParams.set("programId", firstMatch.program.id);
@@ -825,7 +830,7 @@ export function UniversityResults({
                       {university.matchingPrograms.map(
                         (match) => {
                           const programParams = new URLSearchParams(
-                            resultsParams.toString(),
+                            universityParams.toString(),
                           );
                           programParams.set(
                             "programId",
