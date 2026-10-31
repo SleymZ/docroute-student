@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-10-30. Keep this file factual: describe what exists and
+Last updated: 2026-10-31. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -282,9 +282,31 @@ latest rules" (owner rule 2026-10-30):
   universities, 96 entries (Glasgow: only CS and medicine readable; QMUL:
   no 2027 medicine page; Imperial has no law; Warwick medicine is
   graduate-entry only). Shown in the Top 100 card and on the university
-  page under "Entry requirements by field". Next: other countries, where
-  requirements look different (NL maths B, DE HZB/NC, IT tests, FR
-  dossier, ES admission grade).
+  page under "Entry requirements by field". Second batch 2026-10-31: all
+  17 German Top 100 universities (the list has 17, not 19), 85 entries:
+  teaching language, admission type (open / local NC / DoSV / nationwide),
+  non-EU quotas and tests where the programme page states them (Freiburg
+  5% medicine and 8% law quotas, Cologne TestAS module and percentile,
+  RWTH and Frankfurt medicine TestAS, Münster medicine DSH 3). Notes for
+  missing degrees: no law at TUM, RWTH, KIT, TU Dresden; no medicine at KIT;
+  FU/HU medicine is Charité; TUM medicine is clinical part only (pre-clinical
+  at LMU); no economics bachelor at RWTH (TUM and KIT list a business /
+  digital-economics bachelor instead). Next: NL maths B, IT tests, FR
+  dossier, ES admission grade.
+- University-wide "Admission requirements" (`src/data/top-admission-requirements.ts`,
+  type `TopAdmissionRequirements`, 2026-10-31): for all 37 UK and German
+  Top 100 universities the university page's "Admission requirements" panel
+  now shows three cards (application documents, entrance requirements,
+  after admission) with sources, instead of "We are reviewing the official
+  requirements". UK: UCAS steps, deadlines, CAS/ATAS/deposit rules; Germany:
+  portal or uni-assist/VPD, certified copies and translations, enrolment
+  (health insurance, semester fee). Reference only, never a match. TUM and
+  KIT (which also have coming-soon listings) show it under "University-wide
+  application steps". Not found: Edinburgh and Cardiff CAS pages (not
+  opened), Manchester's page still shows the 2026 equal-consideration date.
+  Also corrected: TU Dresden non-EU deadline 1 April–15 July (programme
+  pages; the older leaflet said 31 May); LMU moves to uni-assist VPD and a
+  new portal from summer semester 2027.
 - Explore filters (2026-10-31): country and field are each optional ("Any
   country" / "Any field"). One country with any field shows its whole
   directory (verified/coming soon in any field first); one field across
@@ -900,7 +922,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (231 tests on 2026-10-30).
+- Unit tests: `npm test` (235 tests on 2026-10-31).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

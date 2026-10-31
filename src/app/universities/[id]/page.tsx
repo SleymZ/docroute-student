@@ -34,6 +34,7 @@ import catalog from "@/data/universities.json";
 import { topRankingSource, topUniversities } from "@/data/top-universities";
 import { topComputerScience } from "@/data/top-computer-science";
 import { topFieldRequirements } from "@/data/top-field-requirements";
+import { topAdmissionRequirements } from "@/data/top-admission-requirements";
 import { resolveTopAdmissions } from "@/lib/top-universities";
 import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniversityFacts";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
@@ -154,6 +155,15 @@ export default async function UniversityPage({
   // /explore/top. They are not a verified route and never produce a match.
   const topAdmissions = topEntry ? resolveTopAdmissions(topEntry) : null;
   const topCs = topEntry ? topComputerScience[topEntry.rank] : undefined;
+  // University-wide admission requirements (reference only), shown in the
+  // "Admission requirements" panel when there is no verified route.
+  const topRequirements = topEntry ? topAdmissionRequirements[topEntry.rank] : undefined;
+  const topRequirementsCheckedAt = topRequirements
+    ? topRequirements.sources.reduce(
+        (latest, source) => (source.checkedAt > latest ? source.checkedAt : latest),
+        "",
+      )
+    : null;
   const topCheckedAt = topAdmissions
     ? topAdmissions.sources.reduce(
         (latest, source) => (source.checkedAt > latest ? source.checkedAt : latest),
@@ -846,17 +856,34 @@ export default async function UniversityPage({
                     <h3>
                       {pendingGroups.length > 0
                         ? "Waiting for the approved admission rules"
-                        : "We are reviewing the official requirements"}
+                        : topRequirements
+                          ? "What the university asks of international applicants"
+                          : "We are reviewing the official requirements"}
                     </h3>
-                    <p>
-                      Document requirements will only appear here after they
-                      have been checked against an official university source.
-                      {topEntry && pendingGroups.length === 0 && (
-                        <> Until then, use the Top 100 admission facts above.</>
-                      )}
-                    </p>
+                    {pendingGroups.length === 0 && topRequirements ? (
+                      <p>
+                        Read on the university&apos;s own pages for bachelor&apos;s
+                        applicants with a foreign school certificate (checked{" "}
+                        {formatDate(topRequirementsCheckedAt!)}). This is reference
+                        information, not a verified route: DocRoute does not check
+                        your profile against it. Confirm details on the programme
+                        page before you apply.
+                      </p>
+                    ) : (
+                      <p>
+                        Document requirements will only appear here after they
+                        have been checked against an official university source.
+                        {topEntry && pendingGroups.length === 0 && (
+                          <> Until then, use the Top 100 admission facts above.</>
+                        )}
+                      </p>
+                    )}
                   </div>
                 </div>
+
+                {pendingGroups.length === 0 && topRequirements && (
+                  <TopRequirementsBlock requirements={topRequirements} />
+                )}
 
                 <PendingPrograms
                   groups={pendingGroups}
@@ -918,6 +945,15 @@ export default async function UniversityPage({
                       <p>Documents after admission</p>
                     </div>
                   </div>
+                )}
+
+                {pendingGroups.length > 0 && topRequirements && (
+                  <>
+                    <p className={styles.requirementGroupTitle}>
+                      University-wide application steps (reference)
+                    </p>
+                    <TopRequirementsBlock requirements={topRequirements} />
+                  </>
                 )}
               </>
             )}
@@ -988,5 +1024,58 @@ export default async function UniversityPage({
         </div>
       </div>
     </main>
+  );
+}
+
+// University-wide admission requirements for a Top 100 university, in the
+// same three-card layout as published reference rules, with their sources.
+function TopRequirementsBlock({
+  requirements,
+}: {
+  requirements: (typeof topAdmissionRequirements)[number];
+}) {
+  const label = requirements.intake ?? "Reference";
+  return (
+    <>
+      <div
+        className={`${styles.requirementPreview} ${styles.requirementPreviewFilled}`}
+      >
+        {(
+          [
+            ["01", "Application documents", requirements.applicationDocuments],
+            ["02", "Entrance requirements", requirements.entranceRequirements],
+            ["03", "After admission", requirements.afterAdmission],
+          ] as const
+        ).map(([index, title, items]) => (
+          <div key={index}>
+            <span>
+              {index} · {label}
+            </span>
+            <p>{title}</p>
+            <ul>
+              {items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className={styles.sourceList}>
+        {requirements.sources.map((source) => (
+          <a
+            key={source.url}
+            href={source.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>
+              <strong>{source.title}</strong>
+              <small>checked {formatDate(source.checkedAt)}</small>
+            </span>
+            <ExternalLink size={16} aria-hidden="true" />
+          </a>
+        ))}
+      </div>
+    </>
   );
 }

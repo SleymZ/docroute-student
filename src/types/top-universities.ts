@@ -73,3 +73,15 @@ export type TopFieldRequirement = {
 };
 
 export type TopFieldRequirements = Partial<Record<TopFieldKey, TopFieldRequirement>>;
+
+// University-wide admission requirements for an international bachelor's
+// applicant, as the university's own pages describe them. Reference only:
+// no matching, no checklist. `intake` names the entry year when the pages
+// state it.
+export type TopAdmissionRequirements = {
+  intake?: string;
+  applicationDocuments: string[];
+  entranceRequirements: string[];
+  afterAdmission: string[];
+  sources: TopSource[];
+};
