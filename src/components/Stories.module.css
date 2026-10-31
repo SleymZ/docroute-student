@@ -477,3 +477,25 @@
   margin: 36px 0 14px;
   font-size: 20px;
 }
+
+/* An own story being edited takes the whole row of the grid. */
+.wide {
+  grid-column: 1 / -1;
+}
+
+.wide .panel {
+  margin-top: 0;
+}
+
+/* Moderation (/stories/review) */
+.reviewItem {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.reviewMeta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}

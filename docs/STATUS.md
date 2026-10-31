@@ -52,9 +52,11 @@ page `/route/guide`, 2026-10-30).
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
   Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`,
-  `waitlist_signups`, `feedback`, `public_profiles`, `success_stories`;
+  `waitlist_signups`, `feedback`, `public_profiles`, `success_stories`,
+  `story_moderators`;
   Storage bucket `avatars`. Functions: `delete_my_account()` (migration
-  `20261028150000`, redefined in `20261028180000`), `leave_waitlist(email)`.
+  `20261028150000`, redefined in `20261028180000`), `leave_waitlist(email)`,
+  `is_story_moderator()`, `moderate_story(id, status)`.
 
 ## Verified coverage
 
@@ -725,6 +727,15 @@ latest rules" (owner rule 2026-10-30):
   locks the profile row before counting, so concurrent submissions cannot
   exceed 5 (tested with two sessions); account deletion stops with a
   retryable message if the photo cannot be removed from Storage.
+- Moderators and author editing (2026-10-31): migration
+  `20261031120000_story_moderators.sql` adds `story_moderators` (no API
+  access; the owner inserts rows in the SQL editor by email, the email is not
+  in the repo), `is_story_moderator()` and `moderate_story(id, status)`.
+  Moderators see all stories, publish/decline/return them on
+  `/stories/review` (404 for others) and may delete any story. `/stories`
+  shows moderators the queue size and authors a link to their stories that
+  are not public yet. Authors can edit their stories on `/stories/new`
+  (edit sends the story back to `pending`). Tested on local Postgres 16.
 - Explore shows "Verified routes" (SK, CZ) and an amber "Rules checked"
   group/badge for countries with official-rule listings; How it works shows
   each listing's status and the CZ/AT guides.

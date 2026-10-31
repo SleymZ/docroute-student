@@ -8,7 +8,13 @@ import styles from "@/components/Stories.module.css";
 import { storyPurposeLabels, storyPurposes, type PublicProfile } from "@/lib/stories";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { loadPublicProfiles, loadPublishedStories } from "@/lib/supabase/stories";
+import {
+  countPendingStories,
+  isStoryModerator,
+  loadOwnStories,
+  loadPublicProfiles,
+  loadPublishedStories,
+} from "@/lib/supabase/stories";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +45,9 @@ export default async function StoriesPage({
   let stories: Awaited<ReturnType<typeof loadPublishedStories>> = [];
   let authors = new Map<string, PublicProfile>();
   let failed = false;
+  // signed-in extras: own stories not yet public, and the moderator queue
+  let ownWaiting = 0;
+  let reviewQueue: number | null = null;
 
   if (isSupabaseConfigured()) {
     try {
@@ -50,6 +59,22 @@ export default async function StoriesPage({
       );
     } catch {
       failed = true;
+    }
+    try {
+      const supabase = await createSupabaseServerClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const [own, moderator] = await Promise.all([
+          loadOwnStories(supabase, user.id),
+          isStoryModerator(supabase),
+        ]);
+        ownWaiting = own.filter((story) => story.status !== "published").length;
+        if (moderator) reviewQueue = await countPendingStories(supabase);
+      }
+    } catch {
+      // the extras are optional; the public list above still shows
     }
   }
 
@@ -83,6 +108,27 @@ export default async function StoriesPage({
             Share your story
           </Link>
         </header>
+
+        {reviewQueue !== null && (
+          <p className={styles.notice}>
+            Moderator:{" "}
+            <Link href="/stories/review">
+              {reviewQueue === 1
+                ? "1 story is waiting for review"
+                : `${reviewQueue} stories are waiting for review`}
+            </Link>
+            .
+          </p>
+        )}
+        {ownWaiting > 0 && (
+          <p className={styles.notice}>
+            {ownWaiting === 1
+              ? "You have 1 story that is not public yet."
+              : `You have ${ownWaiting} stories that are not public yet.`}{" "}
+            Only you can see {ownWaiting === 1 ? "it" : "them"} until reviewed:{" "}
+            <Link href="/stories/new#your-stories">see, edit or delete your stories</Link>.
+          </p>
+        )}
 
         <nav className={styles.filters} aria-label="Filter stories">
           <Link

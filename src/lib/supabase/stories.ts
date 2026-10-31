@@ -38,6 +38,34 @@ export async function loadOwnStories(supabase: Client, userId: string) {
   return (data ?? []) as SuccessStory[];
 }
 
+// Every story in one status, newest first. Only moderators get rows for
+// other people's pending or hidden stories (RLS).
+export async function loadStoriesForReview(supabase: Client, status: SuccessStory["status"]) {
+  const { data, error } = await supabase
+    .from("success_stories")
+    .select(storyColumns)
+    .eq("status", status)
+    .order(status === "published" ? "published_at" : "created_at", { ascending: false })
+    .limit(100);
+  if (error) throw error;
+  return (data ?? []) as SuccessStory[];
+}
+
+export async function countPendingStories(supabase: Client) {
+  const { count, error } = await supabase
+    .from("success_stories")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export async function isStoryModerator(supabase: Client) {
+  const { data, error } = await supabase.rpc("is_story_moderator");
+  if (error) return false;
+  return data === true;
+}
+
 export async function loadPublicProfiles(supabase: Client, userIds: string[]) {
   const ids = [...new Set(userIds)];
   if (ids.length === 0) return new Map<string, PublicProfile>();
