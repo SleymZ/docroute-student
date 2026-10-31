@@ -285,6 +285,13 @@ latest rules" (owner rule 2026-10-30):
   page under "Entry requirements by field". Next: other countries, where
   requirements look different (NL maths B, DE HZB/NC, IT tests, FR
   dossier, ES admission grade).
+- Explore filters (2026-10-31): country and field are each optional ("Any
+  country" / "Any field"). One country with any field shows its whole
+  directory (verified/coming soon in any field first); one field across
+  Europe lists only institutions with something checked for that field
+  (verified route, coming-soon listing or Top 100 requirements by field).
+  The personal route flow still needs both. Result cards show a
+  "Top 100 · #N" badge linking to the list.
 - 97 of 100 link to their DocRoute catalog page; Paris Cité, Sorbonne and
   PSL do not (the catalog has only predecessor institutions).
 - Recheck 2026-10-30 (11 universities): new or updated facts for KU Leuven
