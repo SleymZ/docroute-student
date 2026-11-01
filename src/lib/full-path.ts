@@ -349,7 +349,18 @@ function linkedResidenceStages(
     });
   }
 
-  if (group.countryCode === "CH") {
+  if (alreadyResident.has(answers.currentResidenceStatus)) {
+    // First-arrival steps (a visa, a permit before arrival) do not apply to
+    // someone already living there; the authority's answer decides.
+    tasks.push({
+      id: "read-official-residence",
+      title: `Read the official student-residence page for ${country}`,
+      description:
+        "Use it to prepare for the authority's answer: what an extension or a change of purpose to study requires.",
+      status: "action",
+      sourceIds,
+    });
+  } else if (group.countryCode === "CH") {
     tasks.push(
       {
         id: "ch-apply-before",

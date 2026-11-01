@@ -103,6 +103,12 @@ test("Switzerland: EU/EFTA registration or a permit before arrival", () => {
   assert.ok(eu.stages.at(-1)!.tasks.some((task) => task.id === "ch-eu-register"));
   const third = buildFullPath(eth, nonEu);
   assert.ok(third.stages.at(-1)!.tasks.some((task) => task.id === "ch-apply-before"));
+  // Existing residents are not told to follow the first-arrival procedure.
+  for (const status of ["destination-study-residence", "destination-permanent-residence"] as const) {
+    const resident = buildFullPath(eth, { citizenshipCountryCode: "UA", currentResidenceStatus: status });
+    const ids = resident.stages.at(-1)!.tasks.map((task) => task.id);
+    assert.deepEqual(ids, ["ask-current-status", "read-official-residence"]);
+  }
 });
 
 test("admission stages come only from the reference rules", () => {
