@@ -25,6 +25,7 @@ import { Header } from "@/components/Header";
 import { UniversityImage } from "@/components/UniversityImage";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { PendingPrograms } from "@/components/PendingPrograms";
+import { answersFromProfile, fullPathHref } from "@/lib/full-path";
 import {
   findPendingProgramGroups,
   isCurrentReference,
@@ -219,7 +220,7 @@ export default async function UniversityPage({
   // profile, unsupported policy). Every Preview entry point uses this one rule;
   // otherwise people with a profile are sent back to edit it without losing data.
   const canOpenPreview = Boolean(verifiedProgram && match?.canBuildRoute);
-  const routeAction = canOpenPreview
+  const baseRouteAction = canOpenPreview
     ? { href: previewHref, heroLabel: "Preview my route", panelLabel: "Open Preview Route" }
     : profile
       ? { href: editProfileHref, heroLabel: "Edit my profile", panelLabel: "Edit my profile" }
@@ -233,6 +234,19 @@ export default async function UniversityPage({
   const pendingGroups = verifiedProgram
     ? []
     : findPendingProgramGroups({ universityId: university.id });
+  // A university with only coming-soon listings gets the full study path
+  // (admission from the reference rules plus the residence step).
+  const pathGroup = canOpenPreview
+    ? undefined
+    : pendingGroups.find((group) => !selectedProgram || group.category === selectedProgram) ??
+      pendingGroups[0];
+  const routeAction = pathGroup
+    ? {
+        href: fullPathHref(pathGroup.id, answersFromProfile(profile, pathGroup.countryCode)),
+        heroLabel: "Build my full path",
+        panelLabel: "Build my full path",
+      }
+    : baseRouteAction;
   // Reference rules fill the three requirement cards, one row per faculty.
   const referenceGroups = pendingGroups.filter((group) => group.referenceRules);
   const pendingProgramCount = pendingGroups.reduce(
@@ -356,13 +370,20 @@ export default async function UniversityPage({
                 {availableRoute
                   ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatDegreeLevel(availableRoute.degreeLevel)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}).`
                   : pendingGroups.length > 0
-                    ? `${pendingGroups[0].faculty}: ${pendingProgramCount} ${pendingGroups[0].category} programs for ${pendingGroups[0].intake} are coming soon. A personalised route opens once the approved admission rules are published.`
+                    ? `${pendingGroups[0].faculty}: ${pendingProgramCount} ${pendingGroups[0].category} programs for ${pendingGroups[0].intake} are coming soon. Build the full study path now, from application to residence; your profile is matched once the approved admission rules are published.`
                     : "Explore available study information and build a verified route from university application to student residence."}
               </p>
             )}
 
             <div className={styles.heroActions}>
               {verifiedProgram && (
+                <Link href={routeAction.href} className={styles.primaryAction}>
+                  {routeAction.heroLabel}
+                  <ArrowRight size={17} aria-hidden="true" />
+                </Link>
+              )}
+
+              {!verifiedProgram && pathGroup && (
                 <Link href={routeAction.href} className={styles.primaryAction}>
                   {routeAction.heroLabel}
                   <ArrowRight size={17} aria-hidden="true" />
@@ -891,6 +912,7 @@ export default async function UniversityPage({
                   groups={pendingGroups}
                   heading="Programs coming soon"
                   referenceOpen
+                  pathAnswers={(group) => answersFromProfile(profile, group.countryCode)}
                 />
 
                 {referenceGroups.length > 0 ? (
@@ -1013,7 +1035,7 @@ export default async function UniversityPage({
               </p>
             </div>
 
-            {verifiedProgram && (
+            {(verifiedProgram || pathGroup) && (
               <Link
                 href={routeAction.href}
                 className={styles.routeApply}

@@ -267,3 +267,28 @@
     grid-template-columns: 1fr;
   }
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.pathButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 15px;
+  border-radius: 10px;
+  background: light-dark(#1a6f7b, #8cdae7);
+  color: light-dark(#ffffff, #06212a);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.pathButton:hover {
+  background: light-dark(#14596a, #a9e7f2);
+}
