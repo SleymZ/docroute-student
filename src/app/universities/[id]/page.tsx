@@ -25,6 +25,7 @@ import { Header } from "@/components/Header";
 import { UniversityImage } from "@/components/UniversityImage";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { PendingPrograms } from "@/components/PendingPrograms";
+import { answersFromProfile, fullPathHref } from "@/lib/full-path";
 import {
   findPendingProgramGroups,
   isCurrentReference,
@@ -219,7 +220,7 @@ export default async function UniversityPage({
   // profile, unsupported policy). Every Preview entry point uses this one rule;
   // otherwise people with a profile are sent back to edit it without losing data.
   const canOpenPreview = Boolean(verifiedProgram && match?.canBuildRoute);
-  const routeAction = canOpenPreview
+  const baseRouteAction = canOpenPreview
     ? { href: previewHref, heroLabel: "Preview my route", panelLabel: "Open Preview Route" }
     : profile
       ? { href: editProfileHref, heroLabel: "Edit my profile", panelLabel: "Edit my profile" }
@@ -233,6 +234,19 @@ export default async function UniversityPage({
   const pendingGroups = verifiedProgram
     ? []
     : findPendingProgramGroups({ universityId: university.id });
+  // A university with only coming-soon listings gets the full study path
+  // (admission from the reference rules plus the residence step).
+  const pathGroup = canOpenPreview
+    ? undefined
+    : pendingGroups.find((group) => !selectedProgram || group.category === selectedProgram) ??
+      pendingGroups[0];
+  const routeAction = pathGroup
+    ? {
+        href: fullPathHref(pathGroup.id, answersFromProfile(profile, pathGroup.countryCode)),
+        heroLabel: "Build my full path",
+        panelLabel: "Build my full path",
+      }
+    : baseRouteAction;
   // Reference rules fill the three requirement cards, one row per faculty.
   const referenceGroups = pendingGroups.filter((group) => group.referenceRules);
   const pendingProgramCount = pendingGroups.reduce(
@@ -891,6 +905,7 @@ export default async function UniversityPage({
                   groups={pendingGroups}
                   heading="Programs coming soon"
                   referenceOpen
+                  pathAnswers={(group) => answersFromProfile(profile, group.countryCode)}
                 />
 
                 {referenceGroups.length > 0 ? (

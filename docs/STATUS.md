@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-10-31. Keep this file factual: describe what exists and
+Last updated: 2026-11-01. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -57,6 +57,10 @@ page `/route/guide`, 2026-10-30).
   Storage bucket `avatars`. Functions: `delete_my_account()` (migration
   `20261028150000`, redefined in `20261028180000`), `leave_waitlist(email)`,
   `is_story_moderator()`, `moderate_story(id, status, reviewed_at)`.
+- Migration `20261031120000_story_moderators.sql` was run on production
+  (2026-10-31) and the owner's moderator account was added by SQL. The
+  owner checked on production (2026-11-01): publishing a story on
+  `/stories/review`, editing a story and uploading an avatar all work.
 
 ## Verified coverage
 
@@ -765,6 +769,41 @@ latest rules" (owner rule 2026-10-30):
   browser cannot encode WebP (older Safari); the DB rule already allows
   `.jpg`.
 
+## Full study path (2026-11-01)
+
+- Every "coming soon" listing (all of `pending-programs.ts` and
+  `pending-programs-europe.ts`) has a **Build my full path** button: on the
+  listing card (results and university page), on the university card in
+  results, and as the university page's main action when the university has
+  only coming-soon listings. Verified programmes keep their personalised
+  Preview Route.
+- Page `/route/full?group=<id>&citizenship=XX&status=<status>` (noindex,
+  answers in the URL, progress ticks via `route_task_progress` with key
+  `full-<group>:<version>:<answers>`). Two questions (citizenship, current
+  status); prefilled from the profile when one is linked or saved (status
+  translated with `profileForDestination`).
+- Stages (`src/lib/full-path.ts`, `buildFullPath`): Choose and check (read
+  the rules; "watch for the approved rules" unless the intake's rules are
+  published) → Application → Entrance requirements → Admission → enrolment
+  (each item taken verbatim from `referenceRules.overview`, labelled as
+  last year's rules or the intake's published rules; never matched against
+  the profile) → residence. Key facts in the side panel are the reference
+  facts.
+- Residence: Slovakia and Czechia reuse the verified study residence
+  routes (`buildSlovakiaResidenceStage`, `czechStudyRoute`). Elsewhere the
+  step is marked "not verified by DocRoute yet" and links to the official
+  page (`src/data/study-residence-links.ts`, checked 2026-11-01): EU
+  Immigration Portal "Student in <country>" pages (all EU countries except
+  Denmark, whose portal page only points to nyidanmark.dk), New to Denmark
+  for Denmark, ch.ch for Switzerland (EU/EFTA registration with the canton,
+  or a permit before arrival with a study plan, CV and leaving
+  confirmation), Your Europe for EU citizens in another EU country
+  (enrolment, health insurance, enough resources; registration may be
+  required after 3 months). No fee, deadline or document list is stated
+  for countries without a verified route.
+- Next: verified student residence routes country by country (3–4 per PR),
+  replacing the official-link step.
+
 ## Waitlist for the full route (PR #16)
 
 - "Want the full route?" block (`WaitlistCta`) at the end of every route
@@ -958,7 +997,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (239 tests on 2026-10-31).
+- Unit tests: `npm test` (247 tests on 2026-11-01).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
