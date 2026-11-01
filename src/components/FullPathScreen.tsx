@@ -16,6 +16,7 @@ import { useRouteProgress } from "@/hooks/useRouteProgress";
 import {
   answersFromProfile,
   buildFullPath,
+  countryLabel,
   findFullPathGroup,
   fullPathHref,
   parseFullPathAnswers,
@@ -27,6 +28,11 @@ import { currentResidenceStatuses, type CurrentResidenceStatus } from "@/types/a
 import type { RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./WorkRouteScreen.module.css";
+
+// "EU, EEA or Swiss passport" keeps its capitals; "Temporary residence…" does not.
+function lowerFirst(value: string) {
+  return /^[A-Z][a-z]/.test(value) ? value.charAt(0).toLowerCase() + value.slice(1) : value;
+}
 
 function isActionableTask(status: RouteTaskStatus) {
   return status === "action" || status === "attention";
@@ -91,7 +97,7 @@ function FullPathQuestions({
             <option value="">Select current residence status</option>
             {currentResidenceStatuses.map((option) => (
               <option key={option} value={option}>
-                {getResidenceStatusLabel(option, group.country)}
+                {getResidenceStatusLabel(option, countryLabel(group))}
               </option>
             ))}
           </select>
@@ -156,7 +162,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
         <section className={styles.intro}>
           <h1>{title}</h1>
           <p>
-            From choosing {group.faculty} to living in {group.country}: application, entrance
+            From choosing {group.faculty} to living in {countryLabel(group)}: application, entrance
             requirements, enrolment and the visa or residence step. Two answers decide the residence
             part. They stay in this page&apos;s address; nothing is uploaded.
           </p>
@@ -185,8 +191,11 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
               {group.faculty} · {formatPendingDegree(group.degreeLevel, group.category)} · {group.intake}.
             </strong>{" "}
             {pendingStatusLabel(group.status)}. Citizenship {path.answers.citizenshipCountryCode},{" "}
-            {getResidenceStatusLabel(path.answers.currentResidenceStatus, group.country).toLowerCase()}.{" "}
-            <Link href={`/route/full?${editParams.toString()}`}>
+            {lowerFirst(getResidenceStatusLabel(path.answers.currentResidenceStatus, countryLabel(group)))}.{" "}
+            <Link
+              href={`/route/full?${editParams.toString()}`}
+              style={{ display: "inline-flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}
+            >
               <Pencil size={13} aria-hidden="true" /> Change answers
             </Link>
           </p>

@@ -58,6 +58,11 @@ const euCountries = new Set([
   "SI", "ES", "SE",
 ]);
 
+// Country names as they read inside a sentence ("in the Netherlands").
+export function countryLabel(group: Pick<PendingProgramGroup, "countryCode" | "country">) {
+  return group.countryCode === "NL" ? "the Netherlands" : group.country;
+}
+
 export function findFullPathGroup(id: string | null) {
   if (!id) return null;
   return pendingProgramGroups.find((group) => group.id === id) ?? null;
@@ -238,7 +243,7 @@ function linkedResidenceStages(
   group: PendingProgramGroup,
   answers: FullPathAnswers,
 ): { coverage: ResidenceCoverage; stages: RouteStage[]; sources: RouteSource[] } {
-  const country = group.country;
+  const country = countryLabel(group);
   const citizenship = answers.citizenshipCountryCode;
 
   if (citizenship === group.countryCode) {
@@ -251,7 +256,7 @@ function linkedResidenceStages(
           number: "05",
           eyebrow: "RESIDENCE",
           title: "No residence permit needed",
-          description: `You reported ${country} citizenship, so there is no foreign student residence step.`,
+          description: `You reported citizenship of ${country}, so there is no foreign student residence step.`,
           timing: "—",
           tasks: [],
         },

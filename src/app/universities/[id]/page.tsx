@@ -370,13 +370,20 @@ export default async function UniversityPage({
                 {availableRoute
                   ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatDegreeLevel(availableRoute.degreeLevel)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}).`
                   : pendingGroups.length > 0
-                    ? `${pendingGroups[0].faculty}: ${pendingProgramCount} ${pendingGroups[0].category} programs for ${pendingGroups[0].intake} are coming soon. A personalised route opens once the approved admission rules are published.`
+                    ? `${pendingGroups[0].faculty}: ${pendingProgramCount} ${pendingGroups[0].category} programs for ${pendingGroups[0].intake} are coming soon. Build the full study path now, from application to residence; your profile is matched once the approved admission rules are published.`
                     : "Explore available study information and build a verified route from university application to student residence."}
               </p>
             )}
 
             <div className={styles.heroActions}>
               {verifiedProgram && (
+                <Link href={routeAction.href} className={styles.primaryAction}>
+                  {routeAction.heroLabel}
+                  <ArrowRight size={17} aria-hidden="true" />
+                </Link>
+              )}
+
+              {!verifiedProgram && pathGroup && (
                 <Link href={routeAction.href} className={styles.primaryAction}>
                   {routeAction.heroLabel}
                   <ArrowRight size={17} aria-hidden="true" />
@@ -1028,7 +1035,7 @@ export default async function UniversityPage({
               </p>
             </div>
 
-            {verifiedProgram && (
+            {(verifiedProgram || pathGroup) && (
               <Link
                 href={routeAction.href}
                 className={styles.routeApply}
