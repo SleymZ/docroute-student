@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { citizenshipStage, hasCitizenshipNotes } from "../src/data/citizenship-notes";
+import { citizenshipStage, hasCitizenshipNotes, isExistingResidentStatus } from "../src/data/citizenship-notes";
 import { findFullPathGroup, buildFullPath } from "../src/lib/full-path";
 import { countryGuides, findCountryGuide, hasCountryGuide } from "../src/lib/residence/country-guides";
 import { buildLinkedGuide, linkedGuideCountries } from "../src/lib/residence/linked-guides";
@@ -87,4 +87,13 @@ test("existing residents get no entry-visa step", () => {
   const tasks = path.stages.flatMap((stage) => stage.tasks.map((task) => task.id));
   assert.equal(tasks.includes("in-visa"), false);
   assert.ok(tasks.includes("in-apostille"));
+});
+
+test("existing-resident statuses are the destination permits and visas", () => {
+  for (const status of ["destination-study-residence", "destination-residence", "destination-permanent-residence", "destination-national-visa"]) {
+    assert.equal(isExistingResidentStatus(status), true, status);
+  }
+  for (const status of ["non-eu-passport-no-residence", "other-eu-residence", "visa-free-entry", null]) {
+    assert.equal(isExistingResidentStatus(status), false, String(status));
+  }
 });
