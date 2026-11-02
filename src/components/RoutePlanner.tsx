@@ -118,6 +118,8 @@ export function RoutePlanner() {
     }
 
     if (guideAvailable) {
+      // "Documents issued in" is not citizenship, and the guide adds
+      // passport-specific steps at once, so the person picks it there.
       router.push(
         `/route/guide?${new URLSearchParams({ country: destinationCountryCode, purpose }).toString()}`,
       );

@@ -21,6 +21,7 @@ import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { slovakiaFamilyBusinessRules } from "@/data/slovakia-family-business";
+import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { getResidenceStatusLabel } from "@/lib/profile-options";
 import {
@@ -254,12 +255,22 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
 
   const route = useMemo((): PurposeRoute<{ citizenshipCountryCode: string }> | null => {
     const params = new URLSearchParams(searchParams.toString());
-    if (kind === "family") {
-      const profile = parseFamilyProfile(params);
-      return profile ? buildSlovakiaFamilyRoute(profile) : null;
-    }
-    const profile = parseBusinessProfile(params);
-    return profile ? buildSlovakiaBusinessRoute(profile) : null;
+    const familyProfile = kind === "family" ? parseFamilyProfile(params) : null;
+    const businessProfile = kind === "business" ? parseBusinessProfile(params) : null;
+    const base = familyProfile
+      ? buildSlovakiaFamilyRoute(familyProfile)
+      : businessProfile
+        ? buildSlovakiaBusinessRoute(businessProfile)
+        : null;
+    if (!base) return null;
+    // Passport-specific steps (India first), ahead of the Slovak stages.
+    const status = (familyProfile ?? businessProfile)?.currentResidenceStatus;
+    const passport = citizenshipStage(base.profile.citizenshipCountryCode, "SK", "Slovakia", kind, {
+      existingResident: isExistingResidentStatus(status),
+    });
+    return passport
+      ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
+      : base;
   }, [kind, searchParams]);
 
   const progressId = useMemo(() => {
