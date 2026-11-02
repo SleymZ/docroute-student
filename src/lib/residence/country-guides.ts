@@ -1,6 +1,8 @@
 import { czechiaResidenceRules, czechiaSources } from "@/data/czechia-residence";
 import type { RouteSource, RouteStage, RouteTask } from "@/types/route-preview";
 
+import { buildLinkedGuide, hasLinkedGuide } from "./linked-guides";
+
 // Residence guides for Czechia (family, business) and Austria (work,
 // family, business), third-country citizens. Checked on 2026-10-30 against
 // the Czech Ministry of the Interior portal (ipc.gov.cz) and the Austrian
@@ -28,7 +30,12 @@ export type GuideVariant = {
 
 export type CountryGuide = {
   version: string;
-  country: GuideCountry;
+  // A verified guide's country is a GuideCountry; linked guides cover the
+  // other EU countries and Switzerland.
+  country: string;
+  // "verified": facts checked by DocRoute; "official-link": steps that only
+  // point to the official page (linked-guides.ts).
+  coverage?: "verified" | "official-link";
   countryName: string;
   purpose: GuidePurpose;
   title: string;
@@ -628,7 +635,10 @@ const atBusiness: CountryGuide = {
 const guides: CountryGuide[] = [czFamily, czBusiness, atWork, atFamily, atBusiness];
 
 export function findCountryGuide(country: string | null, purpose: string | null): CountryGuide | null {
-  return guides.find((guide) => guide.country === (country ?? "").toUpperCase() && guide.purpose === purpose) ?? null;
+  const code = (country ?? "").toUpperCase();
+  const verified = guides.find((guide) => guide.country === code && guide.purpose === purpose);
+  if (verified) return verified;
+  return purpose === "family" || purpose === "business" ? buildLinkedGuide(code, purpose) : null;
 }
 
 export function pickVariant(guide: CountryGuide, variantId: string | null): GuideVariant {
@@ -636,7 +646,11 @@ export function pickVariant(guide: CountryGuide, variantId: string | null): Guid
 }
 
 export function hasCountryGuide(countryCode: string, purpose: string) {
-  return guides.some((guide) => guide.country === countryCode && guide.purpose === purpose);
+  return (
+    guides.some((guide) => guide.country === countryCode && guide.purpose === purpose) ||
+    hasLinkedGuide(countryCode, purpose)
+  );
 }
 
+/** Only DocRoute's verified guides (Czechia, Austria). */
 export const countryGuides: readonly CountryGuide[] = guides;

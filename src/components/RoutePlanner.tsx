@@ -118,9 +118,10 @@ export function RoutePlanner() {
     }
 
     if (guideAvailable) {
-      router.push(
-        `/route/guide?${new URLSearchParams({ country: destinationCountryCode, purpose }).toString()}`,
-      );
+      const guideParams = new URLSearchParams({ country: destinationCountryCode, purpose });
+      const citizenship = educationCountryCodes[documentCountry];
+      if (citizenship) guideParams.set("citizenship", citizenship);
+      router.push(`/route/guide?${guideParams.toString()}`);
       return;
     }
 
