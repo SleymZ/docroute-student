@@ -123,8 +123,25 @@ export function citizenshipStage(
   countryCode: string,
   countryName: string,
   purpose: NotePurpose,
+  // Already living in the country with a permit or visa: entry-visa steps
+  // do not apply; document notes still do.
+  options: { existingResident?: boolean } = {},
 ): { stage: RouteStage; sources: RouteSource[] } | null {
   if ((citizenship ?? "").toUpperCase() !== "IN") return null;
+  if (options.existingResident) {
+    return {
+      stage: {
+        id: "citizenship-in",
+        number: "00",
+        eyebrow: "FOR INDIAN CITIZENS",
+        title: "What applies to an Indian passport",
+        description: "Checked for Indian citizens. You already live in the country, so entry-visa steps are left out.",
+        timing: "Before you apply",
+        tasks: [apostilleTask(purpose)],
+      },
+      sources: [sources.meaApostille],
+    };
+  }
   const visa = indiaVisaTask(countryCode, countryName);
   return {
     stage: {

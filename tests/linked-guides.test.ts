@@ -78,3 +78,13 @@ test("the full study path adds the Indian stage before residence", () => {
   assert.ok(ids.indexOf("citizenship-in") >= 0 && ids.indexOf("citizenship-in") < ids.indexOf("residence"));
   assert.ok(path.sources.some((source) => source.id === "in-mea-apostille"));
 });
+
+test("existing residents get no entry-visa step", () => {
+  const resident = citizenshipStage("IN", "CH", "Switzerland", "study", { existingResident: true })!;
+  assert.deepEqual(resident.stage.tasks.map((task) => task.id), ["in-apostille"]);
+  const group = findFullPathGroup("ethz-informatik-bsc-2027")!;
+  const path = buildFullPath(group, { citizenshipCountryCode: "IN", currentResidenceStatus: "destination-permanent-residence" });
+  const tasks = path.stages.flatMap((stage) => stage.tasks.map((task) => task.id));
+  assert.equal(tasks.includes("in-visa"), false);
+  assert.ok(tasks.includes("in-apostille"));
+});
