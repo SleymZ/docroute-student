@@ -424,6 +424,20 @@ a svg {
   color: var(--green);
 }
 
+.trust-row > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: light-dark(#1a6f7b, #8cdae7);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.trust-row > a svg {
+  color: inherit;
+}
+
 /* ========================================
    6. Результат создания маршрута
    ======================================== */

@@ -1,15 +1,21 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AlertTriangle, ArrowLeft, Check, ExternalLink, Info } from "lucide-react";
 
+import { CountryPicker } from "@/components/CountryPicker";
 import { FeedbackForm } from "@/components/FeedbackForm";
+import { applicantCountryOptions } from "@/data/applicant-countries";
+import { citizenshipStage, citizenshipNoteSources } from "@/data/citizenship-notes";
+import { isEuEeaSwissCitizen } from "@/lib/profile-options";
+import { linkedCountryName, linkedGuideCountries } from "@/lib/residence/linked-guides";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { findCountryGuide, pickVariant } from "@/lib/residence/country-guides";
-import type { RouteTaskStatus } from "@/types/route-preview";
+import type { RouteSource, RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./WorkRouteScreen.module.css";
 
@@ -38,26 +44,35 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
   );
 
   if (!guide || !variant) {
-    return (
-      <div className={styles.page}>
-        {breadcrumb}
-        <section className={styles.intro}>
-          <h1>Residence guide not available</h1>
-          <p>
-            DocRoute has residence guides for family and business in Czechia and for work, family and business in
-            Austria. <Link href="/#route-builder">Choose a route on the home page.</Link>
-          </p>
-        </section>
-      </div>
-    );
+    return <GuideChooser breadcrumb={breadcrumb} purpose={searchParams.get("purpose")} />;
+  }
+
+  const citizenship = (searchParams.get("citizenship") ?? "").toUpperCase();
+  const passport = citizenshipStage(
+    citizenship,
+    guide.country,
+    guide.countryName,
+    guide.purpose,
+  );
+  const stages = passport ? [passport.stage, ...variant.stages] : variant.stages;
+  const euCitizen = citizenship && isEuEeaSwissCitizen(citizenship) && citizenship !== guide.country;
+
+  function chooseCitizenship(code: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (code) params.set("citizenship", code);
+    else params.delete("citizenship");
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   const completed = new Set(routeProgress.values);
-  const actionable = variant.stages.flatMap((stage) => stage.tasks.filter((task) => isActionableTask(task.status)));
+  const actionable = stages.flatMap((stage) => stage.tasks.filter((task) => isActionableTask(task.status)));
   const completedCount = actionable.filter((task) => completed.has(task.id)).length;
   const progress = actionable.length ? Math.round((completedCount / actionable.length) * 100) : 100;
-  const usedSourceIds = new Set(variant.stages.flatMap((stage) => stage.tasks.flatMap((task) => task.sourceIds)));
-  const sources = guide.sources.filter((source) => usedSourceIds.has(source.id));
+  const usedSourceIds = new Set(stages.flatMap((stage) => stage.tasks.flatMap((task) => task.sourceIds)));
+  const allSources: RouteSource[] = [...guide.sources, ...(passport ? citizenshipNoteSources : [])];
+  const sources = allSources.filter(
+    (source, index) => usedSourceIds.has(source.id) && allSources.findIndex((item) => item.id === source.id) === index,
+  );
 
   function chooseVariant(id: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -102,8 +117,18 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
         </fieldset>
       )}
 
+      <div className={styles.choice} data-print-hide="">
+        <CountryPicker
+          label="Your citizenship (adds what applies to your passport)"
+          value={citizenship}
+          options={applicantCountryOptions}
+          placeholder="Select citizenship"
+          onChange={chooseCitizenship}
+        />
+      </div>
+
       <ol className={styles.strip} aria-label="Route stages">
-        {variant.stages.map((stage, index) => {
+        {stages.map((stage, index) => {
           const tasks = stage.tasks.filter((task) => isActionableTask(task.status));
           const done = tasks.filter((task) => completed.has(task.id)).length;
           const complete = tasks.length > 0 && done === tasks.length;
@@ -132,11 +157,21 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
             <AlertTriangle size={17} aria-hidden="true" />
             <ul>
               <li>Not covered yet: {guide.notCovered}</li>
-              <li>This is a checklist from official guidance, without a dated plan.</li>
+              <li>
+                {guide.coverage === "official-link"
+                  ? "Each step points to the official page; DocRoute has not verified this country's procedure step by step yet."
+                  : "This is a checklist from official guidance, without a dated plan."}
+              </li>
+              {euCitizen && (
+                <li>
+                  You chose an EU, EEA or Swiss citizenship: this checklist is for citizens of other countries. EU
+                  citizens use their free-movement rights instead (registration where the country requires it).
+                </li>
+              )}
             </ul>
           </div>
 
-          {variant.stages.map((stage, index) => (
+          {stages.map((stage, index) => (
             <section key={stage.id} id={`stage-${stage.id}`} className={styles.stage} aria-labelledby={`stage-${stage.id}-title`}>
               <header className={styles.stageHead}>
                 <span className={styles.stageNumber} aria-hidden="true">
@@ -243,6 +278,59 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
           </div>
         </aside>
       </div>
+    </div>
+  );
+}
+
+// /route/guide without a valid country: every country with a family or
+// business guide, verified ones first.
+function GuideChooser({ breadcrumb, purpose }: { breadcrumb: ReactNode; purpose: string | null }) {
+  const chosen = purpose === "business" ? "business" : "family";
+  const verified: Record<string, string> = {
+    SK: `/route/${chosen}?country=SK`,
+    CZ: `/route/guide?country=CZ&purpose=${chosen}`,
+    AT: `/route/guide?country=AT&purpose=${chosen}`,
+  };
+  const names: Record<string, string> = { SK: "Slovakia", CZ: "Czechia", AT: "Austria" };
+  return (
+    <div className={styles.page}>
+      {breadcrumb}
+      <section className={styles.intro}>
+        <h1>{chosen === "family" ? "Joining family in Europe" : "Doing business in Europe"}</h1>
+        <p>
+          Slovakia, Czechia and Austria have checklists verified by DocRoute. For the other EU countries and
+          Switzerland, the checklist links each step to the official page. Choose a country.
+        </p>
+        <p>
+          <Link href="/route/guide?purpose=family" aria-current={chosen === "family" ? "page" : undefined}>
+            Family
+          </Link>{" "}
+          ·{" "}
+          <Link href="/route/guide?purpose=business" aria-current={chosen === "business" ? "page" : undefined}>
+            Business
+          </Link>
+        </p>
+      </section>
+      <section className={styles.sourceList} aria-labelledby="guide-countries">
+        <h2 id="guide-countries">Verified by DocRoute</h2>
+        <ul>
+          {Object.entries(verified).map(([code, href]) => (
+            <li key={code}>
+              <Link href={href}>{names[code]}</Link>
+            </li>
+          ))}
+        </ul>
+        <h2>Official links</h2>
+        <ul>
+          {linkedGuideCountries.map((code) => (
+            <li key={code}>
+              <Link href={`/route/guide?country=${code}&purpose=${chosen}`}>
+                {linkedCountryName(code).replace(/^the /, "").replace(/^./, (letter) => letter.toUpperCase())}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

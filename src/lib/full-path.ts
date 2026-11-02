@@ -1,3 +1,4 @@
+import { citizenshipStage } from "@/data/citizenship-notes";
 import { czechiaSources } from "@/data/czechia-residence";
 import {
   euStudentResidenceSource,
@@ -452,13 +453,14 @@ function residenceStages(group: PendingProgramGroup, answers: FullPathAnswers) {
 export function buildFullPath(group: PendingProgramGroup, answers: FullPathAnswers): FullPath {
   const admission = admissionStages(group);
   const residence = residenceStages(group, answers);
-  const stages = [...admission, ...residence.stages].map((stage, index) => ({
+  const passport = citizenshipStage(answers.citizenshipCountryCode, group.countryCode, countryLabel(group), "study");
+  const stages = [...admission, ...(passport ? [passport.stage] : []), ...residence.stages].map((stage, index) => ({
     ...stage,
     number: String(index + 1).padStart(2, "0"),
   }));
   const usedIds = new Set(stages.flatMap((stage) => stage.tasks.flatMap((task) => task.sourceIds)));
   const seen = new Set<string>();
-  const sources = [...officialSources(group), ...residence.sources].filter(
+  const sources = [...officialSources(group), ...residence.sources, ...(passport?.sources ?? [])].filter(
     (source) => usedIds.has(source.id) && !seen.has(source.id) && (seen.add(source.id), true),
   );
   const rules = group.referenceRules;

@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-01. Keep this file factual: describe what exists and
+Last updated: 2026-11-02. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -769,6 +769,39 @@ latest rules" (owner rule 2026-10-30):
   browser cannot encode WebP (older Safari); the DB rule already allows
   `.jpg`.
 
+## Family and business across the EU and Switzerland (2026-11-02)
+
+- `/route/guide?country=XX&purpose=family|business` now covers all EU
+  countries and Switzerland. Slovakia (`/route/family`, `/route/business`),
+  Czechia and Austria keep their verified guides; the other 25 countries
+  get a linked checklist (`src/lib/residence/linked-guides.ts`,
+  `coverage: "official-link"`): check eligibility → documents and
+  application (where to apply, visa first or not) → after approval. Each
+  step cites one official page and states no fee, threshold or date (a test
+  checks there are no figures): EU Immigration Portal "Family member in
+  <country>" / "Self-employed worker in <country>" pages
+  (`src/data/eu-immigration-portal.ts`, all 27 × 2 checked 2026-11-02),
+  New to Denmark (family reunification, Start-up Denmark), ch.ch (family
+  reunification) and the SECO SME portal (foreign founders; third-state
+  permits limited to a highly qualified workforce) for Switzerland.
+- `/route/guide` without a country is a chooser (verified countries first,
+  then official links). The home form links to it for family and business
+  ("Other EU countries and Switzerland"); the map and the destination list
+  are unchanged (owner decision).
+- Passport notes (`src/data/citizenship-notes.ts`, India first, checked
+  2026-11-02): a "For Indian citizens" stage in every residence guide
+  (citizenship picker on the page, passed from the home form), the Slovak
+  family and business routes and the full study path. Visa: India is in
+  Annex I of Regulation (EU) 2018/1806 (consolidated 30 Dec 2025); Ireland's
+  list of visa-required nationalities (12 May 2025) and its New Delhi visa
+  office (22 May 2026); Switzerland's SEM list marks India visa-required for
+  short and long stays (version 3 Apr 2026). Documents: MEA apostille
+  (Hague Convention since 2005; state/UT/chamber authentication first;
+  submitted only through MEA's outsourced agencies).
+- Not covered: work outside SK/CZ/AT, family of EU citizens, other
+  citizenships' notes, verified step-by-step guides for the 25 linked
+  countries.
+
 ## Full study path (2026-11-01)
 
 - Every "coming soon" listing (all of `pending-programs.ts` and
@@ -997,7 +1030,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (247 tests on 2026-11-01).
+- Unit tests: `npm test` (251 tests on 2026-11-02).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
