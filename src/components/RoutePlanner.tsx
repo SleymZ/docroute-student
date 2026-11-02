@@ -118,10 +118,11 @@ export function RoutePlanner() {
     }
 
     if (guideAvailable) {
-      const guideParams = new URLSearchParams({ country: destinationCountryCode, purpose });
-      const citizenship = educationCountryCodes[documentCountry];
-      if (citizenship) guideParams.set("citizenship", citizenship);
-      router.push(`/route/guide?${guideParams.toString()}`);
+      // "Documents issued in" is not citizenship, and the guide adds
+      // passport-specific steps at once, so the person picks it there.
+      router.push(
+        `/route/guide?${new URLSearchParams({ country: destinationCountryCode, purpose }).toString()}`,
+      );
       return;
     }
 

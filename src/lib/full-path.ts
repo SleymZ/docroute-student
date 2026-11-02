@@ -453,7 +453,9 @@ function residenceStages(group: PendingProgramGroup, answers: FullPathAnswers) {
 export function buildFullPath(group: PendingProgramGroup, answers: FullPathAnswers): FullPath {
   const admission = admissionStages(group);
   const residence = residenceStages(group, answers);
-  const passport = citizenshipStage(answers.citizenshipCountryCode, group.countryCode, countryLabel(group), "study");
+  const passport = citizenshipStage(answers.citizenshipCountryCode, group.countryCode, countryLabel(group), "study", {
+    existingResident: alreadyResident.has(answers.currentResidenceStatus),
+  });
   const stages = [...admission, ...(passport ? [passport.stage] : []), ...residence.stages].map((stage, index) => ({
     ...stage,
     number: String(index + 1).padStart(2, "0"),

@@ -790,12 +790,14 @@ latest rules" (owner rule 2026-10-30):
   are unchanged (owner decision).
 - Passport notes (`src/data/citizenship-notes.ts`, India first, checked
   2026-11-02): a "For Indian citizens" stage in every residence guide
-  (citizenship picker on the page, passed from the home form), the Slovak
+  (citizenship picker on the page; not taken from the home form, whose
+  "Documents issued in" is not citizenship), the Slovak
   family and business routes and the full study path. Visa: India is in
   Annex I of Regulation (EU) 2018/1806 (consolidated 30 Dec 2025); Ireland's
   list of visa-required nationalities (12 May 2025) and its New Delhi visa
   office (22 May 2026); Switzerland's SEM list marks India visa-required for
-  short and long stays (version 3 Apr 2026). Documents: MEA apostille
+  short and long stays (version 3 Apr 2026); existing residents get no
+  entry-visa step. Documents: MEA apostille
   (Hague Convention since 2005; state/UT/chamber authentication first;
   submitted only through MEA's outsourced agencies).
 - Not covered: work outside SK/CZ/AT, family of EU citizens, other
@@ -1030,7 +1032,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (251 tests on 2026-11-02).
+- Unit tests: `npm test` (252 tests on 2026-11-02).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
