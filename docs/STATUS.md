@@ -1032,7 +1032,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (252 tests on 2026-11-02).
+- Unit tests: `npm test` (253 tests on 2026-11-02).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

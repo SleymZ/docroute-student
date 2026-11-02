@@ -1,4 +1,4 @@
-import { citizenshipStage } from "@/data/citizenship-notes";
+import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { czechiaSources } from "@/data/czechia-residence";
 import {
   euStudentResidenceSource,
@@ -454,7 +454,7 @@ export function buildFullPath(group: PendingProgramGroup, answers: FullPathAnswe
   const admission = admissionStages(group);
   const residence = residenceStages(group, answers);
   const passport = citizenshipStage(answers.citizenshipCountryCode, group.countryCode, countryLabel(group), "study", {
-    existingResident: alreadyResident.has(answers.currentResidenceStatus),
+    existingResident: isExistingResidentStatus(answers.currentResidenceStatus),
   });
   const stages = [...admission, ...(passport ? [passport.stage] : []), ...residence.stages].map((stage, index) => ({
     ...stage,

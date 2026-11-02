@@ -56,6 +56,19 @@ export const citizenshipNoteCountries = ["IN"] as const;
 
 export type NotePurpose = "study" | "work" | "family" | "business";
 
+// Statuses that mean the person already lives in the destination with a
+// permit or national visa: entry-visa steps do not apply to them.
+const existingResidentStatuses = new Set([
+  "destination-study-residence",
+  "destination-residence",
+  "destination-permanent-residence",
+  "destination-national-visa",
+]);
+
+export function isExistingResidentStatus(status: string | null | undefined) {
+  return existingResidentStatuses.has(status ?? "");
+}
+
 export function hasCitizenshipNotes(citizenship: string | null | undefined) {
   return (citizenshipNoteCountries as readonly string[]).includes((citizenship ?? "").toUpperCase());
 }
