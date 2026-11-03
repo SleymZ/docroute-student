@@ -59,6 +59,32 @@ export async function saveConfirmedRoute(
   return fromRow(data as Row);
 }
 
+/** Background update of the same route (new move date, new checklist
+ *  version). It only applies while the stored row is still the route it was
+ *  scheduled for (same address as last seen), so a late update can never undo
+ *  a route confirmed meanwhile, here or on another page. Returns null when
+ *  the stored route has changed. */
+export async function updateConfirmedRouteIfUnchanged(
+  supabase: Client,
+  userId: string,
+  expectedPath: string,
+  route: ConfirmedRouteInput,
+) {
+  const { data, error } = await supabase
+    .from("confirmed_routes")
+    .update({
+      route_path: route.routePath,
+      route_key: route.routeKey,
+      step_ids: route.stepIds,
+    })
+    .eq("user_id", userId)
+    .eq("route_path", expectedPath)
+    .select(columns)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? fromRow(data as Row) : null;
+}
+
 export async function removeConfirmedRoute(supabase: Client, userId: string) {
   const { error } = await supabase.from("confirmed_routes").delete().eq("user_id", userId);
   if (error) throw error;

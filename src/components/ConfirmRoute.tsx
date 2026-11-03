@@ -16,7 +16,11 @@ import {
 } from "@/lib/confirmed-route";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { loadConfirmedRoute, saveConfirmedRoute } from "@/lib/supabase/confirmed-route";
+import {
+  loadConfirmedRoute,
+  saveConfirmedRoute,
+  updateConfirmedRouteIfUnchanged,
+} from "@/lib/supabase/confirmed-route";
 
 import styles from "./ConfirmRoute.module.css";
 
@@ -100,15 +104,32 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
       confirmed?.routeKey !== routeKey ||
       confirmed?.stepIds.join(",") !== stepKey);
 
+  // The stored address as last seen by this page; background saves only apply
+  // while the row still has it.
+  const storedPath = useRef<string | null>(null);
+  if (confirmed && storedPath.current === null) storedPath.current = confirmed.routePath;
+
   function flushSave() {
     const payload = pendingPayload.current;
     if (payload) {
       pendingPayload.current = null;
       saveChain.current = saveChain.current.then(async () => {
+        const expected = storedPath.current;
+        if (!expected) return;
         try {
-          const saved = await saveConfirmedRoute(createSupabaseBrowserClient(), payload.userId, payload.route);
+          const saved = await updateConfirmedRouteIfUnchanged(
+            createSupabaseBrowserClient(),
+            payload.userId,
+            expected,
+            payload.route,
+          );
+          // null: another route was confirmed meanwhile (here or on another
+          // page); leave it alone and show what is stored now.
+          const stored =
+            saved ?? (await loadConfirmedRoute(createSupabaseBrowserClient(), payload.userId));
+          storedPath.current = stored?.routePath ?? null;
           setState((previous) =>
-            previous.kind === "ready" ? { kind: "ready", userId: payload.userId, confirmed: saved } : previous,
+            previous.kind === "ready" ? { kind: "ready", userId: payload.userId, confirmed: stored } : previous,
           );
         } catch {
           // Kept on this page; the next change tries again.
@@ -163,6 +184,7 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
         countryCode,
         stepIds,
       });
+      storedPath.current = saved.routePath;
       setState({ kind: "ready", userId: state.userId, confirmed: saved });
       setAskReplace(false);
     } catch {
