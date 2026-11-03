@@ -96,7 +96,10 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
   // request can never overwrite a newer date), and the latest pending save is
   // flushed when the page is left or "Open My route" is pressed.
   const pendingPayload = useRef<{ userId: string; route: ConfirmedRouteInput } | null>(null);
-  const saveChain = useRef<Promise<void>>(Promise.resolve());
+  // Resolves to false when the last save failed (nothing is lost: the payload
+  // is kept for a retry and the block says so).
+  const saveChain = useRef<Promise<boolean>>(Promise.resolve(true));
+  const [syncFailed, setSyncFailed] = useState(false);
   const needsSync =
     state.kind === "ready" &&
     Boolean(confirmed && current && isThis) &&
@@ -115,7 +118,7 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
       pendingPayload.current = null;
       saveChain.current = saveChain.current.then(async () => {
         const expected = storedPath.current;
-        if (!expected) return;
+        if (!expected) return true;
         try {
           const saved = await updateConfirmedRouteIfUnchanged(
             createSupabaseBrowserClient(),
@@ -131,8 +134,13 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
           setState((previous) =>
             previous.kind === "ready" ? { kind: "ready", userId: payload.userId, confirmed: stored } : previous,
           );
+          setSyncFailed(false);
+          return true;
         } catch {
-          // Kept on this page; the next change tries again.
+          // Keep the change for a retry unless a newer one replaced it.
+          if (!pendingPayload.current) pendingPayload.current = payload;
+          setSyncFailed(true);
+          return false;
         }
       });
     }
@@ -231,19 +239,36 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
         </span>
         <div className={styles.copy}>
           <strong>This is your confirmed route</strong>
-          <p>It is saved in My route. Changes to the move date are saved there too.</p>
+          {syncFailed ? (
+            <p className={styles.error} role="alert">
+              The new date could not be saved to My route yet. Check your connection and try again.
+            </p>
+          ) : (
+            <p>It is saved in My route. Changes to the move date are saved there too.</p>
+          )}
         </div>
-        <Link
-          href="/my-route"
-          className={styles.secondary}
-          onClick={(event) => {
-            // Wait for pending and running saves so My route shows the new date.
-            event.preventDefault();
-            void flushSave().then(() => router.push("/my-route"));
-          }}
-        >
-          Open My route
-        </Link>
+        <div className={styles.actions}>
+          {syncFailed && (
+            <button type="button" className={styles.primary} onClick={() => void flushSave()}>
+              <RefreshCw size={15} aria-hidden="true" />
+              Try again
+            </button>
+          )}
+          <Link
+            href="/my-route"
+            className={styles.secondary}
+            onClick={(event) => {
+              // Wait for pending and running saves so My route shows the new
+              // date; stay here if saving failed.
+              event.preventDefault();
+              void flushSave().then((saved) => {
+                if (saved) router.push("/my-route");
+              });
+            }}
+          >
+            Open My route
+          </Link>
+        </div>
       </section>
     );
   }
