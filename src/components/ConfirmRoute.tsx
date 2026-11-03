@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, LogIn, MapPinned, RefreshCw } from "lucide-react";
 
 import {
@@ -37,6 +37,7 @@ type State =
 // route is then listed on /my-route ("My route") and can be reopened any time.
 // One confirmed route per account; confirming another replaces it.
 export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps }: ConfirmRouteProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const routePath = useMemo(
@@ -79,20 +80,43 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps
   const isThis = Boolean(current && isSameRoute(confirmed, current));
 
   // Same route, new address (a new move date): keep My route up to date.
+  // A pending save is flushed when the page is left or "Open My route" is
+  // pressed, so a date changed just before leaving is not lost.
+  const pendingSave = useRef<(() => Promise<void>) | null>(null);
+  const needsSync =
+    state.kind === "ready" &&
+    Boolean(confirmed && current && isThis) &&
+    (confirmed?.routePath !== current?.routePath || confirmed?.totalSteps !== totalSteps);
+
   useEffect(() => {
-    if (state.kind !== "ready" || !confirmed || !current || !isThis) return;
-    if (confirmed.routePath === current.routePath && confirmed.totalSteps === totalSteps) return;
-    const timer = window.setTimeout(() => {
-      void saveConfirmedRoute(createSupabaseBrowserClient(), state.userId, {
-        ...confirmed,
-        routePath: current.routePath,
-        totalSteps,
-      })
-        .then((saved) => setState({ kind: "ready", userId: state.userId, confirmed: saved }))
-        .catch(() => undefined);
-    }, 800);
-    return () => window.clearTimeout(timer);
-  }, [state, confirmed, current?.routePath, isThis, totalSteps]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (state.kind !== "ready" || !confirmed || !current || !needsSync) {
+      pendingSave.current = null;
+      return;
+    }
+    const userId = state.userId;
+    const next = { ...confirmed, routePath: current.routePath, totalSteps };
+    const save = async () => {
+      pendingSave.current = null;
+      try {
+        const saved = await saveConfirmedRoute(createSupabaseBrowserClient(), userId, next);
+        setState({ kind: "ready", userId, confirmed: saved });
+      } catch {
+        // Kept on this page; the next change tries again.
+      }
+    };
+    pendingSave.current = save;
+    const timer = window.setTimeout(() => void save(), 800);
+    const flush = () => {
+      if (pendingSave.current === save) void save();
+    };
+    window.addEventListener("pagehide", flush);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("pagehide", flush);
+      // Leaving the page (or a newer date): save what was picked now.
+      flush();
+    };
+  }, [state, confirmed, current?.routePath, needsSync, totalSteps]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!routePath || state.kind === "loading") {
     return <div className={styles.box} data-loading="true" aria-hidden="true" />;
@@ -159,7 +183,16 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps
           <strong>This is your confirmed route</strong>
           <p>It is saved in My route. Changes to the move date are saved there too.</p>
         </div>
-        <Link href="/my-route" className={styles.secondary}>
+        <Link
+          href="/my-route"
+          className={styles.secondary}
+          onClick={(event) => {
+            const save = pendingSave.current;
+            if (!save) return;
+            event.preventDefault();
+            void save().then(() => router.push("/my-route"));
+          }}
+        >
           Open My route
         </Link>
       </section>

@@ -66,8 +66,9 @@ create policy "Users can remove their confirmed route"
   using ((select auth.uid()) = user_id);
 
 -- Dates are set by the database, not by the browser: confirmed_at changes
--- only when a different route replaces the confirmed one (another route key),
--- not when the same route is saved again with a new move date.
+-- only when a different route replaces the confirmed one (another progress
+-- key or other answers in the address), not when the same route is saved
+-- again with a new move date.
 create or replace function public.confirmed_routes_touch()
 returns trigger
 language plpgsql
@@ -75,7 +76,10 @@ set search_path = ''
 as $$
 begin
   new.updated_at := now();
-  if new.route_key is distinct from old.route_key then
+  if new.route_key is distinct from old.route_key
+     or regexp_replace(regexp_replace(new.route_path, '([?&])move=[^&]*&?', '\1'), '[?&]$', '')
+        is distinct from
+        regexp_replace(regexp_replace(old.route_path, '([?&])move=[^&]*&?', '\1'), '[?&]$', '') then
     new.confirmed_at := now();
   else
     new.confirmed_at := old.confirmed_at;

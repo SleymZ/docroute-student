@@ -33,10 +33,16 @@ test("page-only switches are not stored", () => {
 });
 
 test("the same route with another move date is still the confirmed route", () => {
-  const confirmed = { routeKey: "family-sk:1:abc", routePath: "/route/family?a=1&move=2027-08-01" };
-  assert.equal(isSameRoute(confirmed, { routeKey: "family-sk:1:abc", routePath: "/route/family?a=1&move=2027-09-01" }), true);
-  assert.equal(isSameRoute(confirmed, { routeKey: "family-sk:1:xyz", routePath: "/route/family?a=2" }), false);
+  const confirmed = { routePath: "/route/family?a=1&move=2027-08-01" };
+  assert.equal(isSameRoute(confirmed, { routePath: "/route/family?move=2027-09-01&a=1" }), true);
+  assert.equal(isSameRoute(confirmed, { routePath: "/route/family?a=2&move=2027-08-01" }), false);
   assert.equal(isSameRoute(null, confirmed), false);
+});
+
+test("a guide with another citizenship is another route", () => {
+  const confirmed = { routePath: "/route/guide?country=DE&purpose=family&citizenship=IN" };
+  assert.equal(isSameRoute(confirmed, { routePath: "/route/guide?country=DE&purpose=family&citizenship=UA" }), false);
+  assert.equal(isSameRoute(confirmed, { routePath: "/route/guide?country=DE&purpose=family" }), false);
 });
 
 test("signing up returns to the same route page", () => {

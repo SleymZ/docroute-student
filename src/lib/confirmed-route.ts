@@ -48,15 +48,27 @@ export function normaliseRoutePath(value: string | null | undefined): string | n
   }
 }
 
-/** Whether the page shows the confirmed route. The progress key identifies a
- *  route and its answers; the move date may differ (it is saved again). */
+/** The route without its move date: the answers that define the route
+ *  (citizenship, status, programme…). */
+export function routeIdentity(routePath: string) {
+  const url = new URL(routePath, internalOrigin);
+  url.searchParams.delete("move");
+  url.searchParams.delete("edit");
+  url.searchParams.delete("confirm");
+  url.searchParams.sort();
+  return `${url.pathname}?${url.searchParams.toString()}`;
+}
+
+/** Whether the page shows the confirmed route. Every answer in the address
+ *  counts (a guide with another citizenship is another route, even though
+ *  its progress key is the same); only the move date may differ, and it is
+ *  saved again. */
 export function isSameRoute(
-  confirmed: Pick<ConfirmedRouteInput, "routeKey" | "routePath"> | null,
-  current: Pick<ConfirmedRouteInput, "routeKey" | "routePath">,
+  confirmed: Pick<ConfirmedRouteInput, "routePath"> | null,
+  current: Pick<ConfirmedRouteInput, "routePath">,
 ) {
   if (!confirmed) return false;
-  if (confirmed.routeKey && current.routeKey) return confirmed.routeKey === current.routeKey;
-  return confirmed.routePath === current.routePath;
+  return routeIdentity(confirmed.routePath) === routeIdentity(current.routePath);
 }
 
 export function myRouteLoginHref(returnPath: string) {

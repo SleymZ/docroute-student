@@ -812,8 +812,10 @@ latest rules" (owner rule 2026-10-30):
   `/route/full`). Confirming needs an account: signed-out visitors get
   "Sign up to confirm", which returns to the same route page. One confirmed
   route per account; confirming another asks first, then replaces it
-  (ticks stay, they are keyed by route). Same route with a new move date is
-  saved again automatically.
+  (ticks stay, they are keyed by route). A route is the page address without
+  the move date (a guide with another citizenship is another route). Same
+  route with a new move date is
+  saved again automatically (also flushed when the page is left).
 - Page `/my-route` (header link "My route", login required, noindex,
   disallowed in robots): title, purpose, country, confirmed date, move date,
   "X of Y steps done" (from `route_task_progress`), Open / Remove.
@@ -1064,7 +1066,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (259 tests on 2026-11-03).
+- Unit tests: `npm test` (260 tests on 2026-11-03).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
