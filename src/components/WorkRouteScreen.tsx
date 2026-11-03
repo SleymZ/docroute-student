@@ -17,6 +17,7 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
+import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
@@ -250,10 +251,23 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
     () => parseWorkProfile(new URLSearchParams(searchParams.toString())),
     [searchParams],
   );
-  const route = useMemo(
-    () => (profile ? buildSlovakiaWorkRoute(profile) : null),
-    [profile],
-  );
+  const route = useMemo(() => {
+    if (!profile) return null;
+    const base = buildSlovakiaWorkRoute(profile);
+    // Passport-specific steps (visa, transit, apostille), ahead of the
+    // Slovak stages.
+    // Not when the route stops at a gate (permanent residence, a
+    // citizenship/status conflict): no application follows.
+    const passport =
+      base.stages.length > 1
+        ? citizenshipStage(profile.citizenshipCountryCode, "SK", "Slovakia", "work", {
+            existingResident: isExistingResidentStatus(profile.currentResidenceStatus), asOf: asOfDate,
+          })
+        : null;
+    return passport
+      ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
+      : base;
+  }, [profile, asOfDate]);
   const routeKey = route
     ? `work-sk:${route.version}:${getWorkProgressId(route.profile)}`
     : null;
@@ -418,7 +432,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
                   <span className={styles.stop} aria-hidden="true">
                     {complete ? <Check size={13} /> : index + 1}
                   </span>
-                  <strong>{stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
+                  <strong>{stage.stripLabel ?? stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
                   <span className={styles.when} data-tone={when.tone}>
                     {when.label}
                   </span>

@@ -442,6 +442,26 @@ export default function HowItWorksPage() {
                   </span>
                   <small>Checked 30 October 2026</small>
                 </li>
+                <li>
+                  <strong>Other EU countries and Switzerland: work, family and business</strong>
+                  <span>
+                    Checklists that link each step to the official page (EU
+                    Immigration Portal, New to Denmark, SEM, ch.ch). No fees,
+                    thresholds or deadlines are stated.
+                  </span>
+                  <small>Checked 2–3 November 2026</small>
+                </li>
+                <li>
+                  <strong>Notes for your passport</strong>
+                  <span>
+                    Any citizenship outside the EU, EEA and Switzerland: entry
+                    visa, airport transit visa, apostille or legalisation, and
+                    relief or extra checks where an official list sets them
+                    (for example Germany&apos;s and the Netherlands&apos;
+                    nationality lists, temporary protection for Ukraine).
+                  </span>
+                  <small>Checked 3 November 2026</small>
+                </li>
               </ul>
             </article>
 
@@ -453,8 +473,9 @@ export default function HowItWorksPage() {
                   <span>
                     Study: verified admission in Slovakia and Czechia, official
                     rules checked in {new Set(pendingProgramGroups.map((group) => group.countryCode)).size}{" "}
-                    countries. Work: Slovakia, Czechia and Austria. Family and
-                    business: Slovakia, Czechia and Austria.
+                    countries. Work, family and business: verified for Slovakia,
+                    Czechia and Austria; official-link checklists for the
+                    other EU countries and Switzerland.
                   </span>
                 </li>
                 <li>

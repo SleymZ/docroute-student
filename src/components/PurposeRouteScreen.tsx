@@ -267,13 +267,16 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
     if (!base) return null;
     // Passport-specific steps (India first), ahead of the Slovak stages.
     const status = (familyProfile ?? businessProfile)?.currentResidenceStatus;
-    const passport = citizenshipStage(base.profile.citizenshipCountryCode, "SK", "Slovakia", kind, {
-      existingResident: isExistingResidentStatus(status),
-    });
+    // Not when the route stops at a gate (no application follows).
+    const passport = base.applicable
+      ? citizenshipStage(base.profile.citizenshipCountryCode, "SK", "Slovakia", kind, {
+          existingResident: isExistingResidentStatus(status), asOf: asOfDate,
+        })
+      : null;
     return passport
       ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
       : base;
-  }, [kind, searchParams]);
+  }, [kind, searchParams, asOfDate]);
 
   const progressId = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -386,7 +389,7 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
                   <span className={styles.stop} aria-hidden="true">
                     {complete ? <Check size={13} /> : index + 1}
                   </span>
-                  <strong>{stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
+                  <strong>{stage.stripLabel ?? stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
                   <span className={styles.when} data-tone={filingItem?.tone}>
                     {filingItem ? `File ${filingItem.dateLabel.replace(/^By /, "by ")}` : stage.timing}
                   </span>

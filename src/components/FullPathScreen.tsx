@@ -10,7 +10,7 @@ import { CountryPicker } from "@/components/CountryPicker";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
-import { applicantCountryOptions } from "@/data/applicant-countries";
+import { citizenshipCountryOptions } from "@/data/applicant-countries";
 import { formatPendingDegree, pendingStatusLabel, type PendingProgramGroup } from "@/data/pending-programs";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
@@ -84,7 +84,7 @@ function FullPathQuestions({
         <CountryPicker
           label="Citizenship"
           value={citizenship}
-          options={applicantCountryOptions}
+          options={citizenshipCountryOptions}
           placeholder="Select citizenship"
           onChange={setCitizenship}
         />
@@ -219,7 +219,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
                 <span className={styles.stop} aria-hidden="true">
                   {complete ? <Check size={13} /> : index + 1}
                 </span>
-                <strong>{stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
+                <strong>{stage.stripLabel ?? stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
                 <span className={styles.when}>{stage.timing}</span>
                 {tasks.length > 0 && (
                   <small>

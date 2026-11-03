@@ -7,9 +7,9 @@ import { Header } from "@/components/Header";
 import { getAdmissionDate } from "@/lib/admission-date";
 
 export const metadata: Metadata = {
-  title: "Residence guide: family and business in Europe",
+  title: "Residence guide: work, family and business in Europe",
   description:
-    "Source-linked residence checklists for family and business in every EU country and Switzerland, and for work in Austria.",
+    "Source-linked residence checklists for work, family and business in every EU country and Switzerland, with notes for your passport.",
   // The chosen situation lives in the URL.
   robots: { index: false, follow: false },
 };

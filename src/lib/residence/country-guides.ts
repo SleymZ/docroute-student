@@ -638,7 +638,7 @@ export function findCountryGuide(country: string | null, purpose: string | null)
   const code = (country ?? "").toUpperCase();
   const verified = guides.find((guide) => guide.country === code && guide.purpose === purpose);
   if (verified) return verified;
-  return purpose === "family" || purpose === "business" ? buildLinkedGuide(code, purpose) : null;
+  return purpose === "family" || purpose === "business" || purpose === "work" ? buildLinkedGuide(code, purpose) : null;
 }
 
 export function pickVariant(guide: CountryGuide, variantId: string | null): GuideVariant {
