@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import {
   Compass,
+  Flag,
   MessageSquareHeart,
   MapPinned,
   Route,
@@ -21,6 +22,11 @@ const navigation = [
     label: "Build route",
     href: "/#route-builder",
     icon: Route,
+  },
+  {
+    label: "My route",
+    href: "/my-route",
+    icon: Flag,
   },
   {
     label: "Residence routes",

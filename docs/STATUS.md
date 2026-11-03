@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-02. Keep this file factual: describe what exists and
+Last updated: 2026-11-03. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -52,6 +52,7 @@ page `/route/guide`, 2026-10-30).
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
   Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`,
+  `confirmed_routes` (after migration `20261103120000`),
   `waitlist_signups`, `feedback`, `public_profiles`, `success_stories`,
   `story_moderators`;
   Storage bucket `avatars`. Functions: `delete_my_account()` (migration
@@ -804,6 +805,43 @@ latest rules" (owner rule 2026-10-30):
   citizenships' notes, verified step-by-step guides for the 25 linked
   countries.
 
+## My route, date fields on phones, full-path button (2026-11-03)
+
+- **Confirm this route** block at the top of every route page (study
+  preview SK/CZ, work SK, Czechia, family/business SK, `/route/guide`,
+  `/route/full`). Confirming needs an account: signed-out visitors get
+  "Sign up to confirm", which returns to the same route page. One confirmed
+  route per account; confirming another asks first, then replaces it
+  (ticks stay, they are keyed by route). A route is the page address without
+  the move date (a guide with another citizenship is another route). Same
+  route with a new move date is
+  saved again automatically (also flushed when the page is left).
+- Page `/my-route` (header link "My route", login required, noindex,
+  disallowed in robots): title, purpose, country, confirmed date, move date,
+  "X of Y steps done" (ticks in `route_task_progress` counted only for the
+  confirmed checklist's step ids, stored with the route), Open / Remove.
+  The study preview stores the profile answers in the address, also when
+  they came from the saved account profile, so editing the profile later
+  does not change the confirmed route.
+- Migration `20261103120000_confirmed_routes.sql` (owner runs it in the SQL
+  editor): table `confirmed_routes` (one row per user, `route_path` must
+  start with `/route/`, no `//`, `\` or spaces), RLS own row only, anon has
+  no access, `confirmed_at`/`updated_at` set by a trigger (`confirmed_at`
+  changes only when a route with other answers replaces it), removed with the
+  account (foreign key cascade). Tested twice on local Postgres 16 with
+  anon/authenticated roles. Download my data includes `confirmedRoute`;
+  Privacy data row and deletion text updated (2026-11-03).
+- Date fields: one `DateInput` for all move/start dates. It keeps the
+  picked value locally and writes only complete dates to the address, so
+  phone pickers no longer jump back while the address updates; iOS gets a
+  normal-size field and 16px text (no zoom on focus). Not checked on a real
+  iPhone/Android by DocRoute; the owner checks on his phone.
+- University page: the main route action ("Build my full path", "Build my
+  route" or "Build my <field> route") stays in a bar at the bottom of the
+  screen (full width on phones); "University website" is a secondary
+  button when a route exists. In route results the coming-soon card's
+  "Build my full path" is now the main button.
+
 ## Full study path (2026-11-01)
 
 - Every "coming soon" listing (all of `pending-programs.ts` and
@@ -1032,7 +1070,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (253 tests on 2026-11-02).
+- Unit tests: `npm test` (260 tests on 2026-11-03).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

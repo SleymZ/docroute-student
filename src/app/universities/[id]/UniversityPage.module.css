@@ -770,3 +770,81 @@
     gap: 12px;
   }
 }
+
+/* Main route action, always on screen (the page is long). */
+.stickyAction {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(520px, calc(100vw - 40px));
+  padding: 10px 10px 10px 18px;
+  border: 1px solid light-dark(rgba(213, 90, 67, 0.35), rgba(255, 128, 103, 0.35));
+  border-radius: 16px;
+  background: light-dark(rgba(250, 253, 255, 0.96), rgba(8, 28, 39, 0.96));
+  box-shadow: 0 14px 40px light-dark(rgba(20, 50, 64, 0.18), rgba(0, 0, 0, 0.45));
+  backdrop-filter: blur(10px);
+}
+
+.stickyAction p {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+}
+
+.stickyAction strong {
+  overflow: hidden;
+  color: light-dark(#22211d, #f5f3ee);
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stickyAction span {
+  color: light-dark(#4f6871, #93adb8);
+  font-size: 11px;
+}
+
+.stickyAction .primaryAction {
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.withStickyAction {
+  padding-bottom: 110px;
+}
+
+@media (max-width: 620px) {
+  .stickyAction {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-width: none;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    border-width: 1px 0 0;
+    border-radius: 0;
+  }
+
+  .stickyAction p {
+    display: none;
+  }
+
+  .stickyAction .primaryAction {
+    flex: 1;
+  }
+
+  .withStickyAction {
+    padding-bottom: 90px;
+  }
+}
+
+@media print {
+  .stickyAction {
+    display: none;
+  }
+}

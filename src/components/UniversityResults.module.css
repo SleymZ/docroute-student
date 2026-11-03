@@ -263,6 +263,22 @@
   color: light-dark(#bc5238, #ff9277);
 }
 
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid light-dark(#809daa, #365867);
+  border-radius: 10px;
+  background: light-dark(rgba(245, 251, 255, 0.72), rgba(13, 42, 55, 0.72));
+  color: light-dark(#243337, #d5e7ed);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .routeLink {
   display: inline-flex;
   align-items: center;
@@ -304,7 +320,8 @@
 }
 
 @media (max-width: 520px) {
-  .profileLink {
+  .profileLink,
+  .secondaryLink {
     width: 100%;
   }
 

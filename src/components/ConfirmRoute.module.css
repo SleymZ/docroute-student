@@ -1,0 +1,139 @@
+.box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid light-dark(rgba(213, 90, 67, 0.32), rgba(255, 128, 103, 0.32));
+  border-radius: 16px;
+  background: light-dark(rgba(241, 115, 91, 0.07), rgba(255, 128, 103, 0.08));
+}
+
+.box[data-loading="true"] {
+  min-height: 72px;
+  border-style: dashed;
+  background: transparent;
+  opacity: 0.4;
+}
+
+.box[data-confirmed="true"] {
+  border-color: light-dark(rgba(26, 128, 92, 0.35), rgba(120, 220, 170, 0.35));
+  background: light-dark(rgba(26, 128, 92, 0.07), rgba(120, 220, 170, 0.07));
+}
+
+.icon {
+  display: grid;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: light-dark(rgba(241, 115, 91, 0.14), rgba(255, 128, 103, 0.16));
+  color: light-dark(#b8563f, #ff9a82);
+}
+
+.box[data-confirmed="true"] .icon {
+  background: light-dark(rgba(26, 128, 92, 0.14), rgba(120, 220, 170, 0.16));
+  color: light-dark(#17724f, #8ee3b8);
+}
+
+.copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.copy strong {
+  display: block;
+  color: light-dark(#22211d, #f5f3ee);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.copy p {
+  margin: 3px 0 0;
+  color: light-dark(#4f6871, #a2bac4);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.copy b {
+  color: light-dark(#22211d, #f5f3ee);
+  font-weight: 600;
+}
+
+.copy .error {
+  color: light-dark(#b23c27, #ff9a82);
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  border: 0;
+  background: light-dark(#f1735b, #ff8067);
+  color: #071821;
+}
+
+.primary:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.secondary {
+  border: 1px solid light-dark(#809daa, #365867);
+  background: light-dark(rgba(245, 251, 255, 0.72), rgba(13, 42, 55, 0.72));
+  color: light-dark(#243337, #d5e7ed);
+}
+
+@media (hover: hover) {
+  .primary:hover:not(:disabled) {
+    background: light-dark(#e17f68, #ff9a82);
+  }
+}
+
+@media (max-width: 620px) {
+  .box {
+    flex-wrap: wrap;
+  }
+
+  .copy {
+    flex-basis: calc(100% - 50px);
+  }
+
+  .actions,
+  .box > .primary,
+  .box > .secondary {
+    width: 100%;
+  }
+
+  .actions > * {
+    flex: 1;
+  }
+}
+
+@media print {
+  .box {
+    display: none;
+  }
+}

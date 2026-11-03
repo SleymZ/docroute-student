@@ -84,6 +84,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      confirmed_routes: {
+        Row: {
+          user_id: string;
+          route_path: string;
+          route_key: string | null;
+          title: string;
+          purpose: "study" | "work" | "family" | "business";
+          country_code: string;
+          step_ids: string[];
+          confirmed_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          route_path: string;
+          route_key?: string | null;
+          title: string;
+          purpose: "study" | "work" | "family" | "business";
+          country_code: string;
+          step_ids?: string[];
+        };
+        Update: {
+          user_id?: string;
+          route_path?: string;
+          route_key?: string | null;
+          title?: string;
+          purpose?: "study" | "work" | "family" | "business";
+          country_code?: string;
+          step_ids?: string[];
+        };
+        Relationships: [];
+      };
       route_task_progress: {
         Row: {
           user_id: string;

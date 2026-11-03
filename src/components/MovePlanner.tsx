@@ -12,6 +12,7 @@ import {
 
 import type { DeadlineTone, ResidenceDeadlinePlan } from "@/lib/residence/deadlines";
 
+import { DateInput } from "./DateInput";
 import styles from "./MovePlanner.module.css";
 
 type MovePlannerProps = {
@@ -66,13 +67,12 @@ export function MovePlanner({
 
         <label className={styles.dateField} htmlFor={inputId}>
           <span>{dateLabel}</span>
-          <input
+          <DateInput
             id={inputId}
-            type="date"
             value={moveDate}
             min={minDate}
             disabled={Boolean(unavailableReason)}
-            onChange={(event) => onMoveDateChange(event.target.value)}
+            onCommit={onMoveDateChange}
           />
         </label>
       </header>

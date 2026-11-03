@@ -1,0 +1,36 @@
+/* iOS Safari draws date inputs with its own appearance: an empty field
+   collapses to almost no width or height and ignores text alignment, so the
+   person sees no field to tap. These rules give it a normal box. */
+.input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.input::-webkit-date-and-time-value {
+  min-height: 1.4em;
+  text-align: left;
+}
+
+.input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 16px stops iOS from zooming the page when the field gets focus. */
+@media (max-width: 760px) {
+  .input {
+    font-size: 16px !important;
+  }
+}

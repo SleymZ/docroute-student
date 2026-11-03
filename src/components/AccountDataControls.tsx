@@ -31,12 +31,13 @@ export function AccountDataControls() {
       if (userError || !userData.user) throw userError ?? new Error("No user");
       const user = userData.user;
 
-      const [profile, saved, progress, publicProfile, stories] = await Promise.all([
+      const [profile, saved, progress, publicProfile, stories, confirmedRoute] = await Promise.all([
         supabase.from("applicant_profiles").select("*").eq("user_id", user.id),
         supabase.from("saved_universities").select("*").eq("user_id", user.id),
         supabase.from("route_task_progress").select("*").eq("user_id", user.id),
         supabase.from("public_profiles").select("*").eq("user_id", user.id),
         supabase.from("success_stories").select("*").eq("user_id", user.id),
+        supabase.from("confirmed_routes").select("*").eq("user_id", user.id),
       ]);
       const failed = [profile, saved, progress, publicProfile, stories].find(
         (result) => result.error,
@@ -58,6 +59,8 @@ export function AccountDataControls() {
         routeTaskProgress: progress.data ?? [],
         publicProfile: publicProfile.data?.[0] ?? null,
         stories: stories.data ?? [],
+        // My route; null also when the table cannot be read.
+        confirmedRoute: confirmedRoute.data?.[0] ?? null,
       };
 
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {

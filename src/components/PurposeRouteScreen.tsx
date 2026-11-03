@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
+import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
@@ -53,6 +54,7 @@ import {
 import { currentResidenceStatuses, type CurrentResidenceStatus } from "@/types/admission";
 import type { RouteTaskStatus } from "@/types/route-preview";
 
+import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
 
 export type PurposeKind = "family" | "business";
@@ -369,6 +371,7 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <ConfirmRoute title={text.title} purpose={kind} countryCode="SK" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {route.applicable && (
         <ol className={styles.strip} aria-label="Route stages">
@@ -510,11 +513,10 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
             <>
               <label className={styles.dateField}>
                 <span>{kind === "family" ? "When do you want to move?" : "When do you want to start?"}</span>
-                <input
-                  type="date"
+                <DateInput
                   value={moveDate}
                   min={addDays(asOfDate, 1)}
-                  onChange={(event) => changeMoveDate(event.target.value)}
+                  onCommit={changeMoveDate}
                 />
               </label>
               {!plan && (

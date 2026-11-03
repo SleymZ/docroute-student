@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
+import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
@@ -43,6 +44,7 @@ import type { YesNo, YesNoUnsure } from "@/lib/work-profile";
 import { currentResidenceStatuses, type CurrentResidenceStatus } from "@/types/admission";
 import type { RouteTaskStatus } from "@/types/route-preview";
 
+import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
 
 const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
@@ -399,6 +401,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <ConfirmRoute title={title} purpose={profile.purpose === "work" ? "work" : "study"} countryCode="CZ" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {route.procedure && (
         <ol className={styles.strip} aria-label="Route stages">
@@ -538,11 +541,10 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
             <>
               <label className={styles.dateField}>
                 <span>{profile.purpose === "work" ? "When do you start work?" : "When do you need to be in Czechia?"}</span>
-                <input
-                  type="date"
+                <DateInput
                   value={moveDate}
                   min={addDays(asOfDate, 1)}
-                  onChange={(event) => changeMoveDate(event.target.value)}
+                  onCommit={changeMoveDate}
                 />
               </label>
               {!plan && (
