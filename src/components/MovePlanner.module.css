@@ -43,6 +43,7 @@
   display: grid;
   flex-shrink: 0;
   gap: 6px;
+  min-width: 190px;
 }
 
 .dateField span {

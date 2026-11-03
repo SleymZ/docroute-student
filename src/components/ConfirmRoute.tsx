@@ -1,0 +1,212 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { CheckCircle2, LogIn, MapPinned, RefreshCw } from "lucide-react";
+
+import {
+  clampTitle,
+  isSameRoute,
+  myRouteLoginHref,
+  normaliseRoutePath,
+  type ConfirmedRoute,
+  type RoutePurpose,
+} from "@/lib/confirmed-route";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { loadConfirmedRoute, saveConfirmedRoute } from "@/lib/supabase/confirmed-route";
+
+import styles from "./ConfirmRoute.module.css";
+
+type ConfirmRouteProps = {
+  title: string;
+  purpose: RoutePurpose;
+  countryCode: string;
+  routeKey: string | null;
+  totalSteps: number;
+};
+
+type State =
+  | { kind: "loading" }
+  | { kind: "signed-out" }
+  | { kind: "ready"; userId: string; confirmed: ConfirmedRoute | null }
+  | { kind: "error"; userId: string | null };
+
+// "Confirm this route" on every route page. Confirming needs an account: the
+// route is then listed on /my-route ("My route") and can be reopened any time.
+// One confirmed route per account; confirming another replaces it.
+export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps }: ConfirmRouteProps) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const routePath = useMemo(
+    () => normaliseRoutePath(`${pathname}${searchParams.size ? `?${searchParams.toString()}` : ""}`),
+    [pathname, searchParams],
+  );
+  const [state, setState] = useState<State>({ kind: "loading" });
+  const [saving, setSaving] = useState(false);
+  const [askReplace, setAskReplace] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) {
+      setState({ kind: "signed-out" });
+      return;
+    }
+    const supabase = createSupabaseBrowserClient();
+    let active = true;
+    void (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!active) return;
+      if (!data.user) {
+        setState({ kind: "signed-out" });
+        return;
+      }
+      try {
+        const confirmed = await loadConfirmedRoute(supabase, data.user.id);
+        if (active) setState({ kind: "ready", userId: data.user.id, confirmed });
+      } catch {
+        if (active) setState({ kind: "error", userId: data.user.id });
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const current = routePath ? { routePath, routeKey } : null;
+  const confirmed = state.kind === "ready" ? state.confirmed : null;
+  const isThis = Boolean(current && isSameRoute(confirmed, current));
+
+  // Same route, new address (a new move date): keep My route up to date.
+  useEffect(() => {
+    if (state.kind !== "ready" || !confirmed || !current || !isThis) return;
+    if (confirmed.routePath === current.routePath && confirmed.totalSteps === totalSteps) return;
+    const timer = window.setTimeout(() => {
+      void saveConfirmedRoute(createSupabaseBrowserClient(), state.userId, {
+        ...confirmed,
+        routePath: current.routePath,
+        totalSteps,
+      })
+        .then((saved) => setState({ kind: "ready", userId: state.userId, confirmed: saved }))
+        .catch(() => undefined);
+    }, 800);
+    return () => window.clearTimeout(timer);
+  }, [state, confirmed, current?.routePath, isThis, totalSteps]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!routePath || state.kind === "loading") {
+    return <div className={styles.box} data-loading="true" aria-hidden="true" />;
+  }
+
+  async function confirm() {
+    if (state.kind !== "ready" || !current) return;
+    setSaving(true);
+    setMessage(null);
+    try {
+      const saved = await saveConfirmedRoute(createSupabaseBrowserClient(), state.userId, {
+        routePath: current.routePath,
+        routeKey,
+        title: clampTitle(title),
+        purpose,
+        countryCode,
+        totalSteps,
+      });
+      setState({ kind: "ready", userId: state.userId, confirmed: saved });
+      setAskReplace(false);
+    } catch {
+      setMessage("Could not save. Check your connection and try again.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (state.kind === "signed-out") {
+    return (
+      <section className={styles.box} aria-label="Confirm this route">
+        <span className={styles.icon}>
+          <MapPinned size={18} aria-hidden="true" />
+        </span>
+        <div className={styles.copy}>
+          <strong>Is this your route?</strong>
+          <p>Confirm it to keep it in My route and come back to it any time. Confirming needs a free account.</p>
+        </div>
+        <Link href={myRouteLoginHref(routePath)} className={styles.primary}>
+          <LogIn size={15} aria-hidden="true" />
+          Sign up to confirm
+        </Link>
+      </section>
+    );
+  }
+
+  if (state.kind === "error") {
+    return (
+      <section className={styles.box} aria-label="Confirm this route">
+        <div className={styles.copy}>
+          <strong>My route is unavailable right now</strong>
+          <p>Your progress on this page is still saved. Try again later.</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (isThis) {
+    return (
+      <section className={styles.box} data-confirmed="true" aria-label="Your confirmed route">
+        <span className={styles.icon}>
+          <CheckCircle2 size={18} aria-hidden="true" />
+        </span>
+        <div className={styles.copy}>
+          <strong>This is your confirmed route</strong>
+          <p>It is saved in My route. Changes to the move date are saved there too.</p>
+        </div>
+        <Link href="/my-route" className={styles.secondary}>
+          Open My route
+        </Link>
+      </section>
+    );
+  }
+
+  return (
+    <section className={styles.box} aria-label="Confirm this route">
+      <span className={styles.icon}>
+        <MapPinned size={18} aria-hidden="true" />
+      </span>
+      <div className={styles.copy}>
+        <strong>Is this your route?</strong>
+        {askReplace && confirmed ? (
+          <p>
+            You already confirmed <b>{confirmed.title}</b>. Confirming this one replaces it in My route. Ticks you
+            made there stay saved.
+          </p>
+        ) : (
+          <p>Confirm it to keep it in My route and come back to it any time.</p>
+        )}
+        {message && (
+          <p className={styles.error} role="alert">
+            {message}
+          </p>
+        )}
+      </div>
+      <div className={styles.actions}>
+        {askReplace && (
+          <button type="button" className={styles.secondary} onClick={() => setAskReplace(false)}>
+            Keep the old one
+          </button>
+        )}
+        <button
+          type="button"
+          className={styles.primary}
+          disabled={saving}
+          onClick={() => (confirmed && !askReplace ? setAskReplace(true) : void confirm())}
+        >
+          {confirmed && !askReplace ? (
+            <RefreshCw size={15} aria-hidden="true" />
+          ) : (
+            <CheckCircle2 size={15} aria-hidden="true" />
+          )}
+          {saving ? "Saving…" : askReplace ? "Replace my route" : "Confirm this route"}
+        </button>
+      </div>
+    </section>
+  );
+}

@@ -11,6 +11,7 @@ import { applicantCountryOptions } from "@/data/applicant-countries";
 import { citizenshipStage, citizenshipNoteSources } from "@/data/citizenship-notes";
 import { isEuEeaSwissCitizen } from "@/lib/profile-options";
 import { linkedCountryName, linkedGuideCountries } from "@/lib/residence/linked-guides";
+import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -96,6 +97,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <ConfirmRoute title={guide.title} purpose={guide.purpose} countryCode={guide.country} routeKey={routeKey} totalSteps={actionable.length} />
 
       {guide.variants.length > 1 && (
         <fieldset className={styles.choice} data-print-hide="">

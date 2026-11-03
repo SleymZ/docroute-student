@@ -28,6 +28,7 @@ import {
 import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
+import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
@@ -259,6 +260,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <ConfirmRoute title={`${program.programName} · ${program.universityName}`} purpose="study" countryCode={program.countryCode} routeKey={routeKey} totalSteps={actionableTasks.length} />
 
       <section className={styles.routeFacts}>
         <article>

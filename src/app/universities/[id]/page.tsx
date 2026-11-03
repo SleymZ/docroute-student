@@ -295,6 +295,25 @@ export default async function UniversityPage({
       ).length
     : 0;
 
+  // The page is long (requirements, deadlines, sources), so the main route
+  // action stays on screen in a bar at the bottom.
+  const stickyAction =
+    verifiedProgram || pathGroup
+      ? {
+          href: routeAction.href,
+          label: routeAction.heroLabel,
+          note: pathGroup
+            ? "From application to residence, step by step"
+            : "Your personal route for this programme",
+        }
+      : availableRoute && availableRouteHref
+        ? {
+            href: availableRouteHref,
+            label: `Build my ${availableRoute.category} route`,
+            note: "A verified route is available here",
+          }
+        : null;
+
   const statusLabel = match
     ? matchStatusLabels[match.status]
     : verifiedProgram
@@ -306,7 +325,7 @@ export default async function UniversityPage({
           : "Verification pending";
 
   return (
-    <main>
+    <main className={stickyAction ? styles.withStickyAction : undefined}>
       <Header />
 
       <div className={styles.page}>
@@ -414,7 +433,7 @@ export default async function UniversityPage({
                 target="_blank"
                 rel="noopener noreferrer"
                 className={
-                  verifiedProgram || availableRoute
+                  verifiedProgram || availableRoute || pathGroup
                     ? styles.secondaryAction
                     : styles.primaryAction
                 }
@@ -1047,6 +1066,19 @@ export default async function UniversityPage({
           </aside>
         </div>
       </div>
+
+      {stickyAction && (
+        <div className={styles.stickyAction}>
+          <p>
+            <strong>{displayName}</strong>
+            <span>{stickyAction.note}</span>
+          </p>
+          <Link href={stickyAction.href} className={styles.primaryAction}>
+            {stickyAction.label}
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </div>
+      )}
     </main>
   );
 }

@@ -17,6 +17,7 @@ import {
   FileText,
   Languages,
   Search,
+  Route as RouteIcon,
 } from "lucide-react";
 
 import { PendingPrograms } from "./PendingPrograms";
@@ -969,15 +970,19 @@ export function UniversityResults({
                           pendingPathGroup(university)!.id,
                           answersFromProfile(profile, university.countryCode),
                         )}
-                        className={linkStyles.routeLink}
+                        className={linkStyles.profileLink}
                       >
+                        <RouteIcon size={15} aria-hidden="true" />
                         Build my full path
-                        <ArrowRight size={14} aria-hidden="true" />
                       </Link>
                     )}
                     <Link
                       href={universityHref}
-                      className={linkStyles.profileLink}
+                      className={
+                        university.pending && pendingPathGroup(university)
+                          ? linkStyles.secondaryLink
+                          : linkStyles.profileLink
+                      }
                     >
                       View university
                       <ArrowRight

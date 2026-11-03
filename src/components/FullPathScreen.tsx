@@ -8,6 +8,7 @@ import { AlertTriangle, ArrowLeft, ArrowRight, Check, ExternalLink, Info, Pencil
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { FeedbackForm } from "@/components/FeedbackForm";
+import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { formatPendingDegree, pendingStatusLabel, type PendingProgramGroup } from "@/data/pending-programs";
@@ -205,6 +206,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <ConfirmRoute title={title} purpose="study" countryCode={group.countryCode} routeKey={routeKey} totalSteps={actionable.length} />
 
       <ol className={styles.strip} aria-label="Path stages">
         {path.stages.map((stage, index) => {
