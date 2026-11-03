@@ -463,7 +463,9 @@ export function citizenshipStage(
         ? `Checked against official lists for ${name}. You already live in the country, so entry-visa steps are left out.`
         : `Checked against official lists for ${name}. Do these early: visas and document legalisation take time.`,
       timing: "Before you apply",
-      tasks: present.map((item) => item.task),
+      // Task ids carry the citizenship: guides keep one progress key for
+      // every passport, so ticks must not carry over to another passport.
+      tasks: present.map((item) => ({ ...item.task, id: `${item.task.id}-${code.toLowerCase()}` })),
     },
     sources: stageSources,
   };

@@ -256,9 +256,14 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
     const base = buildSlovakiaWorkRoute(profile);
     // Passport-specific steps (visa, transit, apostille), ahead of the
     // Slovak stages.
-    const passport = citizenshipStage(profile.citizenshipCountryCode, "SK", "Slovakia", "work", {
-      existingResident: isExistingResidentStatus(profile.currentResidenceStatus),
-    });
+    // Not when the route stops at a gate (permanent residence, a
+    // citizenship/status conflict): no application follows.
+    const passport =
+      base.stages.length > 1
+        ? citizenshipStage(profile.citizenshipCountryCode, "SK", "Slovakia", "work", {
+            existingResident: isExistingResidentStatus(profile.currentResidenceStatus),
+          })
+        : null;
     return passport
       ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
       : base;

@@ -267,9 +267,12 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
     if (!base) return null;
     // Passport-specific steps (India first), ahead of the Slovak stages.
     const status = (familyProfile ?? businessProfile)?.currentResidenceStatus;
-    const passport = citizenshipStage(base.profile.citizenshipCountryCode, "SK", "Slovakia", kind, {
-      existingResident: isExistingResidentStatus(status),
-    });
+    // Not when the route stops at a gate (no application follows).
+    const passport = base.applicable
+      ? citizenshipStage(base.profile.citizenshipCountryCode, "SK", "Slovakia", kind, {
+          existingResident: isExistingResidentStatus(status),
+        })
+      : null;
     return passport
       ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
       : base;

@@ -822,7 +822,8 @@ latest rules" (owner rule 2026-10-30):
   `src/data/citizenship-lists.ts`) for any citizenship outside the
   EU/EEA/Switzerland, in every guide, the Slovak work/family/business
   routes, the Czech routes and the full study path (existing residents get
-  no entry steps):
+  no entry steps; routes that stop at a gate get no passport stage; task ids
+  end with the citizenship so ticks do not carry over to another passport):
   - entry visa: Regulation (EU) 2018/1806 Annex I/II (consolidated
     30 Dec 2025; biometric-passport footnotes), Ireland's own list, SEM's
     list for long stays in Switzerland;
@@ -1111,7 +1112,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (265 tests on 2026-11-03).
+- Unit tests: `npm test` (266 tests on 2026-11-03).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

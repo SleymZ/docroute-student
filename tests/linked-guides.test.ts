@@ -94,7 +94,15 @@ function stageFor(...args: Parameters<typeof citizenshipStage>) {
   if (!result) throw new Error(`no stage for ${args[0]} in ${args[1]}`);
   const ids = new Set(result.sources.map((source) => source.id));
   for (const task of result.stage.tasks) for (const id of task.sourceIds) assert.ok(ids.has(id), id);
-  return { ...result, ids: result.stage.tasks.map((task) => task.id), byId: new Map(result.stage.tasks.map((task) => [task.id, task])) };
+  // Ids end with the citizenship ("citizen-visa-in"); compare without it.
+  const suffix = `-${String(args[0]).toLowerCase()}`;
+  const base = (id: string) => (id.endsWith(suffix) ? id.slice(0, -suffix.length) : id);
+  for (const task of result.stage.tasks) assert.ok(task.id.endsWith(suffix), task.id);
+  return {
+    ...result,
+    ids: result.stage.tasks.map((task) => base(task.id)),
+    byId: new Map(result.stage.tasks.map((task) => [base(task.id), task])),
+  };
 }
 
 test("every non-EU passport gets notes; EU passports and own citizens do not", () => {
@@ -154,6 +162,12 @@ test("extra checks: airport transit, legalisation, objections, Ukraine", () => {
   assert.match(stageFor("UA", "CH", "Switzerland", "family").byId.get("citizen-protection")!.title, /status S/);
 });
 
+test("passport ticks do not carry over to another passport", () => {
+  const us = citizenshipStage("US", "DE", "Germany", "work")!.stage.tasks.map((task) => task.id);
+  const india = citizenshipStage("IN", "DE", "Germany", "work")!.stage.tasks.map((task) => task.id);
+  assert.equal(us.some((id) => india.includes(id)), false);
+});
+
 test("the official lists are consistent", () => {
   for (const code of schengenVisaRequired) assert.equal(schengenVisaFree.includes(code), false, code);
   for (const code of airportTransitVisaRequired) assert.ok(schengenVisaRequired.includes(code), code);
@@ -175,12 +189,12 @@ test("the full study path adds the Indian stage before residence", () => {
 
 test("existing residents get no entry-visa step", () => {
   const resident = citizenshipStage("IN", "CH", "Switzerland", "study", { existingResident: true })!;
-  assert.deepEqual(resident.stage.tasks.map((task) => task.id), ["citizen-documents"]);
+  assert.deepEqual(resident.stage.tasks.map((task) => task.id), ["citizen-documents-in"]);
   const group = findFullPathGroup("ethz-informatik-bsc-2027")!;
   const path = buildFullPath(group, { citizenshipCountryCode: "IN", currentResidenceStatus: "destination-permanent-residence" });
   const tasks = path.stages.flatMap((stage) => stage.tasks.map((task) => task.id));
-  assert.equal(tasks.includes("citizen-visa"), false);
-  assert.ok(tasks.includes("citizen-documents"));
+  assert.equal(tasks.includes("citizen-visa-in"), false);
+  assert.ok(tasks.includes("citizen-documents-in"));
 });
 
 test("existing-resident statuses are the destination permits and visas", () => {
