@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   useEffect,
   useId,
@@ -568,9 +569,15 @@ export function RouteForm({
             : purpose === "work"
               ? "Work routes cover Slovakia, Czechia and Austria so far"
               : purpose !== "study"
-                ? "Family and business routes cover Slovakia, Czechia and Austria so far"
+                ? "Family and business: verified for Slovakia, Czechia and Austria"
               : "Personalised route coverage in progress · Public directory available"}
         </span>
+        {(purpose === "family" || purpose === "business") && (
+          <Link href={`/route/guide?purpose=${purpose}`}>
+            Other EU countries and Switzerland
+            <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        )}
       </div>
     </form>
   );
