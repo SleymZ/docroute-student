@@ -54,6 +54,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
     guide.country,
     guide.countryName,
     guide.purpose,
+    { asOf: asOfDate },
   );
   const stages = passport ? [passport.stage, ...variant.stages] : variant.stages;
   const euCitizen = citizenship && isEuEeaSwissCitizen(citizenship) && citizenship !== guide.country;

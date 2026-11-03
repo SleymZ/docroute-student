@@ -51,6 +51,14 @@ export const apostilleParties: readonly string[] = [
   "XK", "ZA",
 ];
 
+/** Entry into force for parties that joined recently (HCCH status table,
+ *  column EIF). Before this date the apostille is not yet available. */
+export const apostilleEntryIntoForce: Readonly<Record<string, string>> = {
+  DZ: "2026-07-09",
+  TH: "2027-02-28",
+  VN: "2026-09-11",
+};
+
 /** Objections still in force under Article 12(2), from the HCCH
  *  notifications page of each acceding state, limited to EU countries and
  *  Switzerland (withdrawn and late objections left out). Between these

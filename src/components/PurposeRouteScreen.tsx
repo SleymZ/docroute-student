@@ -270,13 +270,13 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
     // Not when the route stops at a gate (no application follows).
     const passport = base.applicable
       ? citizenshipStage(base.profile.citizenshipCountryCode, "SK", "Slovakia", kind, {
-          existingResident: isExistingResidentStatus(status),
+          existingResident: isExistingResidentStatus(status), asOf: asOfDate,
         })
       : null;
     return passport
       ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
       : base;
-  }, [kind, searchParams]);
+  }, [kind, searchParams, asOfDate]);
 
   const progressId = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());

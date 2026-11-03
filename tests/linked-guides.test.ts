@@ -154,6 +154,10 @@ test("extra checks: airport transit, legalisation, objections, Ukraine", () => {
   assert.match(pk.byId.get("citizen-documents")!.title, /does not apply between Pakistan and Poland/);
   assert.equal(stageFor("PK", "IE", "Ireland", "work").ids.includes("citizen-transit"), false);
 
+  // Joined, but not yet in force (Thailand: 28 February 2027).
+  assert.match(stageFor("TH", "FR", "France", "work", { asOf: "2026-11-03" }).byId.get("citizen-documents")!.title, /legalisation for now/);
+  assert.match(stageFor("TH", "FR", "France", "work", { asOf: "2027-03-01" }).byId.get("citizen-documents")!.title, /Apostille your documents/);
+
   // Not a party to the Apostille Convention.
   assert.match(stageFor("EG", "IT", "Italy", "family").byId.get("citizen-documents")!.title, /legalisation/);
 

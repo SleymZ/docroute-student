@@ -828,7 +828,9 @@ latest rules" (owner rule 2026-10-30):
     30 Dec 2025; biometric-passport footnotes), Ireland's own list, SEM's
     list for long stays in Switzerland;
   - airport transit visa: Visa Code Annex IV (consolidated 28 Jun 2024);
-  - apostille or legalisation: HCCH status table (30 Jun 2026) and the
+  - apostille or legalisation: HCCH status table (30 Jun 2026), entry into
+    force for recent parties (Thailand only from 28 Feb 2027: legalisation
+    until then), and the
     objections still in force for EU countries (e.g. Germany–India,
     Poland/Czechia/Netherlands…–Pakistan, Germany–Philippines); India keeps
     the MEA procedure where the apostille applies;

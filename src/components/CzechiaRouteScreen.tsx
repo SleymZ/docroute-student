@@ -296,13 +296,13 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
     const passport =
       base.stages.length > 1
         ? citizenshipStage(profile.citizenshipCountryCode, "CZ", "Czechia", profile.purpose, {
-            existingResident: isExistingResidentStatus(profile.currentResidenceStatus),
+            existingResident: isExistingResidentStatus(profile.currentResidenceStatus), asOf: asOfDate,
           })
         : null;
     return passport
       ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
       : base;
-  }, [profile]);
+  }, [profile, asOfDate]);
   const routeKey = route ? `cz:${route.version}:${getCzechProgressId(route.profile)}` : null;
   const routeProgress = useRouteProgress(routeKey);
   const completed = routeProgress.values;

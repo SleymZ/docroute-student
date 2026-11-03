@@ -3,6 +3,7 @@ import type { RouteSource, RouteStage, RouteTask } from "@/types/route-preview";
 import {
   CITIZENSHIP_LISTS_CHECKED,
   airportTransitVisaRequired,
+  apostilleEntryIntoForce,
   apostilleObjections,
   apostilleParties,
   biometricPassportOnly,
@@ -325,8 +326,31 @@ function documentsLabel(purpose: NotePurpose) {
         : "personal and educational documents (for business papers, ask the authority)";
 }
 
-function documentsNote(code: string, name: string, countryCode: string, countryName: string, purpose: NotePurpose): Note {
+function formatIsoDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(
+    new Date(`${value}T00:00:00Z`),
+  );
+}
+
+function documentsNote(
+  code: string,
+  name: string,
+  countryCode: string,
+  countryName: string,
+  purpose: NotePurpose,
+  asOf: string,
+): Note {
   const documents = documentsLabel(purpose);
+  const inForceFrom = apostilleEntryIntoForce[code];
+  if (inForceFrom && asOf < inForceFrom) {
+    return note(
+      "citizen-documents",
+      "Documents still need legalisation for now",
+      `${capital(name)} has joined the Apostille Convention, but it enters into force for ${name} only on ${formatIsoDate(inForceFrom)}. Until then ${documents} have to be legalised in your country and then by an embassy or consulate of ${countryName}; ask the authority in ${countryName} which procedure it accepts.`,
+      "attention",
+      [sources.hcchStatus],
+    );
+  }
   if (!apostilleParties.includes(code)) {
     return note(
       "citizen-documents",
@@ -432,9 +456,11 @@ export function citizenshipStage(
   purpose: NotePurpose,
   // Already living in the country with a permit or visa: entry-visa steps
   // do not apply; document notes still do.
-  options: { existingResident?: boolean } = {},
+  // asOf: today (YYYY-MM-DD), for conventions that enter into force later.
+  options: { existingResident?: boolean; asOf?: string } = {},
 ): { stage: RouteStage; sources: RouteSource[] } | null {
   const code = (citizenship ?? "").toUpperCase();
+  const asOf = options.asOf ?? new Date().toISOString().slice(0, 10);
   const destination = countryCode.toUpperCase();
   if (!hasCitizenshipNotes(code) || code === destination) return null;
   const name = citizenshipName(code);
@@ -443,7 +469,7 @@ export function citizenshipStage(
   if (!options.existingResident) {
     notes.push(entryNote(code, name, destination, countryName, purpose), transitNote(code, destination));
   }
-  notes.push(documentsNote(code, name, destination, countryName, purpose));
+  notes.push(documentsNote(code, name, destination, countryName, purpose, asOf));
   if (code === "UA") notes.push(ukraineNote(destination));
   if (destination === "DE" && purpose === "work") notes.push(germanyWorkNote(code, name));
   if (destination === "NL" && !options.existingResident) notes.push(netherlandsTbNote());

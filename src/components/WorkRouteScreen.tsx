@@ -261,13 +261,13 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
     const passport =
       base.stages.length > 1
         ? citizenshipStage(profile.citizenshipCountryCode, "SK", "Slovakia", "work", {
-            existingResident: isExistingResidentStatus(profile.currentResidenceStatus),
+            existingResident: isExistingResidentStatus(profile.currentResidenceStatus), asOf: asOfDate,
           })
         : null;
     return passport
       ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
       : base;
-  }, [profile]);
+  }, [profile, asOfDate]);
   const routeKey = route
     ? `work-sk:${route.version}:${getWorkProgressId(route.profile)}`
     : null;
