@@ -566,13 +566,11 @@ export function RouteForm({
             ? residenceOnly
               ? "Residence route verified · University admission not verified yet"
               : "Verified route available · Official sources included"
-            : purpose === "work"
-              ? "Work routes cover Slovakia, Czechia and Austria so far"
-              : purpose !== "study"
-                ? "Family and business: verified for Slovakia, Czechia and Austria"
+            : purpose !== "study"
+              ? "Verified for Slovakia, Czechia and Austria; official-link checklists for the other EU countries and Switzerland"
               : "Personalised route coverage in progress · Public directory available"}
         </span>
-        {(purpose === "family" || purpose === "business") && (
+        {(purpose === "work" || purpose === "family" || purpose === "business") && (
           <Link href={`/route/guide?purpose=${purpose}`}>
             Other EU countries and Switzerland
             <ArrowRight size={14} aria-hidden="true" />

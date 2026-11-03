@@ -17,6 +17,7 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
+import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
@@ -287,7 +288,21 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
     () => parseCzechProfile(new URLSearchParams(searchParams.toString())),
     [searchParams],
   );
-  const route = useMemo(() => (profile ? buildCzechiaRoute(profile) : null), [profile]);
+  const route = useMemo(() => {
+    if (!profile) return null;
+    const base = buildCzechiaRoute(profile);
+    // Passport-specific steps (visa, transit, apostille), ahead of the
+    // Czech stages; not when the route stops at a gate (no Czech permit).
+    const passport =
+      base.stages.length > 1
+        ? citizenshipStage(profile.citizenshipCountryCode, "CZ", "Czechia", profile.purpose, {
+            existingResident: isExistingResidentStatus(profile.currentResidenceStatus),
+          })
+        : null;
+    return passport
+      ? { ...base, stages: [passport.stage, ...base.stages], sources: [...base.sources, ...passport.sources] }
+      : base;
+  }, [profile]);
   const routeKey = route ? `cz:${route.version}:${getCzechProgressId(route.profile)}` : null;
   const routeProgress = useRouteProgress(routeKey);
   const completed = routeProgress.values;
@@ -416,7 +431,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
                   <span className={styles.stop} aria-hidden="true">
                     {complete ? <Check size={13} /> : index + 1}
                   </span>
-                  <strong>{stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
+                  <strong>{stage.stripLabel ?? stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
                   <span className={styles.when} data-tone={when.tone}>
                     {when.label}
                   </span>

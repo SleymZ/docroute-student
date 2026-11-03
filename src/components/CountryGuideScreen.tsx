@@ -7,8 +7,8 @@ import { AlertTriangle, ArrowLeft, Check, ExternalLink, Info } from "lucide-reac
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { FeedbackForm } from "@/components/FeedbackForm";
-import { applicantCountryOptions } from "@/data/applicant-countries";
-import { citizenshipStage, citizenshipNoteSources } from "@/data/citizenship-notes";
+import { citizenshipCountryOptions } from "@/data/applicant-countries";
+import { citizenshipStage } from "@/data/citizenship-notes";
 import { isEuEeaSwissCitizen } from "@/lib/profile-options";
 import { linkedCountryName, linkedGuideCountries } from "@/lib/residence/linked-guides";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
@@ -70,7 +70,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
   const completedCount = actionable.filter((task) => completed.has(task.id)).length;
   const progress = actionable.length ? Math.round((completedCount / actionable.length) * 100) : 100;
   const usedSourceIds = new Set(stages.flatMap((stage) => stage.tasks.flatMap((task) => task.sourceIds)));
-  const allSources: RouteSource[] = [...guide.sources, ...(passport ? citizenshipNoteSources : [])];
+  const allSources: RouteSource[] = [...guide.sources, ...(passport ? passport.sources : [])];
   const sources = allSources.filter(
     (source, index) => usedSourceIds.has(source.id) && allSources.findIndex((item) => item.id === source.id) === index,
   );
@@ -123,7 +123,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
         <CountryPicker
           label="Your citizenship (adds what applies to your passport)"
           value={citizenship}
-          options={applicantCountryOptions}
+          options={citizenshipCountryOptions}
           placeholder="Select citizenship"
           onChange={chooseCitizenship}
         />
@@ -140,7 +140,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
                 <span className={styles.stop} aria-hidden="true">
                   {complete ? <Check size={13} /> : index + 1}
                 </span>
-                <strong>{stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
+                <strong>{stage.stripLabel ?? stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
                 <span className={styles.when}>{stage.timing}</span>
                 {tasks.length > 0 && (
                   <small>
@@ -284,26 +284,35 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
   );
 }
 
-// /route/guide without a valid country: every country with a family or
-// business guide, verified ones first.
+// /route/guide without a valid country: every country with a work, family
+// or business guide, verified ones first.
 function GuideChooser({ breadcrumb, purpose }: { breadcrumb: ReactNode; purpose: string | null }) {
-  const chosen = purpose === "business" ? "business" : "family";
-  const verified: Record<string, string> = {
-    SK: `/route/${chosen}?country=SK`,
-    CZ: `/route/guide?country=CZ&purpose=${chosen}`,
-    AT: `/route/guide?country=AT&purpose=${chosen}`,
-  };
+  const chosen = purpose === "business" ? "business" : purpose === "work" ? "work" : "family";
+  const verified: Record<string, string> =
+    chosen === "work"
+      ? { SK: "/route/work", CZ: "/route/czechia?country=CZ&purpose=work", AT: "/route/guide?country=AT&purpose=work" }
+      : {
+          SK: `/route/${chosen}?country=SK`,
+          CZ: `/route/guide?country=CZ&purpose=${chosen}`,
+          AT: `/route/guide?country=AT&purpose=${chosen}`,
+        };
   const names: Record<string, string> = { SK: "Slovakia", CZ: "Czechia", AT: "Austria" };
   return (
     <div className={styles.page}>
       {breadcrumb}
       <section className={styles.intro}>
-        <h1>{chosen === "family" ? "Joining family in Europe" : "Doing business in Europe"}</h1>
+        <h1>
+          {chosen === "family" ? "Joining family in Europe" : chosen === "work" ? "Working in Europe" : "Doing business in Europe"}
+        </h1>
         <p>
           Slovakia, Czechia and Austria have checklists verified by DocRoute. For the other EU countries and
           Switzerland, the checklist links each step to the official page. Choose a country.
         </p>
         <p>
+          <Link href="/route/guide?purpose=work" aria-current={chosen === "work" ? "page" : undefined}>
+            Work
+          </Link>{" "}
+          ·{" "}
           <Link href="/route/guide?purpose=family" aria-current={chosen === "family" ? "page" : undefined}>
             Family
           </Link>{" "}

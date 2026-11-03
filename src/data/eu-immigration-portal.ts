@@ -37,22 +37,36 @@ export const euPortalCountries: Record<string, { slug: string; name: string }> =
   SE: { slug: "sweden", name: "Sweden" },
 };
 
-export type PortalCategory = "family-member" | "self-employed-worker";
+export type PortalCategory = "family-member" | "self-employed-worker" | "employed-worker" | "highly-qualified-worker" | "eu-blue-card";
 
 const categoryTitles: Record<PortalCategory, string> = {
   "family-member": "Family member",
   "self-employed-worker": "Self-employed worker",
+  "employed-worker": "Employed worker",
+  "highly-qualified-worker": "Highly-qualified worker",
+  "eu-blue-card": "EU Blue Card",
 };
+
+// Work pages checked 2026-11-03: "Employed worker" and "Highly-qualified
+// worker" exist for all 27; "EU Blue Card" for all except Denmark and
+// Ireland, which do not apply the Blue Card Directive.
+export const WORK_PORTAL_CHECKED = "2026-11-03";
+export const blueCardCountries = new Set(
+  Object.keys(euPortalCountries).filter((code) => code !== "DK" && code !== "IE"),
+);
 
 export function euPortalSource(category: PortalCategory, countryCode: string): RouteSource | null {
   const country = euPortalCountries[countryCode];
   if (!country) return null;
+  if (category === "eu-blue-card" && !blueCardCountries.has(countryCode)) return null;
+  const work = category !== "family-member" && category !== "self-employed-worker";
+  const path = category === "eu-blue-card" ? `eu-blue-card/eu-blue-card-${country.slug}` : `${category}-${country.slug}`;
   return {
     id: `eu-portal-${category}-${countryCode.toLowerCase()}`,
     title: `${categoryTitles[category]} in ${country.name}: conditions, procedures and rights`,
     publisher: "European Commission, EU Immigration Portal",
-    url: `https://home-affairs.ec.europa.eu/policies/migration-and-asylum/eu-immigration-portal/${category}-${country.slug}_en`,
-    checkedAt: PORTAL_CHECKED,
+    url: `https://home-affairs.ec.europa.eu/policies/migration-and-asylum/eu-immigration-portal/${path}_en`,
+    checkedAt: work ? WORK_PORTAL_CHECKED : PORTAL_CHECKED,
     authority: "official",
   };
 }

@@ -1,4 +1,5 @@
 import catalog from "@/data/universities.json";
+import { apostilleParties, schengenVisaFree, schengenVisaRequired } from "@/data/citizenship-lists";
 
 // Countries offered for citizenship and education: every catalog country
 // plus common origin countries. "ZZ" stands for any other country.
@@ -38,3 +39,16 @@ export const applicantCountryOptions = [
 ]
   .map(([code, name]) => ({ code, name }))
   .sort((a, b) => a.name.localeCompare(b.name, "en"));
+
+const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+const listedCodes = new Set(applicantCountryOptions.map((option) => option.code));
+
+/** Citizenships for passport notes: the applicant countries plus every
+ *  country on the EU visa lists or in the Apostille Convention, so any
+ *  passport can be chosen. */
+export const citizenshipCountryOptions = [
+  ...applicantCountryOptions,
+  ...[...new Set([...schengenVisaRequired, ...schengenVisaFree, ...apostilleParties])]
+    .filter((code) => !listedCodes.has(code))
+    .map((code) => ({ code, name: code === "PS" ? "Palestinian territories" : (regionNames.of(code) ?? code) })),
+].sort((a, b) => (a.code === "ZZ" ? 1 : b.code === "ZZ" ? -1 : a.name.localeCompare(b.name, "en")));

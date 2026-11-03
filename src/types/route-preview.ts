@@ -24,6 +24,8 @@ export type RouteStage = {
   id: string;
   number: string;
   eyebrow: string;
+  /** Short label for the stage strip; defaults to the eyebrow in sentence case. */
+  stripLabel?: string;
   title: string;
   description: string;
   timing: string;

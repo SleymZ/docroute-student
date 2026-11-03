@@ -386,7 +386,7 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
                   <span className={styles.stop} aria-hidden="true">
                     {complete ? <Check size={13} /> : index + 1}
                   </span>
-                  <strong>{stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
+                  <strong>{stage.stripLabel ?? stage.eyebrow.charAt(0) + stage.eyebrow.slice(1).toLowerCase()}</strong>
                   <span className={styles.when} data-tone={filingItem?.tone}>
                     {filingItem ? `File ${filingItem.dateLabel.replace(/^By /, "by ")}` : stage.timing}
                   </span>

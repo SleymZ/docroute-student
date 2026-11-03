@@ -805,6 +805,47 @@ latest rules" (owner rule 2026-10-30):
   citizenships' notes, verified step-by-step guides for the 25 linked
   countries.
 
+## Work across the EU and passport notes for every citizenship (2026-11-03)
+
+- `/route/guide?country=XX&purpose=work` now covers the other 24 EU
+  countries and Switzerland (`linked-guides.ts`, version
+  `linked-work-guides-2026-11-03`): choose the permit → apply → after
+  approval. Sources (checked 2026-11-03): EU Immigration Portal "Employed
+  worker in <country>" plus "EU Blue Card in <country>" (Ireland: "Highly-
+  qualified worker", the Critical Skills permit; the portal says Cyprus
+  currently issues no Blue Cards), New to Denmark "Work" (Fast-track, Pay
+  Limit, Positive Lists…), SEM "Non-EU/EFTA nationals" for Switzerland. No
+  figures (test). Slovakia (`/route/work`), Czechia (`/route/czechia`) and
+  Austria (verified guide) keep their routes. The chooser and the home form
+  link work too.
+- Passport notes (`src/data/citizenship-notes.ts`,
+  `src/data/citizenship-lists.ts`) for any citizenship outside the
+  EU/EEA/Switzerland, in every guide, the Slovak work/family/business
+  routes, the Czech routes and the full study path (existing residents get
+  no entry steps):
+  - entry visa: Regulation (EU) 2018/1806 Annex I/II (consolidated
+    30 Dec 2025; biometric-passport footnotes), Ireland's own list, SEM's
+    list for long stays in Switzerland;
+  - airport transit visa: Visa Code Annex IV (consolidated 28 Jun 2024);
+  - apostille or legalisation: HCCH status table (30 Jun 2026) and the
+    objections still in force for EU countries (e.g. Germany–India,
+    Poland/Czechia/Netherlands…–Pakistan, Germany–Philippines); India keeps
+    the MEA procedure where the apostille applies;
+  - relief: Germany § 41 AufenthV (apply in Germany; § 41 (2) without
+    employment), § 26 (1)/(2) BeschV for work (incl. Western Balkans), the
+    Netherlands' MVV exemption list (IND, 6 May 2026);
+  - extra checks: the Netherlands' TB test (IND page, exemption list linked,
+    not copied: it is a PDF);
+  - Ukraine: EU temporary protection extended by Implementing Decision (EU)
+    2026/1912 (military-obligation proof for new grants), Denmark's Special
+    Act, Switzerland's status S.
+  The citizenship picker on the guide and the full path offers every
+  country on these lists. Stage strip label "For citizens of <country>"
+  (fixes "For indian citizens").
+- Not covered: Russia/Belarus national restrictions (need each country's
+  official page), per-nationality Irish and Swiss lists (linked, not
+  copied), the Dutch TB exemption list itself.
+
 ## My route, date fields on phones, full-path button (2026-11-03)
 
 - **Confirm this route** block at the top of every route page (study
@@ -1070,7 +1111,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (260 tests on 2026-11-03).
+- Unit tests: `npm test` (265 tests on 2026-11-03).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
