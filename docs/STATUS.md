@@ -827,7 +827,7 @@ latest rules" (owner rule 2026-10-30):
   editor): table `confirmed_routes` (one row per user, `route_path` must
   start with `/route/`, no `//`, `\` or spaces), RLS own row only, anon has
   no access, `confirmed_at`/`updated_at` set by a trigger (`confirmed_at`
-  changes only when another route key replaces the route), removed with the
+  changes only when a route with other answers replaces it), removed with the
   account (foreign key cascade). Tested twice on local Postgres 16 with
   anon/authenticated roles. Download my data includes `confirmedRoute`;
   Privacy data row and deletion text updated (2026-11-03).

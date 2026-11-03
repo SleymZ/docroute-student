@@ -11,6 +11,7 @@ import {
   myRouteLoginHref,
   normaliseRoutePath,
   type ConfirmedRoute,
+  type ConfirmedRouteInput,
   type RoutePurpose,
 } from "@/lib/confirmed-route";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -86,44 +87,64 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
   const confirmed = state.kind === "ready" ? state.confirmed : null;
   const isThis = Boolean(current && isSameRoute(confirmed, current));
 
-  // Same route, new address (a new move date): keep My route up to date.
-  // A pending save is flushed when the page is left or "Open My route" is
-  // pressed, so a date changed just before leaving is not lost.
-  const pendingSave = useRef<(() => Promise<void>) | null>(null);
+  // Same route, new address (a new move date) or a new checklist version:
+  // keep My route up to date. Saves run one after another (a slow older
+  // request can never overwrite a newer date), and the latest pending save is
+  // flushed when the page is left or "Open My route" is pressed.
+  const pendingPayload = useRef<{ userId: string; route: ConfirmedRouteInput } | null>(null);
+  const saveChain = useRef<Promise<void>>(Promise.resolve());
   const needsSync =
     state.kind === "ready" &&
     Boolean(confirmed && current && isThis) &&
-    (confirmed?.routePath !== current?.routePath || confirmed?.stepIds.join(",") !== stepKey);
+    (confirmed?.routePath !== current?.routePath ||
+      confirmed?.routeKey !== routeKey ||
+      confirmed?.stepIds.join(",") !== stepKey);
+
+  function flushSave() {
+    const payload = pendingPayload.current;
+    if (payload) {
+      pendingPayload.current = null;
+      saveChain.current = saveChain.current.then(async () => {
+        try {
+          const saved = await saveConfirmedRoute(createSupabaseBrowserClient(), payload.userId, payload.route);
+          setState((previous) =>
+            previous.kind === "ready" ? { kind: "ready", userId: payload.userId, confirmed: saved } : previous,
+          );
+        } catch {
+          // Kept on this page; the next change tries again.
+        }
+      });
+    }
+    return saveChain.current;
+  }
 
   useEffect(() => {
     if (state.kind !== "ready" || !confirmed || !current || !needsSync) {
-      pendingSave.current = null;
+      pendingPayload.current = null;
       return;
     }
-    const userId = state.userId;
-    const next = { ...confirmed, routePath: current.routePath, stepIds: stepKey ? stepKey.split(",") : [] };
-    const save = async () => {
-      pendingSave.current = null;
-      try {
-        const saved = await saveConfirmedRoute(createSupabaseBrowserClient(), userId, next);
-        setState({ kind: "ready", userId, confirmed: saved });
-      } catch {
-        // Kept on this page; the next change tries again.
-      }
+    pendingPayload.current = {
+      userId: state.userId,
+      route: {
+        ...confirmed,
+        routePath: current.routePath,
+        routeKey,
+        stepIds: stepKey ? stepKey.split(",") : [],
+      },
     };
-    pendingSave.current = save;
-    const timer = window.setTimeout(() => void save(), 800);
-    const flush = () => {
-      if (pendingSave.current === save) void save();
-    };
-    window.addEventListener("pagehide", flush);
+    const timer = window.setTimeout(() => void flushSave(), 800);
+    return () => window.clearTimeout(timer);
+  }, [state, confirmed, current?.routePath, routeKey, needsSync, stepKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Leaving the page: save what was picked, without waiting for the timer.
+  useEffect(() => {
+    const onHide = () => void flushSave();
+    window.addEventListener("pagehide", onHide);
     return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener("pagehide", flush);
-      // Leaving the page (or a newer date): save what was picked now.
-      flush();
+      window.removeEventListener("pagehide", onHide);
+      void flushSave();
     };
-  }, [state, confirmed, current?.routePath, needsSync, stepKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!routePath || state.kind === "loading") {
     return <div className={styles.box} data-loading="true" aria-hidden="true" />;
@@ -194,10 +215,9 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
           href="/my-route"
           className={styles.secondary}
           onClick={(event) => {
-            const save = pendingSave.current;
-            if (!save) return;
+            // Wait for pending and running saves so My route shows the new date.
             event.preventDefault();
-            void save().then(() => router.push("/my-route"));
+            void flushSave().then(() => router.push("/my-route"));
           }}
         >
           Open My route
