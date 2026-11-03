@@ -371,7 +371,7 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
-      <ConfirmRoute title={text.title} purpose={kind} countryCode="SK" routeKey={routeKey} totalSteps={actionable.length} />
+      <ConfirmRoute title={text.title} purpose={kind} countryCode="SK" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {route.applicable && (
         <ol className={styles.strip} aria-label="Route stages">

@@ -37,7 +37,7 @@ export default async function MyRoutePage() {
   let done = 0;
   try {
     route = await loadConfirmedRoute(supabase, user.id);
-    if (route?.routeKey) done = await countCompletedSteps(supabase, user.id, route.routeKey);
+    if (route?.routeKey) done = await countCompletedSteps(supabase, user.id, route.routeKey, route.stepIds);
   } catch {
     failed = true;
   }
@@ -45,7 +45,7 @@ export default async function MyRoutePage() {
   // Only our own route pages are opened from here (the database checks the
   // same rule).
   const href = route ? normaliseRoutePath(route.routePath) : null;
-  const total = route?.totalSteps ?? null;
+  const total = route && route.stepIds.length > 0 ? route.stepIds.length : null;
   const progress = total ? Math.min(100, Math.round((done / total) * 100)) : null;
   const moveDate = href ? new URL(href, "https://docroute.invalid").searchParams.get("move") : null;
 
@@ -113,7 +113,7 @@ export default async function MyRoutePage() {
                     <ListChecks size={15} aria-hidden="true" /> Progress
                   </dt>
                   <dd>
-                    {Math.min(done, total)} of {total} steps done
+                    {done} of {total} steps done
                   </dd>
                 </div>
               )}

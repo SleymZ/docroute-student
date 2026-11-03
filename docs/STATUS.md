@@ -818,7 +818,11 @@ latest rules" (owner rule 2026-10-30):
   saved again automatically (also flushed when the page is left).
 - Page `/my-route` (header link "My route", login required, noindex,
   disallowed in robots): title, purpose, country, confirmed date, move date,
-  "X of Y steps done" (from `route_task_progress`), Open / Remove.
+  "X of Y steps done" (ticks in `route_task_progress` counted only for the
+  confirmed checklist's step ids, stored with the route), Open / Remove.
+  The study preview stores the profile answers in the address, also when
+  they came from the saved account profile, so editing the profile later
+  does not change the confirmed route.
 - Migration `20261103120000_confirmed_routes.sql` (owner runs it in the SQL
   editor): table `confirmed_routes` (one row per user, `route_path` must
   start with `/route/`, no `//`, `\` or spaces), RLS own row only, anon has

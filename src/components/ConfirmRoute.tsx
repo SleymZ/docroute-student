@@ -24,7 +24,10 @@ type ConfirmRouteProps = {
   purpose: RoutePurpose;
   countryCode: string;
   routeKey: string | null;
-  totalSteps: number;
+  stepIds: string[];
+  /** The address to store when it differs from the page address (answers
+   *  taken from the saved profile are written into it). */
+  routePath?: string | null;
 };
 
 type State =
@@ -36,13 +39,17 @@ type State =
 // "Confirm this route" on every route page. Confirming needs an account: the
 // route is then listed on /my-route ("My route") and can be reopened any time.
 // One confirmed route per account; confirming another replaces it.
-export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps }: ConfirmRouteProps) {
+export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, routePath: pathOverride }: ConfirmRouteProps) {
+  const stepKey = stepIds.join(",");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const routePath = useMemo(
-    () => normaliseRoutePath(`${pathname}${searchParams.size ? `?${searchParams.toString()}` : ""}`),
-    [pathname, searchParams],
+    () =>
+      normaliseRoutePath(
+        pathOverride ?? `${pathname}${searchParams.size ? `?${searchParams.toString()}` : ""}`,
+      ),
+    [pathOverride, pathname, searchParams],
   );
   const [state, setState] = useState<State>({ kind: "loading" });
   const [saving, setSaving] = useState(false);
@@ -86,7 +93,7 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps
   const needsSync =
     state.kind === "ready" &&
     Boolean(confirmed && current && isThis) &&
-    (confirmed?.routePath !== current?.routePath || confirmed?.totalSteps !== totalSteps);
+    (confirmed?.routePath !== current?.routePath || confirmed?.stepIds.join(",") !== stepKey);
 
   useEffect(() => {
     if (state.kind !== "ready" || !confirmed || !current || !needsSync) {
@@ -94,7 +101,7 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps
       return;
     }
     const userId = state.userId;
-    const next = { ...confirmed, routePath: current.routePath, totalSteps };
+    const next = { ...confirmed, routePath: current.routePath, stepIds: stepKey ? stepKey.split(",") : [] };
     const save = async () => {
       pendingSave.current = null;
       try {
@@ -116,7 +123,7 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps
       // Leaving the page (or a newer date): save what was picked now.
       flush();
     };
-  }, [state, confirmed, current?.routePath, needsSync, totalSteps]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [state, confirmed, current?.routePath, needsSync, stepKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!routePath || state.kind === "loading") {
     return <div className={styles.box} data-loading="true" aria-hidden="true" />;
@@ -133,7 +140,7 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, totalSteps
         title: clampTitle(title),
         purpose,
         countryCode,
-        totalSteps,
+        stepIds,
       });
       setState({ kind: "ready", userId: state.userId, confirmed: saved });
       setAskReplace(false);

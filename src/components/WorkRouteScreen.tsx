@@ -403,7 +403,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
-      <ConfirmRoute title="Working in Slovakia" purpose="work" countryCode="SK" routeKey={routeKey} totalSteps={actionable.length} />
+      <ConfirmRoute title="Working in Slovakia" purpose="work" countryCode="SK" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {route.authorisation && (
         <ol className={styles.strip} aria-label="Route stages">

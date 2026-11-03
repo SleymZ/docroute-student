@@ -202,6 +202,13 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   // Changing the profile changes the progress namespace, so earlier ticks
   // are not carried into a route built for different data.
   const editProfileHref = `/route/profile?${createProfileSearchParams(profile).toString()}`;
+  // My route stores the answers this route was built from, also when they
+  // came from the saved account profile, so editing the profile later does
+  // not change the confirmed route.
+  const confirmParams = createProfileSearchParams(route.generatedFor);
+  confirmParams.set("programId", program.id);
+  if (moveDate) confirmParams.set("move", moveDate);
+  const confirmPath = `${pathname}?${confirmParams.toString()}`;
   const actionableTasks = route.stages.flatMap((stage) =>
     stage.tasks.filter(
       (task) => isActionable(task.status),
@@ -260,7 +267,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
-      <ConfirmRoute title={`${program.programName} · ${program.universityName}`} purpose="study" countryCode={program.countryCode} routeKey={routeKey} totalSteps={actionableTasks.length} />
+      <ConfirmRoute title={`${program.programName} · ${program.universityName}`} purpose="study" countryCode={program.countryCode} routePath={confirmPath} routeKey={routeKey} stepIds={actionableTasks.map((task) => task.id)} />
 
       <section className={styles.routeFacts}>
         <article>

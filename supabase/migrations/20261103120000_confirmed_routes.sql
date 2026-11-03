@@ -11,7 +11,7 @@ create table if not exists public.confirmed_routes (
   title text not null,
   purpose text not null,
   country_code text not null,
-  total_steps integer,
+  step_ids text[] not null default '{}',
   confirmed_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint confirmed_routes_path_format
@@ -30,8 +30,11 @@ create table if not exists public.confirmed_routes (
     check (purpose in ('study', 'work', 'family', 'business')),
   constraint confirmed_routes_country
     check (country_code ~ '^[A-Z]{2}$'),
-  constraint confirmed_routes_total_steps
-    check (total_steps is null or total_steps between 0 and 500)
+  constraint confirmed_routes_step_ids
+    check (
+      coalesce(array_length(step_ids, 1), 0) <= 500
+      and char_length(array_to_string(step_ids, ',')) <= 40000
+    )
 );
 
 alter table public.confirmed_routes enable row level security;
@@ -39,9 +42,9 @@ alter table public.confirmed_routes enable row level security;
 revoke all on table public.confirmed_routes from anon;
 revoke all on table public.confirmed_routes from authenticated;
 grant select, delete on table public.confirmed_routes to authenticated;
-grant insert (user_id, route_path, route_key, title, purpose, country_code, total_steps)
+grant insert (user_id, route_path, route_key, title, purpose, country_code, step_ids)
   on table public.confirmed_routes to authenticated;
-grant update (user_id, route_path, route_key, title, purpose, country_code, total_steps)
+grant update (user_id, route_path, route_key, title, purpose, country_code, step_ids)
   on table public.confirmed_routes to authenticated;
 
 drop policy if exists "Users can read their confirmed route" on public.confirmed_routes;

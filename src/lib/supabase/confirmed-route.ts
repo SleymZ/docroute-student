@@ -7,7 +7,7 @@ type Client = SupabaseClient<Database>;
 type Row = Database["public"]["Tables"]["confirmed_routes"]["Row"];
 
 const columns =
-  "user_id, route_path, route_key, title, purpose, country_code, total_steps, confirmed_at, updated_at";
+  "user_id, route_path, route_key, title, purpose, country_code, step_ids, confirmed_at, updated_at";
 
 function fromRow(row: Row): ConfirmedRoute {
   return {
@@ -16,7 +16,7 @@ function fromRow(row: Row): ConfirmedRoute {
     title: row.title,
     purpose: row.purpose,
     countryCode: row.country_code,
-    totalSteps: row.total_steps,
+    stepIds: row.step_ids ?? [],
     confirmedAt: row.confirmed_at,
     updatedAt: row.updated_at,
   };
@@ -49,7 +49,7 @@ export async function saveConfirmedRoute(
         title: route.title,
         purpose: route.purpose,
         country_code: route.countryCode,
-        total_steps: route.totalSteps,
+        step_ids: route.stepIds,
       },
       { onConflict: "user_id" },
     )
@@ -64,12 +64,21 @@ export async function removeConfirmedRoute(supabase: Client, userId: string) {
   if (error) throw error;
 }
 
-export async function countCompletedSteps(supabase: Client, userId: string, routeKey: string) {
-  const { count, error } = await supabase
+/** Ticks that belong to the confirmed checklist (ticks for steps that are
+ *  not in it, e.g. from another citizenship on the same guide, are left out). */
+export async function countCompletedSteps(
+  supabase: Client,
+  userId: string,
+  routeKey: string,
+  stepIds: string[],
+) {
+  if (stepIds.length === 0) return 0;
+  const { data, error } = await supabase
     .from("route_task_progress")
-    .select("task_id", { count: "exact", head: true })
+    .select("task_id")
     .eq("user_id", userId)
     .eq("route_key", routeKey);
   if (error) throw error;
-  return count ?? 0;
+  const steps = new Set(stepIds);
+  return new Set((data ?? []).map((row) => row.task_id).filter((id) => steps.has(id))).size;
 }

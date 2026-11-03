@@ -206,7 +206,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
-      <ConfirmRoute title={title} purpose="study" countryCode={group.countryCode} routeKey={routeKey} totalSteps={actionable.length} />
+      <ConfirmRoute title={title} purpose="study" countryCode={group.countryCode} routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       <ol className={styles.strip} aria-label="Path stages">
         {path.stages.map((stage, index) => {

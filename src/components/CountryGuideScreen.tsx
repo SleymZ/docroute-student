@@ -97,7 +97,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
-      <ConfirmRoute title={guide.title} purpose={guide.purpose} countryCode={guide.country} routeKey={routeKey} totalSteps={actionable.length} />
+      <ConfirmRoute title={guide.title} purpose={guide.purpose} countryCode={guide.country} routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {guide.variants.length > 1 && (
         <fieldset className={styles.choice} data-print-hide="">

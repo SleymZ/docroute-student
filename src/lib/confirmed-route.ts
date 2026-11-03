@@ -10,7 +10,8 @@ export type ConfirmedRouteInput = {
   title: string;
   purpose: RoutePurpose;
   countryCode: string;
-  totalSteps: number | null;
+  /** Actionable task ids of the confirmed checklist (for "X of Y done"). */
+  stepIds: string[];
 };
 
 export type ConfirmedRoute = ConfirmedRouteInput & {

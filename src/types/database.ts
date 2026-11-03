@@ -92,7 +92,7 @@ export type Database = {
           title: string;
           purpose: "study" | "work" | "family" | "business";
           country_code: string;
-          total_steps: number | null;
+          step_ids: string[];
           confirmed_at: string;
           updated_at: string;
         };
@@ -103,7 +103,7 @@ export type Database = {
           title: string;
           purpose: "study" | "work" | "family" | "business";
           country_code: string;
-          total_steps?: number | null;
+          step_ids?: string[];
         };
         Update: {
           user_id?: string;
@@ -112,7 +112,7 @@ export type Database = {
           title?: string;
           purpose?: "study" | "work" | "family" | "business";
           country_code?: string;
-          total_steps?: number | null;
+          step_ids?: string[];
         };
         Relationships: [];
       };

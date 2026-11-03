@@ -401,7 +401,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
-      <ConfirmRoute title={title} purpose={profile.purpose === "work" ? "work" : "study"} countryCode="CZ" routeKey={routeKey} totalSteps={actionable.length} />
+      <ConfirmRoute title={title} purpose={profile.purpose === "work" ? "work" : "study"} countryCode="CZ" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {route.procedure && (
         <ol className={styles.strip} aria-label="Route stages">
