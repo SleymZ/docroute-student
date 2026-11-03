@@ -25,8 +25,11 @@ import catalog from "@/data/universities.json";
 import { programOptions } from "@/data/demo-destinations";
 import {
   findPendingProgramGroups,
+  pendingProgramGroups,
   pendingStatusLabel,
+  type PendingProgramGroup,
 } from "@/data/pending-programs";
+import { answersFromProfile, fullPathHref } from "@/lib/full-path";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { topUniversities } from "@/data/top-universities";
 import { topFieldRequirements } from "@/data/top-field-requirements";
@@ -306,6 +309,22 @@ export function UniversityResults({
       ...(selectedProgram ? { program: selectedProgram } : {}),
     });
 
+  // The coming-soon listing a "Build my full path" button opens (the first
+  // for the selected field when a university has several).
+  const pendingPathGroup = (university: { id: string; website: string }) => {
+    const host = getWebsiteHost(university.website);
+    const sameUniversity = (group: PendingProgramGroup) =>
+      group.universityId === university.id || group.universityHost === host;
+    return (
+      pendingGroups.find(sameUniversity) ??
+      pendingProgramGroups.find(
+        (group) =>
+          sameUniversity(group) &&
+          (!selectedProgram || group.category === selectedProgram),
+      )
+    );
+  };
+
   const pendingUniversityHref = (universityId: string) => {
     const params = profile
       ? createProfileSearchParams(profile)
@@ -415,6 +434,7 @@ export function UniversityResults({
         <PendingPrograms
           groups={pendingGroups}
           universityHref={(group) => pendingUniversityHref(group.universityId)}
+          pathAnswers={(group) => answersFromProfile(profile, group.countryCode)}
         />
         <div className={linkStyles.coverageActions}>
           <Link href={`/route/profile?${profileParams.toString()}`}>
@@ -943,6 +963,18 @@ export function UniversityResults({
                   <div
                     className={`${styles.cardActions} ${linkStyles.cardActions}`}
                   >
+                    {university.pending && pendingPathGroup(university) && (
+                      <Link
+                        href={fullPathHref(
+                          pendingPathGroup(university)!.id,
+                          answersFromProfile(profile, university.countryCode),
+                        )}
+                        className={linkStyles.routeLink}
+                      >
+                        Build my full path
+                        <ArrowRight size={14} aria-hidden="true" />
+                      </Link>
+                    )}
                     <Link
                       href={universityHref}
                       className={linkStyles.profileLink}

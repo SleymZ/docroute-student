@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ArrowRight, Clock3, ExternalLink, History } from "lucide-react";
+import { ArrowRight, Clock3, ExternalLink, History, Route } from "lucide-react";
 
 import {
   formatPendingDegree,
@@ -8,6 +8,7 @@ import {
   pendingStatusLabel,
   type PendingProgramGroup,
 } from "@/data/pending-programs";
+import { fullPathHref, type FullPathAnswers } from "@/lib/full-path";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 
 import styles from "./PendingPrograms.module.css";
@@ -21,6 +22,9 @@ type PendingProgramsProps = {
   // Open the "last year's rules" block by default (the university page);
   // results pages keep it collapsed so the list stays short.
   referenceOpen?: boolean;
+  // Citizenship and status from the person's profile (for this country),
+  // so "Build my full path" opens the path directly.
+  pathAnswers?: (group: PendingProgramGroup) => FullPathAnswers | null;
 };
 
 export function PendingPrograms({
@@ -28,6 +32,7 @@ export function PendingPrograms({
   universityHref,
   heading = "Coming soon",
   referenceOpen = false,
+  pathAnswers,
 }: PendingProgramsProps) {
   if (groups.length === 0) {
     return null;
@@ -42,11 +47,13 @@ export function PendingPrograms({
         <div>
           <p className={styles.eyebrow}>{heading.toUpperCase()}</p>
           <p className={styles.lead}>
-            Listed so you can plan ahead. No personalised route, checklist or
-            match is shown until the approved rules for this intake are
-            published and checked. Where available, the faculty&apos;s
-            approved rules (last year&apos;s, or this intake&apos;s if already
-            published) are summarised for reference only.
+            Listed so you can plan ahead. Your profile is not matched against
+            them until the approved rules for this intake are published and
+            checked. Where available, the faculty&apos;s approved rules (last
+            year&apos;s, or this intake&apos;s if already published) are
+            summarised for reference only. &ldquo;Build my full path&rdquo;
+            turns them into a step-by-step plan, including the student visa or
+            residence step.
           </p>
         </div>
       </div>
@@ -162,12 +169,18 @@ export function PendingPrograms({
             ))}
           </ul>
 
-          {universityHref && (
-            <Link href={universityHref(group)} className={styles.link}>
-              View university
-              <ArrowRight size={14} aria-hidden="true" />
+          <div className={styles.actions}>
+            <Link href={fullPathHref(group.id, pathAnswers?.(group))} className={styles.pathButton}>
+              <Route size={15} aria-hidden="true" />
+              Build my full path
             </Link>
-          )}
+            {universityHref && (
+              <Link href={universityHref(group)} className={styles.link}>
+                View university
+                <ArrowRight size={14} aria-hidden="true" />
+              </Link>
+            )}
+          </div>
         </article>
       ))}
     </section>
