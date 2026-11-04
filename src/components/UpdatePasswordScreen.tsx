@@ -53,7 +53,7 @@ export function UpdatePasswordScreen() {
       <section className={styles.card}>
         <Link href="/home" className={styles.brand}>
           <LogoMark size={36} />
-          <LogoWord />
+          <LogoWord className={styles.brandWord} />
         </Link>
 
         <span className={styles.icon}>
