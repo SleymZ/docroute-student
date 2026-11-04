@@ -862,14 +862,24 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
-## Start screen, story photos, comments and likes (2026-11-04)
+## Entry page, story photos, comments and likes (2026-11-04)
 
-- Home page opens with a start screen (`StartJourney`): "Start your journey",
-  the slogan **"Your move to Europe, one route."**, a short explanation, the
-  button "Start your journey" (scrolls to the route builder, `#route-builder`)
-  and "How it works", plus three step cards. Nothing is stored in the
-  browser. The route builder's title is now an h2 ("Build your route, step
-  by step."); site title "DocRoute | Your move to Europe, one route".
+- **Entry page at `/`** (owner request): no site navigation, only the
+  DocRoute logo, **Log in** (or **My profile** when signed in) and
+  **Start your journey**. Title "Start your journey", slogan **"Your move to
+  Europe, one route."** Behind the text a dot map of Europe (computed at
+  build time from the 110m world atlas in `src/lib/landing-map.ts`; ~3,300
+  dots as one SVG path, the page is static) on which a route draws in from
+  the south-east and lights up Application, Documents and Residence permit
+  in Bratislava. "Start your journey" zooms into the destination, shows the
+  route loader ("Opening DocRoute") and opens the site; with reduced motion,
+  a modifier key or no JavaScript it is a plain link. Nothing is stored in
+  the browser. The global footer (legal links) stays below.
+- **The full site moved to `/home`** (route builder, map, journey rail):
+  logo, "Build my route", all "/#route-builder" and "/?purpose=…" links,
+  `/my-route` fallback, sitemap and canonical updated; `/home/loading.tsx`
+  shows the same route loader. Log in from the entry page returns to
+  `/home`. Signing out and account deletion still land on `/`.
 - Header navigation: "Build route" and "Residence routes" removed (owner
   decision 2026-11-04). The "Build my route" button on the right stays.
 - Stories (migration `20261104120000_story_photos_comments_likes.sql`, owner
@@ -1170,7 +1180,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (277 tests on 2026-11-04).
+- Unit tests: `npm test` (280 tests on 2026-11-04).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
