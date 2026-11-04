@@ -50,7 +50,7 @@ export function UpdatePasswordScreen() {
       <div className={styles.grid} aria-hidden="true" />
 
       <section className={styles.card}>
-        <Link href="/" className={styles.brand}>
+        <Link href="/home" className={styles.brand}>
           <span>
             <Route size={22} aria-hidden="true" />
           </span>

@@ -1,0 +1,100 @@
+.loader {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  color: var(--text);
+}
+
+.track {
+  width: min(240px, 70vw);
+  height: auto;
+  overflow: visible;
+}
+
+.rail {
+  fill: none;
+  stroke: light-dark(rgba(11, 118, 134, 0.22), rgba(121, 221, 239, 0.22));
+  stroke-width: 2;
+  stroke-dasharray: 1 7;
+  stroke-linecap: round;
+}
+
+.line {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.stop {
+  fill: var(--background);
+  stroke: light-dark(rgba(11, 118, 134, 0.45), rgba(121, 221, 239, 0.45));
+  stroke-width: 2;
+  animation: light 1.6s ease infinite;
+}
+
+.stop[data-stop="2"] {
+  animation-delay: 0.5s;
+}
+
+.stop[data-stop="3"] {
+  animation-delay: 1s;
+}
+
+.label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+@keyframes draw {
+  0% {
+    stroke-dashoffset: 1;
+  }
+
+  70% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes light {
+  0%,
+  10% {
+    fill: var(--background);
+    stroke: light-dark(rgba(11, 118, 134, 0.45), rgba(121, 221, 239, 0.45));
+  }
+
+  25%,
+  80% {
+    fill: var(--coral);
+    stroke: var(--coral);
+  }
+
+  100% {
+    fill: var(--background);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .stop {
+    animation: none;
+    fill: var(--coral);
+    stroke: var(--coral);
+  }
+}

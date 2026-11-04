@@ -1,0 +1,393 @@
+/* Entry page. One orchestrated moment: the route draws across the dot map
+   and its stages light up in turn. Everything else stays still. */
+
+.entry {
+  --map-dot: light-dark(rgba(11, 118, 134, 0.3), rgba(121, 221, 239, 0.24));
+  --stop-ring: light-dark(#0b7686, #79ddef);
+  --label: light-dark(#1d2b31, #e8eef1);
+
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ---- map ---- */
+
+.map {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  transform-origin: var(--zoom-x) var(--zoom-y);
+  transition:
+    transform 1.1s cubic-bezier(0.7, 0, 0.3, 1),
+    opacity 0.9s ease 0.2s;
+}
+
+.dots {
+  fill: none;
+  stroke: var(--map-dot);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+}
+
+.route,
+.routeGlow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.route {
+  stroke: var(--coral);
+  stroke-width: 3;
+}
+
+.routeGlow {
+  stroke: var(--coral);
+  stroke-width: 12;
+  opacity: 0.16;
+}
+
+.stop {
+  opacity: 0;
+}
+
+.stopDot {
+  fill: var(--background);
+  stroke: var(--stop-ring);
+  stroke-width: 2.5;
+}
+
+.stop[data-last] .stopDot {
+  fill: var(--coral);
+  stroke: var(--background);
+  stroke-width: 3;
+}
+
+.stopLabel {
+  fill: var(--label);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  paint-order: stroke;
+  stroke: var(--background);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+
+.pulse {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 2;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Fades the map behind the text so it stays readable. */
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      90deg,
+      var(--background) 0%,
+      color-mix(in srgb, var(--background) 88%, transparent) 30%,
+      color-mix(in srgb, var(--background) 30%, transparent) 55%,
+      transparent 75%
+    );
+  pointer-events: none;
+}
+
+/* ---- top bar ---- */
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px clamp(18px, 4vw, 56px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brandMark {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--coral);
+  color: light-dark(#ffffff, #1b0d09);
+}
+
+.brandName {
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.beta {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.account {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 80%, transparent);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.account:hover {
+  border-color: light-dark(rgba(68, 107, 123, 0.55), rgba(132, 184, 206, 0.55));
+}
+
+/* ---- copy ---- */
+
+.copy {
+  align-self: center;
+  max-width: 640px;
+  padding: 24px clamp(18px, 4vw, 56px) 72px;
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.title {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(54px, 8vw, 124px);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+}
+
+.slogan {
+  margin: 22px 0 0;
+  color: var(--text);
+  font-size: clamp(21px, 2.1vw, 30px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.lead {
+  max-width: 46ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.actions {
+  margin-top: 34px;
+}
+
+.enter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 0 30px;
+  border-radius: 14px;
+  background: var(--coral);
+  color: light-dark(#ffffff, #1b0d09);
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  box-shadow: 0 10px 30px light-dark(rgba(212, 80, 47, 0.24), rgba(255, 121, 95, 0.2));
+  transition:
+    background-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.enter:hover {
+  background: var(--coral-hover);
+  transform: translateY(-1px);
+}
+
+.enter:focus-visible,
+.account:focus-visible,
+.brand:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.note {
+  max-width: 44ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ---- leaving: zoom into the destination, then the loader ---- */
+
+.leaving {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: var(--background);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease 0.45s;
+}
+
+.entry[data-leaving] .map {
+  transform: scale(3.2);
+  opacity: 0;
+}
+
+.entry[data-leaving] .copy,
+.entry[data-leaving] .bar {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.35s ease, transform 0.5s ease;
+}
+
+.entry[data-leaving] .leaving {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---- load sequence ---- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .dots {
+    animation: appear 1s ease both;
+  }
+
+  .route,
+  .routeGlow {
+    animation: draw var(--draw) cubic-bezier(0.45, 0, 0.2, 1) var(--draw-start) forwards;
+  }
+
+  .stop {
+    animation: appear 0.45s ease var(--stop-delay) forwards;
+  }
+
+  .pulse {
+    animation: pulse 2.4s ease-out calc(var(--draw-start) + var(--draw)) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route,
+  .routeGlow {
+    stroke-dashoffset: 0;
+  }
+
+  .stop {
+    opacity: 1;
+  }
+
+  .map,
+  .copy,
+  .leaving {
+    transition: none;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+/* ---- smaller screens: map above, text below ---- */
+
+@media (max-width: 860px) {
+  .map {
+    inset: 0 0 auto;
+    height: 62%;
+  }
+
+  .veil {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 30%,
+      color-mix(in srgb, var(--background) 70%, transparent) 50%,
+      var(--background) 64%
+    );
+  }
+
+  .copy {
+    align-self: end;
+    padding-bottom: 40px;
+  }
+
+  .stopLabel {
+    font-size: 22px;
+    stroke-width: 7px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bar {
+    padding-block: 16px;
+  }
+
+  .beta {
+    display: none;
+  }
+
+  .enter {
+    width: 100%;
+  }
+}

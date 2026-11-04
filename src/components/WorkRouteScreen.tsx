@@ -319,7 +319,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
     return (
       <div className={styles.page}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
-          <Link href="/?purpose=work#route-builder">
+          <Link href="/home?purpose=work#route-builder">
             <ArrowLeft size={15} aria-hidden="true" />
             Home
           </Link>
@@ -385,7 +385,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
   return (
     <div className={styles.page}>
       <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
-        <Link href="/?purpose=work#route-builder">
+        <Link href="/home?purpose=work#route-builder">
           <ArrowLeft size={15} aria-hidden="true" />
           Home
         </Link>

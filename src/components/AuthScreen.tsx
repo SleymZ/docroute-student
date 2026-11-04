@@ -256,7 +256,7 @@ export function AuthScreen({
           </Link>
 
           <div className={styles.storyActions}>
-            <Link href="/" className={styles.homeLink}>
+            <Link href="/home" className={styles.homeLink}>
               <ArrowLeft size={16} aria-hidden="true" />
               Back to homepage
             </Link>

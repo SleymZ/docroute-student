@@ -38,7 +38,7 @@ export function Header() {
   return (
     <header className={styles.header} data-print-hide="">
       <Link
-        href="/"
+        href="/home"
         className={styles.brand}
         aria-label="DocRoute — home"
       >

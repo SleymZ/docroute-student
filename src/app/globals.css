@@ -59,12 +59,6 @@ html {
   scroll-padding-top: 24px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
 body {
   min-height: 100vh;
   min-height: 100svh;
@@ -298,8 +292,7 @@ a svg {
   text-transform: uppercase;
 }
 
-.hero h1,
-.hero h2 {
+.hero h1 {
   margin: 18px 0 0;
   color: var(--text);
   font-size: clamp(36px, 3.1vw, 58px);
@@ -308,8 +301,7 @@ a svg {
   letter-spacing: -0.055em;
 }
 
-.hero h1 span,
-.hero h2 span {
+.hero h1 span {
   color: var(--coral);
 }
 
@@ -529,8 +521,7 @@ a svg {
     padding: 0;
   }
 
-  .hero h1,
-  .hero h2 {
+  .hero h1 {
     font-size: clamp(40px, 5vw, 58px);
   }
 }
@@ -575,8 +566,7 @@ a svg {
     font-size: 12px;
   }
 
-  .hero h1,
-  .hero h2 {
+  .hero h1 {
     font-size: clamp(36px, 9vw, 48px);
   }
 

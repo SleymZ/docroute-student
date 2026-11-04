@@ -324,7 +324,7 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
 
   const breadcrumb = (
     <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
-      <Link href={`/?purpose=${kind}#route-builder`}>
+      <Link href={`/home?purpose=${kind}#route-builder`}>
         <ArrowLeft size={15} aria-hidden="true" />
         Home
       </Link>

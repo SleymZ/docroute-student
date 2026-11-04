@@ -160,7 +160,7 @@ export default function HowItWorksPage() {
             you in order, with a source and a deadline for each step.
           </p>
           <div className={styles.heroActions}>
-            <Link href="/#route-builder" className={styles.primaryAction}>
+            <Link href="/home#route-builder" className={styles.primaryAction}>
               Build my route
               <ArrowRight size={17} aria-hidden="true" />
             </Link>
@@ -511,7 +511,7 @@ export default function HowItWorksPage() {
           <h2 id="cta-heading">Ready to see your route?</h2>
           <p>It takes a few minutes and no documents.</p>
           <div className={styles.heroActions}>
-            <Link href="/#route-builder" className={styles.primaryAction}>
+            <Link href="/home#route-builder" className={styles.primaryAction}>
               Build my route
               <ArrowRight size={17} aria-hidden="true" />
             </Link>
