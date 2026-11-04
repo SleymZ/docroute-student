@@ -137,8 +137,10 @@ export const landingMap = {
   // Stages of a route, shown one after another while the line is drawn;
   // `at` is the share of the route's length where each one appears.
   stops: [
-    { label: "Application", at: 0.46 },
-    { label: "Documents", at: 0.76 },
-    { label: "Residence permit", at: 1 },
+    // `side`: which side of the dot the label sits on, chosen so it stays
+    // on screen and off the line.
+    { label: "Application", at: 0.46, side: "left" as const },
+    { label: "Documents", at: 0.76, side: "right" as const },
+    { label: "Residence permit", at: 1, side: "left" as const },
   ].map((stop) => ({ ...stop, ...pointAt(stop.at) })),
 };

@@ -59,9 +59,9 @@ export function EntryScreen() {
               <circle className={styles.stopDot} cx={stop.x} cy={stop.y} r={last ? 7 : 5.5} />
               <text
                 className={styles.stopLabel}
-                x={stop.x + (last ? -14 : 14)}
+                x={stop.x + (stop.side === "left" ? -14 : 14)}
                 y={stop.y - 12}
-                textAnchor={last ? "end" : "start"}
+                textAnchor={stop.side === "left" ? "end" : "start"}
               >
                 {stop.label}
               </text>
