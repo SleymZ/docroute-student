@@ -9,6 +9,9 @@ import { AlertTriangle, ArrowLeft, ArrowRight, Check, ExternalLink, Info, Pencil
 import { CountryPicker } from "@/components/CountryPicker";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
+import { PlusMoreSteps } from "@/components/Plus";
+import { useAccess } from "@/hooks/useAccess";
+import { limitTasks } from "@/lib/access";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { citizenshipCountryOptions } from "@/data/applicant-countries";
 import { formatPendingDegree, pendingStatusLabel, type PendingProgramGroup } from "@/data/pending-programs";
@@ -118,6 +121,7 @@ function FullPathQuestions({
 }
 
 export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
+  const access = useAccess();
   const searchParams = useSearchParams();
   const group = findFullPathGroup(searchParams.get("group"));
   const answers = parseFullPathAnswers(searchParams);
@@ -202,7 +206,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
           </p>
         </div>
         <div className={styles.headActions}>
-          <SaveRoutePdf title={title} />
+          <SaveRoutePdf title={title} stages={path.stages} completed={completed} asOfDate={asOfDate} />
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
@@ -257,7 +261,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
                 </div>
               </header>
               <ul className={styles.tasks}>
-                {stage.tasks.map((task) => {
+                {limitTasks(stage.tasks, access.tier).shown.map((task) => {
                   const canTick = isActionableTask(task.status);
                   const done = completed.has(task.id);
                   return (
@@ -298,6 +302,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
                   );
                 })}
               </ul>
+              <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
             </section>
           ))}
 

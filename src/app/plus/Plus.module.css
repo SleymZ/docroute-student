@@ -1,0 +1,91 @@
+.tableWrap {
+  overflow-x: auto;
+  margin: 8px 0 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table th[scope="row"],
+.table thead th:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.table thead th {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.plusHead {
+  color: var(--coral) !important;
+}
+
+.plusHead svg {
+  vertical-align: -2px;
+}
+
+.plusCell {
+  background: light-dark(rgba(212, 80, 47, 0.05), rgba(255, 121, 95, 0.07));
+  font-weight: 600;
+}
+
+.yes {
+  color: var(--green);
+}
+
+.no {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.note {
+  max-width: 720px;
+  margin: 0 0 40px;
+}
+
+.note h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.note p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.note p a {
+  color: var(--coral);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}

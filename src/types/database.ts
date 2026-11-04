@@ -84,6 +84,21 @@ export type Database = {
         };
         Relationships: [];
       };
+      account_plans: {
+        Row: {
+          user_id: string;
+          plan: "free" | "plus";
+          plus_until: string | null;
+          source: "manual" | "beta" | "payment";
+          note: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        // Written only by the owner (SQL editor); users have no insert/update grant.
+        Insert: { user_id: string; plan?: "free" | "plus"; plus_until?: string | null; source?: "manual" | "beta" | "payment"; note?: string | null };
+        Update: { plan?: "free" | "plus"; plus_until?: string | null; source?: "manual" | "beta" | "payment"; note?: string | null };
+        Relationships: [];
+      };
       confirmed_routes: {
         Row: {
           user_id: string;
@@ -289,6 +304,10 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      has_plus: {
+        Args: never;
+        Returns: boolean;
+      };
       delete_my_account: {
         Args: never;
         Returns: undefined;

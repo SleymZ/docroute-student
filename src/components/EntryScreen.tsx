@@ -176,7 +176,7 @@ export function EntryScreen() {
         </ul>
         <p className={styles.note}>
           Free public beta for moving to study, work, join family or run a
-          business. No account needed to start.
+          business. Browse universities without an account.
         </p>
       </section>
 

@@ -17,6 +17,9 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
+import { PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
+import { useAccess } from "@/hooks/useAccess";
+import { limitTasks } from "@/lib/access";
 import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
@@ -243,6 +246,7 @@ function WorkQuestionnaire({ initial }: { initial: URLSearchParams }) {
 }
 
 export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
+  const access = useAccess();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -275,7 +279,8 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
   const completed = routeProgress.values;
 
   const rawMoveDate = searchParams.get("move") ?? "";
-  const moveDate = isIsoDate(rawMoveDate) ? rawMoveDate : "";
+  // Dates are part of Plus: a date in the address is ignored on the Free plan.
+  const moveDate = access.plus && isIsoDate(rawMoveDate) ? rawMoveDate : "";
   const plan = useMemo(() => {
     if (!route || !route.authorisation || !route.filing || !route.processingDays || !moveDate) {
       return null;
@@ -410,7 +415,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
           </p>
         </div>
         <div className={styles.headActions}>
-          <SaveRoutePdf title="Working in Slovakia" />
+          <SaveRoutePdf title="Working in Slovakia" stages={route.stages} completed={completed} asOfDate={asOfDate} />
           <Link href={editHref} className={styles.editLink} data-print-hide="">
             Edit answers
           </Link>
@@ -479,7 +484,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
               </header>
 
               <ul className={styles.tasks}>
-                {stage.tasks.map((task) => {
+                {limitTasks(stage.tasks, access.tier).shown.map((task) => {
                   const canTick = isActionableTask(task.status);
                   const done = completed.has(task.id);
                   const due = datedLabels.get(task.id) ?? task.dueLabel;
@@ -534,6 +539,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
                   );
                 })}
               </ul>
+              <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
             </section>
           ))}
 
@@ -562,7 +568,8 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
 
         <aside className={styles.side} aria-label="Dates and progress">
           {route.authorisation ? (
-            <>
+            access.plus ? (
+              <>
               <label className={styles.dateField}>
                 <span>When do you start work?</span>
                 <DateInput
@@ -594,7 +601,11 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
                   Working days skip weekends and Slovak public holidays.
                 </p>
               )}
-            </>
+              <RemindersNote />
+              </>
+            ) : (
+              <PlusFeature feature="dates" />
+            )
           ) : (
             <p className={styles.sideHint}>No residence deadlines to plan for your answers.</p>
           )}

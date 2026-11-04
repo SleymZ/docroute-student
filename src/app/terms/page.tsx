@@ -127,8 +127,9 @@ export default function TermsPage() {
       <h2>5. Your account</h2>
       <ul>
         <li>
-          You may use most of DocRoute without an account. An account lets
-          you save your profile, universities and progress.
+          You may browse universities and stories without an account. Building
+          a route needs a free account; Plus adds the features listed on the
+          Plans page (/plus).
         </li>
         <li>
           You must be at least {minimumAccountAge} years old to create an

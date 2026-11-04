@@ -22,6 +22,9 @@ import {
   updateConfirmedRouteIfUnchanged,
 } from "@/lib/supabase/confirmed-route";
 
+import { PlusFeature } from "@/components/Plus";
+import { useAccess } from "@/hooks/useAccess";
+
 import styles from "./ConfirmRoute.module.css";
 
 type ConfirmRouteProps = {
@@ -46,6 +49,7 @@ type State =
 // One confirmed route per account; confirming another replaces it.
 export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, routePath: pathOverride }: ConfirmRouteProps) {
   const stepKey = stepIds.join(",");
+  const access = useAccess();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -100,7 +104,9 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
   // is kept for a retry and the block says so).
   const saveChain = useRef<Promise<boolean>>(Promise.resolve(true));
   const [syncFailed, setSyncFailed] = useState(false);
+  // Saving to My route is a Plus feature (the database refuses it otherwise).
   const needsSync =
+    access.plus &&
     state.kind === "ready" &&
     Boolean(confirmed && current && isThis) &&
     (confirmed?.routePath !== current?.routePath ||
@@ -210,7 +216,7 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
         </span>
         <div className={styles.copy}>
           <strong>Is this your route?</strong>
-          <p>Confirm it to keep it in My route and come back to it any time. Confirming needs a free account.</p>
+          <p>Confirm it to keep it in My route and come back to it any time. Confirming needs an account with Plus.</p>
         </div>
         <Link href={myRouteLoginHref(routePath)} className={styles.primary}>
           <LogIn size={15} aria-hidden="true" />
@@ -227,6 +233,15 @@ export function ConfirmRoute({ title, purpose, countryCode, routeKey, stepIds, r
           <strong>My route is unavailable right now</strong>
           <p>Your progress on this page is still saved. Try again later.</p>
         </div>
+      </section>
+    );
+  }
+
+  if (!access.plus && !isThis) {
+    if (access.loading) return null;
+    return (
+      <section className={styles.plusWrap} aria-label="Save this route" data-print-hide="">
+        <PlusFeature feature="save" />
       </section>
     );
   }

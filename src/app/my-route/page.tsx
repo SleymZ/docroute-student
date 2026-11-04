@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { ArrowRight, CalendarCheck2, Compass, ListChecks, MapPinned } from "lucide-react";
 
 import { Header } from "@/components/Header";
+import { PlusFeature } from "@/components/Plus";
+import { tierFromPlan } from "@/lib/access";
 import { RemoveMyRoute } from "@/components/RemoveMyRoute";
 import storyStyles from "@/components/Stories.module.css";
 import { normaliseRoutePath, purposeLabels } from "@/lib/confirmed-route";
@@ -31,6 +33,14 @@ export default async function MyRoutePage() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth?mode=login&next=/my-route");
+
+  // My route is a Plus feature; without Plus the empty state explains it.
+  const { data: planRow } = await supabase
+    .from("account_plans")
+    .select("plan, plus_until")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const plus = tierFromPlan(planRow) === "plus";
 
   let failed = false;
   let route: Awaited<ReturnType<typeof loadConfirmedRoute>> = null;
@@ -67,6 +77,11 @@ export default async function MyRoutePage() {
 
         {failed ? (
           <p className={storyStyles.notice}>My route could not be loaded. Reload the page in a moment.</p>
+        ) : (!route || !href) && !plus ? (
+          <section className={storyStyles.empty}>
+            <h2>My route is part of Plus</h2>
+            <PlusFeature feature="save" />
+          </section>
         ) : !route || !href ? (
           <section className={storyStyles.empty}>
             <h2>No confirmed route yet</h2>

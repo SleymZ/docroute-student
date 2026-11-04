@@ -31,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
-    ...["/terms", "/privacy", "/cookies", "/feedback"].map((path) => ({
+    ...["/plus", "/terms", "/privacy", "/cookies", "/feedback"].map((path) => ({
       url: `${siteUrl}${path}`,
       changeFrequency: "yearly" as const,
       priority: 0.3,
