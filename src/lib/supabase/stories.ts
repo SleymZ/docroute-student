@@ -163,16 +163,38 @@ export async function loadEngagement(supabase: Client, storyIds: string[]) {
 
 const commentColumns = "id, story_id, user_id, body, status, created_at, published_at";
 
-// Comments on one story the reader may see: published ones, their own
-// pending ones, and (for moderators) all of them.
-export async function loadComments(supabase: Client, storyId: string) {
+export const commentPageSize = 100;
+
+// Published comments on one story, oldest first, one page at a time.
+export async function loadComments(supabase: Client, storyId: string, page = 1) {
+  const from = (page - 1) * commentPageSize;
+  const { data, error, count } = await supabase
+    .from("story_comments")
+    .select(commentColumns, { count: "exact" })
+    .eq("story_id", storyId)
+    .eq("status", "published")
+    .order("published_at")
+    .order("id")
+    .range(from, from + commentPageSize - 1);
+  if (error) throw error;
+  return { comments: (data ?? []) as StoryComment[], total: count ?? 0 };
+}
+
+// The reader's own comments on a story that are not public (waiting for
+// review or declined), so they can always see and delete them.
+export async function loadOwnUnpublishedComments(
+  supabase: Client,
+  storyId: string,
+  userId: string,
+) {
   const { data, error } = await supabase
     .from("story_comments")
     .select(commentColumns)
     .eq("story_id", storyId)
+    .eq("user_id", userId)
+    .neq("status", "published")
     .order("created_at")
-    .order("id")
-    .limit(500);
+    .limit(50);
   if (error) throw error;
   return (data ?? []) as StoryComment[];
 }

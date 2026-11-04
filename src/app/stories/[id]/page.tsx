@@ -26,7 +26,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   hasLiked,
   isStoryModerator,
+  commentPageSize,
   loadComments,
+  loadOwnUnpublishedComments,
   loadEngagement,
   loadPublicProfiles,
   loadStory,
@@ -35,7 +37,10 @@ import {
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
 
 async function loadStoryPage(id: string) {
   if (!isUuid(id) || !isSupabaseConfigured()) return null;
@@ -65,8 +70,11 @@ const statusNotes = {
   hidden: "Not published: only you (and moderators) can see this story.",
 } as const;
 
-export default async function StoryPage({ params }: Props) {
+export default async function StoryPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const raw = (await searchParams) ?? {};
+  const pageParam = Number(Array.isArray(raw.comments) ? raw.comments[0] : raw.comments);
+  const commentPage = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1;
   const data = await loadStoryPage(id);
   if (!data) notFound();
   const { supabase, story } = data;
@@ -78,16 +86,24 @@ export default async function StoryPage({ params }: Props) {
   // Each extra loads on its own, so the story still shows if one fails
   // (for example before the photos/comments migration has been run).
   const none = <T,>(value: T) => () => value;
-  const [photoMap, commentList, engagement, liked, moderator] = await Promise.all([
+  const [photoMap, commentList, ownWaiting, engagement, liked, moderator] = await Promise.all([
     loadStoryPhotos(supabase, [story.id]).catch(none(new Map<string, StoryPhoto[]>())),
-    loadComments(supabase, story.id).catch(none<StoryComment[] | null>(null)),
+    loadComments(supabase, story.id, commentPage).catch(
+      none<{ comments: StoryComment[]; total: number } | null>(null),
+    ),
+    user
+      ? loadOwnUnpublishedComments(supabase, story.id, user.id).catch(none<StoryComment[]>([]))
+      : Promise.resolve<StoryComment[]>([]),
     loadEngagement(supabase, [story.id]).catch(none(new Map<string, { likes: number }>())),
     user ? hasLiked(supabase, story.id, user.id) : Promise.resolve(false),
     user ? isStoryModerator(supabase) : Promise.resolve(false),
   ]);
   const photos = (photoMap.get(story.id) ?? []).filter((photo) => photo.url);
   const extrasFailed = commentList === null;
-  const comments = commentList ?? [];
+  const publishedComments = commentList?.comments ?? [];
+  const publishedCount = commentList?.total ?? 0;
+  const commentPages = Math.max(1, Math.ceil(publishedCount / commentPageSize));
+  const comments = [...publishedComments, ...ownWaiting];
   const likes = engagement.get(story.id)?.likes ?? 0;
   const profiles: Map<string, PublicProfile> = await loadPublicProfiles(supabase, [
     story.user_id,
@@ -100,10 +116,7 @@ export default async function StoryPage({ params }: Props) {
   const viewerHasProfile = user ? profiles.has(user.id) : false;
   const published = story.status === "published";
   const date = story.published_at ?? story.created_at;
-  const visibleComments = comments.filter(
-    (comment) => comment.status === "published" || moderator || comment.user_id === user?.id,
-  );
-  const publishedCount = comments.filter((comment) => comment.status === "published").length;
+  const visibleComments = comments;
 
   return (
     <main>
@@ -227,6 +240,27 @@ export default async function StoryPage({ params }: Props) {
                   );
                 })}
               </ol>
+            )}
+
+            {commentPages > 1 && (
+              <nav className={styles.filters} aria-label="Comment pages" style={{ marginTop: 14 }}>
+                {commentPage > 1 && (
+                  <Link
+                    href={commentPage === 2 ? `/stories/${story.id}` : `/stories/${story.id}?comments=${commentPage - 1}`}
+                    className={styles.chip}
+                  >
+                    ← Earlier comments
+                  </Link>
+                )}
+                <span className={styles.chip}>
+                  Page {commentPage} of {commentPages}
+                </span>
+                {commentPage < commentPages && (
+                  <Link href={`/stories/${story.id}?comments=${commentPage + 1}`} className={styles.chip}>
+                    Later comments →
+                  </Link>
+                )}
+              </nav>
             )}
 
             {!user ? (

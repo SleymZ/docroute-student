@@ -220,3 +220,13 @@ test("retrying a partly failed photo save never deletes a photo that was just up
   assert.match(form, /setNewPhotos\(failedUploads\);/);
   assert.match(read("src/lib/story-photo-upload.ts"), /\.select\("id, story_id, user_id, path, created_at"\)\s*\.single\(\);/);
 });
+
+test("story comments are paged, and own unpublished comments always show", () => {
+  const loaders = read("src/lib/supabase/stories.ts");
+  assert.match(loaders, /export const commentPageSize = 100;/);
+  assert.match(loaders, /\.eq\("status", "published"\)\s*\.order\("published_at"\)/);
+  assert.doesNotMatch(loaders, /\.limit\(500\)/);
+  const page = read("src/app/stories/[id]/page.tsx");
+  assert.match(page, /loadOwnUnpublishedComments\(supabase, story\.id, user\.id\)/);
+  assert.match(page, /\?comments=\$\{commentPage \+ 1\}/);
+});

@@ -902,6 +902,8 @@ latest rules" (owner rule 2026-10-30):
     pending (owner decision: pre-moderation) and appears after a moderator
     publishes it on `/stories/review/comments`; at most 10 pending comments
     per account. Authors and moderators delete comments; no editing.
+    The story page shows published comments 100 per page (`?comments=N`)
+    and always the reader's own unpublished ones.
   - **Likes:** one per account and published story (`story_likes`). Who liked
     what is private; `story_engagement(ids)` returns only like and
     published-comment counts.
@@ -1180,7 +1182,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (281 tests on 2026-11-04).
+- Unit tests: `npm test` (282 tests on 2026-11-04).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
