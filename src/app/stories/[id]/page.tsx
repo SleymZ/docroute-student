@@ -75,34 +75,25 @@ export default async function StoryPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  let photos: StoryPhoto[] = [];
-  let comments: StoryComment[] = [];
-  let likes = 0;
-  let liked = false;
-  let moderator = false;
-  let profiles = new Map<string, PublicProfile>();
-  let extrasFailed = false;
-  try {
-    const [photoMap, commentList, engagement, likedByMe, isModerator] = await Promise.all([
-      loadStoryPhotos(supabase, [story.id]),
-      loadComments(supabase, story.id),
-      loadEngagement(supabase, [story.id]),
-      user ? hasLiked(supabase, story.id, user.id) : Promise.resolve(false),
-      user ? isStoryModerator(supabase) : Promise.resolve(false),
-    ]);
-    photos = (photoMap.get(story.id) ?? []).filter((photo) => photo.url);
-    comments = commentList;
-    likes = engagement.get(story.id)?.likes ?? 0;
-    liked = likedByMe;
-    moderator = isModerator;
-    profiles = await loadPublicProfiles(supabase, [
-      story.user_id,
-      ...comments.map((comment) => comment.user_id),
-      ...(user ? [user.id] : []),
-    ]);
-  } catch {
-    extrasFailed = true;
-  }
+  // Each extra loads on its own, so the story still shows if one fails
+  // (for example before the photos/comments migration has been run).
+  const none = <T,>(value: T) => () => value;
+  const [photoMap, commentList, engagement, liked, moderator] = await Promise.all([
+    loadStoryPhotos(supabase, [story.id]).catch(none(new Map<string, StoryPhoto[]>())),
+    loadComments(supabase, story.id).catch(none<StoryComment[] | null>(null)),
+    loadEngagement(supabase, [story.id]).catch(none(new Map<string, { likes: number }>())),
+    user ? hasLiked(supabase, story.id, user.id) : Promise.resolve(false),
+    user ? isStoryModerator(supabase) : Promise.resolve(false),
+  ]);
+  const photos = (photoMap.get(story.id) ?? []).filter((photo) => photo.url);
+  const extrasFailed = commentList === null;
+  const comments = commentList ?? [];
+  const likes = engagement.get(story.id)?.likes ?? 0;
+  const profiles = await loadPublicProfiles(supabase, [
+    story.user_id,
+    ...comments.map((comment) => comment.user_id),
+    ...(user ? [user.id] : []),
+  ]).catch(none(new Map<string, PublicProfile>()));
 
   const author = profiles.get(story.user_id) ?? null;
   const authorName = author?.display_name ?? "DocRoute member";
