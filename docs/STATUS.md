@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-03. Keep this file factual: describe what exists and
+Last updated: 2026-11-04. Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -249,14 +249,26 @@ latest rules" (owner rule 2026-10-30):
 - Map: Switzerland (756) added to the highlighted set (owner request); the
   other highlighted countries are unchanged.
 
-## Top 100 universities (checked 2026-10-27)
+## Top 100 universities (checked 2026-10-27, Leiden 2026 order 2026-11-04)
 
-- Order: CWTS Leiden Ranking Open Edition 2025, region Europe, indicator
-  P(top 10%), 2020–2023, fractional counting, core publications, all
-  sciences. Data are CC0 (Zenodo 10.5281/zenodo.17473224). Taken from the
-  ranking site's list for Europe. The 2026 edition is due 4 Nov 2026:
-  update `src/data/top-universities.ts` then. QS, THE and ARWU positions
-  are not shown: their terms do not allow republishing.
+- Order: CWTS Leiden Ranking Open Edition 2026 (released 4 Nov 2026,
+  OpenAlex snapshot of August 2026), region Europe, indicator P(top 10%),
+  2021–2024, fractional counting, core publications, all sciences. Results
+  are CC0 (Zenodo 10.5281/zenodo.23598718). Taken on 2026-11-04 from the
+  ranking site's list for Europe (the same request the list view makes).
+  QS, THE and ARWU positions are not shown: their terms do not allow
+  republishing. CWTS ends the Traditional (Web of Science) Edition after
+  2026; DocRoute already uses the Open Edition.
+- Leiden 2026 update (2026-11-04): 97 of 100 universities stay; 82 changed
+  rank (ties at 682, 647 and 619 follow the site's order). Out: Universidad
+  Autónoma de Madrid, Politecnico di Torino (its coming-soon listing stays),
+  Université PSL. In: Aix-Marseille University (#92), Queen's University
+  Belfast (#96), University of Coimbra (#97), each with admission facts and
+  a computer science entry read on its own site; Queen's also has the five
+  fields and university-wide admission requirements (UK coverage rule).
+  `top-computer-science.ts`, `top-field-requirements.ts` and
+  `top-admission-requirements.ts` were re-keyed to the new ranks by Leiden
+  id. Facts of the 97 staying universities were not rechecked in this pass.
 - Data: `src/data/top-universities.ts` (generated once from research
   notes, edit by hand now), types in `src/types/top-universities.ts`,
   field resolution in `src/lib/top-universities.ts`, page
@@ -286,7 +298,7 @@ latest rules" (owner rule 2026-10-30):
   medicine, law, economics, quoted as each course page publishes them
   (A-levels, IB, admissions tests, sometimes fee); grades are never
   converted between systems. First batch 2026-10-31: all 20 UK
-  universities, 96 entries (Glasgow: only CS and medicine readable; QMUL:
+  universities, 96 entries (Queen's Belfast added 2026-11-04, 5 entries) (Glasgow: only CS and medicine readable; QMUL:
   no 2027 medicine page; Imperial has no law; Warwick medicine is
   graduate-entry only). Shown in the Top 100 card and on the university
   page under "Entry requirements by field". Second batch 2026-10-31: all
@@ -301,7 +313,7 @@ latest rules" (owner rule 2026-10-30):
   digital-economics bachelor instead). Next: NL maths B, IT tests, FR
   dossier, ES admission grade.
 - University-wide "Admission requirements" (`src/data/top-admission-requirements.ts`,
-  type `TopAdmissionRequirements`, 2026-10-31): for all 37 UK and German
+  type `TopAdmissionRequirements`, 2026-10-31): for all 38 UK and German
   Top 100 universities the university page's "Admission requirements" panel
   now shows three cards (application documents, entrance requirements,
   after admission) with sources, instead of "We are reviewing the official
@@ -1114,7 +1126,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (266 tests on 2026-11-03).
+- Unit tests: `npm test` (267 tests on 2026-11-04).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
@@ -1159,8 +1171,7 @@ text, which is unchanged from before).
 4. Work route: cross-check key paragraphs of Act 404/2011 (and the
    Employment Services Act for the 20-working-day rule) on Slov-Lex;
    consider seasonal work and the Blue Card salary amount.
-5. Update the Top 100 list when the Leiden Ranking 2026 is published
-   (4 Nov 2026) and recheck deadlines once universities publish 2027/28
+5. Top 100 follows Leiden 2026 (done 2026-11-04). Recheck deadlines once universities publish 2027/28
    rules.
 6. Add more "coming soon" faculties with last year's rules (next: other
    fields such as medicine in English, Czech computing faculties) while
