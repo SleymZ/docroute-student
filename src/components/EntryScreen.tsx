@@ -14,7 +14,7 @@ import { landingMap } from "@/lib/landing-map";
 
 import { EnterButton, EntryAccountLink } from "./EntryActions";
 import styles from "./EntryScreen.module.css";
-import { LogoMark } from "./Logo";
+import { LogoMark, LogoWord } from "./Logo";
 import { RouteLoader } from "./RouteLoader";
 
 // Seconds the route takes to draw on load; stops appear as it reaches them.
@@ -145,7 +145,7 @@ export function EntryScreen() {
       <header className={styles.bar}>
         <Link href="/" className={styles.brand} aria-label="DocRoute">
           <LogoMark size={40} className={styles.brandMark} />
-          <span className={styles.brandName}>DocRoute</span>
+          <LogoWord className={styles.brandName} />
           <span className={styles.beta}>Beta</span>
         </Link>
         <EntryAccountLink />

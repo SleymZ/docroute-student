@@ -948,6 +948,20 @@ latest rules" (owner rule 2026-10-30):
 - The map, its highlighted countries and the route are unchanged. On
   phones the map is faded with a mask and the text starts under it, so
   the title no longer covers the route.
+- Logo from the style board in site colours: a globe ring (text colour)
+  with Europe (coral; Natural Earth land-50m outline, orthographic,
+  clipped and simplified), a plane leaving the ring and a coral route
+  swoosh under it; "Doc" in text colour, "Route" in coral. Used in the
+  headers, entry, sign-in and password screens, `src/app/icon.svg` (both
+  themes) and `src/app/apple-icon.png` (dark tile). The loader shows the
+  plane circling the globe.
+- Entry map colours (owner request): neutral land dots, coral dots for the
+  13 highlighted countries, stop rings in the text colour. Shape, route
+  and the country list are unchanged.
+- The entry page shows only on the first visit (owner decision):
+  `src/proxy.ts` sends `/` to `/home` when the browser has the
+  `docroute-visited` cookie (set on the first page view, one year,
+  httpOnly, listed in the Cookie Policy) or a Supabase session cookie.
 
 ## My route, date fields on phones, full-path button (2026-11-03)
 

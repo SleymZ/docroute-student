@@ -2,13 +2,15 @@
    and its stages light up in turn. Everything else stays still. */
 
 .entry {
-  --map-dot: light-dark(rgba(11, 118, 134, 0.26), rgba(121, 221, 239, 0.26));
-  --map-dot-strong: light-dark(rgba(11, 118, 134, 0.62), rgba(121, 221, 239, 0.68));
+  /* Map in the brand colours (owner request 2026-11-04): neutral land,
+     coral countries with DocRoute routes or listings. */
+  --map-dot: light-dark(rgba(31, 41, 55, 0.16), rgba(245, 243, 238, 0.15));
+  --map-dot-strong: light-dark(rgba(212, 80, 47, 0.5), rgba(255, 121, 95, 0.55));
   /* Site coral (globals.css); dark text on it, as on the other buttons. */
   --brand: var(--coral);
   --brand-hover: var(--coral-hover);
   --on-brand: #101820;
-  --stop-ring: light-dark(#0b7686, #79ddef);
+  --stop-ring: light-dark(#1f2937, #f5f3ee);
   --label: light-dark(#1d2b31, #e8eef1);
   /* Warm second orange from the style board, for glows only. */
   --warm: light-dark(rgba(255, 159, 77, 0.16), rgba(255, 159, 77, 0.1));
@@ -191,8 +193,8 @@
 }
 
 .brandName {
-  font-size: 18px;
-  font-weight: 650;
+  font-size: 19px;
+  font-weight: 750;
   letter-spacing: -0.02em;
 }
 

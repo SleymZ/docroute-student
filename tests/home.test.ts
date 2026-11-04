@@ -72,10 +72,32 @@ test("the logo replaces the old route icon everywhere the brand is shown", () =>
   }
   const logo = read("src/components/Logo.tsx");
   assert.match(logo, /export const BRAND_COLOR = "var\(--coral\)";/);
-  assert.match(logo, /fillRule="evenodd"/);
+  // globe, Europe, plane and route from the style board, in site colours
+  for (const part of ["logoRingPath", "logoEuropePath", "logoPlanePath", "logoSwooshPath"]) {
+    assert.match(logo, new RegExp(`export const ${part}`), part);
+  }
+  assert.match(logo, /Doc<span style=\{\{ color: BRAND_COLOR \}\}>Route<\/span>/);
   const icon = read("src/app/icon.svg");
-  assert.ok(icon.includes("#D4502F") && icon.includes("evenodd"));
-  assert.match(read("src/components/RouteLoader.tsx"), /logoMarkPath/);
+  assert.ok(icon.includes("#D4502F") && icon.includes("#FF795F"), "favicon in both corals");
+  assert.ok(!/#FF7A00|#FF9F4D/i.test(icon), "no style-board orange in the favicon");
+  const loader = read("src/components/RouteLoader.tsx");
+  assert.match(loader, /logoEuropePath/);
+  assert.match(loader, /logoPlanePath/);
+});
+
+test("the entry page opens only on the first visit and never for signed-in people", async () => {
+  const proxy = read("src/proxy.ts");
+  assert.match(proxy, /request\.nextUrl\.pathname === "\/"/);
+  assert.match(proxy, /url\.pathname = "\/home"/);
+  assert.match(proxy, /cookies\.includes\(VISITED_COOKIE\) \|\| hasAuthCookie\(cookies\)/);
+  assert.match(proxy, /response\.cookies\.set\(VISITED_COOKIE/);
+  const { hasAuthCookie, VISITED_COOKIE } = await import("../src/lib/visited");
+  assert.equal(hasAuthCookie(["sb-abc-auth-token"]), true);
+  assert.equal(hasAuthCookie(["sb-abc-auth-token.0", "sb-abc-auth-token.1"]), true);
+  assert.equal(hasAuthCookie(["sb-abc-auth-token-code-verifier"]), false);
+  assert.equal(hasAuthCookie([VISITED_COOKIE]), false);
+  const { browserStorageItems } = await import("../src/data/legal");
+  assert.ok(browserStorageItems.some((item) => item.name === VISITED_COOKIE));
 });
 
 test("the entry map highlights the same countries as the home map", () => {

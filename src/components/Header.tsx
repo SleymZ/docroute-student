@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import { AuthNavigation } from "./AuthNavigation";
-import { LogoMark } from "./Logo";
+import { LogoMark, LogoWord } from "./Logo";
 import styles from "./Header.module.css";
 
 const navigation = [
@@ -45,7 +45,7 @@ export function Header() {
         <LogoMark size={40} className={styles.brandMark} />
 
         <span className={styles.brandText}>
-          <span className={styles.brandName}>DocRoute</span>
+          <LogoWord className={styles.brandName} />
           <span className={styles.brandCaption}>
             EUROPE
             <span className={styles.betaBadge}>BETA</span>
