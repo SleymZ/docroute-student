@@ -1,15 +1,24 @@
 import Link from "next/link";
-import { Route } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { landingMap } from "@/lib/landing-map";
 
 import { EnterButton, EntryAccountLink } from "./EntryActions";
 import styles from "./EntryScreen.module.css";
+import { LogoMark } from "./Logo";
 import { RouteLoader } from "./RouteLoader";
 
 // Seconds the route takes to draw on load; stops appear as it reaches them.
 const DRAW_SECONDS = 2.4;
 const DRAW_START = 0.5;
+
+// The example route card mirrors the stops on the map; each line is ticked
+// when the drawing line reaches its stop.
+const cardSteps = [
+  { title: "Application", detail: "University rules and the documents they ask for" },
+  { title: "Documents", detail: "Translations, apostille and the dates to order them" },
+  { title: "Residence permit", detail: "Where and when to file, counted back from your move" },
+];
 
 /** The entry page: a dot map of Europe on which a route is drawn, one
  *  button into the site and a way to log in. No site navigation here. */
@@ -40,6 +49,16 @@ export function EntryScreen() {
         aria-hidden="true"
       >
         <path className={styles.dots} d={map.dots} />
+        <path className={styles.dotsHighlighted} d={map.highlightedDots} />
+        {map.capitals.map((capital) => (
+          <circle
+            key={capital.name}
+            className={styles.capital}
+            cx={capital.x}
+            cy={capital.y}
+            r="3.6"
+          />
+        ))}
         <path className={styles.routeGlow} d={map.route} pathLength={1} />
         <path className={styles.route} d={map.route} pathLength={1} />
         {map.stops.map((stop, index) => {
@@ -76,9 +95,7 @@ export function EntryScreen() {
 
       <header className={styles.bar}>
         <Link href="/" className={styles.brand} aria-label="DocRoute">
-          <span className={styles.brandMark}>
-            <Route size={22} strokeWidth={1.8} aria-hidden="true" />
-          </span>
+          <LogoMark size={40} className={styles.brandMark} />
           <span className={styles.brandName}>DocRoute</span>
           <span className={styles.beta}>Beta</span>
         </Link>
@@ -103,6 +120,37 @@ export function EntryScreen() {
           business. No account needed to start.
         </p>
       </section>
+
+      <aside className={styles.card} aria-label="Example route">
+        <p className={styles.cardKicker}>Example route</p>
+        <p className={styles.cardTitle}>Study in Slovakia</p>
+        <ol className={styles.cardSteps}>
+          {cardSteps.map((step, index) => (
+            <li
+              key={step.title}
+              style={
+                {
+                  "--stop-delay": `${(DRAW_START + map.stops[index].at * DRAW_SECONDS).toFixed(2)}s`,
+                } as React.CSSProperties
+              }
+            >
+              <span className={styles.tick} aria-hidden="true">
+                <Check size={13} strokeWidth={3} />
+              </span>
+              <span>
+                <strong>{step.title}</strong>
+                <span>{step.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className={styles.cardFoot}>Every step links to its official source.</p>
+      </aside>
+
+      <p className={styles.legend}>
+        <span className={styles.legendDot} aria-hidden="true" />
+        Countries with DocRoute routes or university listings
+      </p>
 
       <div className={styles.leaving} aria-hidden="true">
         <RouteLoader label="Opening DocRoute" />

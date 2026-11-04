@@ -1,47 +1,33 @@
 .loader {
   display: grid;
   justify-items: center;
-  gap: 14px;
+  gap: 16px;
   color: var(--text);
 }
 
-.track {
-  width: min(240px, 70vw);
-  height: auto;
+.mark {
+  width: 76px;
+  height: 76px;
   overflow: visible;
 }
 
-.rail {
+.road {
   fill: none;
-  stroke: light-dark(rgba(11, 118, 134, 0.22), rgba(121, 221, 239, 0.22));
-  stroke-width: 2;
-  stroke-dasharray: 1 7;
-  stroke-linecap: round;
+  stroke: #ff7a00;
+  stroke-width: 2.4;
+  stroke-dasharray: 5 4.2;
+  animation: drive 0.7s linear infinite;
 }
 
-.line {
+/* Ring around the pin hole. */
+.pulse {
   fill: none;
-  stroke: var(--coral);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-.stop {
-  fill: var(--background);
-  stroke: light-dark(rgba(11, 118, 134, 0.45), rgba(121, 221, 239, 0.45));
+  stroke: #ff7a00;
   stroke-width: 2;
-  animation: light 1.6s ease infinite;
-}
-
-.stop[data-stop="2"] {
-  animation-delay: 0.5s;
-}
-
-.stop[data-stop="3"] {
-  animation-delay: 1s;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: pulse 1.4s ease-out infinite;
 }
 
 .label {
@@ -49,52 +35,60 @@
   color: var(--muted);
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0.01em;
 }
 
-@keyframes draw {
+/* Thin progress line under the label. */
+.bar {
+  position: relative;
+  width: 120px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: light-dark(rgba(17, 20, 24, 0.08), rgba(245, 243, 238, 0.1));
+}
+
+.bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  border-radius: inherit;
+  background: #ff7a00;
+  animation: slide 1.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes drive {
+  to {
+    stroke-dashoffset: -9.2;
+  }
+}
+
+@keyframes pulse {
   0% {
-    stroke-dashoffset: 1;
-  }
-
-  70% {
-    stroke-dashoffset: 0;
-    opacity: 1;
+    opacity: 0.8;
+    transform: scale(1);
   }
 
   100% {
-    stroke-dashoffset: 0;
     opacity: 0;
+    transform: scale(2.6);
   }
 }
 
-@keyframes light {
-  0%,
-  10% {
-    fill: var(--background);
-    stroke: light-dark(rgba(11, 118, 134, 0.45), rgba(121, 221, 239, 0.45));
+@keyframes slide {
+  from {
+    transform: translateX(-100%);
   }
 
-  25%,
-  80% {
-    fill: var(--coral);
-    stroke: var(--coral);
-  }
-
-  100% {
-    fill: var(--background);
+  to {
+    transform: translateX(250%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .line {
+  .road,
+  .pulse,
+  .bar::after {
     animation: none;
-    stroke-dashoffset: 0;
-  }
-
-  .stop {
-    animation: none;
-    fill: var(--coral);
-    stroke: var(--coral);
   }
 }

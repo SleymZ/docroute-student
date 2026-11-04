@@ -57,3 +57,25 @@ test("the entry map uses the coarse atlas and handles countries across 180°", (
   assert.match(map, /wraps: west > east/);
   assert.match(map, /lon >= item\.west - 0\.1 \|\| lon <= item\.east \+ 0\.1/);
 });
+
+test("the logo replaces the old route icon everywhere the brand is shown", () => {
+  for (const file of [
+    "src/components/Header.tsx",
+    "src/components/EntryScreen.tsx",
+    "src/components/AuthScreen.tsx",
+    "src/components/UpdatePasswordScreen.tsx",
+  ]) {
+    assert.match(read(file), /<LogoMark /, file);
+  }
+  const logo = read("src/components/Logo.tsx");
+  assert.match(logo, /export const BRAND_ORANGE = "#FF7A00";/);
+  assert.match(logo, /fillRule="evenodd"/);
+  const icon = read("src/app/icon.svg");
+  assert.ok(icon.includes("#FF7A00") && icon.includes("evenodd"));
+  assert.match(read("src/components/RouteLoader.tsx"), /logoMarkPath/);
+});
+
+test("the entry map highlights the same countries as the home map", () => {
+  assert.match(read("src/lib/landing-map.ts"), /highlightedCountryIds\.has\(id\)/);
+  assert.match(read("src/lib/europe-map.ts"), /from "@\/data\/highlighted-countries"/);
+});

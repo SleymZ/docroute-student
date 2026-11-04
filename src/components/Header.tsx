@@ -4,11 +4,11 @@ import {
   Compass,
   Flag,
   MessageSquareHeart,
-  Route,
   Signpost,
 } from "lucide-react";
 
 import { AuthNavigation } from "./AuthNavigation";
+import { LogoMark } from "./Logo";
 import styles from "./Header.module.css";
 
 const navigation = [
@@ -42,13 +42,7 @@ export function Header() {
         className={styles.brand}
         aria-label="DocRoute — home"
       >
-        <span className={styles.brandMark}>
-          <Route
-            size={25}
-            strokeWidth={1.7}
-            aria-hidden="true"
-          />
-        </span>
+        <LogoMark size={40} className={styles.brandMark} />
 
         <span className={styles.brandText}>
           <span className={styles.brandName}>DocRoute</span>

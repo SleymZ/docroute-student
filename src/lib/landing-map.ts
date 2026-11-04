@@ -7,6 +7,8 @@ import type { GeometryCollection, Topology } from "topojson-specification";
 // The coarse 110m atlas is precise enough for 11-unit dots and much faster.
 import worldData from "world-atlas/countries-110m.json";
 
+import { highlightedCountryIds } from "@/data/highlighted-countries";
+
 export const LANDING_MAP_WIDTH = 1100;
 export const LANDING_MAP_HEIGHT = 600;
 // Distance between dots in map units.
@@ -25,26 +27,53 @@ function project(coordinates: [number, number]): Point {
   return { x: Math.round(point[0] * 10) / 10, y: Math.round(point[1] * 10) / 10 };
 }
 
-/** One path of zero-length segments; drawn with a round line cap, each
- *  segment becomes a dot. Relative moves keep the string small. */
+/** Builds an SVG path of zero-length segments; drawn with a round line
+ *  cap, each segment becomes a dot. Relative moves keep the string small. */
+function dotPath() {
+  let path = "";
+  let previous: Point | null = null;
+  return {
+    add(x: number, y: number) {
+      path += previous
+        ? `m${+(x - previous.x).toFixed(1)} ${+(y - previous.y).toFixed(1)}h0`
+        : `M${x} ${y}h0`;
+      previous = { x, y };
+    },
+    get value() {
+      return path;
+    },
+  };
+}
+
+/** Land dots, split into the countries the maps highlight (verified or
+ *  coming-soon listings) and all other land. */
 function buildDots() {
   const topology = worldData as unknown as Topology<{ countries: GeometryCollection }>;
   const countries = feature(topology, topology.objects.countries).features.map((country) => {
     const [[west, south], [east, north]] = geoBounds(country);
     // Countries across the 180th meridian (Russia, Fiji…) have west > east;
     // they skip the quick box test.
-    return { country, west, south, east, north, wraps: west > east };
+    const id = String(country.id ?? "").padStart(3, "0");
+    return {
+      country,
+      west,
+      south,
+      east,
+      north,
+      wraps: west > east,
+      highlighted: highlightedCountryIds.has(id),
+    };
   });
 
-  let path = "";
-  let previous: Point | null = null;
+  const land = dotPath();
+  const highlighted = dotPath();
   let count = 0;
   for (let y = LANDING_DOT_STEP / 2; y < LANDING_MAP_HEIGHT; y += LANDING_DOT_STEP) {
     for (let x = LANDING_DOT_STEP / 2; x < LANDING_MAP_WIDTH; x += LANDING_DOT_STEP) {
       const location = projection.invert?.([x, y]);
       if (!location) continue;
       const [lon, lat] = location;
-      const onLand = countries.some(
+      const match = countries.find(
         (item) =>
           lat >= item.south - 0.1 &&
           lat <= item.north + 0.1 &&
@@ -53,16 +82,31 @@ function buildDots() {
             : lon >= item.west - 0.1 && lon <= item.east + 0.1) &&
           geoContains(item.country, location),
       );
-      if (!onLand) continue;
-      path += previous
-        ? `m${+(x - previous.x).toFixed(1)} ${+(y - previous.y).toFixed(1)}h0`
-        : `M${x} ${y}h0`;
-      previous = { x, y };
+      if (!match) continue;
+      (match.highlighted ? highlighted : land).add(x, y);
       count += 1;
     }
   }
-  return { path, count };
+  return { land: land.value, highlighted: highlighted.value, count };
 }
+
+// Capitals of the highlighted countries, shown as small rings (not
+// Bratislava, the destination, nor Vienna, which would overlap it).
+const capitals = (
+  [
+    ["Prague", [14.44, 50.08]],
+    ["Berlin", [13.4, 52.52]],
+    ["Amsterdam", [4.9, 52.37]],
+    ["Warsaw", [21.01, 52.23]],
+    ["Budapest", [19.04, 47.5]],
+    ["Zagreb", [15.98, 45.81]],
+    ["Rome", [12.5, 41.9]],
+    ["Helsinki", [24.94, 60.17]],
+    ["Vilnius", [25.28, 54.69]],
+    ["Dublin", [-6.26, 53.35]],
+    ["Bern", [7.45, 46.95]],
+  ] as const
+).map(([name, coordinates]) => ({ name, ...project([...coordinates]) }));
 
 // The route comes in from beyond the map's south-east edge, passes a
 // waypoint and ends in Bratislava, where DocRoute's verified routes start.
@@ -130,8 +174,10 @@ const dots = buildDots();
 export const landingMap = {
   width: LANDING_MAP_WIDTH,
   height: LANDING_MAP_HEIGHT,
-  dots: dots.path,
+  dots: dots.land,
+  highlightedDots: dots.highlighted,
   dotCount: dots.count,
+  capitals,
   route: routePath,
   destination,
   // Stages of a route, shown one after another while the line is drawn;

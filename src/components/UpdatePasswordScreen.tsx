@@ -3,10 +3,11 @@
 import { type FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, KeyRound, Route } from "lucide-react";
+import { ArrowLeft, ArrowRight, KeyRound } from "lucide-react";
 
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { LogoMark } from "./Logo";
 import styles from "./UpdatePasswordScreen.module.css";
 
 export function UpdatePasswordScreen() {
@@ -51,9 +52,7 @@ export function UpdatePasswordScreen() {
 
       <section className={styles.card}>
         <Link href="/home" className={styles.brand}>
-          <span>
-            <Route size={22} aria-hidden="true" />
-          </span>
+          <LogoMark size={36} />
           DocRoute
         </Link>
 
