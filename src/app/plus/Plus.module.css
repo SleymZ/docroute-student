@@ -43,6 +43,7 @@
 
 .plusHead {
   color: var(--coral) !important;
+  white-space: nowrap;
 }
 
 .plusHead svg {
@@ -88,4 +89,21 @@
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 18px;
+}
+
+@media (max-width: 640px) {
+  .table {
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 8px;
+  }
+
+  .table thead th {
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
 }
