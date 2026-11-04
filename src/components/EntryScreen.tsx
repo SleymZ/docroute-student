@@ -49,6 +49,7 @@ export function EntryScreen() {
               key={stop.label}
               className={styles.stop}
               data-last={last ? "" : undefined}
+              data-side={stop.side}
               style={
                 {
                   "--stop-delay": `${(DRAW_START + stop.at * DRAW_SECONDS).toFixed(2)}s`,
