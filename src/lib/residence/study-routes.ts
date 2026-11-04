@@ -71,8 +71,8 @@ const austria: StudyResidenceRoute = {
         task(
           "at-study-where",
           "File the first application",
-          "First applications go to the Austrian embassy or consulate abroad. If you entered Austria lawfully (for example visa-free), you may apply in Austria during that lawful stay: MA 35 in Vienna, the district administration or city government elsewhere.",
-          ["at-mig-temporary-students"],
+          "First applications go to the Austrian embassy or consulate abroad. If you entered Austria lawfully (for example visa-free), you may apply in Austria during that lawful stay: MA 35 in Vienna, the district administration or city government elsewhere. Filing does not extend your stay: if it ends before the decision, you must leave and wait for the decision abroad.",
+          ["at-mig-temporary-students", "at-oead-student-permit"],
         ),
         task(
           "at-study-money",
@@ -83,8 +83,14 @@ const austria: StudyResidenceRoute = {
         task(
           "at-study-insurance",
           "Health insurance valid in Austria",
-          "Insurance that covers all risks and pays out in Austria. No proof of accommodation is required for this permit.",
+          "Insurance that covers all risks and pays out in Austria.",
           ["at-mig-temporary-students"],
+        ),
+        task(
+          "at-study-housing",
+          "Proof of where you will live",
+          "You do not need a legal title to accommodation (such as a rental contract in your name), but the OeAD checklist still asks for evidence of accommodation for at least three months, because rent is part of the money calculation.",
+          ["at-mig-temporary-students", "at-oead-student-permit"],
         ),
         task(
           "at-study-documents",
