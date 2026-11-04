@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { Check } from "lucide-react";
+import {
+  Briefcase,
+  CalendarClock,
+  Check,
+  Globe,
+  GraduationCap,
+  ShieldCheck,
+  Store,
+  Users,
+} from "lucide-react";
 
 import { landingMap } from "@/lib/landing-map";
 
@@ -19,6 +28,26 @@ const cardSteps = [
   { title: "Documents", detail: "Translations, apostille and the dates to order them" },
   { title: "Residence permit", detail: "Where and when to file, counted back from your move" },
 ];
+
+// What a route can be for, shown as icon tiles in the style board's look.
+// Not links: the entry page keeps one way in (owner decision).
+const purposes = [
+  { label: "Study", Icon: GraduationCap },
+  { label: "Work", Icon: Briefcase },
+  { label: "Family", Icon: Users },
+  { label: "Business", Icon: Store },
+];
+
+// Short facts floating over the middle of the map on wide screens.
+const facts = [
+  { Icon: ShieldCheck, title: "Official sources", detail: "Ministry and university pages" },
+  { Icon: CalendarClock, title: "Counted back", detail: "Deadlines from your move date" },
+  { Icon: Globe, title: "13 countries", detail: "Routes or university listings" },
+];
+
+// A small plane pointing along +x, centred on 0,0; it flies the route.
+const PLANE =
+  "M12 0L4.5 -1.6L-1 -8.6L-4.2 -8.6L-1.4 -1.8L-7 -1.4L-9.2 -4.8L-11.3 -4.8L-10.2 0L-11.3 4.8L-9.2 4.8L-7 1.4L-1.4 1.8L-4.2 8.6L-1 8.6L4.5 1.6Z";
 
 /** The entry page: a dot map of Europe on which a route is drawn, one
  *  button into the site and a way to log in. No site navigation here. */
@@ -61,6 +90,11 @@ export function EntryScreen() {
         ))}
         <path className={styles.routeGlow} d={map.route} pathLength={1} />
         <path className={styles.route} d={map.route} pathLength={1} />
+        <path
+          className={styles.plane}
+          d={PLANE}
+          style={{ offsetPath: `path("${map.route}")` } as React.CSSProperties}
+        />
         {map.stops.map((stop, index) => {
           const last = index === map.stops.length - 1;
           return (
@@ -92,6 +126,21 @@ export function EntryScreen() {
         })}
       </svg>
       <div className={styles.veil} aria-hidden="true" />
+      <div className={styles.glow} aria-hidden="true" />
+
+      <ul className={styles.facts} aria-label="What DocRoute checks">
+        {facts.map(({ Icon, title, detail }, index) => (
+          <li key={title} style={{ "--fact": index } as React.CSSProperties}>
+            <span className={styles.factIcon} aria-hidden="true">
+              <Icon size={18} strokeWidth={2.2} />
+            </span>
+            <span>
+              <strong>{title}</strong>
+              <span>{detail}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
 
       <header className={styles.bar}>
         <Link href="/" className={styles.brand} aria-label="DocRoute">
@@ -104,7 +153,7 @@ export function EntryScreen() {
 
       <section className={styles.copy} aria-labelledby="entry-title">
         <h1 id="entry-title" className={styles.title}>
-          Start your journey
+          Start your <span className={styles.accent}>journey</span>
         </h1>
         <p className={styles.slogan}>Your move to Europe, one route.</p>
         <p className={styles.lead}>
@@ -115,6 +164,16 @@ export function EntryScreen() {
         <div className={styles.actions}>
           <EnterButton />
         </div>
+        <ul className={styles.purposes} aria-label="Routes for moving to">
+          {purposes.map(({ label, Icon }) => (
+            <li key={label}>
+              <span className={styles.purposeIcon} aria-hidden="true">
+                <Icon size={22} strokeWidth={1.9} />
+              </span>
+              {label}
+            </li>
+          ))}
+        </ul>
         <p className={styles.note}>
           Free public beta for moving to study, work, join family or run a
           business. No account needed to start.

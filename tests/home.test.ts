@@ -25,7 +25,10 @@ test("the site address opens the entry page, the full site lives at /home", () =
 test("the entry page has only the start button and log in, no site navigation", () => {
   const screen = read("src/components/EntryScreen.tsx");
   assert.doesNotMatch(screen, /<Header|AuthNavigation|\/explore|\/stories/);
-  assert.match(screen, /Start your journey/);
+  assert.match(screen, /Start your <span className=\{styles\.accent\}>journey<\/span>/);
+  // purpose tiles and facts are information, not more ways into the site
+  assert.equal((screen.match(/<Link\b/g) ?? []).length, 1, "only the logo links");
+  assert.match(read("src/components/EntryActions.tsx"), /Start your journey/);
   assert.match(screen, /Your move to Europe, one route\./);
   const actions = read("src/components/EntryActions.tsx");
   assert.match(actions, /const SITE_PATH = "\/home";/);

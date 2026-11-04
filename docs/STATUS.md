@@ -930,6 +930,25 @@ latest rules" (owner rule 2026-10-30):
     foreign keys). Download my data adds `storyPhotos`, `storyComments`,
     `storyLikes`. Privacy and Terms updated (2026-11-04).
 
+## Entry page design from the style board (2026-11-04)
+
+- Owner request: a brighter entry page with a fuller middle, built from
+  the DocRoute style board (warm orange, Inter, icon tiles). The accent
+  stays the site coral (`var(--coral)`); the board's light orange
+  `#FF9F4D` is used only for soft glows.
+- Site typeface is now Inter (`next/font/google`, `--font-inter`) instead
+  of Arial, everywhere.
+- Entry page: "journey" in coral, an arrow on the start button, a warm
+  glow over the middle of the map, a small plane that flies the route
+  while it draws (hidden with reduced motion or without CSS motion
+  paths), four purpose tiles (Study, Work, Family, Business; not links,
+  the page keeps one way in) and, on screens 1280px and wider, three
+  floating facts over the middle of the map (official sources, deadlines
+  counted back, 13 countries).
+- The map, its highlighted countries and the route are unchanged. On
+  phones the map is faded with a mask and the text starts under it, so
+  the title no longer covers the route.
+
 ## My route, date fields on phones, full-path button (2026-11-03)
 
 - **Confirm this route** block at the top of every route page (study

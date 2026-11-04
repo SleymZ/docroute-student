@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CircleUserRound, LogIn } from "lucide-react";
+import { ArrowRight, CircleUserRound, LogIn } from "lucide-react";
 
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -39,6 +39,7 @@ export function EnterButton() {
   return (
     <Link href={SITE_PATH} className={styles.enter} onClick={enter}>
       Start your journey
+      <ArrowRight size={19} strokeWidth={2.4} aria-hidden="true" />
     </Link>
   );
 }
