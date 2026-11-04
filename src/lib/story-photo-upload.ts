@@ -64,13 +64,16 @@ export async function uploadStoryPhoto(
     upsert: false,
   });
   if (upload.error) throw upload.error;
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("story_photos")
-    .insert({ story_id: storyId, user_id: userId, path });
-  if (error) {
+    .insert({ story_id: storyId, user_id: userId, path })
+    .select("id, story_id, user_id, path, created_at")
+    .single();
+  if (error || !data) {
     await supabase.storage.from(STORY_PHOTO_BUCKET).remove([path]);
-    throw error;
+    throw error ?? new Error("The photo was not saved");
   }
+  return data;
 }
 
 /** Removes one photo: the file first, while its row still lets a moderator

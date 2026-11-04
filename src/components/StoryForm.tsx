@@ -138,6 +138,11 @@ export function StoryForm({
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
   const [keptPhotos, setKeptPhotos] = useState<StoryPhoto[]>(photos);
+  // Photos saved for this story as far as the form knows: the ones it was
+  // opened with, plus uploads that succeeded, minus removals that succeeded.
+  // A retry after a partial failure compares against this, so it never
+  // deletes a photo that was just uploaded.
+  const savedPhotos = useRef<StoryPhoto[]>(photos);
   const [newPhotos, setNewPhotos] = useState<NewPhoto[]>([]);
   const [photoNote, setPhotoNote] = useState<string | null>(null);
   const previews = useRef<string[]>([]);
@@ -220,28 +225,41 @@ export function StoryForm({
     // Photos: removed ones first, then the new files. A failed photo does
     // not undo the story; the author can edit the story and try again.
     let photoFailures = 0;
-    const removed = photos.filter((photo) => !keptPhotos.some((kept) => kept.id === photo.id));
+    const removed = savedPhotos.current.filter(
+      (photo) => !keptPhotos.some((kept) => kept.id === photo.id),
+    );
     for (const photo of removed) {
       try {
         await removeStoryPhoto(supabase, photo);
+        savedPhotos.current = savedPhotos.current.filter((item) => item.id !== photo.id);
       } catch {
         photoFailures += 1;
       }
     }
+    const uploaded: StoryPhoto[] = [];
+    const failedUploads: NewPhoto[] = [];
     for (const photo of newPhotos) {
       try {
-        await uploadStoryPhoto(supabase, userId, storyId, photo.file);
+        const row = await uploadStoryPhoto(supabase, userId, storyId, photo.file);
+        // keep showing the local preview for the saved photo
+        uploaded.push({ ...row, url: photo.preview });
       } catch {
         photoFailures += 1;
+        failedUploads.push(photo);
       }
     }
+    savedPhotos.current = [...savedPhotos.current, ...uploaded];
     setBusy(false);
-    setNewPhotos([]);
+    // Saved uploads become saved photos; failed ones stay picked for a retry.
+    setKeptPhotos((current) => [...current, ...uploaded]);
+    setNewPhotos(failedUploads);
     if (photoFailures > 0) {
       setPhotoNote(
-        photoFailures === 1
-          ? "The story was saved, but 1 photo could not be saved. Edit the story to try again."
-          : `The story was saved, but ${photoFailures} photos could not be saved. Edit the story to try again.`,
+        `The story was saved, but ${
+          photoFailures === 1 ? "1 photo change" : `${photoFailures} photo changes`
+        } could not be saved. ${
+          editing ? "Save again to retry." : "Edit the story below to try again."
+        }`,
       );
     }
     if (editing) {
@@ -249,8 +267,11 @@ export function StoryForm({
       router.refresh();
       return;
     }
+    // A new story is created once: photo retries happen by editing it.
     setSent(true);
     setKeptPhotos([]);
+    setNewPhotos([]);
+    savedPhotos.current = [];
     setTitle("");
     setBody("");
     setUniversity("");

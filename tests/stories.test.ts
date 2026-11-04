@@ -212,3 +212,11 @@ test("a story is deleted only after its photo files are removed", () => {
     assert.doesNotMatch(code, /removeStoryFolder\([^)]*\)\.catch/, file);
   }
 });
+
+test("retrying a partly failed photo save never deletes a photo that was just uploaded", () => {
+  const form = read("src/components/StoryForm.tsx");
+  assert.match(form, /const removed = savedPhotos\.current\.filter\(/);
+  assert.match(form, /savedPhotos\.current = \[\.\.\.savedPhotos\.current, \.\.\.uploaded\];/);
+  assert.match(form, /setNewPhotos\(failedUploads\);/);
+  assert.match(read("src/lib/story-photo-upload.ts"), /\.select\("id, story_id, user_id, path, created_at"\)\s*\.single\(\);/);
+});

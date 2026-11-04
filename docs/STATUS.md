@@ -1180,7 +1180,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (280 tests on 2026-11-04).
+- Unit tests: `npm test` (281 tests on 2026-11-04).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario
