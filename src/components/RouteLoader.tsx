@@ -1,4 +1,4 @@
-import { BRAND_ORANGE, logoMarkPath, logoRoadPath } from "./Logo";
+import { BRAND_COLOR, logoMarkPath, logoRoadPath } from "./Logo";
 import styles from "./RouteLoader.module.css";
 
 // Loading animation built from the logo: the road markings move towards the
@@ -9,7 +9,7 @@ export function RouteLoader({ label = "Preparing your route" }: { label?: string
     <div className={styles.loader} role="status" aria-live="polite">
       <svg className={styles.mark} viewBox="0 0 100 100" aria-hidden="true">
         <circle className={styles.pulse} cx="76" cy="31.5" r="7.5" />
-        <path fill={BRAND_ORANGE} fillRule="evenodd" d={logoMarkPath} />
+        <path style={{ fill: BRAND_COLOR }} fillRule="evenodd" d={logoMarkPath} />
         <path className={styles.road} d={logoRoadPath} />
       </svg>
       <p className={styles.label}>{label}</p>

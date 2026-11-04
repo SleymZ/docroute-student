@@ -4,10 +4,10 @@
 .entry {
   --map-dot: light-dark(rgba(11, 118, 134, 0.26), rgba(121, 221, 239, 0.26));
   --map-dot-strong: light-dark(rgba(11, 118, 134, 0.62), rgba(121, 221, 239, 0.68));
-  /* Logo orange (src/components/Logo.tsx); dark text on it for contrast. */
-  --brand: #ff7a00;
-  --brand-hover: #ff8d24;
-  --on-brand: #111418;
+  /* Site coral (globals.css); dark text on it, as on the other buttons. */
+  --brand: var(--coral);
+  --brand-hover: var(--coral-hover);
+  --on-brand: #101820;
   --stop-ring: light-dark(#0b7686, #79ddef);
   --label: light-dark(#1d2b31, #e8eef1);
 
@@ -242,7 +242,7 @@
   font-weight: 650;
   letter-spacing: -0.01em;
   text-decoration: none;
-  box-shadow: 0 10px 30px light-dark(rgba(255, 122, 0, 0.28), rgba(255, 122, 0, 0.22));
+  box-shadow: 0 10px 30px light-dark(rgba(212, 80, 47, 0.28), rgba(255, 121, 95, 0.22));
   transition:
     background-color var(--transition),
     transform var(--transition),

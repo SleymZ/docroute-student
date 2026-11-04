@@ -68,10 +68,10 @@ test("the logo replaces the old route icon everywhere the brand is shown", () =>
     assert.match(read(file), /<LogoMark /, file);
   }
   const logo = read("src/components/Logo.tsx");
-  assert.match(logo, /export const BRAND_ORANGE = "#FF7A00";/);
+  assert.match(logo, /export const BRAND_COLOR = "var\(--coral\)";/);
   assert.match(logo, /fillRule="evenodd"/);
   const icon = read("src/app/icon.svg");
-  assert.ok(icon.includes("#FF7A00") && icon.includes("evenodd"));
+  assert.ok(icon.includes("#D4502F") && icon.includes("evenodd"));
   assert.match(read("src/components/RouteLoader.tsx"), /logoMarkPath/);
 });
 

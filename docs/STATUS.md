@@ -875,13 +875,13 @@ latest rules" (owner rule 2026-10-30):
   route loader ("Opening DocRoute") and opens the site; with reduced motion,
   a modifier key or no JavaScript it is a plain link. Nothing is stored in
   the browser. The global footer (legal links) stays below.
-- **Logo** (owner, 2026-11-04): orange "D" with a road leading to a pin,
-  redrawn as SVG in `src/components/Logo.tsx` (`#FF7A00`; road and pin
+- **Logo** (owner, 2026-11-04): coral "D" with a road leading to a pin,
+  redrawn as SVG in `src/components/Logo.tsx` (site coral via `var(--coral)`; road and pin
   are cut out, so they show the background in both themes). Used in the
   header, entry page, sign-in and password screens, `src/app/icon.svg`
   (favicon; the old favicon.ico is removed) and `apple-icon.png`. The
   loader (`RouteLoader`) is the logo with moving road markings and a
-  pulsing pin. The rest of the site keeps its coral accent for now.
+  pulsing pin. The logo uses the same coral as the rest of the site (owner choice).
 - Entry page details: countries with DocRoute routes or university
   listings in brighter dots (list now shared with the home map in
   `src/data/highlighted-countries.ts`), their capitals as small rings, an

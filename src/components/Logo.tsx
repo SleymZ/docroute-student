@@ -1,9 +1,10 @@
-// DocRoute logo mark: an orange "D" with a road leading to a pin. The road
+// DocRoute logo mark: a coral "D" with a road leading to a pin. The road
 // and pin are cut out of the D (even-odd fill), so they show whatever is
 // behind the logo and work in both themes. Drawn from the owner's logo
 // (2026-11-04).
 
-export const BRAND_ORANGE = "#FF7A00";
+// Site coral: darker in the light theme, lighter in the dark one (globals.css).
+export const BRAND_COLOR = "var(--coral)";
 
 export const logoMarkPath =
   "M20 6H55C77 6 93 24 93 50C93 76 77 94 55 94H8Z" +
@@ -32,11 +33,11 @@ export function LogoMark({
       aria-hidden={title ? undefined : true}
       aria-label={title}
     >
-      <path fill={BRAND_ORANGE} fillRule="evenodd" d={logoMarkPath} />
+      <path style={{ fill: BRAND_COLOR }} fillRule="evenodd" d={logoMarkPath} />
       <path
         d={logoRoadPath}
         fill="none"
-        stroke={BRAND_ORANGE}
+        style={{ stroke: BRAND_COLOR }}
         strokeWidth={2.4}
         strokeDasharray="5 4.2"
       />
