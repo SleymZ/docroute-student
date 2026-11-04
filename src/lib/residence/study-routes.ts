@@ -143,7 +143,19 @@ const deSources = [
     "Federal Foreign Office (Auswärtiges Amt)",
     "https://www.auswaertiges-amt.de/de/service/visa-und-aufenthalt/nationale-visa/visa-schule-studium-sprachkurs/sperrkonto",
   ),
+  src(
+    "de-aa-visa-free-apply",
+    "Do I need a visa if I want to study/work in Germany?",
+    "Federal Foreign Office (Auswärtiges Amt)",
+    "https://www.auswaertiges-amt.de/en/visa-service/buergerservice/faq/02-arbeiten/606704",
+  ),
 ];
+
+// Nationalities that may enter Germany without a visa and apply for the
+// permit after arrival (Auswärtiges Amt FAQ, checked 2026-11-05). For the
+// second group only when they do not intend to take up employment.
+export const germanyApplyAfterEntry = new Set(["AU", "CA", "GB", "IL", "JP", "NZ", "KR", "US"]);
+export const germanyApplyAfterEntryNoWork = new Set(["AD", "BR", "SV", "HN", "MC", "SM"]);
 
 const germany: StudyResidenceRoute = {
   countryCode: "DE",
@@ -318,6 +330,54 @@ const poland: StudyResidenceRoute = {
     },
   ],
 };
+
+function germanyVisaFreeStage(noWork: boolean): RouteStage {
+  return {
+    id: "residence-de-visa",
+    number: "05",
+    eyebrow: "ENTRY",
+    title: "Enter without a visa, apply in Germany",
+    description: noWork
+      ? "Your nationality may apply for the permit after arriving, but only if you do not intend to take up employment; otherwise apply for a visa first."
+      : "Your nationality may enter without a visa and apply for the permit after arriving.",
+    timing: "Right after admission",
+    tasks: [
+      task(
+        "de-study-visa-free",
+        "Enter visa-free and apply after arrival",
+        "Citizens of your country may apply for the necessary permit in Germany instead of getting a visa first. Confirm the study procedure with the foreigners authority where you will live.",
+        ["de-aa-visa-free-apply"],
+        noWork ? "attention" : "action",
+      ),
+      ...germany.stages[0].tasks.filter((item) => item.id !== "de-study-apply"),
+    ],
+  };
+}
+
+/** The route for a citizenship: Germany drops the visa step for the
+ *  nationalities that may apply after entry. */
+export function studyResidenceFor(countryCode: string, citizenship: string): StudyResidenceRoute | null {
+  const route = verifiedStudyResidence[countryCode];
+  if (!route) return null;
+  if (countryCode === "DE" && (germanyApplyAfterEntry.has(citizenship) || germanyApplyAfterEntryNoWork.has(citizenship))) {
+    const noWork = germanyApplyAfterEntryNoWork.has(citizenship);
+    return {
+      ...route,
+      stages: [
+        germanyVisaFreeStage(noWork),
+        ...route.stages.slice(1).map((stage) => ({
+          ...stage,
+          tasks: stage.tasks.map((item) =>
+            item.id === "de-study-permit"
+              ? { ...item, title: "Apply for the residence permit", dueLabel: undefined, description: "Book an appointment at the foreigners authority, ask it for its document list and apply for the residence permit for studying (§ 16b AufenthG). Fees can add up to €100." }
+              : item,
+          ),
+        })),
+      ],
+    };
+  }
+  return route;
+}
 
 export const verifiedStudyResidence: Readonly<Record<string, StudyResidenceRoute>> = {
   AT: austria,

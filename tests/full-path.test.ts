@@ -176,3 +176,20 @@ test("Austria, Germany and Poland use the source-checked student residence route
     assert.equal(resident.residenceCoverage, "official-link", country);
   }
 });
+
+test("Germany: nationalities that may apply after entry get no visa step", () => {
+  const entry = pendingProgramGroups.find((item) => item.countryCode === "DE")!;
+  const us = buildFullPath(entry, { citizenshipCountryCode: "US", currentResidenceStatus: "non-eu-passport-no-residence" });
+  const ids = us.stages.flatMap((stage) => stage.tasks.map((task) => task.id));
+  assert.ok(ids.includes("de-study-visa-free"));
+  assert.equal(ids.includes("de-study-apply"), false);
+  assert.ok(ids.includes("de-study-money") && ids.includes("de-study-permit"));
+  assert.ok(us.sources.some((source) => source.id === "de-aa-visa-free-apply"));
+
+  const brazil = buildFullPath(entry, { citizenshipCountryCode: "BR", currentResidenceStatus: "non-eu-passport-no-residence" });
+  const free = brazil.stages.flatMap((stage) => stage.tasks).find((task) => task.id === "de-study-visa-free")!;
+  assert.equal(free.status, "attention");
+
+  const ua = buildFullPath(entry, { citizenshipCountryCode: "UA", currentResidenceStatus: "non-eu-passport-no-residence" });
+  assert.ok(ua.stages.flatMap((stage) => stage.tasks).some((task) => task.id === "de-study-apply"));
+});

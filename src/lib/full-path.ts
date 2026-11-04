@@ -15,7 +15,7 @@ import { czechStudyRoute } from "@/lib/build-route-preview";
 import { isEuEeaSwissCitizen } from "@/lib/profile-options";
 import { profileForDestination } from "@/lib/route-options";
 import { buildSlovakiaResidenceStage } from "@/lib/residence/slovakia";
-import { verifiedStudyResidence } from "@/lib/residence/study-routes";
+import { studyResidenceFor } from "@/lib/residence/study-routes";
 import {
   currentResidenceStatuses,
   type ApplicantProfile,
@@ -339,7 +339,7 @@ function linkedResidenceStages(
   // Source-checked student residence routes (Austria, Germany, Poland,
   // 2026-11-05) for first arrivals. Someone already living there keeps the
   // "ask the authority" steps below.
-  const verifiedRoute = verifiedStudyResidence[group.countryCode];
+  const verifiedRoute = studyResidenceFor(group.countryCode, citizenship);
   if (verifiedRoute && !euCitizen && !alreadyResident.has(answers.currentResidenceStatus)) {
     return { coverage: "verified", stages: verifiedRoute.stages, sources: verifiedRoute.sources };
   }
