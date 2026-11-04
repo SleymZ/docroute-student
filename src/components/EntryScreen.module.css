@@ -271,10 +271,11 @@
 
 /* ---- example route card and legend (wide screens) ---- */
 
+/* Top right, above Scandinavia, clear of the route. */
 .card {
   position: absolute;
+  top: 92px;
   right: clamp(18px, 4vw, 56px);
-  bottom: 64px;
   width: 300px;
   padding: 18px 18px 16px;
   border: 1px solid var(--border);
