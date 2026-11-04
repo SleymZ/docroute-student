@@ -152,3 +152,27 @@ test("answers parse from the URL and from a profile", () => {
   assert.equal(answersFromProfile(profile, "NL")?.currentResidenceStatus, "other-eu-residence");
   assert.equal(answersFromProfile(null, "NL"), null);
 });
+
+test("Austria, Germany and Poland use the source-checked student residence routes", () => {
+  const expected: Record<string, { tasks: string[]; fact: RegExp }> = {
+    AT: { tasks: ["at-study-where", "at-study-money", "at-study-meldezettel"], fact: /€722\.58/ },
+    DE: { tasks: ["de-study-apply", "de-study-money", "de-study-permit"], fact: /€11,904/ },
+    PL: { tasks: ["pl-study-visa-apply", "pl-study-mos", "pl-study-fees"], fact: /PLN 340/ },
+  };
+  for (const [country, want] of Object.entries(expected)) {
+    const entry = pendingProgramGroups.find((item) => item.countryCode === country);
+    assert.ok(entry, country);
+    const path = buildFullPath(entry, nonEu);
+    assert.equal(path.residenceCoverage, "verified", country);
+    const tasks = path.stages.flatMap((stage) => stage.tasks);
+    for (const id of want.tasks) assert.ok(tasks.some((task) => task.id === id), `${country}: ${id}`);
+    assert.ok(tasks.some((task) => want.fact.test(task.description)), country);
+    assert.ok(path.sources.every((source) => source.authority === "official" && source.url.startsWith("https://")));
+
+    // EU citizens keep the EU registration steps; people already living there ask the authority.
+    const eu = buildFullPath(entry, { citizenshipCountryCode: country === "AT" ? "SK" : "AT", currentResidenceStatus: "eu-eea-swiss-passport" });
+    assert.ok(eu.stages.some((stage) => stage.tasks.some((task) => task.id === "eu-insurance")), country);
+    const resident = buildFullPath(entry, { citizenshipCountryCode: "UA", currentResidenceStatus: "destination-residence" });
+    assert.equal(resident.residenceCoverage, "official-link", country);
+  }
+});
