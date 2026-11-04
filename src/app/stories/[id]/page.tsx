@@ -89,7 +89,7 @@ export default async function StoryPage({ params }: Props) {
   const extrasFailed = commentList === null;
   const comments = commentList ?? [];
   const likes = engagement.get(story.id)?.likes ?? 0;
-  const profiles = await loadPublicProfiles(supabase, [
+  const profiles: Map<string, PublicProfile> = await loadPublicProfiles(supabase, [
     story.user_id,
     ...comments.map((comment) => comment.user_id),
     ...(user ? [user.id] : []),
