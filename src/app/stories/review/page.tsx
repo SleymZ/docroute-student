@@ -6,12 +6,14 @@ import { Header } from "@/components/Header";
 import { StoryCard } from "@/components/StoryCard";
 import { StoryModerationActions } from "@/components/StoryModeration";
 import styles from "@/components/Stories.module.css";
-import type { PublicProfile, StoryStatus, SuccessStory } from "@/lib/stories";
+import type { PublicProfile, StoryPhoto, StoryStatus, SuccessStory } from "@/lib/stories";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
+  countPendingComments,
   isStoryModerator,
   loadPublicProfiles,
+  loadStoryPhotos,
   loadStoriesForReview,
   reviewPageSize,
 } from "@/lib/supabase/stories";
@@ -55,6 +57,8 @@ export default async function ReviewStoriesPage({
   let stories: SuccessStory[] = [];
   let total = 0;
   let authors = new Map<string, PublicProfile>();
+  let photos = new Map<string, StoryPhoto[]>();
+  let commentQueue = 0;
   let failed = false;
   try {
     ({ stories, total } = await loadStoriesForReview(supabase, status, page));
@@ -62,6 +66,13 @@ export default async function ReviewStoriesPage({
       supabase,
       stories.map((story) => story.user_id),
     );
+    [photos, commentQueue] = await Promise.all([
+      loadStoryPhotos(
+        supabase,
+        stories.map((story) => story.id),
+      ),
+      countPendingComments(supabase).catch(() => 0),
+    ]);
   } catch {
     failed = true;
   }
@@ -88,7 +99,10 @@ export default async function ReviewStoriesPage({
             <p className={styles.lead}>
               Publish stories that are personal experience and safe to show.
               Decline ones with personal data (documents, ID numbers,
-              addresses), advertising, or anything unlawful or offensive. A
+              addresses), advertising, or anything unlawful or offensive.
+              Check every photo too: no documents, tickets or people who may
+              not want to be shown. You can remove a single photo from its
+              story page. A
               declined story stays visible only to its author. Authors who
               edit a story send it back here.
             </p>
@@ -109,6 +123,9 @@ export default async function ReviewStoriesPage({
               {tab.label}
             </Link>
           ))}
+          <Link href="/stories/review/comments" className={styles.chip}>
+            Comments{commentQueue > 0 ? ` (${commentQueue} waiting)` : ""}
+          </Link>
         </nav>
 
         {failed ? (
@@ -133,6 +150,9 @@ export default async function ReviewStoriesPage({
                   story={story}
                   author={authors.get(story.user_id) ?? null}
                   showStatus
+                  photos={photos.get(story.id)}
+                  photoLayout="all"
+                  href={`/stories/${story.id}`}
                 />
                 <p className={styles.reviewMeta}>
                   Sent{" "}
@@ -145,6 +165,8 @@ export default async function ReviewStoriesPage({
                 </p>
                 <StoryModerationActions
                   storyId={story.id}
+                  authorId={story.user_id}
+                  photosUnavailable={(photos.get(story.id) ?? []).some((photo) => !photo.url)}
                   status={story.status}
                   reviewedAt={story.updated_at}
                 />

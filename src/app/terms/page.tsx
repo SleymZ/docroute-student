@@ -185,18 +185,21 @@ export default function TermsPage() {
 
       <h3 id="stories">Your public profile and stories</h3>
       <p>
-        If you create a public profile or share a story, you stay the owner of
-        what you write and of your photo. You allow DocRoute, free of charge
+        If you create a public profile, share a story or write a comment, you
+        stay the owner of what you write and of your photos. You allow DocRoute, free of charge
         and for as long as you keep it on the site, to show it publicly on
         DocRoute and to shorten it or fix obvious typos for display. You
         confirm that it describes your own experience, that you may use the
-        photo, and that it contains no other person&apos;s personal data, ID
+        photos (and that people shown in them agreed), and that it contains no
+        other person&apos;s personal data, photos of documents or tickets, ID
         or document numbers, advertising, links to paid services or anything
-        unlawful or offensive. Stories are read before they are published; we
-        may refuse, hide or remove any story or photo without giving a reason.
+        unlawful or offensive. Stories, their photos and comments are read
+        before they are published; we may refuse, hide or remove any story,
+        photo or comment without giving a reason. Liking a story shows only in
+        its like count.
         A story is personal experience, not advice, and rules change: always
-        check your own route. You can delete your stories and photo at any
-        time on your account; report a problem with someone else&apos;s story
+        check your own route. You can delete your stories, photos and comments
+        at any time; report a problem with someone else&apos;s story
         through the contact in section 12.
       </p>
 

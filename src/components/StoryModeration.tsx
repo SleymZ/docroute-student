@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Check, EyeOff, RotateCcw, Trash2 } from "lucide-react";
 
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { removeStoryFolder } from "@/lib/story-photo-upload";
 import type { StoryStatus } from "@/lib/stories";
 
 import styles from "./Stories.module.css";
@@ -12,10 +13,15 @@ import styles from "./Stories.module.css";
 // Publish / hide / delete buttons for a moderator on /stories/review.
 export function StoryModerationActions({
   storyId,
+  authorId,
   status,
   reviewedAt,
+  photosUnavailable = false,
 }: {
   storyId: string;
+  authorId: string;
+  // some registered photos could not be shown: publishing waits until they can
+  photosUnavailable?: boolean;
   status: StoryStatus;
   // updated_at of the version on screen; publishing fails if it changed
   reviewedAt: string;
@@ -23,7 +29,7 @@ export function StoryModerationActions({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [failed, setFailed] = useState<"" | "error" | "changed">("");
+  const [failed, setFailed] = useState<"" | "error" | "changed" | "photos">("");
 
   async function setStatus(next: StoryStatus) {
     setBusy(true);
@@ -44,7 +50,17 @@ export function StoryModerationActions({
   async function remove() {
     setBusy(true);
     setFailed("");
-    const { error } = await createSupabaseBrowserClient()
+    const supabase = createSupabaseBrowserClient();
+    // Files first: once the story is gone a moderator can no longer see them.
+    // If that fails, the story stays so the cleanup can be retried.
+    try {
+      await removeStoryFolder(supabase, authorId, storyId);
+    } catch {
+      setBusy(false);
+      setFailed("photos");
+      return;
+    }
+    const { error } = await supabase
       .from("success_stories")
       .delete()
       .eq("id", storyId);
@@ -58,7 +74,13 @@ export function StoryModerationActions({
 
   return (
     <div className={styles.actions}>
-      {status !== "published" && (
+      {photosUnavailable && status !== "published" && (
+        <p className={styles.message} data-tone="error">
+          Some photos of this story could not be loaded, so it cannot be
+          published yet. Reload the page in a moment.
+        </p>
+      )}
+      {status !== "published" && !photosUnavailable && (
         <button
           type="button"
           className={styles.primary}
@@ -121,7 +143,9 @@ export function StoryModerationActions({
         <p className={styles.message} data-tone="error">
           {failed === "changed"
             ? "The author changed this story after you opened the page. Reload and read the new version."
-            : "That did not work. Reload the page and try again."}
+            : failed === "photos"
+              ? "The story's photos could not be removed, so the story was kept. Try again in a moment."
+              : "That did not work. Reload the page and try again."}
         </p>
       )}
     </div>

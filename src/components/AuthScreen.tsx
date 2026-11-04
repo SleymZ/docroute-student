@@ -15,13 +15,13 @@ import {
   LockKeyhole,
   Mail,
   MapPin,
-  Route,
   ShieldCheck,
 } from "lucide-react";
 
 import styles from "./AuthScreen.module.css";
 import { ThemeToggle } from "./ThemeToggle";
 import { safeNextPath } from "@/lib/safe-next-path";
+import { LogoMark } from "./Logo";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -245,9 +245,7 @@ export function AuthScreen({
 
         <header className={styles.storyHeader}>
           <Link href="/" className={styles.brand}>
-            <span className={styles.brandMark}>
-              <Route size={24} aria-hidden="true" />
-            </span>
+            <LogoMark size={48} className={styles.brandMark} />
 
             <span>
               <strong>DocRoute</strong>
@@ -256,7 +254,7 @@ export function AuthScreen({
           </Link>
 
           <div className={styles.storyActions}>
-            <Link href="/" className={styles.homeLink}>
+            <Link href="/home" className={styles.homeLink}>
               <ArrowLeft size={16} aria-hidden="true" />
               Back to homepage
             </Link>
@@ -351,9 +349,7 @@ export function AuthScreen({
 
         <div className={styles.authContainer}>
           <Link href="/" className={styles.mobileBrand}>
-            <span className={styles.mobileBrandMark}>
-              <Route size={21} aria-hidden="true" />
-            </span>
+            <LogoMark size={38} className={styles.mobileBrandMark} />
             <strong>DocRoute</strong>
           </Link>
 

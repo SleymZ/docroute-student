@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 
 export default async function MyRoutePage() {
-  if (!isSupabaseConfigured()) redirect("/");
+  if (!isSupabaseConfigured()) redirect("/home");
 
   const supabase = await createSupabaseServerClient();
   const {
@@ -74,7 +74,7 @@ export default async function MyRoutePage() {
               Build a route, then press <strong>Confirm this route</strong> at the top of it. It will appear here.
             </p>
             <div className={styles.emptyActions}>
-              <Link href="/#route-builder" className={storyStyles.primary}>
+              <Link href="/home#route-builder" className={storyStyles.primary}>
                 <Compass size={16} aria-hidden="true" />
                 Build my route
               </Link>

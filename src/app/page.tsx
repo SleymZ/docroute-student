@@ -1,16 +1,15 @@
-import { Header } from "@/components/Header";
-import { JourneyRail } from "@/components/JourneyRail";
-import { RoutePlanner } from "@/components/RoutePlanner";
+import type { Metadata } from "next";
 
-export default function Home() {
-  return (
-    <main>
-      <Header />
+import { EntryScreen } from "@/components/EntryScreen";
 
-      <div className="page-container">
-        <RoutePlanner />
-        <JourneyRail />
-      </div>
-    </main>
-  );
+// Entry page: shown at the site address, before the full site at /home.
+// Static, so the dot map is computed once at build time.
+export const dynamic = "force-static";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+export default function EntryPage() {
+  return <EntryScreen />;
 }

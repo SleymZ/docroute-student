@@ -35,7 +35,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
 
   const breadcrumb = (
     <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
-      <Link href={`/?purpose=${guide?.purpose ?? "work"}#route-builder`}>
+      <Link href={`/home?purpose=${guide?.purpose ?? "work"}#route-builder`}>
         <ArrowLeft size={15} aria-hidden="true" />
         Home
       </Link>

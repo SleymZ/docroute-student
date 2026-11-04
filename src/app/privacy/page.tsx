@@ -35,10 +35,10 @@ const dataRows = [
     kept: "Until you remove them or delete your account.",
   },
   {
-    what: "Public profile and stories (only if you create them): the name you choose, an optional photo and short text about you, and the stories you send with their countries, year, reason for moving and optional university or employer. This information is visible to everyone on DocRoute once published; your email and applicant profile are never shown.",
+    what: "Public profile and stories (only if you create them): the name you choose, an optional photo and short text about you, the stories you send with their countries, year, reason for moving, optional university or employer and up to 4 photos, and the comments you write. This information is visible to everyone on DocRoute once published; your email and applicant profile are never shown. Likes: which stories you liked; others see only the number of likes, not who gave them.",
     why: "To show your story and profile on the Stories page so others can learn from your move.",
     basis: "Contract — publishing what you asked us to publish (Art. 6(1)(b)). Please do not include health, religion or other special-category data.",
-    kept: "Until you delete it or your account. Stories we decline or hide stay visible only to you until you delete them.",
+    kept: "Until you delete it or your account. Stories and comments we decline or hide stay visible only to you until you delete them. Comments you wrote on a story are removed when its author deletes the story.",
   },
   {
     what: "Answers to route questions and your move date when you are not signed in. These live only in the page address (URL) and on your device; we do not save them in our database.",
@@ -81,7 +81,7 @@ const dataRows = [
 const processors = [
   {
     name: "Supabase, Inc.",
-    role: "Database, file storage and sign-in (stores your account, profile, saved universities, progress, public profile, photo and stories, waitlist emails and feedback).",
+    role: "Database, file storage and sign-in (stores your account, profile, saved universities, progress, public profile, photos, stories, comments and likes, waitlist emails and feedback).",
     link: "https://supabase.com/privacy",
   },
   {
@@ -210,12 +210,16 @@ export default function PrivacyPage() {
 
       <h3 id="stories">Public profile and stories</h3>
       <p>
-        A public profile and stories are optional. Your photo is cropped and
-        re-saved in your browser before upload, which removes hidden photo
-        data such as GPS location. Stories are read by the operator before
-        they appear. Anyone can read and copy what is published, so share only
+        A public profile and stories are optional. Your profile photo and story
+        photos are made smaller and re-saved in your browser before upload,
+        which removes hidden photo data such as GPS location. Story photos are
+        kept in a private store and shown through links that expire after an
+        hour; until a story is published, only you and the moderators can see
+        its photos. Stories, their photos and comments are read by the
+        operator or a moderator before they appear. Likes are never shown with
+        your name. Anyone can read and copy what is published, so share only
         what you are comfortable with. You can change or remove your name,
-        photo and stories on your <Link href="/account">Account</Link> page and
+        photos, stories and comments on your <Link href="/account">Account</Link> page and
         on <Link href="/stories/new">Share your story</Link>; deleting your
         account removes them all.
       </p>

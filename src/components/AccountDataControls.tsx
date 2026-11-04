@@ -6,6 +6,7 @@ import { Download, Trash2 } from "lucide-react";
 
 import { AVATAR_BUCKET } from "@/lib/stories";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { removeAllStoryPhotos } from "@/lib/story-photo-upload";
 
 import styles from "./AccountDataControls.module.css";
 
@@ -31,13 +32,26 @@ export function AccountDataControls() {
       if (userError || !userData.user) throw userError ?? new Error("No user");
       const user = userData.user;
 
-      const [profile, saved, progress, publicProfile, stories, confirmedRoute] = await Promise.all([
+      const [
+        profile,
+        saved,
+        progress,
+        publicProfile,
+        stories,
+        confirmedRoute,
+        storyPhotos,
+        storyComments,
+        storyLikes,
+      ] = await Promise.all([
         supabase.from("applicant_profiles").select("*").eq("user_id", user.id),
         supabase.from("saved_universities").select("*").eq("user_id", user.id),
         supabase.from("route_task_progress").select("*").eq("user_id", user.id),
         supabase.from("public_profiles").select("*").eq("user_id", user.id),
         supabase.from("success_stories").select("*").eq("user_id", user.id),
         supabase.from("confirmed_routes").select("*").eq("user_id", user.id),
+        supabase.from("story_photos").select("*").eq("user_id", user.id),
+        supabase.from("story_comments").select("*").eq("user_id", user.id),
+        supabase.from("story_likes").select("*").eq("user_id", user.id),
       ]);
       const failed = [profile, saved, progress, publicProfile, stories].find(
         (result) => result.error,
@@ -61,6 +75,10 @@ export function AccountDataControls() {
         stories: stories.data ?? [],
         // My route; null also when the table cannot be read.
         confirmedRoute: confirmedRoute.data?.[0] ?? null,
+        // Photo files stay in Storage; these rows list their paths.
+        storyPhotos: storyPhotos.data ?? [],
+        storyComments: storyComments.data ?? [],
+        storyLikes: storyLikes.data ?? [],
       };
 
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
@@ -87,7 +105,7 @@ export function AccountDataControls() {
     setBusy("delete");
     setMessage(null);
     const supabase = createSupabaseBrowserClient();
-    // Profile photos live in Storage, which SQL cannot delete: remove the
+    // Profile and story photos live in Storage, which SQL cannot delete: remove the
     // account's folder first. If that fails, stop before deleting the
     // account, so the person can retry and no public photo is left behind.
     let photosRemoved = false;
@@ -105,6 +123,7 @@ export function AccountDataControls() {
           .remove(files.map((file) => `${userId}/${file.name}`));
         if (removeError) throw removeError;
       }
+      await removeAllStoryPhotos(supabase, userId);
       photosRemoved = true;
     } catch {
       photosRemoved = false;
@@ -112,7 +131,7 @@ export function AccountDataControls() {
     if (!photosRemoved) {
       setBusy(null);
       setMessage(
-        "Your profile photo could not be removed, so nothing was deleted. Try again in a moment.",
+        "Your photos could not be removed, so nothing was deleted. Try again in a moment.",
       );
       return;
     }

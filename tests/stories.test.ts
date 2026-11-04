@@ -10,7 +10,9 @@ import {
   isUuid,
   storyExcerpt,
   storyLimits,
+  storyPhotoPath,
   storyPurposes,
+  validateComment,
   validateProfile,
   validateStory,
 } from "../src/lib/stories";
@@ -131,4 +133,100 @@ test("only moderators can publish, and no email is stored in the repository", ()
   assert.match(moderatorSql, /revoke all on table public\.story_moderators from public, anon, authenticated/);
   assert.match(moderatorSql, /revoke all on function public\.moderate_story\(uuid, text, timestamptz\) from anon/);
   assert.doesNotMatch(moderatorSql, /@[a-z0-9-]+\.[a-z]{2,}/i);
+});
+
+const mediaSql = read("supabase/migrations/20261104120000_story_photos_comments_likes.sql");
+const storyId = "99999999-8888-4777-8666-555555555555";
+
+test("story photo paths fit the database rule and stay in the author's folder", () => {
+  const path = storyPhotoPath(userId, storyId, 1793379187697);
+  assert.equal(path, `${userId}/${storyId}/photo-1793379187697.webp`);
+  assert.match(path, /^[0-9a-f-]{36}\/[0-9a-f-]{36}\/photo-[0-9]{10,16}\.(webp|jpg)$/);
+  assert.match(mediaSql, /photo-\[0-9\]\{10,16\}\\\.\(webp\|jpg\)\$/);
+  assert.match(storyPhotoPath(userId, storyId, 1793379187697, "jpg"), /\.jpg$/);
+});
+
+test("photo, comment and like limits match the database", () => {
+  assert.match(mediaSql, new RegExp(`>= ${storyLimits.photosPerStory} then`));
+  assert.match(mediaSql, new RegExp(`between ${storyLimits.comment.min} and ${storyLimits.comment.max}`));
+  assert.match(mediaSql, new RegExp(`\\) >= ${storyLimits.pendingComments} then`));
+  assert.match(mediaSql, new RegExp(`false, ${storyLimits.photoBytes}, array\\['image/webp', 'image/jpeg'\\]`));
+});
+
+test("comments are validated before sending", () => {
+  assert.deepEqual(validateComment("  Thanks!  "), { errors: [], value: "Thanks!" });
+  assert.equal(validateComment(" a ").errors.length, 1);
+  assert.equal(validateComment("x".repeat(storyLimits.comment.max + 1)).errors.length, 1);
+});
+
+test("photos and comments cannot skip moderation", () => {
+  // nobody can write a comment's status; every API insert starts pending
+  assert.match(mediaSql, /grant insert \(story_id, user_id, body\) on table public\.story_comments to authenticated/);
+  assert.doesNotMatch(mediaSql, /grant update[^;]*story_comments/);
+  assert.match(mediaSql, /new\.status := 'pending';/);
+  // comments only on published stories, photos only on one's own story
+  assert.match(mediaSql, /create policy "Comment on published stories"[^;]*s\.status = 'published'/);
+  assert.match(mediaSql, /create policy "Own photo insert"[^;]*s\.user_id = \(select auth\.uid\(\)\)/);
+  // an author's photo change sends the story back to review
+  assert.match(mediaSql, /set status = 'pending',\s+published_at = null,\s+updated_at = now\(\)\s+where id = photo\.story_id;/);
+  // a registered photo path can never be uploaded again (no silent swap)
+  assert.match(mediaSql, /create policy "Story photo upload own folder"[^;]*not exists \(select 1 from public\.story_photos p where p\.path = name\)/);
+  assert.doesNotMatch(mediaSql, /on storage\.objects for update[^;]*story-photos/);
+  assert.match(mediaSql, /revoke all on function public\.moderate_comment\(uuid, text\) from public, anon/);
+});
+
+test("photos are private until their story is visible, likes stay anonymous", () => {
+  assert.match(mediaSql, /values \('story-photos', 'story-photos', false,/);
+  assert.match(mediaSql, /create policy "Story photo read"[^;]*exists \(select 1 from public\.story_photos p where p\.path = name\)/);
+  assert.match(mediaSql, /create policy "Photos follow their story"[^;]*exists \(select 1 from public\.success_stories s where s\.id = story_id\)/);
+  assert.match(mediaSql, /grant select, delete on table public\.story_likes to authenticated;/);
+  assert.doesNotMatch(mediaSql, /grant [^;]*on table public\.story_likes to anon/);
+  assert.match(mediaSql, /create policy "Own likes"[^;]*using \(user_id = \(select auth\.uid\(\)\)\)/);
+});
+
+test("account deletion removes story photos first and the export lists the new data", () => {
+  const controls = read("src/components/AccountDataControls.tsx");
+  assert.ok(controls.indexOf("removeAllStoryPhotos(supabase, userId)") > 0);
+  assert.ok(controls.indexOf("removeAllStoryPhotos(supabase, userId)") < controls.indexOf('rpc("delete_my_account")'));
+  for (const table of ["story_photos", "story_comments", "story_likes"]) {
+    assert.match(controls, new RegExp(`from\\("${table}"\\)`));
+  }
+  // rows go with the account through foreign keys
+  assert.match(mediaSql, /references public\.public_profiles \(user_id\) on delete cascade/);
+  assert.match(mediaSql, /references auth\.users \(id\) on delete cascade/);
+});
+
+test("a story whose photos could not be shown cannot be published from review", () => {
+  const review = read("src/app/stories/review/page.tsx");
+  assert.match(review, /photosUnavailable=\{\(photos\.get\(story\.id\) \?\? \[\]\)\.some\(\(photo\) => !photo\.url\)\}/);
+  const actions = read("src/components/StoryModeration.tsx");
+  assert.match(actions, /status !== "published" && !photosUnavailable && \(/);
+});
+
+test("a story is deleted only after its photo files are removed", () => {
+  for (const file of ["src/components/StoryModeration.tsx", "src/components/StoryForm.tsx"]) {
+    const code = read(file);
+    const cleanup = code.indexOf("await removeStoryFolder(");
+    const remove = code.indexOf('.from("success_stories")', cleanup);
+    assert.ok(cleanup > 0 && remove > cleanup, file);
+    assert.doesNotMatch(code, /removeStoryFolder\([^)]*\)\.catch/, file);
+  }
+});
+
+test("retrying a partly failed photo save never deletes a photo that was just uploaded", () => {
+  const form = read("src/components/StoryForm.tsx");
+  assert.match(form, /const removed = savedPhotos\.current\.filter\(/);
+  assert.match(form, /savedPhotos\.current = \[\.\.\.savedPhotos\.current, \.\.\.uploaded\];/);
+  assert.match(form, /setNewPhotos\(failedUploads\);/);
+  assert.match(read("src/lib/story-photo-upload.ts"), /\.select\("id, story_id, user_id, path, created_at"\)\s*\.single\(\);/);
+});
+
+test("story comments are paged, and own unpublished comments always show", () => {
+  const loaders = read("src/lib/supabase/stories.ts");
+  assert.match(loaders, /export const commentPageSize = 100;/);
+  assert.match(loaders, /\.eq\("status", "published"\)\s*\.order\("published_at"\)/);
+  assert.doesNotMatch(loaders, /\.limit\(500\)/);
+  const page = read("src/app/stories/[id]/page.tsx");
+  assert.match(page, /loadOwnUnpublishedComments\(supabase, story\.id, user\.id\)/);
+  assert.match(page, /\?comments=\$\{commentPage \+ 1\}/);
 });

@@ -327,7 +327,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
 
   const breadcrumb = (
     <nav className={styles.breadcrumb} aria-label="Breadcrumb" data-print-hide="">
-      <Link href="/#route-builder">
+      <Link href="/home#route-builder">
         <ArrowLeft size={15} aria-hidden="true" />
         Home
       </Link>

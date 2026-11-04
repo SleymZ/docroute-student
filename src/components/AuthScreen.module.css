@@ -96,20 +96,16 @@
   color: light-dark(#24221e, #f4f1eb);
 }
 
+/* The logo mark (src/components/Logo.tsx) has its own shape and colour. */
 .brandMark,
 .mobileBrandMark {
-  display: grid;
-  place-items: center;
+  display: block;
   flex: 0 0 auto;
-  border: 1px solid light-dark(rgba(210, 93, 66, 0.34), rgba(255, 134, 105, 0.34));
-  background: light-dark(rgba(245, 111, 87, 0.08), rgba(255, 120, 95, 0.08));
-  color: light-dark(#c44a33, #ff856d);
 }
 
 .brandMark {
-  width: 49px;
-  height: 49px;
-  border-radius: 14px;
+  width: 48px;
+  height: 48px;
 }
 
 .brand > span:last-child {
@@ -413,9 +409,8 @@
 }
 
 .mobileBrandMark {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
+  width: 38px;
+  height: 38px;
 }
 
 .mobileBrand strong {

@@ -5,13 +5,22 @@ import { PenLine } from "lucide-react";
 import { Header } from "@/components/Header";
 import { StoryCard, storyCountryName } from "@/components/StoryCard";
 import styles from "@/components/Stories.module.css";
-import { storyPurposeLabels, storyPurposes, type PublicProfile } from "@/lib/stories";
+import {
+  storyPurposeLabels,
+  storyPurposes,
+  type PublicProfile,
+  type StoryEngagement,
+  type StoryPhoto,
+} from "@/lib/stories";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   countPendingStories,
+  countPendingComments,
   isStoryModerator,
+  loadEngagement,
   loadOwnStories,
+  loadStoryPhotos,
   loadPublicProfiles,
   loadPublishedStories,
 } from "@/lib/supabase/stories";
@@ -44,10 +53,13 @@ export default async function StoriesPage({
 
   let stories: Awaited<ReturnType<typeof loadPublishedStories>> = [];
   let authors = new Map<string, PublicProfile>();
+  let photos = new Map<string, StoryPhoto[]>();
+  let engagement = new Map<string, StoryEngagement>();
   let failed = false;
   // signed-in extras: own stories not yet public, and the moderator queue
   let ownWaiting = 0;
   let reviewQueue: number | null = null;
+  let commentQueue = 0;
 
   if (isSupabaseConfigured()) {
     try {
@@ -60,6 +72,15 @@ export default async function StoriesPage({
     } catch {
       failed = true;
     }
+    if (!failed && stories.length) {
+      // photos and counts are extras: the stories still show without them
+      const supabase = await createSupabaseServerClient();
+      const ids = stories.map((story) => story.id);
+      [photos, engagement] = await Promise.all([
+        loadStoryPhotos(supabase, ids).catch(() => new Map<string, StoryPhoto[]>()),
+        loadEngagement(supabase, ids).catch(() => new Map<string, StoryEngagement>()),
+      ]);
+    }
     try {
       const supabase = await createSupabaseServerClient();
       const {
@@ -71,7 +92,12 @@ export default async function StoriesPage({
           isStoryModerator(supabase),
         ]);
         ownWaiting = own.filter((story) => story.status !== "published").length;
-        if (moderator) reviewQueue = await countPendingStories(supabase);
+        if (moderator) {
+          [reviewQueue, commentQueue] = await Promise.all([
+            countPendingStories(supabase),
+            countPendingComments(supabase).catch(() => 0),
+          ]);
+        }
       }
     } catch {
       // the extras are optional; the public list above still shows
@@ -98,7 +124,8 @@ export default async function StoriesPage({
             </h1>
             <p className={styles.lead}>
               Stories from DocRoute users who moved to study, work, join family
-              or start a business. Each one is read before it is published.
+              or start a business, with their photos. Each story and comment is
+              read before it is published.
               Personal experience, not legal advice: rules change, so check
               your own route.
             </p>
@@ -117,6 +144,16 @@ export default async function StoriesPage({
                 ? "1 story is waiting for review"
                 : `${reviewQueue} stories are waiting for review`}
             </Link>
+            {commentQueue > 0 && (
+              <>
+                {" · "}
+                <Link href="/stories/review/comments">
+                  {commentQueue === 1
+                    ? "1 comment is waiting"
+                    : `${commentQueue} comments are waiting`}
+                </Link>
+              </>
+            )}
             .
           </p>
         )}
@@ -180,6 +217,9 @@ export default async function StoriesPage({
                 key={story.id}
                 story={story}
                 author={authors.get(story.user_id) ?? null}
+                photos={photos.get(story.id)}
+                engagement={engagement.get(story.id) ?? { likes: 0, comments: 0 }}
+                href={`/stories/${story.id}`}
               />
             ))}
           </div>

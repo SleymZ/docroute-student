@@ -67,7 +67,7 @@ export function AuthNavigation() {
       )}
 
       <Link
-        href="/#route-builder"
+        href="/home#route-builder"
         className={styles.buildRoute}
       >
         <span>Build my route</span>

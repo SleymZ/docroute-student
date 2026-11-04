@@ -1,6 +1,14 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import type { PublicProfile, SuccessStory } from "@/lib/stories";
+import {
+  STORY_PHOTO_BUCKET,
+  STORY_PHOTO_URL_SECONDS,
+  type PublicProfile,
+  type StoryComment,
+  type StoryEngagement,
+  type StoryPhoto,
+  type SuccessStory,
+} from "@/lib/stories";
 import type { Database } from "@/types/database";
 
 type Client = SupabaseClient<Database>;
@@ -93,4 +101,149 @@ export async function loadPublicProfile(supabase: Client, userId: string) {
     .maybeSingle();
   if (error) throw error;
   return (data as PublicProfile | null) ?? null;
+}
+
+export async function loadStory(supabase: Client, storyId: string) {
+  const { data, error } = await supabase
+    .from("success_stories")
+    .select(storyColumns)
+    .eq("id", storyId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as SuccessStory | null) ?? null;
+}
+
+// Photos the reader may see (RLS: the story must be visible to them), with
+// signed URLs that expire after STORY_PHOTO_URL_SECONDS. A photo whose URL
+// could not be signed keeps url: null, so the review page can refuse to
+// publish a story whose photos the moderator has not seen.
+export async function loadStoryPhotos(supabase: Client, storyIds: string[]) {
+  const result = new Map<string, StoryPhoto[]>();
+  const ids = [...new Set(storyIds)];
+  if (ids.length === 0) return result;
+  const { data, error } = await supabase
+    .from("story_photos")
+    .select("id, story_id, user_id, path, created_at")
+    .in("story_id", ids)
+    .order("created_at")
+    .order("id");
+  if (error) throw error;
+  const rows = data ?? [];
+  if (rows.length === 0) return result;
+
+  const { data: signed } = await supabase.storage
+    .from(STORY_PHOTO_BUCKET)
+    .createSignedUrls(
+      rows.map((row) => row.path),
+      STORY_PHOTO_URL_SECONDS,
+    );
+  const urls = new Map(
+    (signed ?? []).map((item) => [item.path, item.error ? null : item.signedUrl]),
+  );
+  for (const row of rows) {
+    const list = result.get(row.story_id) ?? [];
+    list.push({ ...row, url: urls.get(row.path) ?? null });
+    result.set(row.story_id, list);
+  }
+  return result;
+}
+
+// Like and published-comment counts for published stories.
+export async function loadEngagement(supabase: Client, storyIds: string[]) {
+  const result = new Map<string, StoryEngagement>();
+  const ids = [...new Set(storyIds)].slice(0, 100);
+  if (ids.length === 0) return result;
+  const { data, error } = await supabase.rpc("story_engagement", { p_story_ids: ids });
+  if (error) throw error;
+  for (const row of data ?? []) {
+    result.set(row.story_id, { likes: Number(row.likes), comments: Number(row.comments) });
+  }
+  return result;
+}
+
+const commentColumns = "id, story_id, user_id, body, status, created_at, published_at";
+
+export const commentPageSize = 100;
+
+// Published comments on one story, oldest first, one page at a time.
+export async function loadComments(supabase: Client, storyId: string, page = 1) {
+  const from = (page - 1) * commentPageSize;
+  const { data, error, count } = await supabase
+    .from("story_comments")
+    .select(commentColumns, { count: "exact" })
+    .eq("story_id", storyId)
+    .eq("status", "published")
+    .order("published_at")
+    .order("id")
+    .range(from, from + commentPageSize - 1);
+  if (error) throw error;
+  return { comments: (data ?? []) as StoryComment[], total: count ?? 0 };
+}
+
+// The reader's own comments on a story that are not public (waiting for
+// review or declined), so they can always see and delete them.
+export async function loadOwnUnpublishedComments(
+  supabase: Client,
+  storyId: string,
+  userId: string,
+) {
+  const { data, error } = await supabase
+    .from("story_comments")
+    .select(commentColumns)
+    .eq("story_id", storyId)
+    .eq("user_id", userId)
+    .neq("status", "published")
+    .order("created_at")
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []) as StoryComment[];
+}
+
+export async function hasLiked(supabase: Client, storyId: string, userId: string) {
+  const { data, error } = await supabase
+    .from("story_likes")
+    .select("story_id")
+    .eq("story_id", storyId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) return false;
+  return Boolean(data);
+}
+
+export async function loadCommentsForReview(
+  supabase: Client,
+  status: StoryComment["status"],
+  page = 1,
+) {
+  const from = (page - 1) * reviewPageSize;
+  const { data, error, count } = await supabase
+    .from("story_comments")
+    .select(commentColumns, { count: "exact" })
+    .eq("status", status)
+    .order("created_at", { ascending: false })
+    .order("id")
+    .range(from, from + reviewPageSize - 1);
+  if (error) throw error;
+  return { comments: (data ?? []) as StoryComment[], total: count ?? 0 };
+}
+
+export async function countPendingComments(supabase: Client) {
+  const { count, error } = await supabase
+    .from("story_comments")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+  if (error) throw error;
+  return count ?? 0;
+}
+
+// Titles of the stories the comments belong to (moderators see every story).
+export async function loadStoryTitles(supabase: Client, storyIds: string[]) {
+  const ids = [...new Set(storyIds)];
+  if (ids.length === 0) return new Map<string, string>();
+  const { data, error } = await supabase
+    .from("success_stories")
+    .select("id, title")
+    .in("id", ids);
+  if (error) throw error;
+  return new Map((data ?? []).map((row) => [row.id, row.title]));
 }

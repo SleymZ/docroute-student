@@ -1,9 +1,15 @@
 // Public profiles and moving stories. Limits mirror the database checks in
-// supabase/migrations/20261030120000_profiles_and_stories.sql (a test ties
-// them together), so the form rejects what the database would reject.
+// supabase/migrations/20261030120000_profiles_and_stories.sql and
+// 20261104120000_story_photos_comments_likes.sql (a test ties them
+// together), so the form rejects what the database would reject.
 
 export const AVATAR_BUCKET = "avatars";
 export const AVATAR_SIZE = 256;
+// Private bucket; photos are shown through short-lived signed URLs.
+export const STORY_PHOTO_BUCKET = "story-photos";
+// Longest side of an uploaded story photo, in pixels.
+export const STORY_PHOTO_SIZE = 1600;
+export const STORY_PHOTO_URL_SECONDS = 60 * 60;
 
 export const storyPurposes = ["study", "work", "family", "business"] as const;
 export type StoryPurpose = (typeof storyPurposes)[number];
@@ -23,6 +29,10 @@ export const storyLimits = {
   university: { min: 2, max: 120 },
   year: { min: 2020, max: 2035 },
   perAccount: 5,
+  photosPerStory: 4,
+  photoBytes: 2 * 1024 * 1024,
+  comment: { min: 2, max: 1000 },
+  pendingComments: 10,
 } as const;
 
 export type PublicProfile = {
@@ -50,6 +60,28 @@ export type SuccessStory = {
   updated_at: string;
   published_at: string | null;
 };
+
+export type StoryPhoto = {
+  id: string;
+  story_id: string;
+  user_id: string;
+  path: string;
+  created_at: string;
+  // signed URL, filled in on the server; null when it could not be made
+  url: string | null;
+};
+
+export type StoryComment = {
+  id: string;
+  story_id: string;
+  user_id: string;
+  body: string;
+  status: StoryStatus;
+  created_at: string;
+  published_at: string | null;
+};
+
+export type StoryEngagement = { likes: number; comments: number };
 
 export type ProfileInput = { displayName: string; bio: string };
 
@@ -145,6 +177,28 @@ export function validateStory(input: StoryInput, currentYear: number) {
       university: university || null,
     },
   };
+}
+
+export function validateComment(input: string) {
+  const body = input.trim();
+  const errors: string[] = [];
+  if (body.length < storyLimits.comment.min || body.length > storyLimits.comment.max) {
+    errors.push(
+      `A comment must be ${storyLimits.comment.min}–${storyLimits.comment.max} characters.`,
+    );
+  }
+  return { errors, value: body };
+}
+
+// Path inside the story-photos bucket: "<user id>/<story id>/photo-<ms>.webp".
+// The database only accepts this shape, inside the author's own folder.
+export function storyPhotoPath(
+  userId: string,
+  storyId: string,
+  now: number,
+  extension: "webp" | "jpg" = "webp",
+) {
+  return `${userId}/${storyId}/photo-${now}.${extension}`;
 }
 
 // Path inside the avatars bucket: "<user id>/avatar-<timestamp>.webp". The

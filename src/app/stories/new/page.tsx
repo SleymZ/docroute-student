@@ -8,7 +8,8 @@ import { OwnStory, StoryForm } from "@/components/StoryForm";
 import styles from "@/components/Stories.module.css";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { loadOwnStories, loadPublicProfile } from "@/lib/supabase/stories";
+import type { StoryPhoto } from "@/lib/stories";
+import { loadOwnStories, loadPublicProfile, loadStoryPhotos } from "@/lib/supabase/stories";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,13 @@ export default async function NewStoryPage() {
   } catch {
     failed = true;
   }
+  let photos = new Map<string, StoryPhoto[]>();
+  if (ownStories.length) {
+    photos = await loadStoryPhotos(
+      supabase,
+      ownStories.map((story) => story.id),
+    ).catch(() => new Map<string, StoryPhoto[]>());
+  }
 
   return (
     <main>
@@ -50,7 +58,8 @@ export default async function NewStoryPage() {
             </h1>
             <p className={styles.lead}>
               Your story appears on the <Link href="/stories">Stories page</Link>{" "}
-              after a short review, with your public name and photo.
+              after a short review, with your public name, photo and up to{" "}
+              4 photos of your move.
             </p>
           </div>
         </header>
@@ -83,7 +92,13 @@ export default async function NewStoryPage() {
             </p>
             <div className={styles.grid}>
               {ownStories.map((story) => (
-                <OwnStory key={story.id} story={story} author={profile} userId={user.id} />
+                <OwnStory
+                  key={story.id}
+                  story={story}
+                  author={profile}
+                  userId={user.id}
+                  photos={photos.get(story.id)}
+                />
               ))}
             </div>
           </>
