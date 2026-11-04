@@ -72,7 +72,7 @@ test("German Top 100 universities all have field requirements for the five field
 
 test("university-wide admission requirements cover the UK and German Top 100 and cite the university's site", () => {
   const covered = topUniversities.filter((item) => ["DE", "GB"].includes(item.countryCode));
-  assert.equal(covered.length, 37);
+  assert.equal(covered.length, 38);
   for (const university of covered) {
     const item = topAdmissionRequirements[university.rank];
     assert.ok(item, `${university.name}: no admission requirements`);

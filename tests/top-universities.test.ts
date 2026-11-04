@@ -25,6 +25,17 @@ test("the list has ranks 1–100 in order, from the Leiden Open Edition", () => 
   assert.equal(topRankingSource.license, "CC0 1.0");
 });
 
+test("the list follows the Leiden Open Edition 2026 (2021–2024)", () => {
+  assert.match(topRankingSource.title, /Open Edition 2026$/);
+  assert.equal(topRankingSource.period, "2021–2024");
+  assert.match(topRankingSource.url, /\/ranking\/2026\/list$/);
+  // Spot checks against the published Europe list, P(top 10%), fractional counting.
+  const byName = (name: string) => topUniversities.find((item) => item.name === name);
+  assert.equal(byName("University College London")?.leiden.topTenPublications, 3458);
+  assert.equal(byName("Charles University")?.rank, 99);
+  assert.equal(byName("Queen's University Belfast")?.rank, 96);
+});
+
 test("every university has at least one official https source with a check date", () => {
   for (const university of topUniversities) {
     const { sources } = resolveTopAdmissions(university);

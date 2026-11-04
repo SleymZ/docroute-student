@@ -19,7 +19,7 @@ import styles from "./TopUniversities.module.css";
 export const metadata: Metadata = {
   title: "Top 100 universities in Europe",
   description:
-    "Europe's 100 universities with the most highly cited research (CWTS Leiden Ranking Open Edition 2025), with official bachelor's admission facts for non-EU applicants.",
+    "Europe's 100 universities with the most highly cited research (CWTS Leiden Ranking Open Edition 2026), with official bachelor's admission facts for non-EU applicants.",
   alternates: { canonical: "/explore/top" },
 };
 
@@ -106,9 +106,8 @@ export default function TopUniversitiesPage() {
             <a href={topRankingSource.dataUrl} target="_blank" rel="noreferrer">
               {topRankingSource.license}
             </a>
-            . The 2026 edition is due on{" "}
-            {formatPlanDate(topRankingSource.nextEdition)}; the list will be
-            updated then.
+            . CWTS publishes a new edition every year; the list follows the
+            latest one.
           </p>
           <p>
             Admission facts are for a citizen of a non-EU country applying to a
