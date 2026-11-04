@@ -35,6 +35,12 @@ export type StudyResidenceRoute = {
 
 const atSources = [
   src(
+    "at-oead-student-permit",
+    "Residence permit – Student (as of 2026)",
+    "OeAD (Austria's Agency for Education and Internationalisation)",
+    "https://oead.at/en/to-austria/entry-and-residence/residence-permit-student-no-mobility-programme",
+  ),
+  src(
     "at-mig-temporary-students",
     "Temporary residence: Students",
     "Austrian Federal Government, migration.gv.at",
@@ -71,8 +77,8 @@ const austria: StudyResidenceRoute = {
         task(
           "at-study-money",
           "Prove money for living costs",
-          "Students under 24: €722.58 a month; from 24: €1,308.39 a month. Rent counts against this amount. A liability declaration by another person is allowed.",
-          ["at-mig-temporary-students"],
+          "Students under 24: €722.58 a month; from 24: €1,308.39 a month (2026), shown for 12 months ahead in an account in your name that can be used from Austria. Rent above €386.43 a month needs extra money on top, and so does health insurance (student self-insurance €78.84 a month). A liability declaration by another person is allowed.",
+          ["at-mig-temporary-students", "at-oead-student-permit"],
         ),
         task(
           "at-study-insurance",
@@ -85,6 +91,12 @@ const austria: StudyResidenceRoute = {
           "Documents in original and copy",
           "Valid passport, a recent photo, admission letter, proof of insurance and money. The authority may ask for a criminal-record extract (preferably not older than 3 months) and translations.",
           ["at-mig-temporary-students"],
+        ),
+        task(
+          "at-study-fee",
+          "Application fee €218",
+          "Paid in full when you apply; not refunded if the application is refused or withdrawn.",
+          ["at-oead-student-permit"],
         ),
       ],
     },
@@ -114,8 +126,10 @@ const austria: StudyResidenceRoute = {
         task(
           "at-study-extend",
           "Extend with proof of study success",
-          "An extension needs evidence of successful study progress, so keep your transcripts.",
-          ["at-mig-temporary-students"],
+          "Apply before the permit expires, at the earliest three months before; the old permit stays valid while the decision is pending. An extension needs evidence of successful study progress, so keep your transcripts.",
+          ["at-mig-temporary-students", "at-oead-student-permit"],
+          "action",
+          "In the last 3 months before expiry",
         ),
       ],
     },
@@ -243,9 +257,10 @@ const poland: StudyResidenceRoute = {
     {
       id: "residence-pl-visa",
       number: "05",
-      eyebrow: "VISA",
+      eyebrow: "VISA OR VISA-FREE ENTRY",
       title: "National D visa for studies",
-      description: "A long-stay D visa from a Polish consulate; it is valid for at most one year.",
+      description:
+        "A long-stay D visa from a Polish consulate, valid for at most one year. Some nationalities can enter visa-free for up to 90 days in any 180 days instead.",
       timing: "Right after admission",
       tasks: [
         task(
@@ -253,6 +268,13 @@ const poland: StudyResidenceRoute = {
           "Book the consulate appointment",
           "Apply at a Polish consulate or embassy consular section, usually after registering on e-konsulat. Requirements differ by consulate, so follow its own list. Review can take up to 15 days, sometimes longer.",
           ["pl-nawa-visa"],
+        ),
+        task(
+          "pl-study-visa-free",
+          "If you can enter visa-free",
+          "Visa-exempt nationals may stay up to 90 days in any 180 days. The residence permit must be filed during a legal stay; ask the Office for Foreigners or the voivode office whether you can apply after visa-free entry before deciding to skip the visa.",
+          ["pl-nawa-visa"],
+          "attention",
         ),
         task(
           "pl-study-visa-documents",
