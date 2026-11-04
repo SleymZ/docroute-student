@@ -2,7 +2,7 @@
    and its stages light up in turn. Everything else stays still. */
 
 .entry {
-  --map-dot: light-dark(rgba(11, 118, 134, 0.3), rgba(121, 221, 239, 0.24));
+  --map-dot: light-dark(rgba(11, 118, 134, 0.38), rgba(121, 221, 239, 0.4));
   --stop-ring: light-dark(#0b7686, #79ddef);
   --label: light-dark(#1d2b31, #e8eef1);
 
@@ -17,11 +17,14 @@
 
 /* ---- map ---- */
 
+/* The map sits right of the text, so the destination lands at about two
+   thirds of the screen width. */
 .map {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
   z-index: -2;
-  width: 100%;
+  width: 76%;
   height: 100%;
   transform-origin: var(--zoom-x) var(--zoom-y);
   transition:
@@ -32,7 +35,7 @@
 .dots {
   fill: none;
   stroke: var(--map-dot);
-  stroke-width: 3.4;
+  stroke-width: 3.8;
   stroke-linecap: round;
 }
 
@@ -100,9 +103,9 @@
     linear-gradient(
       90deg,
       var(--background) 0%,
-      color-mix(in srgb, var(--background) 88%, transparent) 30%,
-      color-mix(in srgb, var(--background) 30%, transparent) 55%,
-      transparent 75%
+      var(--background) 24%,
+      color-mix(in srgb, var(--background) 55%, transparent) 38%,
+      transparent 52%
     );
   pointer-events: none;
 }
@@ -352,9 +355,14 @@
 /* ---- smaller screens: map above, text below ---- */
 
 @media (max-width: 860px) {
+  /* Wider than the screen and shifted left, so the destination and all
+     three stages stay in view on a narrow phone. */
   .map {
-    inset: 0 0 auto;
-    height: 62%;
+    top: 0;
+    right: auto;
+    left: -65%;
+    width: 175%;
+    height: 60%;
   }
 
   .veil {

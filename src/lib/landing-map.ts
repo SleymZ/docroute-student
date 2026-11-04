@@ -76,14 +76,14 @@ const destination = project([17.11, 48.15]);
 const segments: [Point, Point, Point, Point][] = [
   [
     entry,
-    { x: entry.x - 30, y: entry.y - 150 },
-    { x: waypoint.x + 130, y: waypoint.y - 20 },
+    { x: entry.x - 70, y: entry.y - 110 },
+    { x: waypoint.x + 90, y: waypoint.y + 6 },
     waypoint,
   ],
   [
     waypoint,
-    { x: waypoint.x - 130, y: waypoint.y + 20 },
-    { x: destination.x + 60, y: destination.y + 30 },
+    { x: waypoint.x - 90, y: waypoint.y - 6 },
+    { x: destination.x + 45, y: destination.y + 34 },
     destination,
   ],
 ];
