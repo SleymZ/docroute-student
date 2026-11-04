@@ -139,7 +139,7 @@ export const landingMap = {
   stops: [
     // `side`: which side of the dot the label sits on, chosen so it stays
     // on screen and off the line.
-    { label: "Application", at: 0.46, side: "left" as const },
+    { label: "Application", at: 0.46, side: "below" as const },
     { label: "Documents", at: 0.76, side: "right" as const },
     { label: "Residence permit", at: 1, side: "left" as const },
   ].map((stop) => ({ ...stop, ...pointAt(stop.at) })),
