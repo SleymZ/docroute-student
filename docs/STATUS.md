@@ -930,6 +930,39 @@ latest rules" (owner rule 2026-10-30):
     foreign keys). Download my data adds `storyPhotos`, `storyComments`,
     `storyLikes`. Privacy and Terms updated (2026-11-04).
 
+## Entry page design from the style board (2026-11-04)
+
+- Owner request: a brighter entry page with a fuller middle, built from
+  the DocRoute style board (warm orange, Inter, icon tiles). The accent
+  stays the site coral (`var(--coral)`); the board's light orange
+  `#FF9F4D` is used only for soft glows.
+- Site typeface is now Inter (`next/font/google`, `--font-inter`) instead
+  of Arial, everywhere.
+- Entry page: "journey" in coral, an arrow on the start button, a warm
+  glow over the middle of the map, a small plane that flies the route
+  while it draws (hidden with reduced motion or without CSS motion
+  paths), four purpose tiles (Study, Work, Family, Business; not links,
+  the page keeps one way in) and, on screens 1280px and wider, three
+  floating facts over the middle of the map (official sources, deadlines
+  counted back, 13 countries).
+- The map, its highlighted countries and the route are unchanged. On
+  phones the map is faded with a mask and the text starts under it, so
+  the title no longer covers the route.
+- Logo from the style board in site colours: a globe ring (text colour)
+  with Europe (coral; Natural Earth land-50m outline, orthographic,
+  clipped and simplified), a plane leaving the ring and a coral route
+  swoosh under it; "Doc" in text colour, "Route" in coral. Used in the
+  headers, entry, sign-in and password screens, `src/app/icon.svg` (both
+  themes) and `src/app/apple-icon.png` (dark tile). The loader shows the
+  plane circling the globe.
+- Entry map colours (owner request): neutral land dots, coral dots for the
+  13 highlighted countries, stop rings in the text colour. Shape, route
+  and the country list are unchanged.
+- The entry page shows only on the first visit (owner decision):
+  `src/proxy.ts` sends `/` to `/home` when the browser has the
+  `docroute-visited` cookie (set on the first page view, one year,
+  httpOnly, listed in the Cookie Policy) or a Supabase session cookie.
+
 ## My route, date fields on phones, full-path button (2026-11-03)
 
 - **Confirm this route** block at the top of every route page (study

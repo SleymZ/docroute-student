@@ -1,17 +1,33 @@
-// DocRoute logo mark: a coral "D" with a road leading to a pin. The road
-// and pin are cut out of the D (even-odd fill), so they show whatever is
-// behind the logo and work in both themes. Drawn from the owner's logo
-// (2026-11-04).
+// DocRoute logo mark, from the owner's style board (2026-11-04): a globe
+// with Europe on it, a plane leaving it and the route swooping under it.
+// Europe and the route are the site coral; the ring and the plane use the
+// text colour, so the mark works in both themes. Europe is the Natural
+// Earth land outline (world-atlas land-50m, public domain), orthographic,
+// centred on 13°E 50°N, clipped to the globe and simplified.
 
 // Site coral: darker in the light theme, lighter in the dark one (globals.css).
 export const BRAND_COLOR = "var(--coral)";
+// Ring and plane: the text colour around the mark (dark on light
+// backgrounds, light on dark ones).
+export const LOGO_INK = "var(--logo-ink, currentColor)";
 
-export const logoMarkPath =
-  "M20 6H55C77 6 93 24 93 50C93 76 77 94 55 94H8Z" +
-  "M13 94C19 75 36 57 64 43.5L68 49.5C48 62 37 77 33 94Z" +
-  "M68.5 31.5a7.5 7.5 0 1 0 15 0a7.5 7.5 0 1 0 -15 0Z";
+/** Globe centre and ring radius in the 100×100 view box. */
+export const LOGO_GLOBE = { cx: 44, cy: 50, r: 35 } as const;
 
-export const logoRoadPath = "M23 94C28 77 42 61 66 46.5";
+/** The ring, open at the top right where the plane leaves it. */
+export const logoRingPath = "M78.8 46.3A35 35 0 1 1 60.4 19.1";
+
+export const logoEuropePath =
+  "M55.3 67.6L57.8 67.5L56.4 68.2L55.1 68ZM65.9 65.2L65.7 66L64.4 66.8L64 66.4L64.5 65.8ZM43.7 42.6L43.2 43.9L42.6 42.8L43.4 42.1ZM40.7 61.6L40.6 63.8L39.6 64L39.6 63L39.3 61.6L40.3 61.1ZM40.7 59.2L40.4 60.9L39.9 60.1L39.9 59.4L40.6 58.9ZM46.6 65L46.2 67L43.9 65.9L43.4 65.6L43.7 65.1L44.8 65.4ZM33.3 37.9L32.3 38.9L33.9 39.4L32.5 40.6L32.9 40.8L32.1 40.8L33.4 41.6L33.5 42.9L34.2 43.8L34.2 44.5L33.7 44.3L34.3 44.9L34 45.4L35 45.5L35.3 46L34 47.3L34.8 47.5L34.7 47.8L33.9 48.1L30.8 47.7L30.5 48.2L30.1 47.9L29.2 48.2L28.9 47.9L30.3 46.9L31.2 47.1L31.8 46.5L30.8 46.5L29.7 45.8L30.8 45.4L30.9 44.7L30.5 44.7L30.9 44.4L32 44.5L32.2 43.4L31.8 42.8L32.3 42.4L30.8 42.3L31.5 40.8L31.1 40.6L30.5 41.4L31.4 39.8L30.7 39.7L32.1 37.6ZM29.4 41.5L30.3 41.6L30.4 42.6L29.6 43L29.1 45.2L26.2 45.4L26.5 45.2L26 45.1L26.5 44.9L25.9 44.7L26.5 44.4L27.4 44.1L26.5 44L27.5 43.4L26.8 43L27.3 42.5L27.1 41.9L28.2 42.2L28.7 41.2L29.2 41.5L29.5 41.1ZM20.5 68.6L23.2 67.6L24.6 65.6L25.3 65.7L25.7 66.7L27.5 66.8L27.5 67.2L28.4 67.4L31.9 66.2L34.5 66.1L36 66.6L38.1 66.2L38.8 66.6L40.8 66.1L41.3 66.9L42.1 66.7L41.4 67.4L42 68.8L40.9 69.9L41 70.5L43.4 71.8L45.6 72.1L46.4 72.3L47.1 73.5L51 74.6L51.9 73.5L51.6 72.3L53.3 71.1L54.7 71.2L55.1 71.8L57 71.8L57.3 72.3L61.6 72.3L63.5 70.9L65.4 71L59.7 75.6L54 78.3L46.9 79.9L39.6 79.7L34.5 78.5L28.8 75.9L23.7 72.1ZM67.2 69L67.7 66L67 63.9L67.2 63.1L66.6 63.7L65.8 63.6L65.3 64.5L64.2 65.1L61.9 64.6L61.8 65.5L60.7 65.7L60.3 65.2L58.8 65.5L59.5 65L58.5 65.2L58.8 64.9L58.3 64L57.3 63.8L57.3 63.3L58.1 63.5L57.7 63.3L57.7 62.1L56.9 62.3L57.3 61.1L59.5 60.6L60.2 60L59.4 59.6L61.4 59.3L63.1 57.6L64.5 57.1L65.9 57.7L67.4 57.6L70.1 56.2L70.4 55.1L69.8 54.3L64.8 52.9L65.6 52.3L65.6 51.4L66 51.2L65.2 50.8L66.2 49.6L63.8 51.2L63.2 52.2L63.2 51.7L63 52.2L63.7 53L64.7 52.6L64.7 53.1L64 53.2L62.8 54.6L62.3 53.8L61.3 53.7L62 52.5L60.4 52.7L60.1 52.4L61 52.1L60.5 52.2L60.1 51.5L60.4 52.2L59.5 52.6L58.7 53.9L58.9 55L58.3 54.9L58.4 56.8L57.6 58.3L59.3 59.9L57.9 60.2L56.9 61.6L57.3 60.8L55.9 60.6L54.4 61.1L55.1 61.8L54.5 61.6L54.7 62.1L53.4 61.6L54.2 63L53.5 63.6L55.1 64.2L55.2 64.9L54.6 64.5L54.1 64.8L54.7 65.3L53.9 65.2L54.5 66.6L53.9 66.2L53.8 66.7L53.3 66L53.1 66.4L52.2 65.1L52.9 64.4L54.3 64.5L52.2 64.4L51.8 63.9L52.1 63.6L50.2 62.1L50.3 60.3L47.6 58.4L46.8 58.3L45.4 56L44.8 56.6L44.6 55.4L43.3 55.9L43.4 57.4L44.5 58.2L45.8 60.2L47 60.3L46.9 60.9L49.4 62.3L49.1 62.8L47.8 62.1L47.5 63L48.2 64L47.6 64.2L47.1 65.3L46.7 65.2L47.2 64.3L46.7 62.8L42.2 59.7L41.4 57.7L40.3 57.1L37.5 58.6L35.7 57.7L34.9 58.1L34.7 59.7L32.2 60.7L30.9 62.2L31.3 63.3L30.3 63.9L30.1 64.6L29.2 64.6L28.6 65.3L26.3 64.9L24.9 65.4L24.1 63.6L21.9 63.3L22.7 61.7L22.2 61.5L22.7 60.8L22.3 61.2L22 60.9L23.5 58.5L23.7 55.7L25.3 55.4L27.9 56.6L30.5 57.1L31.4 54.6L31.8 55.3L31.5 53.5L30.9 52.8L30.9 52.2L31.2 52.3L29.2 51L29 50.7L29.5 50.5L29.1 50.1L30.4 50L30.8 50.5L31.9 50.6L31.7 49.2L32.6 49.8L33.6 49.8L33.4 49.5L34.7 49L34.9 48.1L37 47.8L36.4 47.5L37 47.7L36.8 47.2L37.5 46L38.3 45.5L39.5 45.6L39.6 45.1L40.5 45.5L40.7 44.9L41.5 45.4L40.7 44.4L41 44.1L40.5 41.8L41.3 41.3L41.4 40.9L41 41.3L40.8 40.9L42.3 40L42.1 41.5L42.5 41.9L42.1 41.9L41.4 43.5L42.6 44.8L44 44.3L45.2 45.3L44.6 44.7L46.3 44.5L47.2 43.8L47.9 43.6L48.8 44.2L49.9 42.5L49.6 43.3L50 43.3L50 39.9L50.5 39.7L51.4 40.5L51.9 40.1L51.8 38.7L51.2 38.8L50.9 37.7L52.3 36.9L53.6 37L53.6 36.5L54.9 36.1L53.7 35.3L50.5 37L50.1 36.3L49.3 36.1L48.9 32.9L50.7 30.3L50.1 29.4L48.9 29.5L48.4 32.1L46.6 33.9L46.7 36.3L47.9 37.3L47.4 38.3L46.2 38.8L46.6 39.4L46 42.1L45.2 42.1L44.9 43.1L43.9 43L43.6 41.9L43.9 42L43.9 41.5L42.4 37.5L42.2 38.4L41.7 38.3L40.5 39.5L39.7 39.5L39 38.7L39.7 37.6L38.9 38L39 37.4L40.2 36.4L38.9 37.4L39.3 36.8L39 36.3L39.4 36.1L39 36.1L39 35.6L40.7 35.5L39.3 35.6L39.1 34.6L40.2 34.7L39.3 34.2L41.1 33.7L40.3 33.6L40.5 33.3L41.4 33.5L41.6 32.5L42.3 32.9L43.1 32.4L43 32.1L42.5 32.7L42 32.5L44 30.5L43.5 30.5L43.9 29.5L44.5 29.4L44 29.1L44.3 28.5L45.2 28.2L44.7 28.1L45 27.7L45.3 28L45 27.2L45.5 26.9L45.6 27.3L45.5 26.8L46.2 26.6L45.7 26.4L46.4 25.3L46.7 25.5L47 24.9L47 25.3L47.2 24.7L47.3 25.4L47.7 24.5L48 24.8L47.7 24.2L48.3 24.1L48.5 24.5L48.9 23.2L49.4 23.3L49.2 24.2L49.6 23.2L49.8 23.7L49.9 23L50.4 22.9L50.5 23.8L50.6 23L51.7 23.4L50.8 23.9L51.3 24.3L52.4 23.8L52.8 24L52.4 24.2L53.1 24.2L53.1 24.7L53.2 24.3L54.2 24.2L57 25L57.7 25.9L57 27.3L53.3 27.1L54.9 27.9L56.1 29.9L57.5 30.2L57.7 29.7L56.7 29.3L56.5 28.7L58.2 28.9L58.5 28.5L57.7 27.7L58.3 26.2L59.5 26.4L59.3 25.5L57.6 23.5L59 24L59 24.7L60.2 24.8L62 26L65.9 29.4L69.7 34.4L71.6 38.2L72.7 41.1L73.9 47.3L73.2 48.6L73.2 50.3L74 50.7L73.8 53.8L72.3 59.9L70.2 64.7ZM25.6 26.3L26.2 26.6L26 26.3L26.5 26.2L26.2 25.8L27 25.3L26.7 26.5L27.5 25.8L27.7 26.3L28.3 26L28.3 26.7L28.5 26.2L29.8 26.2L29.8 26.6L30.3 26.6L29.9 27.2L30.3 27.8L29.8 28.6L26.9 29.2L25.8 27.9L25 27.7L26 27.4L25.6 27.3L26.1 27.1L25.7 27.1Z";
+
+export const logoSwooshPath = "M3 66C10 92 58 100 92 64C62 90 22 88 3 66Z";
+
+/** A plane pointing along +x, centred on 0,0. */
+export const logoPlanePath =
+  "M12 0L4.5 -1.6L-1 -8.6L-4.2 -8.6L-1.4 -1.8L-7 -1.4L-9.2 -4.8L-11.3 -4.8L-10.2 0L-11.3 4.8L-9.2 4.8L-7 1.4L-1.4 1.8L-4.2 8.6L-1 8.6L4.5 1.6Z";
+
+/** Where the plane sits on the mark. */
+export const logoPlaneTransform = "translate(80 25) rotate(-34) scale(1.5)";
 
 export function LogoMark({
   size = 36,
@@ -33,14 +49,25 @@ export function LogoMark({
       aria-hidden={title ? undefined : true}
       aria-label={title}
     >
-      <path style={{ fill: BRAND_COLOR }} fillRule="evenodd" d={logoMarkPath} />
       <path
-        d={logoRoadPath}
+        d={logoRingPath}
         fill="none"
-        style={{ stroke: BRAND_COLOR }}
-        strokeWidth={2.4}
-        strokeDasharray="5 4.2"
+        style={{ stroke: LOGO_INK }}
+        strokeWidth={5.5}
+        strokeLinecap="round"
       />
+      <path style={{ fill: BRAND_COLOR }} d={logoEuropePath} />
+      <path style={{ fill: BRAND_COLOR }} d={logoSwooshPath} />
+      <path style={{ fill: LOGO_INK }} transform={logoPlaneTransform} d={logoPlanePath} />
     </svg>
+  );
+}
+
+/** "DocRoute" with "Route" in coral, as in the style board. */
+export function LogoWord({ className }: { className?: string }) {
+  return (
+    <span className={className}>
+      Doc<span style={{ color: BRAND_COLOR }}>Route</span>
+    </span>
   );
 }

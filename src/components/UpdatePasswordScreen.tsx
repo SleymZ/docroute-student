@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, KeyRound } from "lucide-react";
 
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { LogoMark } from "./Logo";
+import { LogoMark, LogoWord } from "./Logo";
 import styles from "./UpdatePasswordScreen.module.css";
 
 export function UpdatePasswordScreen() {
@@ -53,7 +53,7 @@ export function UpdatePasswordScreen() {
       <section className={styles.card}>
         <Link href="/home" className={styles.brand}>
           <LogoMark size={36} />
-          DocRoute
+          <LogoWord className={styles.brandWord} />
         </Link>
 
         <span className={styles.icon}>

@@ -21,7 +21,7 @@ import {
 import styles from "./AuthScreen.module.css";
 import { ThemeToggle } from "./ThemeToggle";
 import { safeNextPath } from "@/lib/safe-next-path";
-import { LogoMark } from "./Logo";
+import { LogoMark, LogoWord } from "./Logo";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -248,7 +248,9 @@ export function AuthScreen({
             <LogoMark size={48} className={styles.brandMark} />
 
             <span>
-              <strong>DocRoute</strong>
+              <strong>
+                <LogoWord />
+              </strong>
               <small>EUROPE</small>
             </span>
           </Link>
@@ -350,7 +352,9 @@ export function AuthScreen({
         <div className={styles.authContainer}>
           <Link href="/" className={styles.mobileBrand}>
             <LogoMark size={38} className={styles.mobileBrandMark} />
-            <strong>DocRoute</strong>
+            <strong>
+              <LogoWord />
+            </strong>
           </Link>
 
           <div className={styles.securityLabel}>

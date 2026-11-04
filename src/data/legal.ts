@@ -69,6 +69,13 @@ export const browserStorageItems = [
     duration: "Removed once sign-in finishes",
   },
   {
+    name: "docroute-visited",
+    kind: "Cookie (first-party)",
+    purpose:
+      "Remembers that this browser has opened DocRoute before, so the start page is skipped next time. Holds no identifier.",
+    duration: "One year",
+  },
+  {
     name: "docroute-theme",
     kind: "Local storage",
     purpose: "Remembers light or dark mode if you choose one.",
