@@ -52,10 +52,11 @@ page `/route/guide`, 2026-10-30).
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
   Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`,
-  `confirmed_routes` (after migration `20261103120000`),
+  `confirmed_routes` (after migration `20261103120000`), `story_photos`,
+  `story_comments`, `story_likes` (after migration `20261104120000`),
   `waitlist_signups`, `feedback`, `public_profiles`, `success_stories`,
   `story_moderators`;
-  Storage bucket `avatars`. Functions: `delete_my_account()` (migration
+  Storage buckets `avatars` (public) and `story-photos` (private). Functions: `delete_my_account()` (migration
   `20261028150000`, redefined in `20261028180000`), `leave_waitlist(email)`,
   `is_story_moderator()`, `moderate_story(id, status, reviewed_at)`.
 - Migration `20261031120000_story_moderators.sql` was run on production
@@ -861,6 +862,44 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
+## Start screen, story photos, comments and likes (2026-11-04)
+
+- Home page opens with a start screen (`StartJourney`): "Start your journey",
+  the slogan **"Your move to Europe, one route."**, a short explanation, the
+  button "Start your journey" (scrolls to the route builder, `#route-builder`)
+  and "How it works", plus three step cards. Nothing is stored in the
+  browser. The route builder's title is now an h2 ("Build your route, step
+  by step."); site title "DocRoute | Your move to Europe, one route".
+- Header navigation: "Build route" and "Residence routes" removed (owner
+  decision 2026-11-04). The "Build my route" button on the right stays.
+- Stories (migration `20261104120000_story_photos_comments_likes.sql`, owner
+  runs it in the SQL editor; tested twice on local Postgres 16 with
+  anon/authenticated roles and a storage stub):
+  - **Photos:** up to 4 per story (`story_photos`), shrunk to 1600 px and
+    re-encoded as WebP (JPEG on old Safari) in the browser, which drops
+    EXIF/GPS; at most 2 MB. Private bucket `story-photos`, files in
+    `<user>/<story>/photo-<ms>.webp`, shown through signed URLs valid for
+    one hour. A photo is readable only where its story is visible
+    (published, own, moderator). Adding or removing a photo sends the
+    author's story back to review; a moderator can remove a single photo
+    on the story page without unpublishing it.
+  - **Comments:** signed-in people with a public name comment on published
+    stories (`story_comments`, 2–1000 characters). Every comment starts as
+    pending (owner decision: pre-moderation) and appears after a moderator
+    publishes it on `/stories/review/comments`; at most 10 pending comments
+    per account. Authors and moderators delete comments; no editing.
+  - **Likes:** one per account and published story (`story_likes`). Who liked
+    what is private; `story_engagement(ids)` returns only like and
+    published-comment counts.
+  - Story page `/stories/<id>` (full story, photo gallery, like button,
+    comments and comment form; noindex unless published). Cards on
+    `/stories` and profiles show a cover photo, like and comment counts and
+    "Open, like and comment"; review cards show all photos.
+  - Deleting a story removes its photo files; deleting the account removes
+    all story photo files first (then rows go with the account through
+    foreign keys). Download my data adds `storyPhotos`, `storyComments`,
+    `storyLikes`. Privacy and Terms updated (2026-11-04).
+
 ## My route, date fields on phones, full-path button (2026-11-03)
 
 - **Confirm this route** block at the top of every route page (study
@@ -1126,7 +1165,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (267 tests on 2026-11-04).
+- Unit tests: `npm test` (275 tests on 2026-11-04).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

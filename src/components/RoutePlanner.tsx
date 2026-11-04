@@ -187,11 +187,11 @@ export function RoutePlanner() {
       <div className="hero-copy">
         <p className="eyebrow">Documents → Deadlines → Residence</p>
 
-        <h1>
-          Your move
+        <h2>
+          Build your route,
           <br />
-          to Europe, <span>mapped.</span>
-        </h1>
+          <span>step by step.</span>
+        </h2>
 
         <p className="hero-description">
           Find the right university, see which documents you need

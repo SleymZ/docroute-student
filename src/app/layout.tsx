@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "DocRoute | Your move to Europe, mapped",
+    default: "DocRoute | Your move to Europe, one route",
     template: "%s | DocRoute",
   },
   description:

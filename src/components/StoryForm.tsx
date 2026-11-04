@@ -2,34 +2,125 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Pencil, Send, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ImagePlus, Pencil, Send, Trash2, X } from "lucide-react";
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { StoryCard } from "@/components/StoryCard";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
+  MAX_SOURCE_PHOTO_BYTES,
+  acceptedPhotoTypes,
+  removeStoryFolder,
+  removeStoryPhoto,
+  uploadStoryPhoto,
+} from "@/lib/story-photo-upload";
+import {
   storyLimits,
   storyPurposeLabels,
   storyPurposes,
   validateStory,
   type PublicProfile,
+  type StoryPhoto,
   type SuccessStory,
 } from "@/lib/stories";
 
 import styles from "./Stories.module.css";
 
+type NewPhoto = { key: string; file: File; preview: string };
+
+// Up to 4 photos: the ones already saved (editing) plus new files. Saved
+// photos the author removes are deleted when the form is submitted.
+function PhotoPicker({
+  kept,
+  added,
+  onRemoveKept,
+  onRemoveAdded,
+  onAdd,
+  disabled,
+}: {
+  kept: StoryPhoto[];
+  added: NewPhoto[];
+  onRemoveKept: (id: string) => void;
+  onRemoveAdded: (key: string) => void;
+  onAdd: (files: File[]) => void;
+  disabled: boolean;
+}) {
+  const free = storyLimits.photosPerStory - kept.length - added.length;
+  return (
+    <div className={styles.photoPicker}>
+      <span>Photos (optional, up to {storyLimits.photosPerStory})</span>
+      <div className={styles.photoGrid}>
+        {kept.map((photo, index) => (
+          <div key={photo.id} className={styles.photoSlot}>
+            {photo.url && (
+              // eslint-disable-next-line @next/next/no-img-element -- signed Supabase URL
+              <img src={photo.url} alt={`Saved photo ${index + 1}`} />
+            )}
+            <button
+              type="button"
+              onClick={() => onRemoveKept(photo.id)}
+              disabled={disabled}
+              aria-label={`Remove saved photo ${index + 1}`}
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
+          </div>
+        ))}
+        {added.map((photo, index) => (
+          <div key={photo.key} className={styles.photoSlot}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- local preview of a picked file */}
+            <img src={photo.preview} alt={`New photo ${index + 1}`} />
+            <button
+              type="button"
+              onClick={() => onRemoveAdded(photo.key)}
+              disabled={disabled}
+              aria-label={`Remove new photo ${index + 1}`}
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
+          </div>
+        ))}
+        {free > 0 && (
+          <label className={styles.addPhoto}>
+            <ImagePlus size={22} aria-hidden="true" />
+            Add photo
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              disabled={disabled}
+              onChange={(event) => {
+                const files = Array.from(event.target.files ?? []);
+                event.target.value = "";
+                onAdd(files);
+              }}
+            />
+          </label>
+        )}
+      </div>
+      <small className={styles.panelLead}>
+        JPG, PNG or WebP. Photos are made smaller and location data is
+        removed. Do not show documents, tickets or people who did not agree to
+        be shown. Photos are reviewed together with the story.
+      </small>
+    </div>
+  );
+}
+
 export function StoryForm({
   userId,
   storyCount,
   story,
+  photos = [],
   onDone,
 }: {
   userId: string;
   storyCount: number;
   // when given, the form edits this story instead of creating a new one
   story?: SuccessStory;
+  photos?: StoryPhoto[];
   onDone?: () => void;
 }) {
   const router = useRouter();
@@ -46,6 +137,38 @@ export function StoryForm({
   const [errors, setErrors] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const [keptPhotos, setKeptPhotos] = useState<StoryPhoto[]>(photos);
+  const [newPhotos, setNewPhotos] = useState<NewPhoto[]>([]);
+  const [photoNote, setPhotoNote] = useState<string | null>(null);
+  const previews = useRef<string[]>([]);
+
+  // Free the local previews when the form goes away.
+  useEffect(() => {
+    const urls = previews.current;
+    return () => {
+      for (const url of urls) URL.revokeObjectURL(url);
+    };
+  }, []);
+
+  function addPhotos(files: File[]) {
+    const free = storyLimits.photosPerStory - keptPhotos.length - newPhotos.length;
+    const usable = files.filter(
+      (file) => acceptedPhotoTypes.test(file.type) && file.size <= MAX_SOURCE_PHOTO_BYTES,
+    );
+    const picked = usable.slice(0, Math.max(0, free)).map((file) => {
+      const preview = URL.createObjectURL(file);
+      previews.current.push(preview);
+      return { key: `${file.name}-${file.size}-${preview}`, file, preview };
+    });
+    setNewPhotos((current) => [...current, ...picked]);
+    setPhotoNote(
+      usable.length < files.length
+        ? "Some files were skipped: use JPG, PNG or WebP pictures up to 15 MB."
+        : usable.length > picked.length
+          ? `A story can have at most ${storyLimits.photosPerStory} photos.`
+          : null,
+    );
+  }
 
   const limitReached = !editing && storyCount >= storyLimits.perAccount;
 
@@ -69,13 +192,23 @@ export function StoryForm({
 
     setBusy(true);
     const supabase = createSupabaseBrowserClient();
-    const { error } = story
-      ? await supabase.from("success_stories").update(value).eq("id", story.id)
-      : await supabase.from("success_stories").insert({ user_id: userId, ...value });
-    setBusy(false);
-    if (error) {
+    let storyId = story?.id ?? null;
+    let error: { message: string } | null = null;
+    if (story) {
+      ({ error } = await supabase.from("success_stories").update(value).eq("id", story.id));
+    } else {
+      const inserted = await supabase
+        .from("success_stories")
+        .insert({ user_id: userId, ...value })
+        .select("id")
+        .single();
+      error = inserted.error;
+      storyId = inserted.data?.id ?? null;
+    }
+    if (error || !storyId) {
+      setBusy(false);
       setErrors([
-        error.message.includes("limit")
+        error?.message.includes("limit")
           ? `You can keep at most ${storyLimits.perAccount} stories. Delete one first.`
           : editing
             ? "The changes could not be saved. Try again in a moment."
@@ -83,12 +216,41 @@ export function StoryForm({
       ]);
       return;
     }
+
+    // Photos: removed ones first, then the new files. A failed photo does
+    // not undo the story; the author can edit the story and try again.
+    let photoFailures = 0;
+    const removed = photos.filter((photo) => !keptPhotos.some((kept) => kept.id === photo.id));
+    for (const photo of removed) {
+      try {
+        await removeStoryPhoto(supabase, photo);
+      } catch {
+        photoFailures += 1;
+      }
+    }
+    for (const photo of newPhotos) {
+      try {
+        await uploadStoryPhoto(supabase, userId, storyId, photo.file);
+      } catch {
+        photoFailures += 1;
+      }
+    }
+    setBusy(false);
+    setNewPhotos([]);
+    if (photoFailures > 0) {
+      setPhotoNote(
+        photoFailures === 1
+          ? "The story was saved, but 1 photo could not be saved. Edit the story to try again."
+          : `The story was saved, but ${photoFailures} photos could not be saved. Edit the story to try again.`,
+      );
+    }
     if (editing) {
-      onDone?.();
+      if (photoFailures === 0) onDone?.();
       router.refresh();
       return;
     }
     setSent(true);
+    setKeptPhotos([]);
     setTitle("");
     setBody("");
     setUniversity("");
@@ -104,6 +266,11 @@ export function StoryForm({
           Every story is read before it appears on the Stories page, usually
           within a few days. You can see its status below.
         </p>
+        {photoNote && (
+          <p className={styles.message} data-tone="error">
+            {photoNote}
+          </p>
+        )}
         <div className={styles.actions}>
           <Link href="/stories" className={styles.primary}>
             Read other stories
@@ -215,6 +382,20 @@ export function StoryForm({
         </small>
       </label>
 
+      <PhotoPicker
+        kept={keptPhotos}
+        added={newPhotos}
+        onRemoveKept={(id) => setKeptPhotos((current) => current.filter((photo) => photo.id !== id))}
+        onRemoveAdded={(key) => setNewPhotos((current) => current.filter((photo) => photo.key !== key))}
+        onAdd={addPhotos}
+        disabled={busy}
+      />
+      {photoNote && (
+        <p className={styles.message} data-tone="error" role="status">
+          {photoNote}
+        </p>
+      )}
+
       {!editing && (
         <label className={styles.consent}>
           <input
@@ -224,7 +405,8 @@ export function StoryForm({
           />
           <span>
             This is my own experience. I agree that DocRoute publishes it
-            publicly with my public name and photo after review, as described in
+            publicly with my public name, profile photo and the photos I add
+            after review, as described in
             the <Link href="/terms#stories">Terms</Link> and{" "}
             <Link href="/privacy#stories">Privacy Policy</Link>. I can delete it
             at any time.
@@ -255,7 +437,7 @@ export function StoryForm({
   );
 }
 
-export function DeleteStoryButton({ storyId }: { storyId: string }) {
+export function DeleteStoryButton({ storyId, userId }: { storyId: string; userId: string }) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -265,11 +447,15 @@ export function DeleteStoryButton({ storyId }: { storyId: string }) {
     setBusy(true);
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.from("success_stories").delete().eq("id", storyId);
-    setBusy(false);
     if (error) {
+      setBusy(false);
       setFailed(true);
       return;
     }
+    // The photo rows went with the story; now remove the files from the
+    // author's own folder (allowed without the rows).
+    await removeStoryFolder(supabase, userId, storyId).catch(() => undefined);
+    setBusy(false);
     router.refresh();
   }
 
@@ -306,10 +492,12 @@ export function OwnStory({
   story,
   author,
   userId,
+  photos = [],
 }: {
   story: SuccessStory;
   author: PublicProfile | null;
   userId: string;
+  photos?: StoryPhoto[];
 }) {
   const [editing, setEditing] = useState(false);
 
@@ -320,6 +508,7 @@ export function OwnStory({
           userId={userId}
           storyCount={0}
           story={story}
+          photos={photos}
           onDone={() => setEditing(false)}
         />
       </div>
@@ -328,13 +517,21 @@ export function OwnStory({
 
   return (
     <div className={styles.form}>
-      <StoryCard story={story} author={author} showStatus headingLevel={3} />
+      <StoryCard
+        story={story}
+        author={author}
+        showStatus
+        headingLevel={3}
+        photos={photos}
+        photoLayout="all"
+        href={`/stories/${story.id}`}
+      />
       <div className={styles.actions}>
         <button type="button" className={styles.secondary} onClick={() => setEditing(true)}>
           <Pencil size={15} aria-hidden="true" />
           Edit story
         </button>
-        <DeleteStoryButton storyId={story.id} />
+        <DeleteStoryButton storyId={story.id} userId={userId} />
       </div>
     </div>
   );

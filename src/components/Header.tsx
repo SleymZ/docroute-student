@@ -4,7 +4,6 @@ import {
   Compass,
   Flag,
   MessageSquareHeart,
-  MapPinned,
   Route,
   Signpost,
 } from "lucide-react";
@@ -19,19 +18,9 @@ const navigation = [
     icon: Compass,
   },
   {
-    label: "Build route",
-    href: "/#route-builder",
-    icon: Route,
-  },
-  {
     label: "My route",
     href: "/my-route",
     icon: Flag,
-  },
-  {
-    label: "Residence routes",
-    href: "/#residence",
-    icon: MapPinned,
   },
   {
     label: "Stories",

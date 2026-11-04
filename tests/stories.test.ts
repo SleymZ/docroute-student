@@ -10,7 +10,9 @@ import {
   isUuid,
   storyExcerpt,
   storyLimits,
+  storyPhotoPath,
   storyPurposes,
+  validateComment,
   validateProfile,
   validateStory,
 } from "../src/lib/stories";
@@ -131,4 +133,62 @@ test("only moderators can publish, and no email is stored in the repository", ()
   assert.match(moderatorSql, /revoke all on table public\.story_moderators from public, anon, authenticated/);
   assert.match(moderatorSql, /revoke all on function public\.moderate_story\(uuid, text, timestamptz\) from anon/);
   assert.doesNotMatch(moderatorSql, /@[a-z0-9-]+\.[a-z]{2,}/i);
+});
+
+const mediaSql = read("supabase/migrations/20261104120000_story_photos_comments_likes.sql");
+const storyId = "99999999-8888-4777-8666-555555555555";
+
+test("story photo paths fit the database rule and stay in the author's folder", () => {
+  const path = storyPhotoPath(userId, storyId, 1793379187697);
+  assert.equal(path, `${userId}/${storyId}/photo-1793379187697.webp`);
+  assert.match(path, /^[0-9a-f-]{36}\/[0-9a-f-]{36}\/photo-[0-9]{10,16}\.(webp|jpg)$/);
+  assert.match(mediaSql, /photo-\[0-9\]\{10,16\}\\\.\(webp\|jpg\)\$/);
+  assert.match(storyPhotoPath(userId, storyId, 1793379187697, "jpg"), /\.jpg$/);
+});
+
+test("photo, comment and like limits match the database", () => {
+  assert.match(mediaSql, new RegExp(`>= ${storyLimits.photosPerStory} then`));
+  assert.match(mediaSql, new RegExp(`between ${storyLimits.comment.min} and ${storyLimits.comment.max}`));
+  assert.match(mediaSql, new RegExp(`\\) >= ${storyLimits.pendingComments} then`));
+  assert.match(mediaSql, new RegExp(`false, ${storyLimits.photoBytes}, array\\['image/webp', 'image/jpeg'\\]`));
+});
+
+test("comments are validated before sending", () => {
+  assert.deepEqual(validateComment("  Thanks!  "), { errors: [], value: "Thanks!" });
+  assert.equal(validateComment(" a ").errors.length, 1);
+  assert.equal(validateComment("x".repeat(storyLimits.comment.max + 1)).errors.length, 1);
+});
+
+test("photos and comments cannot skip moderation", () => {
+  // nobody can write a comment's status; every API insert starts pending
+  assert.match(mediaSql, /grant insert \(story_id, user_id, body\) on table public\.story_comments to authenticated/);
+  assert.doesNotMatch(mediaSql, /grant update[^;]*story_comments/);
+  assert.match(mediaSql, /new\.status := 'pending';/);
+  // comments only on published stories, photos only on one's own story
+  assert.match(mediaSql, /create policy "Comment on published stories"[^;]*s\.status = 'published'/);
+  assert.match(mediaSql, /create policy "Own photo insert"[^;]*s\.user_id = \(select auth\.uid\(\)\)/);
+  // an author's photo change sends the story back to review
+  assert.match(mediaSql, /set status = 'pending',\s+published_at = null/);
+  assert.match(mediaSql, /revoke all on function public\.moderate_comment\(uuid, text\) from public, anon/);
+});
+
+test("photos are private until their story is visible, likes stay anonymous", () => {
+  assert.match(mediaSql, /values \('story-photos', 'story-photos', false,/);
+  assert.match(mediaSql, /create policy "Story photo read"[^;]*exists \(select 1 from public\.story_photos p where p\.path = name\)/);
+  assert.match(mediaSql, /create policy "Photos follow their story"[^;]*exists \(select 1 from public\.success_stories s where s\.id = story_id\)/);
+  assert.match(mediaSql, /grant select, delete on table public\.story_likes to authenticated;/);
+  assert.doesNotMatch(mediaSql, /grant [^;]*on table public\.story_likes to anon/);
+  assert.match(mediaSql, /create policy "Own likes"[^;]*using \(user_id = \(select auth\.uid\(\)\)\)/);
+});
+
+test("account deletion removes story photos first and the export lists the new data", () => {
+  const controls = read("src/components/AccountDataControls.tsx");
+  assert.ok(controls.indexOf("removeAllStoryPhotos(supabase, userId)") > 0);
+  assert.ok(controls.indexOf("removeAllStoryPhotos(supabase, userId)") < controls.indexOf('rpc("delete_my_account")'));
+  for (const table of ["story_photos", "story_comments", "story_likes"]) {
+    assert.match(controls, new RegExp(`from\\("${table}"\\)`));
+  }
+  // rows go with the account through foreign keys
+  assert.match(mediaSql, /references public\.public_profiles \(user_id\) on delete cascade/);
+  assert.match(mediaSql, /references auth\.users \(id\) on delete cascade/);
 });

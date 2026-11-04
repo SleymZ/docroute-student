@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Check, EyeOff, RotateCcw, Trash2 } from "lucide-react";
 
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { removeStoryFolder } from "@/lib/story-photo-upload";
 import type { StoryStatus } from "@/lib/stories";
 
 import styles from "./Stories.module.css";
@@ -12,10 +13,12 @@ import styles from "./Stories.module.css";
 // Publish / hide / delete buttons for a moderator on /stories/review.
 export function StoryModerationActions({
   storyId,
+  authorId,
   status,
   reviewedAt,
 }: {
   storyId: string;
+  authorId: string;
   status: StoryStatus;
   // updated_at of the version on screen; publishing fails if it changed
   reviewedAt: string;
@@ -44,7 +47,10 @@ export function StoryModerationActions({
   async function remove() {
     setBusy(true);
     setFailed("");
-    const { error } = await createSupabaseBrowserClient()
+    const supabase = createSupabaseBrowserClient();
+    // Files first: once the story is gone a moderator can no longer see them.
+    await removeStoryFolder(supabase, authorId, storyId).catch(() => undefined);
+    const { error } = await supabase
       .from("success_stories")
       .delete()
       .eq("id", storyId);

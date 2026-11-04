@@ -239,6 +239,53 @@ export type Database = {
         };
         Relationships: [];
       };
+      story_photos: {
+        Row: {
+          id: string;
+          story_id: string;
+          user_id: string;
+          path: string;
+          created_at: string;
+        };
+        Insert: {
+          story_id: string;
+          user_id: string;
+          path: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
+      story_comments: {
+        Row: {
+          id: string;
+          story_id: string;
+          user_id: string;
+          body: string;
+          status: "pending" | "published" | "hidden";
+          created_at: string;
+          published_at: string | null;
+        };
+        Insert: {
+          story_id: string;
+          user_id: string;
+          body: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
+      story_likes: {
+        Row: {
+          story_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          story_id: string;
+          user_id: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -261,6 +308,17 @@ export type Database = {
           p_reviewed_at: string;
         };
         Returns: undefined;
+      };
+      moderate_comment: {
+        Args: {
+          p_comment_id: string;
+          p_status: "pending" | "published" | "hidden";
+        };
+        Returns: undefined;
+      };
+      story_engagement: {
+        Args: { p_story_ids: string[] };
+        Returns: { story_id: string; likes: number; comments: number }[];
       };
     };
     Enums: Record<string, never>;
