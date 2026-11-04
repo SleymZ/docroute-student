@@ -16,9 +16,12 @@ export function StoryModerationActions({
   authorId,
   status,
   reviewedAt,
+  photosUnavailable = false,
 }: {
   storyId: string;
   authorId: string;
+  // some registered photos could not be shown: publishing waits until they can
+  photosUnavailable?: boolean;
   status: StoryStatus;
   // updated_at of the version on screen; publishing fails if it changed
   reviewedAt: string;
@@ -64,7 +67,13 @@ export function StoryModerationActions({
 
   return (
     <div className={styles.actions}>
-      {status !== "published" && (
+      {photosUnavailable && status !== "published" && (
+        <p className={styles.message} data-tone="error">
+          Some photos of this story could not be loaded, so it cannot be
+          published yet. Reload the page in a moment.
+        </p>
+      )}
+      {status !== "published" && !photosUnavailable && (
         <button
           type="button"
           className={styles.primary}

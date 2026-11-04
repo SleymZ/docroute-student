@@ -166,6 +166,7 @@ export default async function ReviewStoriesPage({
                 <StoryModerationActions
                   storyId={story.id}
                   authorId={story.user_id}
+                  photosUnavailable={(photos.get(story.id) ?? []).some((photo) => !photo.url)}
                   status={story.status}
                   reviewedAt={story.updated_at}
                 />

@@ -881,8 +881,12 @@ latest rules" (owner rule 2026-10-30):
     `<user>/<story>/photo-<ms>.webp`, shown through signed URLs valid for
     one hour. A photo is readable only where its story is visible
     (published, own, moderator). Adding or removing a photo sends the
-    author's story back to review; a moderator can remove a single photo
-    on the story page without unpublishing it.
+    author's story back to review (also a pending one gets a new
+    `updated_at`, so an older review cannot publish it); a registered photo
+    path can never be uploaded again (no swapping a reviewed photo). A
+    moderator can remove a single photo on the story page without
+    unpublishing it; a story whose photos could not be loaded cannot be
+    published from the review page.
   - **Comments:** signed-in people with a public name comment on published
     stories (`story_comments`, 2–1000 characters). Every comment starts as
     pending (owner decision: pre-moderation) and appears after a moderator
@@ -1165,7 +1169,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (275 tests on 2026-11-04).
+- Unit tests: `npm test` (276 tests on 2026-11-04).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

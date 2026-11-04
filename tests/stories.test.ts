@@ -195,3 +195,10 @@ test("account deletion removes story photos first and the export lists the new d
   assert.match(mediaSql, /references public\.public_profiles \(user_id\) on delete cascade/);
   assert.match(mediaSql, /references auth\.users \(id\) on delete cascade/);
 });
+
+test("a story whose photos could not be shown cannot be published from review", () => {
+  const review = read("src/app/stories/review/page.tsx");
+  assert.match(review, /photosUnavailable=\{\(photos\.get\(story\.id\) \?\? \[\]\)\.some\(\(photo\) => !photo\.url\)\}/);
+  const actions = read("src/components/StoryModeration.tsx");
+  assert.match(actions, /status !== "published" && !photosUnavailable && \(/);
+});

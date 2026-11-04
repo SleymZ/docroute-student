@@ -114,7 +114,9 @@ export async function loadStory(supabase: Client, storyId: string) {
 }
 
 // Photos the reader may see (RLS: the story must be visible to them), with
-// signed URLs that expire after STORY_PHOTO_URL_SECONDS.
+// signed URLs that expire after STORY_PHOTO_URL_SECONDS. A photo whose URL
+// could not be signed keeps url: null, so the review page can refuse to
+// publish a story whose photos the moderator has not seen.
 export async function loadStoryPhotos(supabase: Client, storyIds: string[]) {
   const result = new Map<string, StoryPhoto[]>();
   const ids = [...new Set(storyIds)];
