@@ -899,7 +899,8 @@ latest rules" (owner rule 2026-10-30):
     comments and comment form; noindex unless published). Cards on
     `/stories` and profiles show a cover photo, like and comment counts and
     "Open, like and comment"; review cards show all photos.
-  - Deleting a story removes its photo files; deleting the account removes
+  - Deleting a story removes its photo files first (if that fails, the
+    story stays and the delete can be retried); deleting the account removes
     all story photo files first (then rows go with the account through
     foreign keys). Download my data adds `storyPhotos`, `storyComments`,
     `storyLikes`. Privacy and Terms updated (2026-11-04).
@@ -1169,7 +1170,7 @@ latest rules" (owner rule 2026-10-30):
 
 ## How changes are verified
 
-- Unit tests: `npm test` (276 tests on 2026-11-04).
+- Unit tests: `npm test` (277 tests on 2026-11-04).
 - SSR smoke test after a build: `npm run test:ssr`.
 - Vercel build on every push (type check included).
 - Manual browser walkthrough of the Slovakia → Computer Science scenario

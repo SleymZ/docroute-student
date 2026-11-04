@@ -446,16 +446,21 @@ export function DeleteStoryButton({ storyId, userId }: { storyId: string; userId
   async function remove() {
     setBusy(true);
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase.from("success_stories").delete().eq("id", storyId);
-    if (error) {
+    // Photo files first; if that fails, the story stays and can be deleted
+    // again, so no photo is left behind without its story.
+    try {
+      await removeStoryFolder(supabase, userId, storyId);
+    } catch {
       setBusy(false);
       setFailed(true);
       return;
     }
-    // The photo rows went with the story; now remove the files from the
-    // author's own folder (allowed without the rows).
-    await removeStoryFolder(supabase, userId, storyId).catch(() => undefined);
+    const { error } = await supabase.from("success_stories").delete().eq("id", storyId);
     setBusy(false);
+    if (error) {
+      setFailed(true);
+      return;
+    }
     router.refresh();
   }
 

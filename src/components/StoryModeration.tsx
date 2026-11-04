@@ -29,7 +29,7 @@ export function StoryModerationActions({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [failed, setFailed] = useState<"" | "error" | "changed">("");
+  const [failed, setFailed] = useState<"" | "error" | "changed" | "photos">("");
 
   async function setStatus(next: StoryStatus) {
     setBusy(true);
@@ -52,7 +52,14 @@ export function StoryModerationActions({
     setFailed("");
     const supabase = createSupabaseBrowserClient();
     // Files first: once the story is gone a moderator can no longer see them.
-    await removeStoryFolder(supabase, authorId, storyId).catch(() => undefined);
+    // If that fails, the story stays so the cleanup can be retried.
+    try {
+      await removeStoryFolder(supabase, authorId, storyId);
+    } catch {
+      setBusy(false);
+      setFailed("photos");
+      return;
+    }
     const { error } = await supabase
       .from("success_stories")
       .delete()
@@ -136,7 +143,9 @@ export function StoryModerationActions({
         <p className={styles.message} data-tone="error">
           {failed === "changed"
             ? "The author changed this story after you opened the page. Reload and read the new version."
-            : "That did not work. Reload the page and try again."}
+            : failed === "photos"
+              ? "The story's photos could not be removed, so the story was kept. Try again in a moment."
+              : "That did not work. Reload the page and try again."}
         </p>
       )}
     </div>

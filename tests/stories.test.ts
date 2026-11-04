@@ -202,3 +202,13 @@ test("a story whose photos could not be shown cannot be published from review", 
   const actions = read("src/components/StoryModeration.tsx");
   assert.match(actions, /status !== "published" && !photosUnavailable && \(/);
 });
+
+test("a story is deleted only after its photo files are removed", () => {
+  for (const file of ["src/components/StoryModeration.tsx", "src/components/StoryForm.tsx"]) {
+    const code = read(file);
+    const cleanup = code.indexOf("await removeStoryFolder(");
+    const remove = code.indexOf('.from("success_stories")', cleanup);
+    assert.ok(cleanup > 0 && remove > cleanup, file);
+    assert.doesNotMatch(code, /removeStoryFolder\([^)]*\)\.catch/, file);
+  }
+});
