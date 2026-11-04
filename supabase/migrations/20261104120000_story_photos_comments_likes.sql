@@ -56,10 +56,12 @@ create trigger story_photos_limit
   before insert on public.story_photos
   for each row execute function public.story_photos_limit();
 
--- When the author adds or removes a photo, the story goes back to review.
--- Runs as the function owner because authors cannot write the status column;
--- a moderator removing a photo from someone else's story does not unpublish
--- it.
+-- When the author adds or removes a photo, the story goes back to review
+-- and gets a new updated_at, also when it is already pending: a moderator
+-- who loaded the older version cannot publish it (moderate_story compares
+-- updated_at). Runs as the function owner because authors cannot write the
+-- status column; a moderator removing a photo from someone else's story does
+-- not unpublish it.
 create or replace function public.story_photos_back_to_review()
 returns trigger
 language plpgsql
@@ -77,9 +79,9 @@ begin
   if (select auth.uid()) is not null and photo.user_id = (select auth.uid()) then
     update public.success_stories
     set status = 'pending',
-        published_at = null
-    where id = photo.story_id
-      and status <> 'pending';
+        published_at = null,
+        updated_at = now()
+    where id = photo.story_id;
   end if;
   return null;
 end;
@@ -318,6 +320,10 @@ on conflict (id) do update
       file_size_limit = excluded.file_size_limit,
       allowed_mime_types = excluded.allowed_mime_types;
 
+-- A path that is already registered as a photo can never be uploaded again,
+-- so a reviewed photo cannot be swapped for other bytes (delete the file,
+-- re-upload under the same name). New photos always get a new path. There is
+-- no update policy, so files are never overwritten in place either.
 drop policy if exists "Story photo upload own folder" on storage.objects;
 create policy "Story photo upload own folder"
   on storage.objects for insert
@@ -325,6 +331,7 @@ create policy "Story photo upload own folder"
   with check (
     bucket_id = 'story-photos'
     and (storage.foldername(name))[1] = (select auth.uid())::text
+    and not exists (select 1 from public.story_photos p where p.path = name)
   );
 
 drop policy if exists "Story photo read" on storage.objects;

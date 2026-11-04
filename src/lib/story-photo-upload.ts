@@ -73,11 +73,13 @@ export async function uploadStoryPhoto(
   }
 }
 
-/** Removes one photo: the row first (so it disappears at once), then the file. */
+/** Removes one photo: the file first, while its row still lets a moderator
+ *  see it, then the row. A failed file removal stops before the row goes. */
 export async function removeStoryPhoto(supabase: Client, photo: { id: string; path: string }) {
+  const removed = await supabase.storage.from(STORY_PHOTO_BUCKET).remove([photo.path]);
+  if (removed.error) throw removed.error;
   const { error } = await supabase.from("story_photos").delete().eq("id", photo.id);
   if (error) throw error;
-  await supabase.storage.from(STORY_PHOTO_BUCKET).remove([photo.path]);
 }
 
 /** Every file in one story's folder ("<author>/<story>/"). */

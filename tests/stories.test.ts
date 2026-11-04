@@ -168,7 +168,10 @@ test("photos and comments cannot skip moderation", () => {
   assert.match(mediaSql, /create policy "Comment on published stories"[^;]*s\.status = 'published'/);
   assert.match(mediaSql, /create policy "Own photo insert"[^;]*s\.user_id = \(select auth\.uid\(\)\)/);
   // an author's photo change sends the story back to review
-  assert.match(mediaSql, /set status = 'pending',\s+published_at = null/);
+  assert.match(mediaSql, /set status = 'pending',\s+published_at = null,\s+updated_at = now\(\)\s+where id = photo\.story_id;/);
+  // a registered photo path can never be uploaded again (no silent swap)
+  assert.match(mediaSql, /create policy "Story photo upload own folder"[^;]*not exists \(select 1 from public\.story_photos p where p\.path = name\)/);
+  assert.doesNotMatch(mediaSql, /on storage\.objects for update[^;]*story-photos/);
   assert.match(mediaSql, /revoke all on function public\.moderate_comment\(uuid, text\) from public, anon/);
 });
 
