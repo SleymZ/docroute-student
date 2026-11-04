@@ -15,6 +15,9 @@ export type AccessState = {
 // One lookup per page load, shared by every component that asks.
 let cached: Promise<AccessTier> | null = null;
 let listening = false;
+// Mounted hooks, told about a new tier after sign-in, sign-out or an
+// account switch in another tab.
+const subscribers = new Set<(tier: AccessTier) => void>();
 
 async function lookupTier(): Promise<AccessTier> {
   if (!isSupabaseConfigured()) return "guest";
@@ -40,7 +43,16 @@ function loadTier(): Promise<AccessTier> {
   if (!listening && isSupabaseConfigured()) {
     listening = true;
     createSupabaseBrowserClient().auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") cached = null;
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+        cached = null;
+        // Look up the new tier outside the auth callback, then update every
+        // mounted hook.
+        setTimeout(() => {
+          void loadTier().then((tier) => {
+            for (const notify of subscribers) notify(tier);
+          });
+        }, 0);
+      }
     });
   }
   return cached;
@@ -53,11 +65,14 @@ export function useAccess(): AccessState {
 
   useEffect(() => {
     let active = true;
-    void loadTier().then((value) => {
+    const update = (value: AccessTier) => {
       if (active) setTier(value);
-    });
+    };
+    subscribers.add(update);
+    void loadTier().then(update);
     return () => {
       active = false;
+      subscribers.delete(update);
     };
   }, []);
 
