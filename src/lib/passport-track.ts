@@ -3,6 +3,7 @@ import {
   germanyVisaFreeLongStayNoWork,
   netherlandsMvvExempt,
 } from "@/data/citizenship-lists";
+import { chinaNotes } from "@/data/china-notes";
 import { citizenshipName, citizenshipStage } from "@/data/citizenship-notes";
 import { russiaBelarusNotes } from "@/data/russia-belarus";
 import type { RouteSource } from "@/types/route-preview";
@@ -168,6 +169,18 @@ export function passportTrack(citizenship: string, destination: string, destinat
         text: `${visa.title}. ${visa.description}`,
         sources: stage.sources.filter((source) => visa.sourceIds.includes(source.id)),
       });
+    }
+  }
+  // China: the extra steps on applying from China, for any purpose (the
+  // routes add only the ones for the chosen purpose).
+  if (code === "CN") {
+    const seen = new Set<string>();
+    for (const purpose of ["study", "work"] as const) {
+      for (const item of chinaNotes(country, purpose)) {
+        if (seen.has(item.id)) continue;
+        seen.add(item.id);
+        points.push({ text: `${item.title}. ${item.description}`, sources: item.sources });
+      }
     }
   }
   if (!points.length) return null;

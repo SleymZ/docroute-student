@@ -95,3 +95,26 @@ test("the route form offers every country page with a flag code; the map keeps i
   const planner = readFileSync(join(root, "src/components/RoutePlanner.tsx"), "utf8");
   assert.match(planner, /destination=\{mapDestination\}/);
 });
+
+test("Chinese passports get the China-specific steps of each verified country, from official sources only", () => {
+  const ids = (country: string, name: string, purpose: "study" | "work" | "family" | "business") =>
+    citizenshipStage("CN", country, name, purpose, { asOf: "2026-11-05" })!.stage.tasks.map((task) => task.id);
+  assert.ok(ids("DE", "Germany", "study").includes("cn-de-aps-cn"));
+  assert.ok(!ids("DE", "Germany", "work").includes("cn-de-aps-cn"));
+  assert.ok(ids("AT", "Austria", "study").includes("cn-at-aps-cn"));
+  assert.ok(ids("CH", "Switzerland", "study").includes("cn-ch-student-visa-cn"));
+  assert.ok(ids("CZ", "Czechia", "family").includes("cn-cz-appointment-cn"));
+  assert.ok(ids("SK", "Slovakia", "work").includes("cn-sk-employment-visa-cn"));
+  // Visa required (EU Annex I) and the China-specific apostille note.
+  const de = citizenshipStage("CN", "DE", "Germany", "study", { asOf: "2026-11-05" })!;
+  assert.ok(de.stage.tasks.some((task) => task.id === "citizen-visa-cn"));
+  assert.match(de.stage.tasks.find((task) => task.id === "citizen-documents-cn")!.title, /MFA/);
+  for (const source of de.sources) assert.equal(source.authority, "official");
+  // Already living there: the China-side steps are left out.
+  const resident = citizenshipStage("CN", "DE", "Germany", "study", { existingResident: true, asOf: "2026-11-05" })!;
+  assert.ok(!resident.stage.tasks.some((task) => task.id.startsWith("cn-")));
+  // The country page shows them too; Hong Kong passports are not China's.
+  const track = passportTrack("CN", "AT", "Austria")!;
+  assert.ok(track.points.some((point) => point.text.startsWith("APS verification")));
+  assert.ok(!(passportTrack("HK", "AT", "Austria")?.points ?? []).some((point) => point.text.includes("APS")));
+});
