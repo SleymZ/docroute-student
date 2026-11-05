@@ -95,8 +95,8 @@ const austria: StudyResidenceRoute = {
         task(
           "at-study-documents",
           "Documents in original and copy",
-          "Valid passport, a recent photo, admission letter, proof of insurance and money. The authority may ask for a criminal-record extract (preferably not older than 3 months) and translations.",
-          ["at-mig-temporary-students"],
+          "Valid passport, a recent photo, admission letter, proof of insurance and money. For a first application, plan a criminal-record certificate (OeAD lists it; migration.gv.at says the authority may ask for it, preferably not older than 3 months) and translations if asked.",
+          ["at-mig-temporary-students", "at-oead-student-permit"],
         ),
         task(
           "at-study-fee",
