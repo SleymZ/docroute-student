@@ -72,6 +72,7 @@ const vutRules: GenericAdmissionRules = {
     label: "SCIO test at the 75th percentile",
     text: "No faculty exam: admission by the SCIO National Comparative Exams (OSP or Mathematics) at the 75th percentile or higher; the dean may lower it. One free test on 24 April 2027 if you applied and paid on time (make-up 22 May 2027 for serious reasons). Or preferential admission (for example IQ 90th percentile, maths exam 80th percentile, Mathematics+ 60th, olympiads, SOČ, Kangaroo, Beaver, FIT's maths course) claimed by 31 March 2027 (31 May if results are pending).",
     sourceIds: ["vut-fit-application-2027"],
+    dueLabel: "Free SCIO test 24 April 2027 (make-up 22 May)",
   },
 };
 
@@ -178,6 +179,7 @@ const fiit = programs(
         label: "70 points: maturita maths, competition or faculty exam",
         text: "Meet one route: maturita maths at the 70th percentile, a 70-point competition diploma, or 70 points in the faculty exam on 22 January or 16 April 2027 (optional if you qualify another way). Committee on 10 May 2027.",
         sourceIds: ["fiit-bachelor-sk-2027"],
+        dueLabel: "Faculty exam 22 January or 16 April 2027 (optional); committee 10 May",
       },
     },
   },
@@ -237,6 +239,7 @@ const muniFi = programs(
       recognition: muniRecognition,
       entrance: {
         label: "MU study-aptitude test (TSP)",
+        dueLabel: "Between 29 November 2026 and 25 April 2027",
         text: "Take the TSP (29 November 2026 – 14 February 2027, or 15 February – 25 April 2027); your numerical-analytical result must be in MU's top 30%. Single-major applicants may request an exemption instead.",
         sourceIds: ["muni-fi-bachelor-2027"],
       },
@@ -260,6 +263,7 @@ const fmfiSources = [
 function fmfiEntrance(rule: string): GenericAdmissionRules["entrance"] {
   return {
     label: "Grades and maths percentile (no faculty exam)",
+    dueLabel: "Send results by 30 April 2027",
     text: `${rule} Send results to the faculty by 30 April 2027. Olympiad, SOČ and listed competition solvers are admitted without these conditions. School outside the EU: admission by SCIO or SAT maths percentile.`,
     sourceIds: ["fmfi-conditions-2027"],
   };
@@ -384,6 +388,7 @@ const jlf = programs(
       },
       entrance: {
         label: "National Comparative Exam (NPS)",
+        dueLabel: "20 March, 24 April or 22 May 2027",
         text: "Sit the NPS in person on 20 March, 24 April or 22 May 2027. Your NPS score plus bonus points decides your place among 150; results by 15 June 2027.",
         sourceIds: ["jlf-admission-2027"],
       },
@@ -443,6 +448,7 @@ const cuniPrf = programs(
       },
       entrance: {
         label: "SCIO NSZ: OSP and Basic Social Sciences",
+        dueLabel: "December 2026 – May 2027; results 16 June 2027",
         text: "Take OSP and ZSV between December 2026 and May 2027; weighted percentiles decide among about 750 places. Results on 16 June 2027.",
         sourceIds: ["cuni-prf-conditions-2027"],
       },
@@ -497,6 +503,7 @@ const muniLaw = programs(
       recognition: { ...muniRecognition },
       entrance: {
         label: "MU study-aptitude test (TSP)",
+        dueLabel: "Between 29 November 2026 and 25 April 2027",
         text: "Take the TSP by 25 April 2027 (two windows, the better attempt counts), or request a waiver. About 575 places.",
         sourceIds: ["muni-law-info-2027"],
       },
@@ -565,7 +572,8 @@ const lf1 = programs(
         sourceIds: ["lf1-conditions-2027"],
       },
       entrance: {
-        label: "Written entrance test (17 June 2027)",
+        label: "Written entrance test in Czech",
+        dueLabel: "17 June 2027 (replacement 23 June)",
         text: "Sit the written test in Czech on 17 June 2027 (replacement 23 June). Waiver and bonus requests by 24 May 2027.",
         sourceIds: ["lf1-dates-2027", "lf1-conditions-2027"],
       },

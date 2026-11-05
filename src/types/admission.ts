@@ -168,7 +168,9 @@ export type GenericAdmissionRules = {
   languageUnknownNote?: string;
   // Schools whose certificates need no recognition step.
   recognition: { exemptSchools: string[]; text: string; sourceIds: string[] };
-  entrance: { label: string; text: string; sourceIds: string[] };
+  // dueLabel: the entrance step's own dates (the programme's admissionDate
+  // is a single key date and may be a results deadline, not an exam).
+  entrance: { label: string; text: string; sourceIds: string[]; dueLabel: string };
 };
 
 export type AdmissionProgram = {

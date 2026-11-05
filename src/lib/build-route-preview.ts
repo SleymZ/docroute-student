@@ -121,7 +121,7 @@ export function buildRoutePreview(
       title: "Complete language and entrance requirements",
       description:
         "This stage changes directly with the languages and evidence in your applicant profile.",
-      timing: `Admission day · ${admissionDate}`,
+      timing: program.genericRules ? `Key date · ${admissionDate}` : `Admission day · ${admissionDate}`,
       tasks: [
         ...(studyLanguageCheck ? [{
           id: "route-study-language",
@@ -153,8 +153,9 @@ export function buildRoutePreview(
           ? [
               {
                 id: "route-entrance",
-                title:
-                  match.entranceRoute === "waived"
+                title: program.genericRules
+                  ? program.genericRules.entrance.label
+                  : match.entranceRoute === "waived"
                     ? "Submit entrance-exam waiver evidence"
                     : match.entranceRoute === "needs-information"
                       ? "Clarify waiver evidence; prepare an exam fallback"
@@ -163,13 +164,14 @@ export function buildRoutePreview(
                         : "Take the mathematics and logical-thinking exam",
                 description: entranceCheck.detail,
                 status: admissionTaskStatus(entranceCheck.status),
-                dueLabel:
-                  match.entranceRoute === "waived"
+                dueLabel: program.genericRules
+                  ? program.genericRules.entrance.dueLabel
+                  : match.entranceRoute === "waived"
                     ? program.application.waiverEvidenceDueLabel ?? "Evidence with application"
                     : match.entranceRoute === "needs-information"
                       ? "Clarify before application; exam fallback on " + admissionDate
                       : admissionDate,
-                sourceIds: programSourceIds,
+                sourceIds: program.genericRules ? program.genericRules.entrance.sourceIds : programSourceIds,
               } satisfies RouteTask,
             ]
           : []),

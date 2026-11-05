@@ -89,3 +89,20 @@ test("past deadlines close the generic route like any other", () => {
   const late = matchProgram(profile({ destinationCountryCode: "CZ" }), fi, "2027-03-01");
   assert.equal(late.canBuildRoute, false);
 });
+
+test("routes for generic programmes use the programme's own entrance step, never another faculty's exam", () => {
+  const fmfi = findVerifiedProgram("uniba-fmfi-inf-bsc-2027")!;
+  const p = profile({ educationCountryCode: "SK", citizenshipCountryCode: "SK" });
+  const route = buildRoutePreview(p, matchProgram(p, fmfi, today))!;
+  const entrance = route.stages.flatMap((stage) => stage.tasks).find((task) => task.id === "route-entrance")!;
+  assert.equal(entrance.title, "Grades and maths percentile (no faculty exam)");
+  assert.equal(entrance.dueLabel, "Send results by 30 April 2027");
+  assert.doesNotMatch(JSON.stringify(route), /mathematics and logical-thinking exam/);
+  for (const program of generic) assert.ok(program.genericRules!.entrance.dueLabel.length > 5, program.id);
+
+  const jlf = findVerifiedProgram("uniba-jlf-medicine-2027-sk")!;
+  const med = { ...p, studyCategory: "Medicine" };
+  const jlfRoute = buildRoutePreview(med, matchProgram(med, jlf, today))!;
+  const jlfEntrance = jlfRoute.stages.flatMap((stage) => stage.tasks).find((task) => task.id === "route-entrance")!;
+  assert.equal(jlfEntrance.title, "National Comparative Exam (NPS)");
+});
