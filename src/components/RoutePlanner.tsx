@@ -33,11 +33,15 @@ const workRouteCountries = new Set(["SK", "CZ"]);
 // university programmes yet: "Build my route" opens the residence route.
 const studyResidenceRouteCountries = new Set(["CZ"]);
 
+// Default destination for every purpose. It is used until the person picks
+// "Other country" for documents and then a destination.
+const defaultDestination = "Slovakia";
+
 export function RoutePlanner() {
   const router = useRouter();
   const [purpose, setPurpose] = useState<MovePurpose>("study");
   const [documentCountry, setDocumentCountry] = useState("Israel");
-  const [destination, setDestination] = useState<string>("Slovakia");
+  const [destination, setDestination] = useState<string>(defaultDestination);
   // The map keeps its five featured destinations: another country in the
   // form leaves the map on the last featured one.
   const [mapDestination, setMapDestination] = useState<Destination>("Slovakia");
@@ -165,6 +169,9 @@ export function RoutePlanner() {
 
   function handleDocumentCountryChange(value: string) {
     setDocumentCountry(value);
+    // The destination is asked only after "Other country". Any other document
+    // country resets it to the default, so the route never uses a stale value.
+    if (value !== "Other country") setDestination(defaultDestination);
   }
 
   function handleDestinationChange(value: string) {
@@ -204,6 +211,7 @@ export function RoutePlanner() {
           onPurposeChange={setPurpose}
           documentCountry={documentCountry}
           destination={destination}
+          showDestination={documentCountry === "Other country"}
           program={program}
           routeAvailable={routeAvailable}
           residenceOnly={residenceOnly}
