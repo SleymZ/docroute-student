@@ -71,7 +71,7 @@ const austria: StudyResidenceRoute = {
         task(
           "at-study-where",
           "File the first application",
-          "First applications go to the Austrian embassy or consulate abroad. If you entered Austria lawfully (for example visa-free), you may apply in Austria during that lawful stay: MA 35 in Vienna, the district administration or city government elsewhere. Filing does not extend your stay: if it ends before the decision, you must leave and wait for the decision abroad.",
+          "First applications go to the Austrian embassy or consulate abroad. If you may enter Austria visa-free, you may also apply in Austria during that visa-free stay (with a visa, check on the OeAD page whether yours allows it): MA 35 in Vienna, the district administration or city government elsewhere. Filing does not extend your stay: if it ends before the decision, you must leave and wait for the decision abroad.",
           ["at-mig-temporary-students", "at-oead-student-permit"],
         ),
         task(
