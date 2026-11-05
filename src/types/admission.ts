@@ -228,6 +228,9 @@ export type AdmissionProgram = {
   minimumRequirements: AdmissionRequirement[];
   sources: OfficialSource[];
   verifiedAt: string;
+  // Taught in several languages at once (UPJŠ trilingual law): the applicant
+  // needs every instruction language, not just one of them.
+  allInstructionLanguagesRequired?: boolean;
   // Long-cycle master's (medicine, law): entered straight from school, so it
   // is matched like a first degree but never labelled a bachelor.
   programType?: "long-cycle";

@@ -86,6 +86,7 @@ const upjsPf = programs(
       localProgramName: "Právo (v slovenskom, anglickom a francúzskom jazyku)",
       patch: {
         durationYears: 4,
+        allInstructionLanguagesRequired: true,
         instructionLanguages: [{ code: "sk", name: "Slovak" }, { code: "en", name: "English" }, { code: "fr", name: "French" }],
         languagePolicy: {
           generalStatement: "Taught in Slovak, English and French; command of all three languages is required. Without a Slovak maturita, pass a Slovak exam at B2 (ECL).",
@@ -104,6 +105,10 @@ const upjsPf = programs(
           ? { ...item, description: "10 June 2027: the same test plus English and French." }
           : item,
     ),
+  ];
+  trilingual.minimumRequirements = [
+    ...trilingual.minimumRequirements,
+    { id: "upjs-pf-three-languages", title: "Command of Slovak, English and French", description: "All three languages are required; English and French are part of the entrance test (or, for the exam-free route, an English certificate at B2+ or French at B1+).", sourceIds: ["upjs-pf-bc-2027"] },
   ];
   trilingual.genericRules = {
     ...trilingual.genericRules!,

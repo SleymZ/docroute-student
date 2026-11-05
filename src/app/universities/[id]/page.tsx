@@ -39,7 +39,7 @@ import { topAdmissionRequirements } from "@/data/top-admission-requirements";
 import { resolveTopAdmissions } from "@/lib/top-universities";
 import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniversityFacts";
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
-import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
+import { programForDate, matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
 import { formatDegreeLevel, formatProgramDegree } from "@/lib/profile-options";
 import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
@@ -193,6 +193,9 @@ export default async function UniversityPage({
     }
   }
 
+  // The round in force today (a later verified round after the main
+  // deadline), so the dates shown match the route built from them.
+  const roundProgram = verifiedProgram ? programForDate(verifiedProgram, getAdmissionDate()) : null;
   const match =
     verifiedProgram && profile
       ? matchProgram(profile, verifiedProgram, getAdmissionDate())
@@ -618,7 +621,7 @@ export default async function UniversityPage({
                     <CalendarDays size={19} aria-hidden="true" />
                     <small>APPLICATION DEADLINE</small>
                     <strong>
-                      {formatDate(verifiedProgram.application.deadline)}
+                      {formatDate(roundProgram!.application.deadline)}
                     </strong>
                   </article>
 
@@ -626,7 +629,7 @@ export default async function UniversityPage({
                     <Clock3 size={19} aria-hidden="true" />
                     <small>ADMISSION DAY</small>
                     <strong>
-                      {formatDate(verifiedProgram.application.admissionDate)}
+                      {formatDate(roundProgram!.application.admissionDate)}
                     </strong>
                   </article>
 
@@ -791,7 +794,7 @@ export default async function UniversityPage({
                     <CalendarDays size={19} aria-hidden="true" />
                     <small>APPLICATION DEADLINE</small>
                     <strong>
-                      {formatDate(verifiedProgram.application.deadline)}
+                      {formatDate(roundProgram!.application.deadline)}
                     </strong>
                   </article>
 
@@ -799,7 +802,7 @@ export default async function UniversityPage({
                     <Clock3 size={19} aria-hidden="true" />
                     <small>ADMISSION DAY</small>
                     <strong>
-                      {formatDate(verifiedProgram.application.admissionDate)}
+                      {formatDate(roundProgram!.application.admissionDate)}
                     </strong>
                   </article>
 

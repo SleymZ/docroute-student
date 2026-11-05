@@ -708,19 +708,31 @@ export function matchProgram(
   }
 
   // Keep language knowledge separate from willingness to study in a language.
-  const studyLanguage = program.instructionLanguages.find((instruction) =>
-    profile.languages.some(
-      (language) =>
-        language.code === instruction.code && language.willingToStudyIn,
-    ),
-  );
+  const willing = (code: string) =>
+    profile.languages.some((language) => language.code === code && language.willingToStudyIn);
+  const missingLanguages = program.allInstructionLanguagesRequired
+    ? program.instructionLanguages.filter((instruction) => !willing(instruction.code))
+    : [];
+  const studyLanguage = program.allInstructionLanguagesRequired
+    ? missingLanguages.length === 0
+      ? program.instructionLanguages[0]
+      : undefined
+    : program.instructionLanguages.find((instruction) => willing(instruction.code));
   check(
     "study-language",
     "Teaching-language preference",
     studyLanguage ? "met" : "missing",
-    studyLanguage
-      ? "You are willing to study in " + studyLanguage.name + "."
-      : "This verified program is taught in " +
+    program.allInstructionLanguagesRequired
+      ? studyLanguage
+        ? "You are willing to study in " + program.instructionLanguages.map((item) => item.name).join(", ") + ", as this programme requires."
+        : "This programme is taught in " +
+          program.instructionLanguages.map((item) => item.name).join(", ") +
+          " and requires all of them. Not marked as a study language: " +
+          missingLanguages.map((item) => item.name).join(", ") +
+          "."
+      : studyLanguage
+        ? "You are willing to study in " + studyLanguage.name + "."
+        : "This verified program is taught in " +
           program.instructionLanguages.map((item) => item.name).join(", ") +
           ". None of those languages is marked as a language you would study in.",
   );

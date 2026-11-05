@@ -203,3 +203,20 @@ test("later verified rounds keep English medicine open after the first deadline"
   const early = matchProgram(profile({ studyCategory: "Medicine" }), jlf, today);
   assert.equal(early.program.application.deadline, "2027-02-28");
 });
+
+test("trilingual law needs Slovak, English and French; the page shows today's round", async () => {
+  const program = findVerifiedProgram("upjs-pf-law-trilingual-bc-2027")!;
+  const slovakOnly = matchProgram(profile({ studyCategory: "Law", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), program, today);
+  const check = slovakOnly.checks.find((item) => item.id === "study-language")!;
+  assert.equal(check.status, "missing");
+  assert.match(check.detail, /English, French/);
+  const all = matchProgram(profile({ studyCategory: "Law", educationCountryCode: "SK", citizenshipCountryCode: "SK", languages: [
+    { code: "sk", level: "native", willingToStudyIn: true, proof: "school" },
+    { code: "en", level: "B2", willingToStudyIn: true, proof: "certificate" },
+    { code: "fr", level: "B1", willingToStudyIn: true, proof: "certificate" },
+  ] }), program, today);
+  assert.equal(all.checks.find((item) => item.id === "study-language")!.status, "met");
+  const { readFileSync } = await import("node:fs");
+  const page = readFileSync("src/app/universities/[id]/page.tsx", "utf8");
+  assert.doesNotMatch(page, /formatDate\(verifiedProgram\.application\.(deadline|admissionDate)\)/);
+});
