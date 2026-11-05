@@ -15,6 +15,7 @@ import {
   schengenVisaFree,
   schengenVisaRequired,
 } from "./citizenship-lists";
+import { ruBySources, russiaBelarusNotes } from "./russia-belarus";
 
 // What changes for a particular passport, added as its own stage to the
 // residence guides, the Slovak routes and the full study path. Every
@@ -150,7 +151,7 @@ const sources = {
   },
 } satisfies Record<string, RouteSource>;
 
-export const citizenshipNoteSources: readonly RouteSource[] = Object.values(sources);
+export const citizenshipNoteSources: readonly RouteSource[] = [...Object.values(sources), ...Object.values(ruBySources)];
 
 /** Citizenships with notes beyond the general ones. Every citizenship
  *  outside the EU/EEA/Switzerland gets the general notes. */
@@ -471,6 +472,13 @@ export function citizenshipStage(
   }
   notes.push(documentsNote(code, name, destination, countryName, purpose, asOf));
   if (code === "UA") notes.push(ukraineNote(destination));
+  // Russia and Belarus: restrictions stated by the destination's own pages
+  // and the EU (russia-belarus.ts). Short-stay visa rules do not concern
+  // someone who already lives in the country.
+  for (const item of russiaBelarusNotes(code, destination)) {
+    if (options.existingResident && item.id === "ru-eu-short-stay") continue;
+    notes.push(note(item.id, item.title, item.description, "attention", item.sources));
+  }
   if (destination === "DE" && purpose === "work") notes.push(germanyWorkNote(code, name));
   if (destination === "NL" && !options.existingResident) notes.push(netherlandsTbNote());
 

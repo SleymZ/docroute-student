@@ -862,6 +862,34 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
+## Country pages and paths by passport (2026-11-05, plan items 1–2)
+
+- `/countries` (all 27 EU countries + Switzerland) and `/countries/xx`:
+  study (universities in the directory, Top 100, verified programmes,
+  coming-soon count, student residence verified or official links) and
+  work / family / business cards with "Verified steps" (Slovakia all three,
+  Czechia work + verified guides, Austria guides) or "Official links" (the
+  linked guides for every other country). Built from the route data
+  (`src/lib/countries.ts`); the light list for the map is
+  `src/lib/country-list.ts` (no catalogue in the client bundle).
+- Home map: every EU country and Switzerland gets "Work, family, business in
+  <country>" → its page (highlighting unchanged). Header and footer link
+  "Countries"; sitemap lists all pages. Phone header tightened for 5 items.
+- "Path by passport" block (`src/lib/passport-track.ts`): own country;
+  easier (EU/EEA/Swiss free movement, Your Europe; Germany's apply-after-
+  entry nationalities; Netherlands MVV-exempt); standard (Schengen
+  visa-free or visa-required list); harder (Russia/Belarus restrictions).
+  Links open the routes with `citizenship=`.
+- Russia and Belarus (`src/data/russia-belarus.ts`, official pages read
+  2026-11-05): EU suspension of visa facilitation with Russia (no 2022 fee
+  figures), Estonia (no C/D visas for Russians; Belarus: no visas for
+  short-term work/business/telework), Finland (entry restricted; non-
+  biometric passports refused from 1 June 2026), Latvia (Cabinet Reg. 123
+  categories), Lithuania (visa applications suspended; questionnaire for
+  RU/BY with any new permit or national visa), Poland (entry limited since
+  19 September 2022), Czechia (biometric Russian passports only). Added as
+  "attention" tasks to every route's passport stage.
+
 ## Verified programmes: 8 Slovak and Czech faculties (2026-11-05, plan item 4)
 
 - New shared matching policy `generic-2027` (`matchGeneric` in

@@ -1,11 +1,6 @@
 import Link from "next/link";
 
-import {
-  Compass,
-  Flag,
-  MessageSquareHeart,
-  Signpost,
-} from "lucide-react";
+import { Compass, Flag, Globe2, MessageSquareHeart, Signpost } from "lucide-react";
 
 import { AuthNavigation } from "./AuthNavigation";
 import { LogoMark, LogoWord } from "./Logo";
@@ -16,6 +11,11 @@ const navigation = [
     label: "Explore",
     href: "/explore",
     icon: Compass,
+  },
+  {
+    label: "Countries",
+    href: "/countries",
+    icon: Globe2,
   },
   {
     label: "My route",

@@ -1,3 +1,4 @@
+import { countryHref, countryPages } from "@/lib/country-list";
 import type { MetadataRoute } from "next";
 
 import { getSiteUrl } from "@/lib/site-url";
@@ -21,6 +22,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${siteUrl}/countries`,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    ...countryPages.map((country) => ({
+      url: `${siteUrl}${countryHref(country.code)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
     {
       url: `${siteUrl}/stories`,
       changeFrequency: "daily",
