@@ -68,6 +68,8 @@ test("Germany: 2026 thresholds from Make it in Germany; Switzerland states no am
   assert.match(JSON.stringify(blue), /€45,934\.20/);
   assert.match(JSON.stringify(pickVariant(findCountryGuide("DE", "work")!, "skilled-worker")), /€55,770/);
   assert.match(JSON.stringify(pickVariant(findCountryGuide("DE", "work")!, "opportunity-card")), /€1,091/);
+  // The points route still needs a qualification recognised where it was obtained.
+  assert.match(JSON.stringify(pickVariant(findCountryGuide("DE", "work")!, "opportunity-card")), /recognised by the state where you got it, plus at least 6 points/);
   for (const purpose of ["work", "family", "business"] as const) {
     const guide = findCountryGuide("CH", purpose)!;
     assert.doesNotMatch(JSON.stringify(guide.variants), /CHF|€/, `CH ${purpose}`);

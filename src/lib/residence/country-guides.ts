@@ -811,7 +811,7 @@ const deWork: CountryGuide = {
       id: "opportunity-card",
       label: "Opportunity Card (look for a job in Germany)",
       summary:
-        "Up to one year to look for work: either with a fully recognised qualification, or with at least 6 points plus German A1 or English B2. You must show at least €1,091 a month (2026).",
+        "Up to one year to look for work: either with a qualification fully recognised in Germany, or with a qualification recognised where you got it plus at least 6 points and German A1 or English B2. You must show at least €1,091 a month (2026).",
       keyFacts: [
         { label: "Points", value: "6, or none with a fully recognised qualification" },
         { label: "Money", value: "€1,091 net a month in a blocked account (2026)" },
@@ -822,7 +822,7 @@ const deWork: CountryGuide = {
           task(
             "de-oc-ways",
             "Recognised qualification, or 6 points with A1/B2",
-            "Option 1: a foreign vocational (at least two years) or academic qualification fully recognised in Germany, or one obtained in Germany; no points or language certificate. Option 2: at least 6 points and German A1 or English B2.",
+            "Option 1: a foreign vocational (at least two years) or academic qualification fully recognised in Germany, or one obtained in Germany; no points or language certificate. Option 2: a vocational qualification of at least two years or a university degree, recognised by the state where you got it, plus at least 6 points and German A1 or English B2.",
             ["de-miig-opportunity"],
           ),
           task(
