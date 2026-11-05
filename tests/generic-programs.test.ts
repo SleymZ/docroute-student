@@ -106,3 +106,15 @@ test("routes for generic programmes use the programme's own entrance step, never
   const jlfEntrance = jlfRoute.stages.flatMap((stage) => stage.tasks).find((task) => task.id === "route-entrance")!;
   assert.equal(jlfEntrance.title, "National Comparative Exam (NPS)");
 });
+
+test("1. LF UK: a Slovak maturita covers Czech C1 and needs no recognition", () => {
+  const lf1 = findVerifiedProgram("cuni-lf1-medicine-mudr-2027")!;
+  const sk = profile({ destinationCountryCode: "CZ", studyCategory: "Medicine", educationCountryCode: "SK", citizenshipCountryCode: "SK", languages: [{ code: "cs", level: "B2", willingToStudyIn: true, proof: "none" }] });
+  const result = matchProgram(sk, lf1, today);
+  assert.equal(result.checks.find((item) => item.id === "language")!.status, "met");
+  assert.equal(result.checks.find((item) => item.id === "recognition")!.status, "met");
+  const ids = result.requiredDocuments.map((item) => item.id);
+  assert.ok(!ids.includes("lf1-czech-c1") && !ids.includes("lf1-nostrification"));
+  const ua = matchProgram({ ...sk, educationCountryCode: "UA", citizenshipCountryCode: "UA" }, lf1, today);
+  assert.ok(ua.requiredDocuments.some((item) => item.id === "lf1-czech-c1"));
+});

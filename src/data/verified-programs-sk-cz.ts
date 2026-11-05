@@ -517,6 +517,8 @@ const muniLaw = programs(
 const lf1Sources = [
   source("lf1-conditions-2027", "Admission conditions 2027/2028", "First Faculty of Medicine, Charles University", "https://www.lf1.cuni.cz/podminky-prijimaciho-rizeni-na-1-lf"),
   source("lf1-dates-2027", "Admission dates 2027/2028", "First Faculty of Medicine, Charles University", "https://www.lf1.cuni.cz/terminy-prijimaciho-rizeni"),
+  source("lf1-czech-c1", "Czech language exam at C1", "First Faculty of Medicine, Charles University", "https://www.lf1.cuni.cz/zkouska-z-cestiny-na-urovni-c1"),
+  source("lf1-recognition", "Assessment of foreign secondary and higher education in the admission procedure", "First Faculty of Medicine, Charles University", "https://www.lf1.cuni.cz/nostrifikace-stredoskolskeho-vzdelani"),
 ];
 
 const lf1 = programs(
@@ -542,14 +544,14 @@ const lf1 = programs(
       waiverEvidenceDueLabel: "Waiver or bonus request by 24 May 2027",
     },
     languagePolicy: {
-      generalStatement: "Taught in Czech; the written test is in Czech. The faculty asks for a Czech certificate at C1, handed in at enrolment.",
+      generalStatement: "Taught in Czech; the written test is in Czech. Admitted applicants without a Czech or Slovak maturita hand in a Czech C1 certificate at enrolment.",
     },
     documents: [
       doc("lf1-application", "E-application in SIS", "1 December 2026 – 28 February 2027; no attachments with the application.", "always", "application", ["lf1-conditions-2027", "lf1-dates-2027"]),
       doc("lf1-exam", "Written entrance test in Czech", "17 June 2027 (replacement 23 June); invitations 20 days before. Ask for the replacement date 7 days before the regular one.", "entrance-exam", "admission-day", ["lf1-dates-2027"], "17 June 2027"),
       doc("lf1-waiver", "Waiver or bonus request", "Ask to waive the entrance exam or for bonus points by 24 May 2027 (separate faculty pages list the grounds).", "waiver-claim", "application", ["lf1-conditions-2027"], "By 24 May 2027"),
-      doc("lf1-nostrification", "Nostrifikace of a school certificate from abroad", "Apply for recognition of your secondary education by 30 June 2027, or for the faculty's fee-based assessment.", "foreign-education", "enrolment", ["lf1-conditions-2027"], "Apply by 30 June 2027"),
-      doc("lf1-czech-c1", "Czech certificate at C1", "Handed in at enrolment; other language certificates are not considered.", "foreign-language-test", "enrolment", ["lf1-conditions-2027"]),
+      doc("lf1-nostrification", "Recognition of a school certificate from abroad", "EB or IB diploma: certified copy. Other countries: nostrifikace at a regional office, or the faculty's assessment (CZK 1,050; apply in SIS by 30 June 2027, paper documents posted by 15 July 2027).", "foreign-education", "enrolment", ["lf1-recognition", "lf1-conditions-2027"], "Apply by 30 June 2027"),
+      doc("lf1-czech-c1", "Czech certificate at C1", "Without a Czech or Slovak maturita: a C1 certificate from a school accredited for state language exams (for example ÚJOP UK), at enrolment.", "foreign-language-test", "enrolment", ["lf1-czech-c1"]),
       doc("lf1-enrolment", "Enrolment documents", "School-leaving certificate, medical fitness assessment and proof of hepatitis B vaccination, at enrolment.", "always", "enrolment", ["lf1-conditions-2027"]),
     ],
     minimumRequirements: [
@@ -562,14 +564,14 @@ const lf1 = programs(
         name: "Czech",
         minimumLevel: "C1",
         exemptCitizenships: [],
-        exemptSchools: ["CZ"],
-        proof: "Hand in a Czech certificate at C1 at enrolment. The faculty does not list exemptions; a Czech maturita is assumed to cover it only if you finished school in Czechia, so ask the faculty if unsure.",
-        sourceIds: ["lf1-conditions-2027"],
+        exemptSchools: ["CZ", "SK"],
+        proof: "Without a Czech or Slovak maturita, hand in a Czech C1 certificate from an accredited school (for example ÚJOP UK) at enrolment. A maturita taken in Czech or Slovak elsewhere also counts: tell the faculty.",
+        sourceIds: ["lf1-czech-c1"],
       },
       recognition: {
-        exemptSchools: ["CZ"],
-        text: "Any foreign school (whatever your nationality): apply for nostrifikace by 30 June 2027, or for the faculty's fee-based assessment.",
-        sourceIds: ["lf1-conditions-2027"],
+        exemptSchools: ["CZ", "SK", "PL", "HU", "SI"],
+        text: "Certificates from Slovakia, Poland, Hungary and Slovenia are automatically equivalent (certified copy). EB or IB: certified copy. Others: nostrifikace at a regional office, or the faculty's assessment (CZK 1,050, apply in SIS by 30 June 2027).",
+        sourceIds: ["lf1-recognition"],
       },
       entrance: {
         label: "Written entrance test in Czech",
