@@ -38,6 +38,15 @@ const yourEurope: RouteSource = {
   authority: "official",
 };
 
+const swissWork: RouteSource = {
+  id: "ch-chch-working-eu-efta",
+  title: "Working in Switzerland as a foreign national (EU/EFTA citizens)",
+  publisher: "Swiss Confederation, ch.ch",
+  url: "https://www.ch.ch/en/foreign-nationals-in-switzerland/working-in-switzerland/",
+  checkedAt: PASSPORT_TRACK_CHECKED,
+  authority: "official",
+};
+
 const germanyFaq: RouteSource = {
   id: "de-aa-visa-free-apply",
   title: "Do I need a visa if I want to study/work in Germany?",
@@ -80,6 +89,24 @@ export function passportTrack(citizenship: string, destination: string, destinat
       label: labels.own,
       title: `You are a citizen of ${destinationName}`,
       points: [{ text: "No visa or residence permit is needed. Use the study pages for universities.", sources: [] }],
+    };
+  }
+
+  if (euEeaSwiss.has(code) && country === "CH") {
+    return {
+      kind: "eu",
+      label: labels.eu,
+      title: `Free movement for citizens of ${name}, with a Swiss permit`,
+      points: [
+        {
+          text: "Work up to 3 months: no residence permit, but your employer notifies the authorities at least a day before you start. Longer employment: apply for a residence permit at your commune before you start work (ID or passport and your contract).",
+          sources: [swissWork],
+        },
+        {
+          text: "Self-employed: register your arrival within 14 days, then apply for a residence permit at your commune and show you can support yourself. Job seekers: up to 6 months, no permit for the first 3.",
+          sources: [swissWork],
+        },
+      ],
     };
   }
 

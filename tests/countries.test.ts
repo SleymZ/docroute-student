@@ -45,6 +45,11 @@ test("study summaries come from the same data as the routes", () => {
 test("passport tracks: own, EU free movement, easier, standard and harder", () => {
   assert.equal(passportTrack("SK", "SK", "Slovakia")?.kind, "own");
   assert.equal(passportTrack("FR", "SK", "Slovakia")?.kind, "eu");
+  // Switzerland: EU/EFTA citizens still apply for a permit for longer work.
+  assert.match(passportTrack("FR", "CH", "Switzerland")!.points[0].text, /apply for a residence permit at your commune/);
+  assert.doesNotMatch(JSON.stringify(passportTrack("FR", "CH", "Switzerland")), /without a visa or residence permit/);
+  assert.match(JSON.stringify(passportTrack("UA", "PL", "Poland")), /biometric/);
+  assert.match(JSON.stringify(passportTrack("US", "IE", "Ireland")), /Ireland's own visa list/);
   assert.equal(passportTrack("US", "DE", "Germany")?.kind, "easier");
   assert.equal(passportTrack("JP", "NL", "Netherlands")?.kind, "easier");
   assert.equal(passportTrack("IN", "DE", "Germany")?.kind, "standard");
