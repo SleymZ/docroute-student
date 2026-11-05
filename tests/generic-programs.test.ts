@@ -95,7 +95,7 @@ test("routes for generic programmes use the programme's own entrance step, never
   const p = profile({ educationCountryCode: "SK", citizenshipCountryCode: "SK" });
   const route = buildRoutePreview(p, matchProgram(p, fmfi, today))!;
   const entrance = route.stages.flatMap((stage) => stage.tasks).find((task) => task.id === "route-entrance")!;
-  assert.equal(entrance.title, "Grades and maths percentile (no faculty exam)");
+  assert.equal(entrance.title, "Grades or maths percentile (no faculty exam)");
   assert.equal(entrance.dueLabel, "Send results by 30 April 2027");
   assert.doesNotMatch(JSON.stringify(route), /mathematics and logical-thinking exam/);
   for (const program of generic) assert.ok(program.genericRules!.entrance.dueLabel.length > 5, program.id);

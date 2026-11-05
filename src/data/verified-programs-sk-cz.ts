@@ -262,7 +262,7 @@ const fmfiSources = [
 
 function fmfiEntrance(rule: string): GenericAdmissionRules["entrance"] {
   return {
-    label: "Grades and maths percentile (no faculty exam)",
+    label: "Grades or maths percentile (no faculty exam)",
     dueLabel: "Send results by 30 April 2027",
     text: `${rule} Send results to the faculty by 30 April 2027. Olympiad, SOČ and listed competition solvers are admitted without these conditions. School outside the EU: admission by SCIO or SAT maths percentile.`,
     sourceIds: ["fmfi-conditions-2027"],
@@ -322,10 +322,10 @@ const fmfiShared: Shared = {
 };
 
 const fmfi = programs(fmfiShared, [
-  { id: "uniba-fmfi-inf-bsc-2027", programName: "Computer Science", localProgramName: "Informatika", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("Grade 1 in one profile subject in each assessed year and a maths percentile of 60 (conversion variant INF/k: grade 1 or 2 and 50). Planned: 100.") } } },
-  { id: "uniba-fmfi-ain-bsc-2027", programName: "Applied Informatics", localProgramName: "Aplikovaná informatika", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("Grade 1 in all profile subjects or an internal maturita part in one, and a maths percentile of 50. Planned: 200.") } } },
-  { id: "uniba-fmfi-dav-bsc-2027", programName: "Data Science", localProgramName: "Dátová veda", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("Grade 1 in one profile subject and a maths percentile of 80 (DAV/k: grade 1 or 2 and 50). Planned: 30.") } } },
-  { id: "uniba-fmfi-bin-bsc-2027", programName: "Bioinformatics", localProgramName: "Bioinformatika", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("Grade 1 in one profile subject and a maths percentile of 70 (BIN/k: grade 1 or 2 and 40). Planned: 15, run with the Faculty of Natural Sciences.") } } },
+  { id: "uniba-fmfi-inf-bsc-2027", programName: "Computer Science", localProgramName: "Informatika", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("One condition is enough: grade 1 in one profile subject in each assessed year, or a maths percentile of 60 (conversion variant INF/k: grade 1 or 2, or 50). Planned: 100.") } } },
+  { id: "uniba-fmfi-ain-bsc-2027", programName: "Applied Informatics", localProgramName: "Aplikovaná informatika", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("One condition is enough: grade 1 in all profile subjects, an internal maturita part in one, or a maths percentile of 50. Planned: 200.") } } },
+  { id: "uniba-fmfi-dav-bsc-2027", programName: "Data Science", localProgramName: "Dátová veda", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("One condition is enough: grade 1 in one profile subject, or a maths percentile of 80 (DAV/k: grade 1 or 2, or 50). Planned: 30.") } } },
+  { id: "uniba-fmfi-bin-bsc-2027", programName: "Bioinformatics", localProgramName: "Bioinformatika", patch: { genericRules: { ...fmfiShared.genericRules!, entrance: fmfiEntrance("One condition is enough: grade 1 in one profile subject, or a maths percentile of 70 (BIN/k: grade 1 or 2, or 40). Planned: 15, run with the Faculty of Natural Sciences.") } } },
 ]);
 
 // ------------------------------------------- JLF UK (Martin, Slovak, medicine)
@@ -353,7 +353,7 @@ const jlf = programs(
       admissionDate: "2027-03-20",
       feeEur: 70,
       applicationUrl: "https://www.jfmed.uniba.sk/studium/uchadzaci/doktorske-studium-mudr-mddr/",
-      languageProofDueLabel: "With the application documents",
+      languageProofDueLabel: "By enrolment day",
       waiverEvidenceDueLabel: "Bonus evidence by 15 May 2027",
     },
     languagePolicy: {
@@ -364,7 +364,7 @@ const jlf = programs(
       doc("jlf-nps", "National Comparative Exam (NPS)", "In person on 20 March, 24 April or 22 May 2027 (your choice; registration usually closes 16 days before; no make-up). Instructions by email by 10 March 2027.", "entrance-exam", "admission-day", ["jlf-admission-2027"], "20 March, 24 April or 22 May 2027"),
       doc("jlf-bonus", "Bonus-point evidence", "Send evidence of eligible activities by 15 May 2027; bonus points are published by 31 May.", "waiver-claim", "admission-day", ["jlf-admission-2027"], "By 15 May 2027"),
       doc("jlf-recognition", "Recognition decision for a school abroad", "Certified copy (or certified electronic conversion) of the recognition decision from a Slovak regional school office.", "foreign-education", "enrolment", ["jlf-admission-2027"]),
-      doc("jlf-slovak", "Slovak at B2", "Proof of Slovak at B2 (CEFR) or higher.", "foreign-language-test", "application", ["jlf-admission-2027"]),
+      doc("jlf-slovak", "Slovak at B2", "Proof of Slovak at B2 (CEFR) or higher; it may be delivered by enrolment day (regulation 21/2026, Art. 9(16)).", "foreign-language-test", "enrolment", ["jlf-admission-2027"], "By enrolment day"),
       doc("jlf-diploma", "Certified school-leaving certificate", "Post it only after a conditional admission decision.", "always", "enrolment", ["jlf-admission-2027"]),
     ],
     minimumRequirements: [
@@ -378,7 +378,7 @@ const jlf = programs(
         minimumLevel: "B2",
         exemptCitizenships: czSk,
         exemptSchools: [],
-        proof: "Prove Slovak at B2 or higher (a Slovak compatriot certificate also exempts you).",
+        proof: "Prove Slovak at B2 or higher by enrolment day (a Slovak compatriot certificate also exempts you).",
         sourceIds: ["jlf-admission-2027"],
       },
       recognition: {

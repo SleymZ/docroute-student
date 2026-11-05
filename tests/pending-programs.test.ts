@@ -187,7 +187,7 @@ test("Comenius FMFI is verified for 2027/28 and no longer coming soon", () => {
   assert.equal(findPendingProgramGroups({ universityHost: "uniba.sk", category: "Computer Science" }).length, 0);
   const inf = findVerifiedProgram("uniba-fmfi-inf-bsc-2027");
   assert.ok(inf);
-  assert.match(inf.genericRules?.entrance.text ?? "", /maths percentile of 60/);
+  assert.match(inf.genericRules?.entrance.text ?? "", /One condition is enough: .*or a maths percentile of 60/);
 });
 
 test("each group carries a known status and unique ids", () => {
