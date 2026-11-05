@@ -84,3 +84,13 @@ test("the home map links to country pages and the light list stays light", () =>
   const list = readFileSync(join(root, "src/lib/country-list.ts"), "utf8");
   assert.doesNotMatch(list, /universities\.json|verified-programs|pending-programs/);
 });
+
+test("the route form offers every country page with a flag code; the map keeps its five", async () => {
+  const { plannerDestinationOptions, plannerDestinationCodes, destinationOptions } = await import("../src/data/demo-destinations");
+  assert.equal(plannerDestinationOptions.length, 28);
+  assert.deepEqual(plannerDestinationOptions.slice(0, 3), ["Slovakia", "Czechia", "Austria"]);
+  for (const name of plannerDestinationOptions) assert.match(plannerDestinationCodes[name] ?? "", /^[A-Z]{2}$/, name);
+  assert.deepEqual([...destinationOptions], ["Slovakia", "Czechia", "Austria", "Romania", "Bulgaria"]);
+  const planner = readFileSync(join(root, "src/components/RoutePlanner.tsx"), "utf8");
+  assert.match(planner, /destination=\{mapDestination\}/);
+});

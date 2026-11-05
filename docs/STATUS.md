@@ -872,6 +872,9 @@ latest rules" (owner rule 2026-10-30):
   linked guides for every other country). Built from the route data
   (`src/lib/countries.ts`); the light list for the map is
   `src/lib/country-list.ts` (no catalogue in the client bundle).
+- Home route form: "I want to study / work / … in" lists all 28 countries
+  with flags (Slovakia, Czechia, Austria first; `plannerDestinationOptions`).
+  The map keeps its five featured destinations (`mapDestination`).
 - Home map: every EU country and Switzerland gets "Work, family, business in
   <country>" → its page (highlighting unchanged). Header and footer link
   "Countries"; sitemap lists all pages. Phone header tightened for 5 items.
