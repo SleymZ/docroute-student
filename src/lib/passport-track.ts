@@ -2,10 +2,8 @@ import {
   germanyVisaFreeLongStay,
   germanyVisaFreeLongStayNoWork,
   netherlandsMvvExempt,
-  schengenVisaFree,
-  schengenVisaRequired,
 } from "@/data/citizenship-lists";
-import { citizenshipName } from "@/data/citizenship-notes";
+import { citizenshipName, citizenshipStage } from "@/data/citizenship-notes";
 import { russiaBelarusNotes } from "@/data/russia-belarus";
 import type { RouteSource } from "@/types/route-preview";
 
@@ -37,15 +35,6 @@ const yourEurope: RouteSource = {
   publisher: "Your Europe, European Union",
   url: "https://europa.eu/youreurope/citizens/residence/residence-rights/index_en.htm",
   checkedAt: PASSPORT_TRACK_CHECKED,
-  authority: "official",
-};
-
-const euVisaList: RouteSource = {
-  id: "eu-reg-2018-1806",
-  title: "Regulation (EU) 2018/1806: visa list (Annex I) and visa-free list (Annex II), consolidated 30 Dec 2025",
-  publisher: "EUR-Lex, European Union",
-  url: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R1806-20251230",
-  checkedAt: "2026-11-03",
   authority: "official",
 };
 
@@ -140,16 +129,19 @@ export function passportTrack(citizenship: string, destination: string, destinat
       sources: [netherlandsMvv],
     });
   }
-  if (schengenVisaFree.includes(code)) {
-    points.push({
-      text: "Visa-free for short stays (up to 90 days in any 180). A move still needs the long-stay visa or residence permit for your purpose.",
-      sources: [euVisaList],
-    });
-  } else if (schengenVisaRequired.includes(code)) {
-    points.push({
-      text: "You need a visa even for short stays; plan the national (D) visa or residence permit for your purpose before you travel.",
-      sources: [euVisaList],
-    });
+  // The entry note is the same one the routes add (citizenship-notes.ts), so
+  // Ireland's own list, Switzerland's long-stay list and the biometric-
+  // passport condition stay consistent with the route behind the link.
+  // Germany and the Netherlands already got their own relief above.
+  if (!easier) {
+    const stage = citizenshipStage(code, country, destinationName, "work");
+    const visa = stage?.stage.tasks.find((task) => task.id.startsWith("citizen-visa"));
+    if (visa && stage) {
+      points.push({
+        text: `${visa.title}. ${visa.description}`,
+        sources: stage.sources.filter((source) => visa.sourceIds.includes(source.id)),
+      });
+    }
   }
   if (!points.length) return null;
 
