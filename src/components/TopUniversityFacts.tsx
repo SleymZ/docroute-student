@@ -1,8 +1,10 @@
 import { ExternalLink } from "lucide-react";
 
+import { ApplyByStatus } from "@/components/ApplyByStatus";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import type { resolveTopAdmissions } from "@/lib/top-universities";
 import type {
+  TopApplyBy,
   TopComputerScience,
   TopFieldKey,
   TopFieldRequirements,
@@ -31,6 +33,7 @@ export function TopUniversityFacts({
 }) {
   return (
     <>
+      <ApplyBy applyBy={admissions.applyBy} />
       {admissions.intake && (
         <p className={styles.intake}>Source describes: {admissions.intake}</p>
       )}
@@ -83,6 +86,44 @@ export function TopUniversityFacts({
 
       {fields && <TopFieldRequirementsList fields={fields} />}
     </>
+  );
+}
+
+// The last day to apply, shown first because it is what applicants act on.
+function ApplyBy({ applyBy }: { applyBy?: TopApplyBy | null }) {
+  if (applyBy === undefined) return null;
+  if (applyBy === null) {
+    return (
+      <div className={styles.applyBy} data-cycle="none">
+        <p className={styles.applyByEyebrow}>Apply by</p>
+        <p className={styles.applyByNone}>
+          No single date confirmed: dates are set per programme or call. See the deadline below and the
+          university&apos;s own pages.
+        </p>
+      </div>
+    );
+  }
+  const pastCycle = applyBy.cycle !== "2027/28";
+  return (
+    <div className={styles.applyBy} data-cycle={pastCycle ? "past" : "current"}>
+      <p className={styles.applyByEyebrow}>
+        Apply by
+        <span className={styles.applyCycle}>
+          {pastCycle ? `Last published cycle: ${applyBy.cycle}` : `Entry ${applyBy.cycle}`}
+        </span>
+      </p>
+      <p className={styles.applyByDate}>
+        <strong>{formatPlanDate(applyBy.date)}</strong>
+        <ApplyByStatus date={applyBy.date} pastCycle={pastCycle} lateUntil={applyBy.lateUntil} />
+      </p>
+      <p className={styles.applyByLabel}>{applyBy.label}</p>
+      {applyBy.lateUntil && (
+        <p className={styles.applyByLabel}>
+          Late applications until {formatPlanDate(applyBy.lateUntil)}
+          {applyBy.lateLabel ? `: ${applyBy.lateLabel}` : ""}.
+        </p>
+      )}
+    </div>
   );
 }
 

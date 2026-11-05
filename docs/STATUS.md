@@ -862,6 +862,31 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
+## Top 100: last day to apply and admission requirements (2026-11-05)
+
+- New `admissions.applyBy` on every Top 100 university: `{date, cycle,
+  label}` = the last day a non-EU applicant can apply on the main route;
+  `deadline` keeps the details. 94 universities have a date; 6 are `null`
+  with a reason shown (Naples, Bologna, Politecnico di Milano, Pisa: per
+  programme/call; NKUA and AUTh: Ministry application, closing date not
+  readable). Cycle "2026/27" is used only when 2027/28 is not published
+  yet (most of Italy and Spain, Porto, Vienna, FU Berlin, Münster) and the
+  label says so.
+- Card: "Apply by" block first (date, entry year, "N days left" / "Closed"
+  worked out in the browser, label); grey for a past cycle or no date.
+- Re-checked on official pages 2026-11-05: Utrecht, Radboud, Groningen,
+  Erasmus, Leiden, TU Delft, UvA, Wageningen, VU, Sapienza, Milan,
+  Politecnico di Milano, Valencia, Seville/Granada (Andalusian foreign
+  phase), UB/UAB (Catalan pre-enrolment), Porto, Ghent, Trinity, Vienna,
+  NKUA. Others derived from the deadline texts checked 2026-10-27..31.
+- `top-admission-requirements.ts`: now 55 universities (17 added outside
+  the UK and Germany); a test checks every entry cites the university's
+  own site. Greece got a country deadline rule.
+- Next: requirements for the remaining 45 (CH, DK, SE, FR, NO, FI, CZ,
+  Lisbon, Coimbra, KU Leuven, UCD, MedUni Vienna, rest of Italy/Spain);
+  refresh 2026/27 dates when 2027/28 calls appear (Italy Feb–Apr, Spain
+  spring, Vienna spring).
+
 ## Student residence: Austria, Germany, Poland (2026-11-05, plan item 1)
 
 - `src/lib/residence/study-routes.ts`: source-checked first-arrival routes
