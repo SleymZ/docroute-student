@@ -243,7 +243,7 @@ const upolLf = programs(
     documents: [
       doc("upol-lf-application", "E-application and CZK 790 fee by 15 March 2027", "1 November 2026 – 15 March 2027; only complete applications are registered. One application and fee per programme.", "always", "application", ["upol-lf-board-2027"]),
       doc("upol-lf-exam", "Written test", "8 June 2027; the invitation appears in the e-application ('Písemnosti') from the week of 10 May 2027. No other date.", "entrance-exam", "admission-day", ["upol-lf-board-2027"], "8 June 2027"),
-      doc("upol-lf-recognition", "Recognition of a school certificate from abroad", "A certificate from abroad needs recognition in the Czech Republic before enrolment.", "foreign-education", "enrolment", ["upol-lf-board-2027"]),
+      doc("upol-lf-recognition", "Recognition of a school certificate from abroad", "A maturita from abroad (not from Slovakia) needs recognition in the Czech Republic; hand in a certified copy of the recognised certificate at enrolment.", "foreign-education", "enrolment", ["upol-lf-board-2027"]),
       doc("upol-lf-enrolment", "Enrolment documents", "Certified copy of the maturita certificate, the health form confirmed by a GP, two passport photos and proof of hepatitis B vaccination.", "always", "enrolment", ["upol-lf-board-2027"]),
     ],
     minimumRequirements: [
@@ -255,8 +255,8 @@ const upolLf = programs(
       languageUnknownNote:
         "The faculty's 2027/28 announcement does not state a Czech proof for applicants from abroad. The programme and the test are in Czech; ask the faculty.",
       recognition: {
-        exemptSchools: ["CZ"],
-        text: "A school certificate from abroad must be recognised in the Czech Republic (the university's recognition page explains how).",
+        exemptSchools: ["CZ", "SK"],
+        text: "A maturita taken abroad (not from Slovakia) must be recognised in the Czech Republic unless an international treaty says otherwise; the documents go to the university's Foreign Department, and a certified copy of the recognised certificate is handed in at enrolment.",
         sourceIds: ["upol-lf-board-2027"],
       },
       entrance: {
@@ -389,7 +389,7 @@ const zcuFpr = programs(
       generalStatement: "Taught in Czech. The faculty does not consider language certificates, and its 2027/28 page states no Czech proof.",
     },
     documents: [
-      doc("zcu-fpr-application", "E-application and CZK 750 fee by 30 April 2027", "Electronic applications from 1 November 2026 until 30 April 2027, 23:59; one application per programme. Pay CZK 750 by transfer or at Komerční banka by 30 April 2027 (variable symbol 3275000127).", "always", "application", ["zcu-fpr-admission-2027"]),
+      doc("zcu-fpr-application", "E-application and CZK 750 fee by 30 April 2027", "Electronic applications from 1 November 2026 until 30 April 2027, 23:59; one application per programme. Pay CZK 750 by transfer or at Komerční banka by 30 April 2027: variable symbol 3275000127 and, as the specific symbol, the programme number generated in the e-application (without it the payment is not matched and the procedure stops).", "always", "application", ["zcu-fpr-admission-2027"]),
       doc("zcu-fpr-scio", "SCIO NSZ: OSP and ZSV", "Take both between December 2026 and May 2027 (the best result counts) and consent to SCIO sending the results to the faculty.", "entrance-exam", "admission-day", ["zcu-fpr-admission-2027"], "December 2026 – May 2027"),
       doc("zcu-fpr-certificate", "Secondary school certificate", "Upload it to the ZČU system by 16 June 2027.", "always", "enrolment", ["zcu-fpr-admission-2027"], "By 16 June 2027"),
       doc("zcu-fpr-recognition", "Nostrifikace, EB or IB", "With secondary education from abroad, upload a certified conversion of the nostrifikace certificate or proof of the European or International Baccalaureate by 16 June 2027.", "foreign-education", "enrolment", ["zcu-fpr-admission-2027"], "By 16 June 2027"),

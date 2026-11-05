@@ -159,3 +159,9 @@ test("economics: Slovak B1 at FPEDAS, faculty Czech tests at VŠE", () => {
   const abroad = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Economics & Business" }), findVerifiedProgram("vse-fmv-international-trade-bc-2027")!, today);
   assert.ok(abroad.requiredDocuments.some((item) => item.id === "vse-fmv-czech-test"));
 });
+
+test("LF UP exempts Slovak certificates; ZČU payment needs the specific symbol", () => {
+  const upol = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Medicine", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), findVerifiedProgram("upol-lf-medicine-mudr-2027")!, today);
+  assert.equal(upol.checks.find((item) => item.id === "recognition")!.status, "met");
+  assert.match(findVerifiedProgram("zcu-fpr-law-mgr-2027")!.documents.find((item) => item.id === "zcu-fpr-application")!.description, /specific symbol/);
+});
