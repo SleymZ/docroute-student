@@ -110,10 +110,16 @@ const austria: StudyResidenceRoute = {
       id: "residence-at-after",
       number: "06",
       eyebrow: "AFTER ARRIVAL",
-      title: "Registration, work and extension",
+      title: "Entry, card, registration and extension",
       description: "Duties once you live in Austria.",
       timing: "After arrival",
       tasks: [
+        task(
+          "at-study-visa-d",
+          "Visa D to enter and collect the card",
+          "If you need a visa for Austria, apply for a category D visa at the embassy after the permit is approved, enter Austria and collect the residence card from the residence authority.",
+          ["at-oead-student-permit"],
+        ),
         task(
           "at-study-meldezettel",
           "Register your address within 3 days",
