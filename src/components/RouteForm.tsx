@@ -48,9 +48,6 @@ type RouteFormProps = {
   onPurposeChange: (value: MovePurpose) => void;
   documentCountry: string;
   destination: string;
-  // Asked only when the documents come from "Other country"; otherwise the
-  // default destination is used.
-  showDestination: boolean;
   program: string;
   routeAvailable: boolean;
   // Residence route only: university programmes there are not verified.
@@ -484,7 +481,6 @@ export function RouteForm({
   onPurposeChange,
   documentCountry,
   destination,
-  showDestination,
   program,
   routeAvailable,
   residenceOnly = false,
@@ -509,26 +505,24 @@ export function RouteForm({
           )}
         />
 
-        {showDestination && (
-          <VisualSelect
-            label={
-              purpose === "work"
-                ? "I want to work in"
-                : purpose === "family"
-                  ? "I want to join family in"
-                  : purpose === "business"
-                    ? "I want to do business in"
-                    : "I want to study in"
-            }
-            name="destination"
-            value={destination}
-            options={plannerDestinationOptions}
-            onChange={onDestinationChange}
-            renderIcon={(country) => (
-              <CountryFlag country={country} />
-            )}
-          />
-        )}
+        <VisualSelect
+          label={
+            purpose === "work"
+              ? "I want to work in"
+              : purpose === "family"
+                ? "I want to join family in"
+                : purpose === "business"
+                  ? "I want to do business in"
+                  : "I want to study in"
+          }
+          name="destination"
+          value={destination}
+          options={plannerDestinationOptions}
+          onChange={onDestinationChange}
+          renderIcon={(country) => (
+            <CountryFlag country={country} />
+          )}
+        />
 
         {purpose === "study" && (
           <VisualSelect
