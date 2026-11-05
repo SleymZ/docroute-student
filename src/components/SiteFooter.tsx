@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { contact, legalPages } from "@/data/legal";
 
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import styles from "./SiteFooter.module.css";
 
 export function SiteFooter() {
@@ -26,6 +27,8 @@ export function SiteFooter() {
           <Link href="/feedback">Feedback</Link>
           <a href={contact.href}>Contact</a>
         </nav>
+
+        <LanguageSwitcher />
       </div>
     </footer>
   );

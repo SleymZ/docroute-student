@@ -17,7 +17,9 @@ function sourceFiles(dir: string): string[] {
 test("the site address opens the entry page, the full site lives at /home", () => {
   const entry = read("src/app/page.tsx");
   assert.match(entry, /<EntryScreen \/>/);
-  assert.match(entry, /force-static/);
+  // Rendered per request since the site has languages (2026-11-05): the
+  // cookie or the browser decides the language of the first visit too.
+  assert.doesNotMatch(entry, /force-static/);
   assert.match(read("src/app/home/page.tsx"), /<RoutePlanner \/>/);
   assert.match(read("src/app/home/loading.tsx"), /<RouteLoader/);
 });
@@ -76,7 +78,7 @@ test("the logo replaces the old route icon everywhere the brand is shown", () =>
   for (const part of ["logoRingPath", "logoEuropePath", "logoPlanePath", "logoSwooshPath"]) {
     assert.match(logo, new RegExp(`export const ${part}`), part);
   }
-  assert.match(logo, /Doc<span style=\{\{ color: BRAND_COLOR \}\}>Route<\/span>/);
+  assert.match(logo, /Doc<span style=\{\{ color: BRAND_COLOR \}\} translate="no">Route<\/span>/);
   const icon = read("src/app/icon.svg");
   assert.ok(icon.includes("#D4502F") && icon.includes("#FF795F"), "favicon in both corals");
   assert.ok(!/#FF7A00|#FF9F4D/i.test(icon), "no style-board orange in the favicon");
