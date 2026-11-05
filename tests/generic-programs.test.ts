@@ -139,6 +139,11 @@ test("medicine programmes: dentistry follows its faculty's own 2027/28 rules", (
   const muniDentistry = findVerifiedProgram("muni-lf-dentistry-mddr-2027")!;
   assert.ok(!muniDentistry.documents.some((item) => item.id === "muni-lf-bonus-waiver"), "exam waiver is for General Medicine only");
   assert.ok(findVerifiedProgram("muni-lf-medicine-mudr-2027")!.documents.some((item) => item.id === "muni-lf-bonus-waiver"));
+  const lf1Dentistry = findVerifiedProgram("cuni-lf1-dentistry-mddr-2027")!;
+  assert.ok(!lf1Dentistry.documents.some((item) => item.id === "lf1-waiver"), "1. LF dentistry has no exam waiver");
+  assert.ok(findVerifiedProgram("cuni-lf1-medicine-mudr-2027")!.documents.some((item) => item.id === "lf1-waiver"));
+  const slovakSchool = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Medicine", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), findVerifiedProgram("muni-lf-medicine-mudr-2027")!, today);
+  assert.equal(slovakSchool.checks.find((item) => item.id === "recognition")!.status, "met");
   const hk = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Medicine", languages: [{ code: "cs", level: "C1", willingToStudyIn: true, proof: "certificate" }] }), findVerifiedProgram("lfhk-medicine-mudr-2027")!, today);
   assert.equal(hk.canBuildRoute, true);
   assert.equal(hk.checks.find((item) => item.id === "language")!.status, "action");

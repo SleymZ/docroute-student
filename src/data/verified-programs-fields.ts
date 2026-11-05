@@ -55,6 +55,7 @@ const slovak = [{ code: "sk", name: "Slovak" }];
 
 const muniLfSources = [
   source("muni-lf-conditions-2027", "Admission conditions for academic year 2027/2028", "Faculty of Medicine, Masaryk University", "https://www.med.muni.cz/chci-studovat/podminky-prijimaciho-rizeni"),
+  source("muni-lf-verification", "Verification of secondary education", "Faculty of Medicine, Masaryk University", "https://www.med.muni.cz/students/verif"),
 ];
 
 const muniLfRules: GenericAdmissionRules = {
@@ -62,9 +63,9 @@ const muniLfRules: GenericAdmissionRules = {
   languageUnknownNote:
     "The faculty's 2027/28 conditions do not state a Czech proof for applicants from abroad. The programme and the entrance tests are in Czech; ask the faculty.",
   recognition: {
-    exemptSchools: ["CZ"],
-    text: "With a school certificate from abroad, upload the official Czech recognition (nostrifikace) in the e-application by the deadline in your admission proposal; without it you are not admitted.",
-    sourceIds: ["muni-lf-conditions-2027"],
+    exemptSchools: ["CZ", "SK", "HU", "PL", "SI", "DE"],
+    text: "Certificates from other countries need nostrifikace (regional office) or Masaryk University's own verification (CZK 990; school accreditation and translations required), uploaded by the deadline in your admission proposal; without it you are not admitted. Slovak, Hungarian, Polish, Slovenian and German certificates: upload an authorised conversion of a certified copy (translated if not in Czech, Slovak or English), no fee.",
+    sourceIds: ["muni-lf-conditions-2027", "muni-lf-verification"],
   },
   entrance: {
     label: "Written specialised tests",
@@ -102,7 +103,7 @@ const muniLf = programs(
       doc("muni-lf-application", "E-application and CZK 900 fee by 28 February 2027", "One programme per e-application at is.muni.cz/prihlaska, 1 November 2026 – 28 February 2027. Pay CZK 900 by card, transfer or QR code by 28 February 2027; it is not refunded.", "always", "application", ["muni-lf-conditions-2027"]),
       doc("muni-lf-exam", "Written entrance tests", "Choose 9 or 10 June 2027 in the e-application; no make-up date. Requests for exam adjustments go in the e-application by 28 February 2027.", "entrance-exam", "admission-day", ["muni-lf-conditions-2027"], "9 or 10 June 2027"),
       doc("muni-lf-maturita", "Maturita certificate", "Upload a certified conversion of the paper certificate or a qualified e-signed original. You must pass the maturita before enrolment.", "always", "enrolment", ["muni-lf-conditions-2027"]),
-      doc("muni-lf-recognition", "Czech recognition of a school certificate from abroad", "Upload the official nostrifikace by the deadline in your admission proposal.", "foreign-education", "enrolment", ["muni-lf-conditions-2027"], "By the date in your admission proposal"),
+      doc("muni-lf-recognition", "Recognition of a school certificate from abroad", "Upload nostrifikace or the result of Masaryk University's verification (CZK 990) by the deadline in your admission proposal.", "foreign-education", "enrolment", ["muni-lf-conditions-2027", "muni-lf-verification"], "By the date in your admission proposal"),
     ],
     minimumRequirements: [
       { id: "muni-lf-ranking", title: "Ranking by test points", description: "Applicants are ranked by their total test points; everyone tied at the cut-off is admitted. The planned places are in the conditions' Table 1 (not restated in the text). Further rounds may follow if places stay empty.", sourceIds: ["muni-lf-conditions-2027"] },

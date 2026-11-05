@@ -617,6 +617,25 @@ const lf1 = programs(
   ],
 );
 
+// The exam waiver is for General Medicine (and Addictology) only; Dentistry
+// has bonus points only (lf1-conditions-2027).
+{
+  const dentistry = lf1[1];
+  dentistry.application = { ...dentistry.application, waiverEvidenceDueLabel: "Bonus request by 24 May 2027" };
+  dentistry.documents = dentistry.documents.map((item) =>
+    item.id === "lf1-waiver"
+      ? { ...item, id: "lf1-bonus", title: "Bonus points request", description: "Ask for bonus points by 24 May 2027 (separate faculty pages list the grounds). Dentistry has no entrance-exam waiver." }
+      : item,
+  );
+  dentistry.genericRules = {
+    ...dentistry.genericRules!,
+    entrance: {
+      ...dentistry.genericRules!.entrance,
+      text: "Sit the written test in Czech on 17 June 2027 (replacement 23 June). Bonus requests by 24 May 2027; Dentistry has no exam waiver.",
+    },
+  };
+}
+
 export const verifiedSkCzPrograms: readonly AdmissionProgram[] = [
   ...vutFit,
   ...fiit,
