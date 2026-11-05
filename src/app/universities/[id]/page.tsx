@@ -286,13 +286,27 @@ export default async function UniversityPage({
         intake: availableRoute.intake,
       }).toString()}`
     : null;
+  // Counted per faculty, degree type and length, as the sentence names them:
+  // a university can have the field verified at several faculties (VŠE: FPH
+  // and FMV), at two degree types (Palacký law) or with two lengths
+  // (medicine 6 years, dentistry 5 years).
   const availableRouteProgramCount = availableRoute
     ? universityPrograms.filter(
         (program) =>
           program.category === availableRoute.category &&
           program.degreeLevel === availableRoute.degreeLevel &&
+          program.programType === availableRoute.programType &&
+          program.durationYears === availableRoute.durationYears &&
+          program.faculty === availableRoute.faculty &&
           program.intake === availableRoute.intake,
       ).length
+    : 0;
+  const availableRouteOtherCount = availableRoute
+    ? universityPrograms.filter(
+        (program) =>
+          program.category === availableRoute.category &&
+          program.intake === availableRoute.intake,
+      ).length - availableRouteProgramCount
     : 0;
 
   // The page is long (requirements, deadlines, sources), so the main route
@@ -387,7 +401,7 @@ export default async function UniversityPage({
             ) : (
               <p className={styles.heroDescription}>
                 {availableRoute
-                  ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatProgramDegree(availableRoute)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}).`
+                  ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatProgramDegree(availableRoute)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}${availableRouteOtherCount > 0 ? `; ${availableRouteOtherCount} more verified in this field` : ""}).`
                   : pendingGroups.length > 0
                     ? `${pendingGroups[0].faculty}: ${pendingProgramCount} ${pendingGroups[0].category} programs for ${pendingGroups[0].intake} are coming soon. Build the full study path now, from application to residence; your profile is matched once the approved admission rules are published.`
                     : "Explore available study information and build a verified route from university application to student residence."}

@@ -28,9 +28,9 @@ function profile(patch: Partial<ApplicantProfile> = {}): ApplicantProfile {
 
 const generic = verifiedPrograms.filter((program) => program.admissionPolicy === "generic-2027");
 
-test("14 programmes at 8 faculties verified on 2026-11-05 use the shared policy with their own dates", () => {
-  assert.equal(generic.length, 14);
-  assert.equal(new Set(generic.map((program) => program.faculty + program.universityId)).size, 8);
+test("35 programmes at 18 faculties verified on 2026-11-05 use the shared policy with their own dates", () => {
+  assert.equal(generic.length, 35);
+  assert.equal(new Set(generic.map((program) => program.faculty + program.universityId)).size, 18);
   for (const program of generic) {
     assert.ok(program.genericRules, program.id);
     assert.equal(program.intake, "2027/28");
@@ -117,4 +117,40 @@ test("1. LF UK: a Slovak maturita covers Czech C1 and needs no recognition", () 
   assert.ok(!ids.includes("lf1-czech-c1") && !ids.includes("lf1-nostrification"));
   const ua = matchProgram({ ...sk, educationCountryCode: "UA", citizenshipCountryCode: "UA" }, lf1, today);
   assert.ok(ua.requiredDocuments.some((item) => item.id === "lf1-czech-c1"));
+});
+
+test("each field has verified 2027/28 programmes in Slovakia and Czechia", () => {
+  const count = (category: string) => verifiedPrograms.filter((program) => program.category === category && program.intake === "2027/28").length;
+  assert.ok(count("Computer Science") >= 10, "Computer Science");
+  assert.equal(count("Medicine"), 10);
+  assert.equal(count("Economics & Business"), 10);
+  // Every full-time Czech or Slovak law programme with published 2027/28
+  // rules on 2026-11-05; Slovak law faculties had not published theirs yet.
+  assert.equal(count("Law"), 5);
+  for (const program of verifiedPrograms) assert.ok(["SK", "CZ"].includes(program.countryCode), program.id);
+});
+
+test("medicine programmes: dentistry follows its faculty's own 2027/28 rules", () => {
+  const jlf = findVerifiedProgram("uniba-jlf-dentistry-2027-sk")!;
+  assert.equal(jlf.application.feeEur, 100);
+  assert.equal(jlf.durationYears, 5);
+  assert.ok(jlf.documents.some((item) => item.id === "jlf-smz"));
+  assert.ok(!jlf.documents.some((item) => item.id === "jlf-application"));
+  const muniDentistry = findVerifiedProgram("muni-lf-dentistry-mddr-2027")!;
+  assert.ok(!muniDentistry.documents.some((item) => item.id === "muni-lf-bonus-waiver"), "exam waiver is for General Medicine only");
+  assert.ok(findVerifiedProgram("muni-lf-medicine-mudr-2027")!.documents.some((item) => item.id === "muni-lf-bonus-waiver"));
+  const hk = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Medicine", languages: [{ code: "cs", level: "C1", willingToStudyIn: true, proof: "certificate" }] }), findVerifiedProgram("lfhk-medicine-mudr-2027")!, today);
+  assert.equal(hk.canBuildRoute, true);
+  assert.equal(hk.checks.find((item) => item.id === "language")!.status, "action");
+  assert.ok(hk.requiredDocuments.some((item) => item.id === "lfhk-czech-c1"));
+});
+
+test("economics: Slovak B1 at FPEDAS, faculty Czech tests at VŠE", () => {
+  const fpedas = matchProgram(profile({ studyCategory: "Economics & Business", languages: [{ code: "sk", level: "B1", willingToStudyIn: true, proof: "certificate" }] }), findVerifiedProgram("uniza-fpedas-financial-management-bc-2027")!, today);
+  assert.equal(fpedas.checks.find((item) => item.id === "language")!.status, "action");
+  assert.ok(fpedas.requiredDocuments.some((item) => item.id === "fpedas-slovak-b1"));
+  const czechSchool = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Economics & Business", educationCountryCode: "CZ" }), findVerifiedProgram("vse-fmv-international-trade-bc-2027")!, today);
+  assert.ok(!czechSchool.requiredDocuments.some((item) => item.id === "vse-fmv-czech-test"), "a Czech school needs no Czech test");
+  const abroad = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Economics & Business" }), findVerifiedProgram("vse-fmv-international-trade-bc-2027")!, today);
+  assert.ok(abroad.requiredDocuments.some((item) => item.id === "vse-fmv-czech-test"));
 });

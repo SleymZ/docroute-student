@@ -297,15 +297,16 @@ test("law and economics are listed as fields with sourced coming-soon faculties"
   const economics = ["SK", "CZ"].flatMap((countryCode) =>
     findPendingProgramGroups({ countryCode, category: "Economics & Business", degreeLevel: "bachelor" }),
   );
-  assert.deepEqual(economics.map((group) => group.id), ["euba-economics-bsc-2027", "vse-nf-economics-bsc-2027"]);
+  // VŠE is verified at FPH and FMV (2026-11-05), so NF VŠE is no longer listed.
+  assert.deepEqual(economics.map((group) => group.id), ["euba-economics-bsc-2027"]);
   for (const group of economics) assert.equal(group.status, "rules-not-published");
 });
 
-test("Czech medicine adds two faculties next to the Slovak ones", async () => {
+test("Czech medicine is verified at Charles, Masaryk and Palacký universities", async () => {
   const { formatPendingDegree } = await import("../src/data/pending-programs");
   const czMedicine = findPendingProgramGroups({ countryCode: "CZ", category: "Medicine", degreeLevel: "bachelor" });
-  // 1. LF UK is verified; the rest stay coming soon.
-  assert.deepEqual(czMedicine.map((group) => group.id), ["muni-lf-medicine-2027", "upol-md-english-2027", "muni-md-english-2027"]);
+  // Verified 2026-11-05 (one route or coming soon per university and field).
+  assert.deepEqual(czMedicine.map((group) => group.id), []);
   assert.equal(formatPendingDegree("long-cycle", "Medicine"), "Long-cycle master's (MUDr./MDDr.)");
   assert.equal(formatPendingDegree("long-cycle", "Law"), "Long-cycle master's (Mgr.)");
 });
@@ -315,16 +316,14 @@ test("only verified faculties match law, economics and medicine profiles", () =>
     matchPrograms({ ...profile, studyCategory: "Law", destinationCountryCode: "CZ" }, verifiedPrograms, "2026-10-29")
       .map((match) => match.program.id)
       .sort(),
-    ["cuni-prf-law-mgr-2027", "muni-law-mgr-2027"],
+    ["cuni-prf-law-mgr-2027", "muni-law-mgr-2027", "upol-pf-law-mgr-2027", "upol-pf-public-administration-law-bc-2027", "zcu-fpr-law-mgr-2027"],
   );
-  for (const [studyCategory, destinationCountryCode] of [["Law", "SK"], ["Economics & Business", "SK"], ["Economics & Business", "CZ"]]) {
-    {
-      assert.deepEqual(
-        matchPrograms({ ...profile, studyCategory, destinationCountryCode }, verifiedPrograms, "2026-10-29"),
-        [],
-      );
-    }
-  }
+  assert.deepEqual(matchPrograms({ ...profile, studyCategory: "Law", destinationCountryCode: "SK" }, verifiedPrograms, "2026-10-29"), []);
+  const economics = (destinationCountryCode: string) =>
+    matchPrograms({ ...profile, studyCategory: "Economics & Business", destinationCountryCode }, verifiedPrograms, "2026-10-29")
+      .map((match) => match.program.universityHost);
+  assert.deepEqual([...new Set(economics("SK"))], ["uniza.sk"]);
+  assert.deepEqual([...new Set(economics("CZ"))].sort(), ["utb.cz", "vse.cz", "vutbr.cz"]);
 });
 
 test("European listings cover many countries, each with sources on the university's own domain", async () => {

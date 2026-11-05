@@ -84,6 +84,7 @@ page `/route/guide`, 2026-10-30).
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
 | Current Slovak residents | Study residence (report new studies, gap, renewal), other purpose (change of purpose to study), permanent/long-term (no new application) | 2026-10-28 |
+| Admission | Slovakia and Czechia · 2027/28 · Medicine 10, Law 5, Economics & Business 10 programmes (`src/data/verified-programs-fields.ts`, `src/data/verified-programs-sk-cz.ts`), policy `generic-2027` | 2026-11-05 |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
 
 The catalog (`src/data/universities.json`, 2,598 institutions in 46
@@ -938,6 +939,46 @@ latest rules" (owner rule 2026-10-30):
   (robots), UPOL PřF (no application deadline in the 2027/28 document).
 - Fees not stated on the checked pages are shown as "set in the
   e-application" (MUNI FI, FMFI, PrF UK, 1. LF UK).
+
+## Verified programmes: 10 per field (2026-11-05, owner's goal)
+
+Goal: ten verified 2027/28 programmes per field in Slovakia and Czechia
+(the only countries with a post-admission residence route). Counts after
+this change: Computer Science 16, Medicine 10, Economics & Business 10,
+Law 5. All use the `generic-2027` policy; new file
+`src/data/verified-programs-fields.ts`.
+
+- Medicine (+8): LF MU Všeobecné and Zubní lékařství (deadline 28 Feb 2027,
+  CZK 900, tests 9/10 June); LF UK Hradec Králové Všeobecné and Zubní
+  lékařství (28 Feb, CZK 1,000, test 16 June, Czech C1); LF UP Olomouc
+  Všeobecné and Zubní lékařství (15 March, CZK 790, test 8 June);
+  1. LF UK Zubní lékařství (same dates as Všeobecné); JLF UK Zubné
+  lekárstvo (€100, 12 places, skills test SMZ 19–23 April).
+- Law (+3): PF UP Olomouc Právo a právní věda and Právo ve veřejné správě
+  (Bc., full-time; SCIO OSP+ZSV, 15 March, CZK 790); FPR ZČU Plzeň Právo a
+  právní věda (30 April, CZK 750, SCIO OSP+ZSV). Only five, because no
+  other full-time Czech or Slovak law programme had 2027/28 rules: Slovak
+  law faculties (Comenius, UPJŠ, Trnava, UMB, Paneurópska) still show
+  2026/27; MU and PF UP's other bachelors are combined/distance only.
+- Economics & Business (+10): FP VUT Ekonomika a management; FPH VŠE
+  Podniková ekonomika a management; FMV VŠE Mezinárodní obchod, Turismus a
+  hospitality management; FPEDAS UNIZA Ekonomika a manažment podniku,
+  Finančný manažment, Elektronický obchod a manažment; FaME UTB Ekonomika a
+  management, Finance a finanční technologie, Účetnictví a daně.
+- Rule "verified or coming soon, not both" per university and field:
+  removed pending groups MUNI LF (Czech), MUNI and UPOL General Medicine
+  in English, and NF VŠE Economics (VŠE is now verified at FPH and FMV).
+- Not verified (no 2027/28 rules or unreadable on 2026-11-05): 2. LF UK
+  (no application deadline), 3. LF UK (only 2026/27 details), LF UK Plzeň
+  (outdated page), LF OU (accreditation), LF UK Bratislava, UPJŠ LF, NF and
+  FFÚ VŠE, ESF MU (2027/28 PDF not reachable), EUBA (English only), VŠB EKF,
+  CEVRO (domain differs from the catalogue).
+- Faculty pages that state no Czech proof get an "unknown" language check
+  (LF MU, LF UP, PF UP, FPR ZČU, FaME); FPH and FMV use their own Czech
+  tests (no CEFR level), shown as documents for schools outside CZ/SK.
+- University page: the "verified route is available" sentence now counts
+  programmes per faculty, degree type and length and adds "N more verified
+  in this field" (VŠE: FPH and FMV; medicine and dentistry).
 
 ## Top 100: last day to apply and admission requirements (2026-11-05)
 

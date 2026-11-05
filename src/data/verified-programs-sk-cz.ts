@@ -394,8 +394,36 @@ const jlf = programs(
       },
     },
   },
-  [{ id: "uniba-jlf-medicine-2027-sk", programName: "General Medicine", localProgramName: "Všeobecné lekárstvo" }],
+  [
+    { id: "uniba-jlf-medicine-2027-sk", programName: "General Medicine", localProgramName: "Všeobecné lekárstvo" },
+    // Dentistry (MDDr., 5 years) follows the same regulation 21/2026 and NPS
+    // dates; the faculty page (updated 2026-11-04) lists its own fee, 12
+    // places and a practical skills test (SMZ).
+    { id: "uniba-jlf-dentistry-2027-sk", programName: "Dentistry", localProgramName: "Zubné lekárstvo", patch: { durationYears: 5 } },
+  ],
 );
+
+{
+  const dentistry = jlf[1];
+  dentistry.application = { ...dentistry.application, feeEur: 100 };
+  dentistry.documents = [
+    doc("jlf-dentistry-application", "Application, €100 fee and health-fitness form", "UK e-prihláška or the central CEP portal, 1 December 2026 – 28 February 2027, with the €100 fee and health-fitness attachments (one application for both Slovak-taught programmes also costs €100 if Dentistry is listed first).", "always", "application", ["jlf-admission-2027"]),
+    ...dentistry.documents.filter((item) => item.id !== "jlf-application"),
+    doc("jlf-smz", "Practical skills test (SMZ)", "In person at JLF UK, 19–23 April 2027; the invitation comes at least 28 days before. SMZ results by 15 May 2027.", "entrance-exam", "admission-day", ["jlf-admission-2027"], "19–23 April 2027"),
+  ];
+  dentistry.minimumRequirements = [
+    { id: "jlf-dentistry-ranking", title: "Ranking by NPS, SMZ and bonus", description: "Admission follows your total (NPS score, SMZ points and bonus points) within the planned 12 places; no minimum score is published. Final results by 15 June 2027.", sourceIds: ["jlf-admission-2027"] },
+  ];
+  dentistry.genericRules = {
+    ...dentistry.genericRules!,
+    entrance: {
+      label: "NPS and practical skills test (SMZ)",
+      dueLabel: "SMZ 19–23 April 2027; NPS 20 March, 24 April or 22 May 2027",
+      text: "Sit the NPS on 20 March, 24 April or 22 May 2027 and the in-person skills test (SMZ) at JLF UK on 19–23 April 2027. NPS plus SMZ plus bonus points decide among 12 places; results by 15 June 2027.",
+      sourceIds: ["jlf-admission-2027"],
+    },
+  };
+}
 
 // ------------------------------------------------ PrF UK (Prague, Czech, law)
 
@@ -581,7 +609,12 @@ const lf1 = programs(
       },
     },
   },
-  [{ id: "cuni-lf1-medicine-mudr-2027", programName: "General Medicine", localProgramName: "Všeobecné lékařství" }],
+  [
+    { id: "cuni-lf1-medicine-mudr-2027", programName: "General Medicine", localProgramName: "Všeobecné lékařství" },
+    // The 2027/28 dates page gives Dentistry the same application period,
+    // the same written test (17 June 2027) and the same replacement date.
+    { id: "cuni-lf1-dentistry-mddr-2027", programName: "Dentistry", localProgramName: "Zubní lékařství", patch: { durationYears: 5 } },
+  ],
 );
 
 export const verifiedSkCzPrograms: readonly AdmissionProgram[] = [
