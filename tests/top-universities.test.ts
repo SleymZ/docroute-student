@@ -108,4 +108,12 @@ test("every university has a last day to apply, or says why there is none", () =
   }
   assert.ok(confirmedNone.size <= 6, `too many without a date: ${[...confirmedNone].join(", ")}`);
   assert.equal(topUniversities.find((item) => item.rank === 2)!.admissions.applyBy!.date, "2026-10-15");
+  // UCAS: after 13 January applications still go to universities until 30 June.
+  const newcastle = topUniversities.find((item) => item.rank === 67)!.admissions.applyBy!;
+  assert.equal(newcastle.lateUntil, "2027-06-30");
+  assert.equal(topUniversities.find((item) => item.rank === 2)!.admissions.applyBy!.lateUntil, undefined);
+  for (const university of topUniversities) {
+    const late = university.admissions.applyBy?.lateUntil;
+    if (late) assert.ok(late > university.admissions.applyBy!.date, university.name);
+  }
 });

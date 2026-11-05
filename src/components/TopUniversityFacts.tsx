@@ -114,9 +114,15 @@ function ApplyBy({ applyBy }: { applyBy?: TopApplyBy | null }) {
       </p>
       <p className={styles.applyByDate}>
         <strong>{formatPlanDate(applyBy.date)}</strong>
-        <ApplyByStatus date={applyBy.date} pastCycle={pastCycle} />
+        <ApplyByStatus date={applyBy.date} pastCycle={pastCycle} lateUntil={applyBy.lateUntil} />
       </p>
       <p className={styles.applyByLabel}>{applyBy.label}</p>
+      {applyBy.lateUntil && (
+        <p className={styles.applyByLabel}>
+          Late applications until {formatPlanDate(applyBy.lateUntil)}
+          {applyBy.lateLabel ? `: ${applyBy.lateLabel}` : ""}.
+        </p>
+      )}
     </div>
   );
 }

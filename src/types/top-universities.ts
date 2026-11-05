@@ -24,6 +24,10 @@ export type TopApplyBy = {
   date: string;
   cycle: "2027/28" | "2026/27";
   label: string;
+  // When applications after `date` are still accepted but no longer get
+  // equal consideration (UCAS until 30 June).
+  lateUntil?: string;
+  lateLabel?: string;
 };
 
 export type TopAdmissionFacts = Partial<Record<TopAdmissionField, string>> & {

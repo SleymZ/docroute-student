@@ -16,12 +16,19 @@ function daysUntil(from: string, to: string) {
 
 /** "Closed", "Today" or "N days left", worked out in the visitor's browser
  *  so a static page never shows a stale status. */
-export function ApplyByStatus({ date, pastCycle }: { date: string; pastCycle: boolean }) {
+export function ApplyByStatus({ date, pastCycle, lateUntil }: { date: string; pastCycle: boolean; lateUntil?: string }) {
   const [today, setToday] = useState<string | null>(null);
   useEffect(() => setToday(todayIso()), []);
   if (!today) return null;
 
   const days = daysUntil(today, date);
+  if (days < 0 && lateUntil && daysUntil(today, lateUntil) >= 0) {
+    return (
+      <span className={styles.applyStatus} data-tone="soon">
+        Late applications only
+      </span>
+    );
+  }
   if (days < 0) {
     return (
       <span className={styles.applyStatus} data-tone="closed">
