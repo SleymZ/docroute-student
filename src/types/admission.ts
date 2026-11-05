@@ -204,6 +204,10 @@ export type AdmissionProgram = {
     languageProofDueLabel?: string;
     waiverEvidenceDueLabel?: string;
     applicationUrl: string;
+    // Later verified rounds of the same intake, in date order. Once the main
+    // deadline has passed, matching uses the next round still open.
+    // documentDueLabels replaces the due labels of round-specific documents.
+    laterRounds?: Array<{ deadline: string; admissionDate: string; documentDueLabels?: Record<string, string> }>;
   };
   languagePolicy: {
     generalStatement: string;
@@ -224,6 +228,9 @@ export type AdmissionProgram = {
   minimumRequirements: AdmissionRequirement[];
   sources: OfficialSource[];
   verifiedAt: string;
+  // Taught in several languages at once (UPJŠ trilingual law): the applicant
+  // needs every instruction language, not just one of them.
+  allInstructionLanguagesRequired?: boolean;
   // Long-cycle master's (medicine, law): entered straight from school, so it
   // is matched like a first degree but never labelled a bachelor.
   programType?: "long-cycle";

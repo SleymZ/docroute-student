@@ -533,11 +533,29 @@ function matchGeneric(
   return { requiredDocuments, entranceRoute: "exam" };
 }
 
+// The round a profile is matched against: the main one, or after its
+// deadline the next verified later round of the same intake.
+export function programForDate(program: AdmissionProgram, asOfDate: string): AdmissionProgram {
+  const rounds = program.application.laterRounds;
+  if (!rounds?.length || asOfDate <= program.application.deadline) return program;
+  const next = rounds.find((round) => asOfDate <= round.deadline);
+  if (!next) return program;
+  const labels = next.documentDueLabels ?? {};
+  return {
+    ...program,
+    application: { ...program.application, deadline: next.deadline, admissionDate: next.admissionDate },
+    documents: program.documents.map((document) =>
+      labels[document.id] ? { ...document, dueLabel: labels[document.id] } : document,
+    ),
+  };
+}
+
 export function matchProgram(
   profile: ApplicantProfile,
   program: AdmissionProgram,
   asOfDate: string,
 ): ProgramMatch {
+  program = programForDate(program, asOfDate);
   const checks: MatchCheck[] = [];
   const nextActions: string[] = [];
   const sourceIds = program.sources.map((source) => source.id);
@@ -690,19 +708,31 @@ export function matchProgram(
   }
 
   // Keep language knowledge separate from willingness to study in a language.
-  const studyLanguage = program.instructionLanguages.find((instruction) =>
-    profile.languages.some(
-      (language) =>
-        language.code === instruction.code && language.willingToStudyIn,
-    ),
-  );
+  const willing = (code: string) =>
+    profile.languages.some((language) => language.code === code && language.willingToStudyIn);
+  const missingLanguages = program.allInstructionLanguagesRequired
+    ? program.instructionLanguages.filter((instruction) => !willing(instruction.code))
+    : [];
+  const studyLanguage = program.allInstructionLanguagesRequired
+    ? missingLanguages.length === 0
+      ? program.instructionLanguages[0]
+      : undefined
+    : program.instructionLanguages.find((instruction) => willing(instruction.code));
   check(
     "study-language",
     "Teaching-language preference",
     studyLanguage ? "met" : "missing",
-    studyLanguage
-      ? "You are willing to study in " + studyLanguage.name + "."
-      : "This verified program is taught in " +
+    program.allInstructionLanguagesRequired
+      ? studyLanguage
+        ? "You are willing to study in " + program.instructionLanguages.map((item) => item.name).join(", ") + ", as this programme requires."
+        : "This programme is taught in " +
+          program.instructionLanguages.map((item) => item.name).join(", ") +
+          " and requires all of them. Not marked as a study language: " +
+          missingLanguages.map((item) => item.name).join(", ") +
+          "."
+      : studyLanguage
+        ? "You are willing to study in " + studyLanguage.name + "."
+        : "This verified program is taught in " +
           program.instructionLanguages.map((item) => item.name).join(", ") +
           ". None of those languages is marked as a language you would study in.",
   );

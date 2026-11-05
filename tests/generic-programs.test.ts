@@ -28,9 +28,9 @@ function profile(patch: Partial<ApplicantProfile> = {}): ApplicantProfile {
 
 const generic = verifiedPrograms.filter((program) => program.admissionPolicy === "generic-2027");
 
-test("35 programmes at 18 faculties verified on 2026-11-05 use the shared policy with their own dates", () => {
-  assert.equal(generic.length, 35);
-  assert.equal(new Set(generic.map((program) => program.faculty + program.universityId)).size, 18);
+test("49 programmes at 25 faculties verified on 2026-11-05 use the shared policy with their own dates", () => {
+  assert.equal(generic.length, 49);
+  assert.equal(new Set(generic.map((program) => program.faculty + program.universityId)).size, 25);
   for (const program of generic) {
     assert.ok(program.genericRules, program.id);
     assert.equal(program.intake, "2027/28");
@@ -121,12 +121,12 @@ test("1. LF UK: a Slovak maturita covers Czech C1 and needs no recognition", () 
 
 test("each field has verified 2027/28 programmes in Slovakia and Czechia", () => {
   const count = (category: string) => verifiedPrograms.filter((program) => program.category === category && program.intake === "2027/28").length;
-  assert.ok(count("Computer Science") >= 10, "Computer Science");
-  assert.equal(count("Medicine"), 10);
-  assert.equal(count("Economics & Business"), 10);
+  assert.equal(count("Computer Science"), 18);
+  assert.equal(count("Medicine"), 15);
+  assert.equal(count("Economics & Business"), 15);
   // Every full-time Czech or Slovak law programme with published 2027/28
   // rules on 2026-11-05; Slovak law faculties had not published theirs yet.
-  assert.equal(count("Law"), 5);
+  assert.equal(count("Law"), 7);
   for (const program of verifiedPrograms) assert.ok(["SK", "CZ"].includes(program.countryCode), program.id);
 });
 
@@ -164,4 +164,59 @@ test("LF UP exempts Slovak certificates; ZČU payment needs the specific symbol"
   const upol = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Medicine", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), findVerifiedProgram("upol-lf-medicine-mudr-2027")!, today);
   assert.equal(upol.checks.find((item) => item.id === "recognition")!.status, "met");
   assert.match(findVerifiedProgram("zcu-fpr-law-mgr-2027")!.documents.find((item) => item.id === "zcu-fpr-application")!.description, /specific symbol/);
+});
+
+test("second batch: English medicine, UPJŠ law, UPCE and ČZU economics, FIS and FP VUT informatics", () => {
+  const trilingual = findVerifiedProgram("upjs-pf-law-trilingual-bc-2027")!;
+  assert.equal(trilingual.durationYears, 4);
+  assert.deepEqual(trilingual.instructionLanguages.map((item) => item.code), ["sk", "en", "fr"]);
+  const slovakSchool = matchProgram(profile({ studyCategory: "Law", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), findVerifiedProgram("upjs-pf-law-bc-2027")!, today);
+  assert.equal(slovakSchool.checks.find((item) => item.id === "language")!.status, "met");
+  const english = findVerifiedProgram("uniba-lf-dentistry-en-2027")!;
+  assert.equal(english.instructionLanguages[0].code, "en");
+  assert.equal(english.durationYears, 5);
+  assert.equal(english.application.admissionDate, "2027-03-16");
+  assert.equal(findVerifiedProgram("upce-fes-finance-bc-2027")!.genericRules!.entrance.label, "SCIO OSP or Mathematics, 20th percentile");
+  assert.equal(findVerifiedProgram("upce-fes-digital-business-bc-2027")!.genericRules!.entrance.label, "Test of critical and creative thinking");
+  const mi = findVerifiedProgram("vut-fp-management-informatics-bc-2027")!;
+  assert.equal(mi.category, "Computer Science");
+  assert.equal(mi.application.admissionDate, "2027-05-22");
+  assert.equal(findVerifiedProgram("vut-fp-economics-management-bc-2027")!.application.admissionDate, "2027-05-21");
+});
+
+test("later verified rounds keep English medicine open after the first deadline", () => {
+  const jlf = findVerifiedProgram("uniba-jlf-medicine-en-2027")!;
+  const april = matchProgram(profile({ studyCategory: "Medicine", languages: [{ code: "en", level: "C1", willingToStudyIn: true, proof: "certificate" }] }), jlf, "2027-04-01");
+  assert.equal(april.canBuildRoute, true);
+  assert.equal(april.program.application.deadline, "2027-06-13");
+  assert.equal(april.program.application.admissionDate, "2027-06-26");
+  assert.equal(april.program.documents.find((item) => item.id === "jlf-en-registration")!.dueLabel, "By 13 June 2027 for the June exam");
+  assert.equal(jlf.documents.find((item) => item.id === "jlf-en-registration")!.dueLabel, "By 28 February 2027 for the March exam", "the source data is not changed");
+  const preview = buildRoutePreview(profile({ studyCategory: "Medicine", languages: [{ code: "en", level: "C1", willingToStudyIn: true, proof: "certificate" }] }), april)!;
+  assert.ok(!JSON.stringify(preview).includes("28 February 2027 for the March exam"));
+  const july = matchProgram(profile({ studyCategory: "Medicine" }), jlf, "2027-07-01");
+  assert.equal(july.canBuildRoute, false, "the visa-free August round is not used");
+  const dentistry = matchProgram(profile({ studyCategory: "Medicine" }), findVerifiedProgram("uniba-lf-dentistry-en-2027")!, "2027-05-01");
+  assert.equal(dentistry.program.application.admissionDate, "2027-08-17");
+  assert.equal(dentistry.program.documents.find((item) => item.id === "fmed-en-application")!.dueLabel, "By 25 July 2027 (August round)");
+  assert.equal(dentistry.program.documents.find((item) => item.id === "fmed-en-ib")!.dueLabel, "19 November – 31 December 2026", "the IB window does not change");
+  const early = matchProgram(profile({ studyCategory: "Medicine" }), jlf, today);
+  assert.equal(early.program.application.deadline, "2027-02-28");
+});
+
+test("trilingual law needs Slovak, English and French; the page shows today's round", async () => {
+  const program = findVerifiedProgram("upjs-pf-law-trilingual-bc-2027")!;
+  const slovakOnly = matchProgram(profile({ studyCategory: "Law", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), program, today);
+  const check = slovakOnly.checks.find((item) => item.id === "study-language")!;
+  assert.equal(check.status, "missing");
+  assert.match(check.detail, /English, French/);
+  const all = matchProgram(profile({ studyCategory: "Law", educationCountryCode: "SK", citizenshipCountryCode: "SK", languages: [
+    { code: "sk", level: "native", willingToStudyIn: true, proof: "school" },
+    { code: "en", level: "B2", willingToStudyIn: true, proof: "certificate" },
+    { code: "fr", level: "B1", willingToStudyIn: true, proof: "certificate" },
+  ] }), program, today);
+  assert.equal(all.checks.find((item) => item.id === "study-language")!.status, "met");
+  const { readFileSync } = await import("node:fs");
+  const page = readFileSync("src/app/universities/[id]/page.tsx", "utf8");
+  assert.doesNotMatch(page, /formatDate\(verifiedProgram\.application\.(deadline|admissionDate)\)/);
 });

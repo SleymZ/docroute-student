@@ -53,7 +53,9 @@ function match(patch: Partial<ApplicantProfile> = {}) {
 
 for (const [label, patch] of [
   ["another country", { destinationCountryCode: "AT" }],
-  ["another subject", { studyCategory: "Law" }],
+  // Every listed field now has verified Slovak programmes; a field
+  // DocRoute does not cover still matches nothing.
+  ["another subject", { studyCategory: "Architecture" }],
   ["master's degree", { degreeLevel: "master" }],
   ["another intake", { intake: "2028/29" }],
 ] as const) {

@@ -318,12 +318,15 @@ test("only verified faculties match law, economics and medicine profiles", () =>
       .sort(),
     ["cuni-prf-law-mgr-2027", "muni-law-mgr-2027", "upol-pf-law-mgr-2027", "upol-pf-public-administration-law-bc-2027", "zcu-fpr-law-mgr-2027"],
   );
-  assert.deepEqual(matchPrograms({ ...profile, studyCategory: "Law", destinationCountryCode: "SK" }, verifiedPrograms, "2026-10-29"), []);
+  assert.deepEqual(
+    [...new Set(matchPrograms({ ...profile, studyCategory: "Law", destinationCountryCode: "SK" }, verifiedPrograms, "2026-10-29").map((match) => match.program.universityHost))],
+    ["upjs.sk"],
+  );
   const economics = (destinationCountryCode: string) =>
     matchPrograms({ ...profile, studyCategory: "Economics & Business", destinationCountryCode }, verifiedPrograms, "2026-10-29")
       .map((match) => match.program.universityHost);
   assert.deepEqual([...new Set(economics("SK"))], ["uniza.sk"]);
-  assert.deepEqual([...new Set(economics("CZ"))].sort(), ["utb.cz", "vse.cz", "vutbr.cz"]);
+  assert.deepEqual([...new Set(economics("CZ"))].sort(), ["czu.cz", "upce.cz", "utb.cz", "vse.cz", "vutbr.cz"]);
 });
 
 test("European listings cover many countries, each with sources on the university's own domain", async () => {
