@@ -893,6 +893,14 @@ latest rules" (owner rule 2026-10-30):
   19 September 2022), Czechia (biometric Russian passports only). Added as
   "attention" tasks to every route's passport stage.
 
+## Home: destination asked only after "Other country" (2026-11-05, PR #54)
+
+- `/home` route form: every purpose defaults to Slovakia; "I want to … in"
+  is shown only when documents are issued in "Other country", or when a
+  different destination was already chosen on the map or in the address
+  (never hidden while it differs from the default).
+- Leaving "Other country" resets the destination and the map to Slovakia.
+
 ## Verified programmes: 8 Slovak and Czech faculties (2026-11-05, plan item 4)
 
 - New shared matching policy `generic-2027` (`matchGeneric` in
