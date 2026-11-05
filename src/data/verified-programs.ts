@@ -1,3 +1,4 @@
+import { verifiedSkCzPrograms } from "@/data/verified-programs-sk-cz";
 import type { AdmissionProgram } from "@/types/admission";
 
 const admissionsPage =
@@ -563,6 +564,8 @@ export const verifiedPrograms: readonly AdmissionProgram[] = [
   })),
   charlesMffInformatics,
   cvutFitInformatics,
+  // Verified 2026-11-05 on the shared "generic-2027" policy.
+  ...verifiedSkCzPrograms,
 ];
 
 export type VerifiedProgram = AdmissionProgram;

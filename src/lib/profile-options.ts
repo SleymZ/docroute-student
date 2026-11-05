@@ -121,6 +121,15 @@ export function formatDegreeLevel(value: DegreeLevel) {
   return value === "master" ? "Master's" : "Bachelor's";
 }
 
+/** A programme's own degree: long-cycle programmes (medicine, law) are
+ *  entered from school like a bachelor's but are never called one. */
+export function formatProgramDegree(program: { degreeLevel: DegreeLevel; programType?: "long-cycle"; durationYears?: number }) {
+  if (program.programType === "long-cycle") {
+    return program.durationYears ? `Long-cycle master's (${program.durationYears} years)` : "Long-cycle master's";
+  }
+  return formatDegreeLevel(program.degreeLevel);
+}
+
 export function getResidenceStatusLabel(
   status: CurrentResidenceStatus,
   destinationName: string,

@@ -150,6 +150,27 @@ export type AdmissionRequirement = {
   sourceIds: string[];
 };
 
+// Declarative rules for programmes on the shared "generic-2027" matching
+// policy (src/lib/match-programs.ts, matchGeneric). Each field restates what
+// the faculty's own 2027/28 documents say; nothing is inferred.
+export type GenericAdmissionRules = {
+  // Language proof for the teaching language. null when the checked pages do
+  // not state one (the match then asks the applicant to confirm it).
+  language: {
+    code: string;
+    name: string;
+    minimumLevel: CefrLevel;
+    exemptCitizenships: string[];
+    exemptSchools: string[];
+    proof: string;
+    sourceIds: string[];
+  } | null;
+  languageUnknownNote?: string;
+  // Schools whose certificates need no recognition step.
+  recognition: { exemptSchools: string[]; text: string; sourceIds: string[] };
+  entrance: { label: string; text: string; sourceIds: string[] };
+};
+
 export type AdmissionProgram = {
   id: string;
   admissionPolicy: string;
@@ -201,6 +222,10 @@ export type AdmissionProgram = {
   minimumRequirements: AdmissionRequirement[];
   sources: OfficialSource[];
   verifiedAt: string;
+  // Long-cycle master's (medicine, law): entered straight from school, so it
+  // is matched like a first degree but never labelled a bachelor.
+  programType?: "long-cycle";
+  genericRules?: GenericAdmissionRules;
 };
 
 export type MatchStatus =

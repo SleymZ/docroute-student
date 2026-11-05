@@ -63,15 +63,15 @@ test("every country outside Slovakia and Czechia has an official student-residen
 });
 
 test("Slovak and Czech listings use the verified residence routes", () => {
-  const sk = buildFullPath(group("uniba-fmfi-computing-bsc-2027"), nonEu);
+  const sk = buildFullPath(group("tuke-fei-computing-bsc-2027"), nonEu);
   assert.equal(sk.residenceCoverage, "verified");
   assert.ok(sk.sources.some((source) => source.id === "iom-study-residence-application"));
 
-  const cz = buildFullPath(group("vut-fit-computing-bsc-2027"), nonEu);
+  const cz = buildFullPath(group("upce-fei-it-bsc-2027"), nonEu);
   assert.equal(cz.residenceCoverage, "verified");
   assert.ok(cz.sources.some((source) => source.id.startsWith("cz-")));
 
-  const slovak = buildFullPath(group("uniba-fmfi-computing-bsc-2027"), {
+  const slovak = buildFullPath(group("tuke-fei-computing-bsc-2027"), {
     citizenshipCountryCode: "SK",
     currentResidenceStatus: "eu-eea-swiss-passport",
   });

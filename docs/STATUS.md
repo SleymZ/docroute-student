@@ -862,6 +862,35 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
+## Verified programmes: 8 Slovak and Czech faculties (2026-11-05, plan item 4)
+
+- New shared matching policy `generic-2027` (`matchGeneric` in
+  `src/lib/match-programs.ts`): a programme declares `genericRules`
+  (language proof with exempt citizenships/schools, recognition with exempt
+  schools, entrance route) and the matcher only restates them. A page that
+  states no language proof gives an "unknown" check (status "more
+  information") instead of a guess.
+- `src/data/verified-programs-sk-cz.ts`, checked on the faculties' own
+  2027/28 pages: VUT FIT Informační technologie; STU FIIT Informatika;
+  MUNI FI Informatika, Programování a vývoj aplikací, Kyberbezpečnost,
+  Bioinformatika; FMFI UK Informatika, Aplikovaná informatika, Dátová veda,
+  Bioinformatika (conditions approved 19 October 2026); JLF UK Všeobecné
+  lekárstvo (Slovak); PrF UK and PrF MU Právo a právní věda; 1. LF UK
+  Všeobecné lékařství. 14 programmes.
+- Medicine and law carry `programType: "long-cycle"` and are labelled
+  "Long-cycle master's (N years)" (`formatProgramDegree`), while matching
+  from a bachelor-level profile as before.
+- Rule "verified or coming soon, not both" per university and field: the
+  pending groups of these faculties were removed, and with them STU FEI AI,
+  STU FIIT English and LF UK Bratislava (same university and field). JLF's
+  English-taught General Medicine and both Dentistry programmes are not
+  verified and no longer listed.
+- Not verified (2027/28 not published or unreadable on 2026-11-05): TUKE
+  FEI, LF UK Bratislava, VŠE NF, VŠB FEI, MUNI LF (page error), 3. LF UK
+  (robots), UPOL PřF (no application deadline in the 2027/28 document).
+- Fees not stated on the checked pages are shown as "set in the
+  e-application" (MUNI FI, FMFI, PrF UK, 1. LF UK).
+
 ## Top 100: last day to apply and admission requirements (2026-11-05)
 
 - New `admissions.applyBy` on every Top 100 university: `{date, cycle,

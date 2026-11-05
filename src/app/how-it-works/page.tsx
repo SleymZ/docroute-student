@@ -36,7 +36,7 @@ import { verifiedPrograms } from "@/data/verified-programs";
 import { matchStatusLabels } from "@/lib/match-programs";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { STUDY_ROUTES_CHECKED } from "@/lib/residence/study-routes";
-import { formatDegreeLevel } from "@/lib/profile-options";
+import { formatDegreeLevel, formatProgramDegree } from "@/lib/profile-options";
 import type { MatchStatus } from "@/types/admission";
 
 import styles from "./HowItWorks.module.css";
@@ -132,7 +132,7 @@ export default function HowItWorksPage() {
         faculty: program.faculty,
         city: program.city,
         count: 1,
-        scope: `${formatDegreeLevel(program.degreeLevel)} · ${program.category} · ${program.intake}`,
+        scope: `${formatProgramDegree(program)} · ${program.category} · ${program.intake}`,
         checkedAt: program.verifiedAt,
       });
     }

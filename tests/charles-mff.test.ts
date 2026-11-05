@@ -32,7 +32,7 @@ const check = (p: ApplicantProfile, id: string) =>
 test("only Czech programmes match a Czech profile, and never a Slovak one", () => {
   assert.deepEqual(
     matchPrograms(profile(), verifiedPrograms, today).map((item) => item.program.id).sort(),
-    ["cuni-mff-informatics-bsc-2027", "cvut-fit-informatics-bsc-2027"],
+    ["cuni-mff-informatics-bsc-2027", "cvut-fit-informatics-bsc-2027", "muni-fi-bioinfo-bsc-2027", "muni-fi-informatika-bsc-2027", "muni-fi-kyber-bsc-2027", "muni-fi-pva-bsc-2027", "vut-fit-it-bsc-2027"],
   );
   assert.ok(
     matchPrograms(profile({ destinationCountryCode: "SK" }), verifiedPrograms, today).every(
