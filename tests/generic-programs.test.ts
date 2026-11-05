@@ -190,10 +190,16 @@ test("later verified rounds keep English medicine open after the first deadline"
   assert.equal(april.canBuildRoute, true);
   assert.equal(april.program.application.deadline, "2027-06-13");
   assert.equal(april.program.application.admissionDate, "2027-06-26");
+  assert.equal(april.program.documents.find((item) => item.id === "jlf-en-registration")!.dueLabel, "By 13 June 2027 for the June exam");
+  assert.equal(jlf.documents.find((item) => item.id === "jlf-en-registration")!.dueLabel, "By 28 February 2027 for the March exam", "the source data is not changed");
+  const preview = buildRoutePreview(profile({ studyCategory: "Medicine", languages: [{ code: "en", level: "C1", willingToStudyIn: true, proof: "certificate" }] }), april)!;
+  assert.ok(!JSON.stringify(preview).includes("28 February 2027 for the March exam"));
   const july = matchProgram(profile({ studyCategory: "Medicine" }), jlf, "2027-07-01");
   assert.equal(july.canBuildRoute, false, "the visa-free August round is not used");
   const dentistry = matchProgram(profile({ studyCategory: "Medicine" }), findVerifiedProgram("uniba-lf-dentistry-en-2027")!, "2027-05-01");
   assert.equal(dentistry.program.application.admissionDate, "2027-08-17");
+  assert.equal(dentistry.program.documents.find((item) => item.id === "fmed-en-application")!.dueLabel, "By 25 July 2027 (August round)");
+  assert.equal(dentistry.program.documents.find((item) => item.id === "fmed-en-ib")!.dueLabel, "19 November – 31 December 2026", "the IB window does not change");
   const early = matchProgram(profile({ studyCategory: "Medicine" }), jlf, today);
   assert.equal(early.program.application.deadline, "2027-02-28");
 });

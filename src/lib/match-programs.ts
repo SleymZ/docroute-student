@@ -540,9 +540,13 @@ export function programForDate(program: AdmissionProgram, asOfDate: string): Adm
   if (!rounds?.length || asOfDate <= program.application.deadline) return program;
   const next = rounds.find((round) => asOfDate <= round.deadline);
   if (!next) return program;
+  const labels = next.documentDueLabels ?? {};
   return {
     ...program,
     application: { ...program.application, deadline: next.deadline, admissionDate: next.admissionDate },
+    documents: program.documents.map((document) =>
+      labels[document.id] ? { ...document, dueLabel: labels[document.id] } : document,
+    ),
   };
 }
 

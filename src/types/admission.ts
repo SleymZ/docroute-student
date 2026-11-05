@@ -206,7 +206,8 @@ export type AdmissionProgram = {
     applicationUrl: string;
     // Later verified rounds of the same intake, in date order. Once the main
     // deadline has passed, matching uses the next round still open.
-    laterRounds?: Array<{ deadline: string; admissionDate: string }>;
+    // documentDueLabels replaces the due labels of round-specific documents.
+    laterRounds?: Array<{ deadline: string; admissionDate: string; documentDueLabels?: Record<string, string> }>;
   };
   languagePolicy: {
     generalStatement: string;

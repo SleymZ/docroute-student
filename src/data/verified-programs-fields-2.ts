@@ -145,7 +145,7 @@ const jlfEn = programs(
       applicationUrl: "https://www.jfmed.uniba.sk/en/study/applicants/application-process/",
       // The August and September rounds are only for applicants who need no
       // national visa or residence permit, so they are not used for matching.
-      laterRounds: [{ deadline: "2027-06-13", admissionDate: "2027-06-26" }],
+      laterRounds: [{ deadline: "2027-06-13", admissionDate: "2027-06-26", documentDueLabels: { "jlf-en-registration": "By 13 June 2027 for the June exam", "jlf-en-exam": "26 June 2027" } }],
       waiverEvidenceDueLabel: "IB certificate with the application",
     },
     languagePolicy: {
@@ -206,7 +206,7 @@ const fmedEn = programs(
       admissionDate: "2027-03-15",
       feeEur: 85,
       applicationUrl: "https://www.fmed.uniba.sk/en/study/for-applicants/admission-process/",
-      laterRounds: [{ deadline: "2027-07-25", admissionDate: "2027-08-16" }],
+      laterRounds: [{ deadline: "2027-07-25", admissionDate: "2027-08-16", documentDueLabels: { "fmed-en-application": "By 25 July 2027 (August round)" } }],
       waiverEvidenceDueLabel: "IB route 19 November – 31 December 2026",
     },
     languagePolicy: {
@@ -257,7 +257,7 @@ const fmedEn = programs(
           admissionDate: "2027-03-16",
           feeEur: 85,
           applicationUrl: "https://www.fmed.uniba.sk/en/study/for-applicants/admission-process/",
-          laterRounds: [{ deadline: "2027-07-25", admissionDate: "2027-08-17" }],
+          laterRounds: [{ deadline: "2027-07-25", admissionDate: "2027-08-17", documentDueLabels: { "fmed-en-application": "By 25 July 2027 (August round)" } }],
           waiverEvidenceDueLabel: "IB route 19 November – 31 December 2026",
         },
         minimumRequirements: [{ id: "fmed-en-den", title: "About 50 places; tuition €15,900", description: "About 50 places. Tuition €15,900 a year (the same each year of the standard 5 years). IB route: grade 6 in at least three HL subjects from Biology, Chemistry, Physics, Mathematics, Psychology and Digital Society.", sourceIds: ["fmed-en-admission-2027"] }],
