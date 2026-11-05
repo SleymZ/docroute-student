@@ -516,3 +516,90 @@
   font-size: 12.5px;
   line-height: 1.5;
 }
+
+.applyBy {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid light-dark(rgba(212, 80, 47, 0.32), rgba(255, 121, 95, 0.32));
+  border-left: 4px solid var(--coral);
+  border-radius: 10px;
+  background: light-dark(#fff8f5, #1f1a19);
+}
+
+.applyBy[data-cycle="past"],
+.applyBy[data-cycle="none"] {
+  border-color: light-dark(rgba(52, 71, 79, 0.2), rgba(197, 214, 222, 0.2));
+  border-left-color: light-dark(#809da8, #6f8a95);
+  background: light-dark(#f6f8f9, #191d21);
+}
+
+.applyByEyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: light-dark(#7a3a24, #ffb4a3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.applyBy[data-cycle="past"] .applyByEyebrow,
+.applyBy[data-cycle="none"] .applyByEyebrow {
+  color: light-dark(#4c616c, #a9bcc4);
+}
+
+.applyCycle {
+  color: light-dark(#4c616c, #a9bcc4);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.applyByDate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.applyByDate strong {
+  color: light-dark(#22211d, #f5f3ee);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.applyStatus {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.applyStatus[data-tone="open"] {
+  background: light-dark(rgba(31, 122, 77, 0.12), rgba(98, 204, 150, 0.16));
+  color: light-dark(#1f6b45, #8fe0b5);
+}
+
+.applyStatus[data-tone="soon"] {
+  background: light-dark(rgba(212, 80, 47, 0.12), rgba(255, 121, 95, 0.18));
+  color: light-dark(#a33a1f, #ffb4a3);
+}
+
+.applyStatus[data-tone="closed"] {
+  background: light-dark(rgba(52, 71, 79, 0.1), rgba(197, 214, 222, 0.12));
+  color: light-dark(#4c616c, #a9bcc4);
+}
+
+.applyByLabel,
+.applyByNone {
+  margin: 0;
+  color: light-dark(#34474f, #c5d6de);
+  font-size: 13px;
+  line-height: 1.5;
+}

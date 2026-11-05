@@ -51,6 +51,7 @@ export function resolveTopAdmissions(university: TopUniversity) {
     fields,
     sources,
     missing,
+    applyBy: university.admissions.applyBy,
     intake: university.admissions.intake ?? (usesCountry ? guide?.intake : undefined),
     notes: university.admissions.notes,
   };

@@ -15,7 +15,19 @@ export type TopAdmissionField =
 // It is not a verified route: no matching, no checklist. Every statement
 // comes from a listed official page; `intake` says which admission year
 // that page describes when it is not 2027/28.
+// The last day a non-EU applicant can apply (the main route; details stay in
+// `deadline`). `cycle` says which admission year the date belongs to: when
+// 2027/28 is not published yet, the last published 2026/27 date is shown
+// and labelled. `null` means the university has no single date we could
+// confirm.
+export type TopApplyBy = {
+  date: string;
+  cycle: "2027/28" | "2026/27";
+  label: string;
+};
+
 export type TopAdmissionFacts = Partial<Record<TopAdmissionField, string>> & {
+  applyBy?: TopApplyBy | null;
   intake?: string;
   notes?: string;
   sources: TopSource[];
