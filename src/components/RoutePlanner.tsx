@@ -168,10 +168,13 @@ export function RoutePlanner() {
   }
 
   function handleDocumentCountryChange(value: string) {
+    // Leaving "Other country" drops the destination picked there, so the
+    // hidden field never carries a stale country; the map follows.
+    if (documentCountry === "Other country" && value !== "Other country") {
+      setDestination(defaultDestination);
+      setMapDestination(defaultDestination);
+    }
     setDocumentCountry(value);
-    // The destination is asked only after "Other country". Any other document
-    // country resets it to the default, so the route never uses a stale value.
-    if (value !== "Other country") setDestination(defaultDestination);
   }
 
   function handleDestinationChange(value: string) {
@@ -211,7 +214,10 @@ export function RoutePlanner() {
           onPurposeChange={setPurpose}
           documentCountry={documentCountry}
           destination={destination}
-          showDestination={documentCountry === "Other country"}
+          // Asked after "Other country"; also shown whenever another
+          // destination was chosen on the map or in the address, so the
+          // route never goes to a country the form does not show.
+          showDestination={documentCountry === "Other country" || destination !== defaultDestination}
           program={program}
           routeAvailable={routeAvailable}
           residenceOnly={residenceOnly}
