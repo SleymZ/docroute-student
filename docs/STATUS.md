@@ -84,7 +84,7 @@ page `/route/guide`, 2026-10-30).
 | Czech residence | Study (long-term residence permit for study or its extension), work (employee card, free access for Czech graduates, EU Blue Card), EU registration, permanent residents (`src/data/czechia-residence.ts`, `src/lib/residence/czechia.ts`, page `/route/czechia`) | 2026-10-28 |
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
 | Current Slovak residents | Study residence (report new studies, gap, renewal), other purpose (change of purpose to study), permanent/long-term (no new application) | 2026-10-28 |
-| Admission | Slovakia and Czechia · 2027/28 · Medicine 10, Law 5, Economics & Business 10 programmes (`src/data/verified-programs-fields.ts`, `src/data/verified-programs-sk-cz.ts`), policy `generic-2027` | 2026-11-05 |
+| Admission | Slovakia and Czechia · 2027/28 · Medicine 15, Law 7, Economics & Business 15, Computer Science +2 programmes (`src/data/verified-programs-fields.ts`, `src/data/verified-programs-sk-cz.ts`), policy `generic-2027` | 2026-11-05 |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
 
 The catalog (`src/data/universities.json`, 2,598 institutions in 46
@@ -979,6 +979,34 @@ Law 5. All use the `generic-2027` policy; new file
 - University page: the "verified route is available" sentence now counts
   programmes per faculty, degree type and length and adds "N more verified
   in this field" (VŠE: FPH and FMV; medicine and dentistry).
+
+## Verified programmes: second batch (2026-11-05)
+
+Owner asked for +5 business, +5 medicine, +10 law, +1–2 computer science.
+Counts now: Computer Science 18, Medicine 15, Economics & Business 15,
+Law 7 (file `src/data/verified-programs-fields-2.ts`).
+
+- Law (+2 of 10 asked): PraF UPJŠ Košice Právo (3 years) and Právo in
+  Slovak, English and French (4 years); deadline 31 March 2027, €30 online,
+  test 10 June 2027. No more found: Comenius, Trnava, Paneurópska still
+  show 2025/26–2026/27 rules, UMB's site returned errors, ZČU's bachelor is
+  only documented for 2022/23, MU and PF UP bachelors are not full-time.
+- Medicine (+5, English-taught): JLF UK General Medicine (four exam rounds,
+  €70, up to 150, €11,500); LF UK Bratislava General Medicine and
+  Dentistry (March round by 21 February 2027, €85, 240/50 places);
+  LF UK Plzeň General Medicine and Dentistry (by 30 April 2027, CZK 990,
+  test 26 May 2027). Not added: UPJŠ LF English (published, but verifying it
+  would drop the Slovak-taught UPJŠ coming-soon listing), UPOL English (2027
+  exam dates not out), MUNI, LF HK and 1. LF English (2026 pages only).
+- Economics & Business (+5): PEF ČZU Business Administration and Economics
+  and Management (English; dean's directive 16/2026, GAP test, last stage
+  31 March 2027); FES UPCE Ekonomika a management, Digitální podnikání
+  (critical-thinking test) and Finance (SCIO 20th percentile).
+- Computer Science (+2): FIS VŠE Aplikovaná informatika; FP VUT
+  Manažerská informatika.
+- University page: when the selected field is verified, coming-soon
+  listings of other fields are not shown (UPJŠ law page no longer showed
+  medicine's "5 programs listed" and "Build my full path").
 
 ## Top 100: last day to apply and admission requirements (2026-11-05)
 

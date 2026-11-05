@@ -28,9 +28,9 @@ function profile(patch: Partial<ApplicantProfile> = {}): ApplicantProfile {
 
 const generic = verifiedPrograms.filter((program) => program.admissionPolicy === "generic-2027");
 
-test("35 programmes at 18 faculties verified on 2026-11-05 use the shared policy with their own dates", () => {
-  assert.equal(generic.length, 35);
-  assert.equal(new Set(generic.map((program) => program.faculty + program.universityId)).size, 18);
+test("49 programmes at 25 faculties verified on 2026-11-05 use the shared policy with their own dates", () => {
+  assert.equal(generic.length, 49);
+  assert.equal(new Set(generic.map((program) => program.faculty + program.universityId)).size, 25);
   for (const program of generic) {
     assert.ok(program.genericRules, program.id);
     assert.equal(program.intake, "2027/28");
@@ -121,12 +121,12 @@ test("1. LF UK: a Slovak maturita covers Czech C1 and needs no recognition", () 
 
 test("each field has verified 2027/28 programmes in Slovakia and Czechia", () => {
   const count = (category: string) => verifiedPrograms.filter((program) => program.category === category && program.intake === "2027/28").length;
-  assert.ok(count("Computer Science") >= 10, "Computer Science");
-  assert.equal(count("Medicine"), 10);
-  assert.equal(count("Economics & Business"), 10);
+  assert.equal(count("Computer Science"), 18);
+  assert.equal(count("Medicine"), 15);
+  assert.equal(count("Economics & Business"), 15);
   // Every full-time Czech or Slovak law programme with published 2027/28
   // rules on 2026-11-05; Slovak law faculties had not published theirs yet.
-  assert.equal(count("Law"), 5);
+  assert.equal(count("Law"), 7);
   for (const program of verifiedPrograms) assert.ok(["SK", "CZ"].includes(program.countryCode), program.id);
 });
 
@@ -164,4 +164,22 @@ test("LF UP exempts Slovak certificates; ZČU payment needs the specific symbol"
   const upol = matchProgram(profile({ destinationCountryCode: "CZ", studyCategory: "Medicine", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), findVerifiedProgram("upol-lf-medicine-mudr-2027")!, today);
   assert.equal(upol.checks.find((item) => item.id === "recognition")!.status, "met");
   assert.match(findVerifiedProgram("zcu-fpr-law-mgr-2027")!.documents.find((item) => item.id === "zcu-fpr-application")!.description, /specific symbol/);
+});
+
+test("second batch: English medicine, UPJŠ law, UPCE and ČZU economics, FIS and FP VUT informatics", () => {
+  const trilingual = findVerifiedProgram("upjs-pf-law-trilingual-bc-2027")!;
+  assert.equal(trilingual.durationYears, 4);
+  assert.deepEqual(trilingual.instructionLanguages.map((item) => item.code), ["sk", "en", "fr"]);
+  const slovakSchool = matchProgram(profile({ studyCategory: "Law", educationCountryCode: "SK", citizenshipCountryCode: "SK" }), findVerifiedProgram("upjs-pf-law-bc-2027")!, today);
+  assert.equal(slovakSchool.checks.find((item) => item.id === "language")!.status, "met");
+  const english = findVerifiedProgram("uniba-lf-dentistry-en-2027")!;
+  assert.equal(english.instructionLanguages[0].code, "en");
+  assert.equal(english.durationYears, 5);
+  assert.equal(english.application.admissionDate, "2027-03-16");
+  assert.equal(findVerifiedProgram("upce-fes-finance-bc-2027")!.genericRules!.entrance.label, "SCIO OSP or Mathematics, 20th percentile");
+  assert.equal(findVerifiedProgram("upce-fes-digital-business-bc-2027")!.genericRules!.entrance.label, "Test of critical and creative thinking");
+  const mi = findVerifiedProgram("vut-fp-management-informatics-bc-2027")!;
+  assert.equal(mi.category, "Computer Science");
+  assert.equal(mi.application.admissionDate, "2027-05-22");
+  assert.equal(findVerifiedProgram("vut-fp-economics-management-bc-2027")!.application.admissionDate, "2027-05-21");
 });

@@ -7,16 +7,16 @@ import type { AdmissionProgram, ApplicationDocument, GenericAdmissionRules, Offi
 // Everything below restates the faculty's page; where a page does not state
 // something (a Czech proof, a place count, a fee), the programme says so.
 
-const CHECKED = "2026-11-05";
+export const CHECKED = "2026-11-05";
 
-type Shared = Omit<
+export type Shared = Omit<
   AdmissionProgram,
   "id" | "programName" | "localProgramName" | "admissionPolicy" | "intake" | "studyMode" | "verifiedAt"
 >;
 
 type Item = { id: string; programName: string; localProgramName: string; patch?: Partial<AdmissionProgram> };
 
-function programs(shared: Shared, items: Item[]): AdmissionProgram[] {
+export function programs(shared: Shared, items: Item[]): AdmissionProgram[] {
   return items.map((item) => ({
     ...shared,
     id: item.id,
@@ -30,11 +30,11 @@ function programs(shared: Shared, items: Item[]): AdmissionProgram[] {
   }));
 }
 
-function source(id: string, title: string, publisher: string, url: string): OfficialSource {
+export function source(id: string, title: string, publisher: string, url: string): OfficialSource {
   return { id, title, publisher, url, checkedAt: CHECKED };
 }
 
-function doc(
+export function doc(
   id: string,
   title: string,
   description: string,
@@ -426,7 +426,7 @@ const vutFpSources = [
   source("vut-fp-admission-2027", "Admissions: bachelor study (2027/2028)", "Faculty of Business and Management, Brno University of Technology", "https://www.fp.vut.cz/cs/pro-uchazece/prijimacky"),
 ];
 
-const vutFp = programs(
+export const vutFp = programs(
   {
     universityId: "4b1db26791c5d27c91ac",
     universityHost: "vutbr.cz",

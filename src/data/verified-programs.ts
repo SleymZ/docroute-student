@@ -1,4 +1,5 @@
 import { verifiedFieldPrograms } from "@/data/verified-programs-fields";
+import { verifiedFieldProgramsSecond } from "@/data/verified-programs-fields-2";
 import { verifiedSkCzPrograms } from "@/data/verified-programs-sk-cz";
 import type { AdmissionProgram } from "@/types/admission";
 
@@ -568,6 +569,7 @@ export const verifiedPrograms: readonly AdmissionProgram[] = [
   // Verified 2026-11-05 on the shared "generic-2027" policy.
   ...verifiedSkCzPrograms,
   ...verifiedFieldPrograms,
+  ...verifiedFieldProgramsSecond,
 ];
 
 export type VerifiedProgram = AdmissionProgram;

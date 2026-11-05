@@ -231,7 +231,14 @@ export default async function UniversityPage({
   );
   // Announced programs without approved rules for the intake. They are shown
   // as "coming soon" only; they never produce a match or a route.
-  const pendingGroups = verifiedProgram
+  // When the selected field is verified here, coming-soon listings of other
+  // fields (e.g. UPJŠ medicine on the UPJŠ law page) would mislabel the
+  // field card and offer a full path for the wrong field, so they stay off.
+  const selectedFieldVerified = Boolean(
+    selectedProgram &&
+      universityPrograms.some((program) => program.category === selectedProgram),
+  );
+  const pendingGroups = verifiedProgram || selectedFieldVerified
     ? []
     : findPendingProgramGroups({ universityId: university.id });
   // A university with only coming-soon listings gets the full study path
