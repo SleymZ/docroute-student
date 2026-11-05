@@ -104,11 +104,3 @@ test("the entry map highlights the same countries as the home map", () => {
   assert.match(read("src/lib/landing-map.ts"), /highlightedCountryIds\.has\(id\)/);
   assert.match(read("src/lib/europe-map.ts"), /from "@\/data\/highlighted-countries"/);
 });
-
-test("the destination is asked after 'Other country' and never hidden when it differs from the default", () => {
-  const planner = read("src/components/RoutePlanner.tsx");
-  assert.match(planner, /const defaultDestination = "Slovakia";/);
-  assert.match(planner, /showDestination=\{documentCountry === "Other country" \|\| destination !== defaultDestination\}/);
-  assert.match(planner, /setMapDestination\(defaultDestination\)/);
-  assert.match(read("src/components/RouteForm.tsx"), /\{showDestination && \(/);
-});

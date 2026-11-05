@@ -903,13 +903,12 @@ latest rules" (owner rule 2026-10-30):
 - Provider Resend is an assumption; no provider, key or verified sender
   domain is set up yet. Reminder emails (plan item 5) remain to be built.
 
-## Home: destination asked only after "Other country" (2026-11-05, PR #54)
+## Home: destination selector restored (2026-11-05, revert of PR #54)
 
-- `/home` route form: every purpose defaults to Slovakia; "I want to … in"
-  is shown only when documents are issued in "Other country", or when a
-  different destination was already chosen on the map or in the address
-  (never hidden while it differs from the default).
-- Leaving "Other country" resets the destination and the map to Slovakia.
+- PR #54 (destination asked only after "Other country") is reverted at the
+  owner's request: with the field hidden, a purpose such as Work built a
+  route to a country the person never chose. "I want to … in" is shown
+  again for every purpose, as before #54.
 
 ## Verified programmes: 8 Slovak and Czech faculties (2026-11-05, plan item 4)
 
