@@ -736,7 +736,7 @@ const fame = programs(
     },
     documents: [
       doc("fame-application", "E-application and CZK 520 fee by 31 March 2027", "First round 1 November 2026 – 31 March 2027 (second round 1 May – 15 July 2027 unless the dean cancels it for a filled programme). Pay by transfer (2–3 working days) or card.", "always", "application", ["utb-fame-bc-2027"]),
-      doc("fame-nsz", "SCIO National Comparative Exam (or Slovak NPS)", "Sit it at least once; registration and payment with SCIO are separate from the faculty application.", "entrance-exam", "admission-day", ["utb-fame-bc-2027"], "SCIO dates before your round's deadline"),
+      doc("fame-nsz", "SCIO National Comparative Exam (or Slovak NPS)", "Sit it at least once; first round on 5 December 2026, 12 January, 30 January, 20 February, 20 March or 24 April 2027. Registration and payment with SCIO are separate: when registering, consent to SCIO sending your results to FaME and give the same email address as in your FaME e-application, so the results can be matched.", "entrance-exam", "admission-day", ["utb-fame-bc-2027"], "Last first-round date 24 April 2027"),
       doc("fame-exemption", "Evidence for an exemption", "Mensa IQ 119+, national-round olympiads or top 10 in a regional Economics Olympiad (dean's directive SD/07/2026, Art. 4(5)).", "waiver-claim", "application", ["utb-fame-bc-2027"]),
       doc("fame-certificate", "Proof of completed secondary education", "Upload it by 15 June 2027 (first round).", "always", "enrolment", ["utb-fame-bc-2027"], "By 15 June 2027"),
     ],
@@ -755,8 +755,8 @@ const fame = programs(
       },
       entrance: {
         label: "SCIO National Comparative Exam (or NPS)",
-        dueLabel: "Before 31 March 2027 (first round); results by 31 May",
-        text: "All applicants sit the SCIO NSZ (or the Slovak NPS) at least once, registering and paying SCIO separately. Exemptions: Mensa IQ 119+, national-round olympiads, top 10 in a regional Economics Olympiad. Committee results by 31 May 2027.",
+        dueLabel: "First round: SCIO dates 5 December 2026 – 24 April 2027; results by 31 May",
+        text: "All applicants sit the SCIO NSZ (or the Slovak NPS) at least once; first-round dates run from 5 December 2026 to 24 April 2027 (second round also 22 May and an August date). Register and pay SCIO separately, consent to SCIO sending your results to FaME and use the same email address as in the FaME e-application. Exemptions: Mensa IQ 119+, national-round olympiads, top 10 in a regional Economics Olympiad. Committee results by 31 May 2027.",
         sourceIds: ["utb-fame-bc-2027"],
       },
     },
