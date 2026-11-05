@@ -17,9 +17,9 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
-import { PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
+import { LockedStep, PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
 import { useAccess } from "@/hooks/useAccess";
-import { limitTasks } from "@/lib/access";
+import { lockedStepCount, stepAccess } from "@/lib/access";
 import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
@@ -483,7 +483,8 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
               </header>
 
               <ul className={styles.tasks}>
-                {limitTasks(stage.tasks, access.tier).shown.map((task) => {
+                {stepAccess(stage.tasks, access.tier).map(({ task, locked }, order) => {
+                  if (locked) return <LockedStep key={task.id} order={order} className={styles.task} />;
                   const canTick = isActionableTask(task.status);
                   const done = completed.has(task.id);
                   const due = datedLabels.get(task.id) ?? task.dueLabel;
@@ -531,7 +532,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
                   );
                 })}
               </ul>
-              <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
+              <PlusMoreSteps hidden={lockedStepCount(stage.tasks, access.tier)} />
             </section>
           ))}
 

@@ -996,8 +996,9 @@ latest rules" (owner rule 2026-10-30):
   `/explore/profile`, `/my-route` and `/stories/new` redirects a guest to
   `/auth?mode=signup&next=…` in `src/proxy.ts` (only when Supabase answers;
   nothing is blocked if it is unreachable). Full table: `docs/ACCESS.md`.
-- Free (signed in): first 2 steps of every stage (`FREE_STEPS_PER_STAGE`)
-  plus "N more steps with Plus"; no move date / deadline planner (a `move=`
+- Free (signed in): only the key steps are open (first step of each stage and
+  every "Needs attention" step); the rest are locked cards with no text
+  (changed 2026-11-05, see "Locked steps" below); no move date / deadline planner (a `move=`
   date in the address is ignored), no PDF/PNG, no saving to My route.
 - Plus: everything, plus a new PNG export (canvas, light theme, on device).
   Email reminders are not built yet (note "arrive with the Plus launch").
@@ -1438,3 +1439,34 @@ text, which is unchanged from before).
    their 2027/28 rules are not out. Watch FIIT/FEI for 2027/28 rules.
 7. Family and business for Slovakia are live (PR #28). Next: family of
    EU/Slovak citizens, and recheck the IOM business articles directly.
+
+## Locked steps on Free; Germany and Switzerland verified (2026-11-05)
+
+- Free plan: `stepAccess()` in `src/lib/access.ts` opens the first step of
+  each stage and every "Needs attention" step. Every other step stays in its
+  place as `LockedStep` (`src/components/Plus.tsx`): a lock, grey bars and
+  "Step locked · open with Plus". Its title, text, date and source links are
+  never rendered (not blurred text: nothing to screenshot or read in the
+  HTML). Under the stage: "N steps in this stage locked". Used by all six
+  route screens. The route data is still in the JavaScript bundle; the
+  server-built checklist comes with the paid route PR.
+- Germany (`country-guides.ts`, checked 2026-11-05): work (EU Blue Card
+  €50,700 / €45,934.20, skilled worker incl. €55,770 from age 45,
+  Opportunity Card 6 points and €1,091 a month), family (Blue Card/skilled
+  sponsor without German or living space; other sponsors with basic German,
+  housing, livelihood; children rules from BAMF), business (§ 21
+  self-employment, § 21(5) freelancers). Sources: Make it in Germany
+  ("as of January 2026" sheets, pages of 30 Oct / 4 Nov 2026), BAMF,
+  Auswärtiges Amt. Visa fee €75, residence permit up to €100. Study
+  residence was already verified (#49).
+- Switzerland: work (qualified worker, Swiss graduate's 6 months), family
+  (non-EU/EFTA sponsor: housing, no social assistance, A1 oral course
+  enrolment, 5 years / 1 year for children over 12), business
+  (self-employed: overall economic interest, business plan), and the
+  student residence route in the full study path (canton before arrival,
+  visa if needed, 15 h/week after 6 months). Sources: SEM (5 Jul 2026,
+  procedure 22 Dec 2020) and ch.ch. No amounts: the pages state none.
+- `/countries`: "study" now also counts a verified student residence route,
+  so Austria, Germany, Poland and Switzerland show it. `verifiedGuideCountries`
+  in `country-list.ts` = AT, CZ, DE, CH (a test keeps it in step with the
+  guides).

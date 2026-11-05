@@ -12,9 +12,9 @@ import { citizenshipStage } from "@/data/citizenship-notes";
 import { isEuEeaSwissCitizen } from "@/lib/profile-options";
 import { linkedCountryName, linkedGuideCountries } from "@/lib/residence/linked-guides";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
-import { PlusMoreSteps } from "@/components/Plus";
+import { LockedStep, PlusMoreSteps } from "@/components/Plus";
 import { useAccess } from "@/hooks/useAccess";
-import { limitTasks } from "@/lib/access";
+import { lockedStepCount, stepAccess } from "@/lib/access";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -190,7 +190,8 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
                 </div>
               </header>
               <ul className={styles.tasks}>
-                {limitTasks(stage.tasks, access.tier).shown.map((task) => {
+                {stepAccess(stage.tasks, access.tier).map(({ task, locked }, order) => {
+                  if (locked) return <LockedStep key={task.id} order={order} className={styles.task} />;
                   const canTick = isActionableTask(task.status);
                   const done = completed.has(task.id);
                   return (
@@ -230,7 +231,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
                   );
                 })}
               </ul>
-              <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
+              <PlusMoreSteps hidden={lockedStepCount(stage.tasks, access.tier)} />
             </section>
           ))}
 

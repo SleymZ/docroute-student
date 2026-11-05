@@ -3,7 +3,8 @@
 // - guest: not signed in. Browses universities (Explore, Top 100, university
 //   pages) and stories. Any route ("Build my route", every /route/* page,
 //   the profile match) asks to sign up first (src/proxy.ts).
-// - free: signed in, no Plus. A short plan: the first steps of every stage,
+// - free: signed in, no Plus. A short plan: only the important steps of every stage
+//   are open (the rest are locked cards with no text),
 //   no dates or deadline planner, no PDF/PNG, no email reminders, no saving
 //   to My route.
 // - plus: everything: the full checklist, own move date and deadline
@@ -36,13 +37,31 @@ export function canUse(tier: AccessTier, feature: PlanFeature): boolean {
   return featureTiers[feature].includes(tier);
 }
 
-/** Steps a Free plan shows from each stage; the rest is a Plus teaser. */
-export const FREE_STEPS_PER_STAGE = 2;
+/**
+ * Free plan: only the important steps of each stage are open (owner decision
+ * 2026-11-05). Important means the first step of the stage, which starts it,
+ * and every step flagged "Needs attention". The other steps stay in place as
+ * locked cards: the visitor sees that a step exists, but its title, text,
+ * date and sources are never rendered, so a screenshot shows nothing.
+ */
+export function isImportantStep(task: { status: string }, index: number): boolean {
+  return index === 0 || task.status === "attention";
+}
 
-export function limitTasks<T>(tasks: readonly T[], tier: AccessTier): { shown: T[]; hidden: number } {
-  if (canUse(tier, "fullChecklist")) return { shown: [...tasks], hidden: 0 };
-  const shown = tasks.slice(0, FREE_STEPS_PER_STAGE);
-  return { shown, hidden: tasks.length - shown.length };
+export type StepAccess<T> = { task: T; locked: boolean };
+
+export function stepAccess<T extends { status: string }>(tasks: readonly T[], tier: AccessTier): StepAccess<T>[] {
+  const full = canUse(tier, "fullChecklist");
+  return tasks.map((task, index) => ({ task, locked: !full && !isImportantStep(task, index) }));
+}
+
+export function lockedStepCount(tasks: readonly { status: string }[], tier: AccessTier): number {
+  return stepAccess(tasks, tier).filter((item) => item.locked).length;
+}
+
+/** Ids of the steps a visitor may read (for sources lists and exports). */
+export function openStepIds(stages: readonly { tasks: readonly { id: string; status: string }[] }[], tier: AccessTier): Set<string> {
+  return new Set(stages.flatMap((stage) => stepAccess(stage.tasks, tier).filter((item) => !item.locked).map((item) => item.task.id)));
 }
 
 export type PlanRow = {

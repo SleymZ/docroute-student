@@ -97,12 +97,16 @@ test("other countries: link to the official page, EU rules for EU citizens", () 
   assert.ok(already.stages.find((stage) => stage.id === "residence")!.tasks.some((task) => task.id === "ask-current-status"));
 });
 
-test("Switzerland: EU/EFTA registration or a permit before arrival", () => {
+test("Switzerland: EU/EFTA registration or the verified permit route", () => {
   const eth = group("ethz-informatik-bsc-2027");
   const eu = buildFullPath(eth, { citizenshipCountryCode: "AT", currentResidenceStatus: "eu-eea-swiss-passport" });
   assert.ok(eu.stages.at(-1)!.tasks.some((task) => task.id === "ch-eu-register"));
+  // Non-EU first arrivals get the source-checked Swiss route (2026-11-05).
   const third = buildFullPath(eth, nonEu);
-  assert.ok(third.stages.at(-1)!.tasks.some((task) => task.id === "ch-apply-before"));
+  assert.equal(third.residenceCoverage, "verified");
+  const ids = third.stages.flatMap((stage) => stage.tasks.map((task) => task.id));
+  for (const id of ["ch-study-apply", "ch-study-visa", "ch-study-documents", "ch-study-money", "ch-study-work"]) assert.ok(ids.includes(id), id);
+  assert.doesNotMatch(JSON.stringify(third.stages.filter((stage) => stage.id.startsWith("residence-ch"))), /CHF|\d{4,}/, "no amounts the pages do not state");
   // Existing residents are not told to follow the first-arrival procedure.
   for (const status of ["destination-study-residence", "destination-permanent-residence"] as const) {
     const resident = buildFullPath(eth, { citizenshipCountryCode: "UA", currentResidenceStatus: status });

@@ -3,8 +3,9 @@ import type { RouteSource, RouteStage, RouteTask } from "@/types/route-preview";
 
 import { buildLinkedGuide, hasLinkedGuide } from "./linked-guides";
 
-// Residence guides for Czechia (family, business) and Austria (work,
-// family, business), third-country citizens. Checked on 2026-10-30 against
+// Residence guides for Czechia (family, business), Austria, Germany and
+// Switzerland (work, family, business), third-country citizens. Germany and
+// Switzerland were added on 2026-11-05 (see their sections). Checked on 2026-10-30 against
 // the Czech Ministry of the Interior portal (ipc.gov.cz) and the Austrian
 // Federal Government's migration platform (migration.gv.at) plus
 // oesterreich.gv.at. These are source-linked checklists, not dated plans:
@@ -14,7 +15,7 @@ import { buildLinkedGuide, hasLinkedGuide } from "./linked-guides";
 export const GUIDE_VERSION = "cz-at-guides-2026-10-30";
 const checked = "2026-10-30";
 
-export const guideCountries = ["CZ", "AT"] as const;
+export const guideCountries = ["CZ", "AT", "DE", "CH"] as const;
 export type GuideCountry = (typeof guideCountries)[number];
 export const guidePurposes = ["work", "family", "business"] as const;
 export type GuidePurpose = (typeof guidePurposes)[number];
@@ -632,7 +633,734 @@ const atBusiness: CountryGuide = {
     "DocRoute is a preparation tool, not legal advice. The AMS and the residence authority decide; the trade authority decides on trade licences. Recheck migration.gv.at before filing.",
 };
 
-const guides: CountryGuide[] = [czFamily, czBusiness, atWork, atFamily, atBusiness];
+// ---------------------------------------------------------------- Germany
+// Checked 2026-11-05 against Make it in Germany (Federal Ministry for
+// Economic Affairs and Energy, "as of January 2026" fact sheets and pages
+// dated 30 Oct / 4 Nov 2026), BAMF and the Federal Foreign Office.
+
+const checkedDeCh = "2026-11-05";
+
+function srcDeCh(id: string, title: string, publisher: string, url: string): RouteSource {
+  return { id, title, publisher, url, checkedAt: checkedDeCh, authority: "official" };
+}
+
+const MIIG = "Make it in Germany (Federal Ministry for Economic Affairs and Energy)";
+const MIIG_PDF = "https://www.make-it-in-germany.com/fileadmin/1_Rebrush_2022/a_Fachkraefte/PDF-Dateien/3_Visum_u_Aufenthalt/Visagrafik_EN/";
+
+const deSources: RouteSource[] = [
+  srcDeCh("de-miig-blue-card", "At a glance: EU Blue Card (as of January 2026)", MIIG, `${MIIG_PDF}Visum_Blaue_Karte_EN.pdf`),
+  srcDeCh("de-miig-skilled", "At a glance: Visa for skilled workers (as of January 2026)", MIIG, `${MIIG_PDF}Visum_Arbeiten_Fachkraefte_EN.pdf`),
+  srcDeCh("de-miig-opportunity", "Job search opportunity card", MIIG, "https://www.make-it-in-germany.com/en/visa-residence/opportunity-card/job-search"),
+  srcDeCh(
+    "de-miig-family",
+    "At a glance: Visa for family reunification joining foreign skilled workers (as of January 2026)",
+    MIIG,
+    `${MIIG_PDF}Visum_Familiennachzug_EN.pdf`,
+  ),
+  srcDeCh(
+    "de-bamf-family",
+    "Family reunification with third-country nationals (updated 7 March 2024)",
+    "Federal Office for Migration and Refugees (BAMF)",
+    "https://www.bamf.de/DE/Themen/MigrationAufenthalt/ZuwandererDrittstaaten/Familie/NachzugZuDrittstaatlern/nachzug-zu-drittstaatlern-node.html",
+  ),
+  srcDeCh(
+    "de-aa-certificates",
+    "Which language certificates are accepted in the visa procedure?",
+    "Federal Foreign Office (Auswärtiges Amt)",
+    "https://www.auswaertiges-amt.de/de/service/fragenkatalog-node/2238204-2238204",
+  ),
+  srcDeCh("de-miig-self-employment", "Visa for self-employment (updated 4 November 2026)", MIIG, "https://www.make-it-in-germany.com/en/visa-residence/types/other/self-employment"),
+  srcDeCh(
+    "de-miig-freelance",
+    "Visa for freelance business (updated 30 October 2026)",
+    MIIG,
+    "https://www.make-it-in-germany.com/en/working-in-germany/setting-up-business/visa/freelance",
+  ),
+  srcDeCh(
+    "de-aa-visa-free-apply",
+    "Do I need a visa if I want to study/work in Germany?",
+    "Federal Foreign Office (Auswärtiges Amt)",
+    "https://www.auswaertiges-amt.de/en/visa-service/buergerservice/faq/02-arbeiten/606704",
+  ),
+];
+
+const deVisaFreeTask = (prefix: string, work: boolean) =>
+  task(
+    `${prefix}-visa-free`,
+    "Check whether you may apply in Germany instead",
+    "Citizens of Australia, Canada, Israel, Japan, New Zealand, South Korea, the United Kingdom and the United States may enter without a visa and apply for the permit in Germany." +
+      (work
+        ? " Citizens of Andorra, Brazil, El Salvador, Honduras, Monaco and San Marino may do so only if they will not work, so for this route they need the visa first."
+        : " Citizens of Andorra, Brazil, El Salvador, Honduras, Monaco and San Marino may do so only if they will not take up employment."),
+    ["de-aa-visa-free-apply"],
+    "attention",
+  );
+
+const deVisaStage = (prefix: string, sourceId: string, documents: string, work = true) =>
+  stage(`${prefix}-visa`, "02", "VISA", "National visa from the German mission", "Apply before you travel; waiting and processing times vary by mission.", "Before you move", [
+    task(
+      `${prefix}-portal`,
+      "Apply online and book the embassy appointment",
+      "Create an account on the Consular Services Portal and apply online, or contact the German mission if online applications are not offered in your country. Visa fee €75, paid in local currency.",
+      [sourceId],
+    ),
+    task(`${prefix}-documents`, "Prepare the documents and originals", documents + " Bring all originals. Valid health insurance is needed before the visa is issued.", [sourceId]),
+    deVisaFreeTask(prefix, work),
+  ]);
+
+const deAfterArrival = (prefix: string, sourceId: string, permit: string) =>
+  stage(`${prefix}-after`, "03", "AFTER ARRIVAL", "Registration and residence permit", "The entry visa is followed by a residence permit from the local foreigners authority.", "After arrival", [
+    task(`${prefix}-register`, "Register your address", "Register your home address at the Residents' Registration Office after you move in.", [sourceId]),
+    task(`${prefix}-insurance`, "Take out German health insurance", "Take out new health insurance after you arrive in Germany.", [sourceId]),
+    task(
+      `${prefix}-permit`,
+      "Apply for the residence permit before the visa expires",
+      `Book an appointment at the foreigners authority, ask for its document list and apply for the ${permit} before your entry visa runs out. Fees can add up to €100.`,
+      [sourceId],
+      "attention",
+      "Before the entry visa expires",
+    ),
+  ]);
+
+const deWork: CountryGuide = {
+  version: GUIDE_VERSION,
+  country: "DE",
+  countryName: "Germany",
+  purpose: "work",
+  title: "Working in Germany",
+  intro:
+    "The EU Blue Card, the residence permit for skilled workers and the Opportunity Card for job seekers. The German mission issues the entry visa; the local foreigners authority issues the permit.",
+  notCovered:
+    "Vocational training, recognition partnerships, researchers, intra-corporate transfers, seasonal work, the Western Balkans rule and EU/EEA/Swiss citizens (who only register) are not covered.",
+  variants: [
+    {
+      id: "blue-card",
+      label: "EU Blue Card (degree + salary threshold)",
+      summary:
+        "A recognised university degree and a job matching it, for at least six months, paying at least €50,700 gross a year (2026), or €45,934.20 in bottleneck occupations or within three years of graduating. IT specialists without a degree can qualify with three years of experience within the last seven years.",
+      keyFacts: [
+        { label: "Salary", value: "At least €50,700 gross a year (2026)" },
+        { label: "Lower threshold", value: "€45,934.20: bottleneck jobs, recent graduates, IT without a degree" },
+        { label: "Fees", value: "Visa €75; residence permit up to €100" },
+      ],
+      stages: [
+        stage("de-bc-eligibility", "01", "ELIGIBILITY", "Degree, job offer and salary", "Passport, means of support and no reason for expulsion are general conditions for every permit.", "Before you plan", [
+          task(
+            "de-bc-degree",
+            "Recognised or comparable university degree",
+            "Your foreign academic qualification must be recognised or comparable; a regulated profession also needs a licence to practise. IT specialists without a degree need at least three years of experience at academic level within the last seven years.",
+            ["de-miig-blue-card"],
+          ),
+          task(
+            "de-bc-salary",
+            "Job offer of six months or more at the threshold",
+            "A concrete job offer or contract for at least six months in a job that matches your qualification, paying at least €50,700 gross a year (2026). €45,934.20 is enough in bottleneck occupations, within three years of graduating, and for IT specialists without a degree.",
+            ["de-miig-blue-card"],
+          ),
+          task(
+            "de-bc-ba",
+            "Federal Employment Agency approval",
+            "The agency's approval is usually obtained during the visa procedure. It is not needed for a Blue Card paying €50,700 or more.",
+            ["de-miig-blue-card"],
+            "information",
+          ),
+        ]),
+        deVisaStage("de-bc", "de-miig-blue-card", "Employment contract, passport, proof of the recognised degree and, if needed, proof of work experience."),
+        deAfterArrival("de-bc", "de-miig-blue-card", "EU Blue Card (§ 18g AufenthG)"),
+      ],
+    },
+    {
+      id: "skilled-worker",
+      label: "Skilled worker with a recognised qualification",
+      summary:
+        "A foreign academic or vocational qualification recognised as equivalent or comparable and a concrete offer for qualified work. From age 45: at least €55,770 gross a year (2026) or adequate retirement provision.",
+      keyFacts: [
+        { label: "Qualification", value: "Recognised academic or vocational" },
+        { label: "From age 45", value: "€55,770 gross a year (2026) or a pension" },
+        { label: "Fees", value: "Visa €75; residence permit up to €100" },
+      ],
+      stages: [
+        stage("de-sw-eligibility", "01", "ELIGIBILITY", "Recognition and a job offer", "The Federal Employment Agency's approval is usually obtained during the visa procedure.", "Before you plan", [
+          task(
+            "de-sw-recognition",
+            "Get your qualification recognised",
+            "Your academic or vocational qualification must be recognised as equivalent or comparable; some jobs also need a licence to practise.",
+            ["de-miig-skilled"],
+          ),
+          task(
+            "de-sw-offer",
+            "Qualified job offer or contract",
+            "A concrete job offer or valid employment contract in Germany for qualified work, not an auxiliary or unskilled position.",
+            ["de-miig-skilled"],
+          ),
+          task(
+            "de-sw-age",
+            "From age 45: salary or pension",
+            "Applicants aged 45 or older need at least €55,770 gross a year (2026) or proof of adequate retirement provision.",
+            ["de-miig-skilled"],
+            "information",
+          ),
+          task(
+            "de-sw-fast-track",
+            "Ask your employer about the fast-track procedure",
+            "The fast-track procedure for skilled workers can speed up entry; your employer starts it.",
+            ["de-miig-skilled"],
+            "information",
+          ),
+        ]),
+        deVisaStage("de-sw", "de-miig-skilled", "Employment contract, passport and proof of the recognised qualification."),
+        deAfterArrival("de-sw", "de-miig-skilled", "residence permit for skilled workers (§§ 18a, 18b AufenthG)"),
+      ],
+    },
+    {
+      id: "opportunity-card",
+      label: "Opportunity Card (look for a job in Germany)",
+      summary:
+        "Up to one year to look for work: either with a qualification fully recognised in Germany, or with a qualification recognised where you got it plus at least 6 points and German A1 or English B2. You must show at least €1,091 a month (2026).",
+      keyFacts: [
+        { label: "Points", value: "6, or none with a fully recognised qualification" },
+        { label: "Money", value: "€1,091 net a month in a blocked account (2026)" },
+        { label: "Validity", value: "Up to 1 year; part-time work up to 20 h a week" },
+      ],
+      stages: [
+        stage("de-oc-eligibility", "01", "ELIGIBILITY", "Qualify in one of two ways", "For people from outside the EU/EEA and Switzerland.", "Before you plan", [
+          task(
+            "de-oc-ways",
+            "Recognised qualification, or 6 points with A1/B2",
+            "Option 1: a foreign vocational (at least two years) or academic qualification fully recognised in Germany, or one obtained in Germany; no points or language certificate. Option 2: a vocational qualification of at least two years or a university degree, recognised by the state where you got it, plus at least 6 points and German A1 or English B2.",
+            ["de-miig-opportunity"],
+          ),
+          task(
+            "de-oc-points",
+            "Count your points",
+            "Partly recognised qualification 4; shortage occupation 1; work experience in your field after your qualification 2 (2 of the last 5 years) or 3 (5 of the last 7); German A2 1, B1 2, B2+ 3, English C1 +1; age up to 35 2, 35–40 1; a continuous legal stay of 6 months in Germany within the last 5 years (not tourism or visits) 1; a partner who qualifies 1.",
+            ["de-miig-opportunity"],
+          ),
+          task(
+            "de-oc-money",
+            "Prove €1,091 a month",
+            "A blocked account with at least €1,091 net a month (2026), or a declaration of commitment.",
+            ["de-miig-opportunity"],
+          ),
+        ]),
+        stage("de-oc-application", "02", "APPLICATION", "Apply for the card", "Abroad through the Consular Services Portal or your German mission.", "Before you move", [
+          task(
+            "de-oc-where",
+            "Where to apply",
+            "From abroad: the Federal Foreign Office's Consular Services Portal or your German mission. Already in Germany with a valid residence title: your local foreigners authority.",
+            ["de-miig-opportunity"],
+          ),
+          deVisaFreeTask("de-oc", true),
+        ]),
+        stage("de-oc-after", "03", "IN GERMANY", "Search, try out and switch", "The card is valid for up to one year.", "After arrival", [
+          task("de-oc-register", "Register your address", "Register your home address at the Residents' Registration Office after you move in.", ["de-miig-skilled"]),
+          task(
+            "de-oc-work",
+            "Part-time work and trial jobs",
+            "You may work up to 20 hours a week while you search and do trial work of up to two weeks per employer.",
+            ["de-miig-opportunity"],
+            "information",
+          ),
+          task(
+            "de-oc-switch",
+            "Switch to a work permit when you find a job",
+            "Apply to your local foreigners authority for a residence permit for qualified employment, vocational training, recognition or self-employment.",
+            ["de-miig-opportunity"],
+          ),
+        ]),
+      ],
+    },
+  ],
+  sources: deSources,
+  disclaimer:
+    "DocRoute is a preparation tool, not legal advice. The German mission, the Federal Employment Agency and the foreigners authority decide. Salary thresholds change every year; recheck make-it-in-germany.com before filing.",
+};
+
+const deFamilyChildren = task(
+  "de-fam-children",
+  "Children under 18",
+  "Unmarried minor children can join. Under 16, or 16+ arriving with or soon after the parents (usually within six months): no further conditions. 16+ arriving later: German C1 or proof of integration, except for children of skilled workers.",
+  ["de-bamf-family"],
+  "information",
+);
+
+const deFamily: CountryGuide = {
+  version: GUIDE_VERSION,
+  country: "DE",
+  countryName: "Germany",
+  purpose: "family",
+  title: "Joining family in Germany",
+  intro: "Spouses, registered partners and minor children joining a third-country citizen who holds a German residence permit.",
+  notCovered:
+    "Family of German or EU citizens, family of people with protection status, parents and other relatives, and EU long-term residents from another member state are not covered.",
+  variants: [
+    {
+      id: "skilled-sponsor",
+      label: "Relative holds an EU Blue Card or a skilled-worker permit",
+      summary:
+        "Easier rules: the spouse does not need German before entry and no proof of living space is required. The family's livelihood must still be secured.",
+      keyFacts: [
+        { label: "German before entry", value: "Not required" },
+        { label: "Living space", value: "Not required" },
+        { label: "Fees", value: "Visa €75; residence permit up to €100" },
+      ],
+      stages: [
+        stage("de-fam-sk-eligibility", "01", "ELIGIBILITY", "Family link and livelihood", "Both spouses must be at least 18.", "Before you plan", [
+          task(
+            "de-fam-sk-livelihood",
+            "Secured livelihood",
+            "The family's living costs must be covered. If your relative moves on a Blue Card from another EU country straight into a German Blue Card, existing health insurance is enough instead.",
+            ["de-miig-family", "de-bamf-family"],
+          ),
+          task("de-fam-sk-no-german", "No German or living-space proof needed", "Spouses of skilled workers and Blue Card holders can learn German after arrival, and living space is not checked.", ["de-bamf-family", "de-miig-family"], "information"),
+          deFamilyChildren,
+        ]),
+        deVisaStage("de-fam-sk", "de-miig-family", "Passport and proof of the family relationship (marriage or birth certificate), plus livelihood proof if needed.", false),
+        deAfterArrival("de-fam-sk", "de-miig-family", "residence permit for a spouse (§ 30 AufenthG) or child (§ 32 AufenthG)"),
+      ],
+    },
+    {
+      id: "other-sponsor",
+      label: "Relative holds another German residence permit",
+      summary: "The general rules: both spouses 18 or older, basic German before entry, enough living space and a secured livelihood.",
+      keyFacts: [
+        { label: "German before entry", value: "Basic, simple everyday German" },
+        { label: "Living space", value: "Enough for the family" },
+        { label: "Fees", value: "Visa €75; residence permit up to €100" },
+      ],
+      stages: [
+        stage("de-fam-gen-eligibility", "01", "ELIGIBILITY", "German, housing and livelihood", "Your relative needs a valid residence title that allows family reunification.", "Before you plan", [
+          task(
+            "de-fam-gen-german",
+            "Basic German certificate",
+            "The spouse must be able to communicate in simple everyday German before the visa. Certificates from Goethe-Institut, telc, ÖSD, ECL or the DSD are accepted.",
+            ["de-bamf-family", "de-aa-certificates"],
+            "attention",
+          ),
+          task("de-fam-gen-housing", "Enough living space and secured livelihood", "Your relative must show housing big enough for the family and that the family's living costs are covered.", ["de-bamf-family"]),
+          task(
+            "de-fam-gen-permit-type",
+            "Check your relative's permit",
+            "Some titles, such as permits for temporary stays, exclude family reunification. The \"legal basis\" field on the residence card shows which rules apply.",
+            ["de-bamf-family"],
+            "information",
+          ),
+          { ...deFamilyChildren, id: "de-fam-gen-children" },
+        ]),
+        deVisaStage("de-fam-gen", "de-miig-family", "Passport, proof of the family relationship, the German certificate and livelihood proof.", false),
+        deAfterArrival("de-fam-gen", "de-miig-family", "residence permit for a spouse (§ 30 AufenthG) or child (§ 32 AufenthG)"),
+      ],
+    },
+  ],
+  sources: deSources,
+  disclaimer:
+    "DocRoute is a preparation tool, not legal advice. The German mission and the foreigners authority decide. Recheck make-it-in-germany.com and bamf.de before filing.",
+};
+
+const deBusiness: CountryGuide = {
+  version: GUIDE_VERSION,
+  country: "DE",
+  countryName: "Germany",
+  purpose: "business",
+  title: "Doing business in Germany",
+  intro: "Residence permits for self-employment (a business, § 21 AufenthG) and for freelance work in the liberal professions (§ 21(5)).",
+  notCovered: "Artists' special rules, researchers' spin-offs, the trade registration itself and EU/EEA/Swiss citizens are not covered.",
+  variants: [
+    {
+      id: "self-employed",
+      label: "Self-employed business (Gewerbe)",
+      summary:
+        "Your business must serve an economic interest or a regional need and be expected to benefit the economy, financed by your own capital or a loan commitment. Over 45: adequate pension provision.",
+      keyFacts: [
+        { label: "Permit", value: "Up to 3 years at first" },
+        { label: "Settlement", value: "Possible after 3 years" },
+        { label: "Residence permit", value: "Up to €100" },
+      ],
+      stages: [
+        stage("de-se-case", "01", "BUSINESS CASE", "Interest, effect and financing", "The authorities assess your business concept.", "Before you plan", [
+          task(
+            "de-se-interest",
+            "Economic interest and a positive effect",
+            "Show that the business meets an economic interest or a regional demand and is expected to have a positive effect on the economy.",
+            ["de-miig-self-employment"],
+          ),
+          task("de-se-financing", "Financing secured", "Finance the business concept with your own capital or a loan commitment.", ["de-miig-self-employment"]),
+          task("de-se-pension", "Over 45: pension provision", "If you are over 45, prove adequate old-age pension provision.", ["de-miig-self-employment"], "information"),
+        ]),
+        stage("de-se-application", "02", "APPLICATION", "Visa and documents", "The German mission abroad issues the visa.", "Before you move", [
+          task(
+            "de-se-documents",
+            "Application, business plan and insurance",
+            "Your business concept with its financing, application form, valid passport and proof of health insurance; references and proof of entrepreneurial experience help. Ask the German mission for its document leaflet first.",
+            ["de-miig-freelance", "de-miig-self-employment"],
+          ),
+          deVisaFreeTask("de-se", true),
+        ]),
+        stage("de-se-after", "03", "AFTER ARRIVAL", "Permit and later steps", "The local foreigners authority issues the residence permit.", "After arrival", [
+          task("de-se-register", "Register your address", "Register your home address at the Residents' Registration Office after you move in.", ["de-miig-skilled"]),
+          task(
+            "de-se-permit",
+            "Residence permit for up to three years",
+            "The permit is first issued for up to three years (fee up to €100) and extended if the business succeeds and covers your family's living costs. A settlement permit can follow after three years.",
+            ["de-miig-self-employment", "de-miig-freelance"],
+          ),
+        ]),
+      ],
+    },
+    {
+      id: "freelance",
+      label: "Freelancer (liberal professions)",
+      summary:
+        "Freelance work in a liberal profession: show you can finance the business and live from it, and hold any licence the profession needs. Over 45: pension provision.",
+      keyFacts: [
+        { label: "Permit", value: "Up to 3 years, extendable" },
+        { label: "Residence permit", value: "Up to €100" },
+        { label: "From age 45", value: "Pension provision" },
+      ],
+      stages: [
+        stage("de-fl-case", "01", "BUSINESS CASE", "Funding, income and licence", "Advisory services can assess whether you qualify.", "Before you plan", [
+          task("de-fl-funds", "Funding and a living from it", "Show that you can finance your business and make a living from it.", ["de-miig-freelance", "de-miig-self-employment"]),
+          task("de-fl-licence", "Permission to practise", "Hold permission to practise your profession where one is required.", ["de-miig-freelance"]),
+          task("de-fl-pension", "Over 45: pension provision", "If you are over 45, provide adequate pension provision.", ["de-miig-freelance"], "information"),
+        ]),
+        stage("de-fl-application", "02", "APPLICATION", "Visa and documents", "The German mission abroad issues the visa.", "Before you move", [
+          task(
+            "de-fl-documents",
+            "Application, business plan and insurance",
+            "Application form, valid passport, business plan and proof of health insurance; researchers and academics add their employment contract, German graduates a copy of their degree.",
+            ["de-miig-freelance"],
+          ),
+          deVisaFreeTask("de-fl", true),
+        ]),
+        stage("de-fl-after", "03", "AFTER ARRIVAL", "Permit and later steps", "The local foreigners authority issues the residence permit.", "After arrival", [
+          task("de-fl-register", "Register your address", "Register your home address at the Residents' Registration Office after you move in.", ["de-miig-skilled"]),
+          task(
+            "de-fl-permit",
+            "Residence permit for up to three years",
+            "Fee up to €100; first issued for up to three years and extended if your work supports you and your family.",
+            ["de-miig-freelance"],
+          ),
+        ]),
+      ],
+    },
+  ],
+  sources: deSources,
+  disclaimer:
+    "DocRoute is a preparation tool, not legal advice. The German mission and the foreigners authority decide; chambers and professional bodies decide on licences. Recheck make-it-in-germany.com before filing.",
+};
+
+// ------------------------------------------------------------- Switzerland
+// Checked 2026-11-05 against the State Secretariat for Migration (SEM,
+// pages last modified 5 July 2026 and 22 December 2020) and the federal
+// portal ch.ch. Swiss pages state conditions without fixed amounts; DocRoute
+// adds none. EU/EFTA citizens follow free movement (passport track).
+
+const SEM = "State Secretariat for Migration SEM";
+const CHCH = "Swiss Confederation, ch.ch";
+
+const chSources: RouteSource[] = [
+  srcDeCh(
+    "ch-sem-admission",
+    "Basis for admission to the Swiss employment market (last modification 5 Jul 2026)",
+    SEM,
+    "https://www.sem.admin.ch/sem/en/home/themen/arbeit/nicht-eu_efta-angehoerige/grundlagen_zur_arbeitsmarktzulassung.html",
+  ),
+  srcDeCh(
+    "ch-sem-procedure",
+    "Procedure for non-EU/EFTA work permits (last modification 22 Dec 2020)",
+    SEM,
+    "https://www.sem.admin.ch/sem/en/home/themen/arbeit/nicht-eu_efta-angehoerige/verfahrensablauf.html",
+  ),
+  srcDeCh("ch-sem-work-faq", "FAQ: working in Switzerland (last modification 5 Jul 2026)", SEM, "https://www.sem.admin.ch/sem/en/home/themen/arbeit/faq.html"),
+  srcDeCh("ch-chch-working", "Working in Switzerland as a foreign national", CHCH, "https://www.ch.ch/en/foreign-nationals-in-switzerland/working-in-switzerland/"),
+  srcDeCh(
+    "ch-chch-family",
+    "Application for family reunification in Switzerland",
+    CHCH,
+    "https://www.ch.ch/en/foreign-nationals-in-switzerland/living-in-switzerland/family-reunification/",
+  ),
+];
+
+const chArrival = (prefix: string, selfEmployed: boolean) =>
+  stage(`${prefix}-arrival`, "03", "ARRIVAL", "Visa, registration and insurance", "SEM's decision alone does not let you enter Switzerland.", "After approval", [
+    task(
+      `${prefix}-visa`,
+      "Collect the visa if you need one",
+      "If your nationality needs a visa, the cantonal authority sends an electronic visa authorisation to the Swiss representation abroad, where you collect the visa.",
+      ["ch-sem-procedure", "ch-chch-working"],
+    ),
+    task(
+      `${prefix}-register`,
+      "Register with your commune within 14 days",
+      `Register with the communal authorities where you live within 14 days of arrival. ${selfEmployed ? "You may start your business" : "You may start work"} only after registration.`,
+      ["ch-chch-working", "ch-sem-procedure"],
+      "attention",
+      "Within 14 days of arrival",
+    ),
+    task(
+      `${prefix}-insurance`,
+      "Health and accident insurance",
+      selfEmployed
+        ? "Private health insurance is compulsory and must be in place within 3 months of arrival."
+        : "Private health insurance is compulsory within 3 months of arrival or starting work. Your employer insures you against accidents if you work 8 or more hours a week.",
+      ["ch-chch-working"],
+    ),
+  ]);
+
+const chWork: CountryGuide = {
+  version: GUIDE_VERSION,
+  country: "CH",
+  countryName: "Switzerland",
+  purpose: "work",
+  title: "Working in Switzerland",
+  intro:
+    "Work permits for non-EU/EFTA citizens. Admission is limited to qualified workers, capped by annual quotas and open only when no suitable Swiss or EU/EFTA candidate is found. The employer applies; the canton and SEM decide.",
+  notCovered:
+    "EU/EFTA citizens (free movement, see your passport path), intra-company transfers, internships and young professionals, au pairs, researchers and short-term assignments are not covered.",
+  variants: [
+    {
+      id: "qualified",
+      label: "Qualified worker with a job offer",
+      summary:
+        "A manager, specialist or qualified worker, usually with a university degree and several years of experience. The employer must show no suitable candidate with priority was found, and pay Swiss salary and conditions.",
+      keyFacts: [
+        { label: "Who", value: "Managers, specialists, qualified workers" },
+        { label: "Quota", value: "Annual maximum numbers" },
+        { label: "Processing", value: "About 6–8 weeks (SEM)" },
+      ],
+      stages: [
+        stage("ch-wk-eligibility", "01", "ELIGIBILITY", "Qualification, priority and quota", "Admission must serve Switzerland's overall economic interest.", "Before you plan", [
+          task(
+            "ch-wk-qualification",
+            "Degree and several years of experience",
+            "Usually a university or university of applied sciences degree plus several years of experience; in some fields special training plus several years of experience is enough.",
+            ["ch-sem-admission", "ch-chch-working"],
+          ),
+          task(
+            "ch-wk-priority",
+            "No suitable candidate with priority",
+            "Your employer must show a real recruitment effort, including registering the job with the regional employment centre (RAV) and advertising through EURES, and that no Swiss, settled or EU/EFTA candidate was suitable.",
+            ["ch-sem-admission"],
+            "attention",
+          ),
+          task(
+            "ch-wk-conditions",
+            "Swiss salary and conditions, free quota",
+            "Pay and working conditions must match local and sector norms, and a permit must still be available under the annual quota.",
+            ["ch-sem-admission", "ch-sem-work-faq"],
+          ),
+          task(
+            "ch-wk-integration",
+            "Integration and accommodation",
+            "Language skills, age and professional and social adaptability are considered, and suitable accommodation must be available.",
+            ["ch-sem-admission"],
+            "information",
+          ),
+        ]),
+        stage("ch-wk-application", "02", "APPLICATION", "The employer applies", "The canton decides first, then SEM gives the final decision.", "Before you move", [
+          task(
+            "ch-wk-employer",
+            "Employer files with the cantonal authority",
+            "Your employer applies to the cantonal employment or immigration authority with a contract signed by both of you that applies only if the permit is granted. SEM's decision carries a fee paid by the employer.",
+            ["ch-sem-procedure", "ch-sem-admission"],
+          ),
+          task(
+            "ch-wk-documents",
+            "Your CV, certificates and references",
+            "Provide originals with translations into a Swiss official language or English.",
+            ["ch-sem-admission"],
+          ),
+          task("ch-wk-time", "Allow 6–8 weeks", "SEM's experience: six to eight weeks for full processing, longer in complex cases.", ["ch-sem-work-faq"], "information"),
+        ]),
+        chArrival("ch-wk", false),
+      ],
+    },
+    {
+      id: "swiss-graduate",
+      label: "Graduate of a Swiss university",
+      summary:
+        "After a Swiss degree you have six months to find a job matching your qualification. You can be admitted despite the priority rule if the work is of overriding scientific or economic interest.",
+      keyFacts: [
+        { label: "Job search", value: "6 months after your course" },
+        { label: "Priority rule", value: "Can be waived (overriding interest)" },
+        { label: "Processing", value: "About 6–8 weeks (SEM)" },
+      ],
+      stages: [
+        stage("ch-gr-search", "01", "JOB SEARCH", "Six months to find a job", "Counted from the end of your course in Switzerland.", "After graduating", [
+          task(
+            "ch-gr-six-months",
+            "Find a job that matches your degree",
+            "Graduates of a Swiss higher education institution have six months after their course to find work matching their qualifications.",
+            ["ch-sem-work-faq"],
+            "attention",
+            "Within 6 months of graduating",
+          ),
+          task(
+            "ch-gr-interest",
+            "Overriding scientific or economic interest",
+            "Swiss and EU/EFTA workers normally have priority; for Swiss graduates it can be waived when the job is of overriding scientific or economic interest.",
+            ["ch-sem-work-faq", "ch-sem-admission"],
+          ),
+        ]),
+        stage("ch-gr-application", "02", "APPLICATION", "The employer applies", "The same cantonal procedure as for other work permits.", "When you have an offer", [
+          task(
+            "ch-gr-employer",
+            "Employer files with the cantonal authority",
+            "Your employer applies to the cantonal authority with your contract; salary and working conditions must match Swiss norms.",
+            ["ch-sem-procedure", "ch-sem-admission"],
+          ),
+        ]),
+        stage("ch-gr-after", "03", "AFTER APPROVAL", "Start work", "SEM sends its decision to you, your employer and the canton.", "After approval", [
+          task("ch-gr-start", "Start only after the permit", "Working without a permit is not allowed; your employer receives the decision.", ["ch-sem-procedure", "ch-chch-working"]),
+        ]),
+      ],
+    },
+  ],
+  sources: chSources,
+  disclaimer:
+    "DocRoute is a preparation tool, not legal advice. The cantonal authority and SEM decide; quotas are set every year by the Federal Council. Recheck sem.admin.ch before applying.",
+};
+
+const chFamily: CountryGuide = {
+  version: GUIDE_VERSION,
+  country: "CH",
+  countryName: "Switzerland",
+  purpose: "family",
+  title: "Joining family in Switzerland",
+  intro: "A spouse or registered partner and unmarried children under 18 joining a non-EU/EFTA citizen who lives in Switzerland.",
+  notCovered:
+    "Family of Swiss and EU/EFTA citizens, unmarried partners, parents and grandparents, family of provisionally admitted people (F permit) and of refugees are not covered.",
+  variants: [
+    {
+      id: "third-country-sponsor",
+      label: "Relative is a non-EU/EFTA citizen living in Switzerland",
+      summary:
+        "Housing big enough for the family, no dependence on social assistance and, for a spouse who cannot speak the local language, enrolment in a language course (at least A1 orally). Apply within 5 years, or 1 year for children over 12.",
+      keyFacts: [
+        { label: "Deadline", value: "5 years; 1 year for children over 12" },
+        { label: "Language", value: "Course enrolment, at least A1 orally" },
+        { label: "Work", value: "Family members generally may work" },
+      ],
+      stages: [
+        stage("ch-fam-eligibility", "01", "ELIGIBILITY", "Housing, money and language", "Whether reunification is a right or at the authorities' discretion depends on your relative's nationality and permit.", "Before you plan", [
+          task(
+            "ch-fam-permit",
+            "Check your relative's permit",
+            "A B permit does not necessarily give a right to family reunification, though it may still be granted. Asylum seekers cannot bring family.",
+            ["ch-chch-family"],
+            "attention",
+          ),
+          task(
+            "ch-fam-housing-money",
+            "Housing and finances",
+            "Accommodation large enough for the whole family by Swiss standards, and your relative must not depend on social assistance; self-employed or unemployed sponsors prove enough resources.",
+            ["ch-chch-family"],
+          ),
+          task(
+            "ch-fam-language",
+            "Language course enrolment",
+            "A spouse who cannot communicate in the local national language needs a certificate of enrolment in a language course; the level is at least A1 orally.",
+            ["ch-chch-family"],
+          ),
+          task(
+            "ch-fam-deadline",
+            "Apply within the deadline",
+            "Generally within 5 years; for children over 12, within 1 year.",
+            ["ch-chch-family"],
+            "information",
+          ),
+        ]),
+        stage("ch-fam-application", "02", "APPLICATION", "Apply to the canton", "The cantonal immigration authority handles family reunification.", "Before you move", [
+          task(
+            "ch-fam-documents",
+            "Documents for each family member",
+            "Valid passport or ID, a visa if your nationality needs one, and a certificate from your home country proving the relationship. The marriage or partnership must be recognised in Switzerland.",
+            ["ch-chch-family"],
+          ),
+          task("ch-fam-where", "Contact the cantonal immigration authority", "Your relative's canton of residence tells you how and where to file.", ["ch-chch-family"]),
+        ]),
+        stage("ch-fam-after", "03", "AFTER ARRIVAL", "Insurance, work and school", "Steps once the family is in Switzerland.", "After arrival", [
+          task("ch-fam-insurance", "Health insurance for each person", "Health insurance is compulsory and private: every family member needs their own contract.", ["ch-chch-family"]),
+          task(
+            "ch-fam-work",
+            "Work and school",
+            "Family members generally may work; family of L permit holders need a cantonal work permit. Children attend free compulsory school until at least 16.",
+            ["ch-chch-family"],
+            "information",
+          ),
+        ]),
+      ],
+    },
+  ],
+  sources: chSources,
+  disclaimer: "DocRoute is a preparation tool, not legal advice. The cantonal authority decides. Recheck ch.ch before applying.",
+};
+
+const chBusiness: CountryGuide = {
+  version: GUIDE_VERSION,
+  country: "CH",
+  countryName: "Switzerland",
+  purpose: "business",
+  title: "Doing business in Switzerland",
+  intro: "Permits for self-employment by non-EU/EFTA citizens: a labour-market review and a lasting positive effect on the Swiss economy. You apply yourself; the canton and SEM decide.",
+  notCovered: "EU/EFTA citizens (free movement), cross-border services, company registration itself and investors without their own activity are not covered.",
+  variants: [
+    {
+      id: "self-employed",
+      label: "Self-employed business",
+      summary:
+        "The business must have a lasting positive effect on the economy (overall economic interest), backed by a business plan, and you must meet the personal requirements. Permits count against the annual quota.",
+      keyFacts: [
+        { label: "Key test", value: "Overall economic interest" },
+        { label: "Quota", value: "Annual maximum numbers" },
+        { label: "Processing", value: "6–8 weeks, longer for new businesses" },
+      ],
+      stages: [
+        stage("ch-se-case", "01", "BUSINESS CASE", "Show the lasting benefit", "Admission follows a labour-market review (Art. 19 FNIA).", "Before you plan", [
+          task(
+            "ch-se-interest",
+            "Lasting positive effect on the economy",
+            "Show that the business will have a lasting positive impact (overall economic interest) and that you meet the personal requirements.",
+            ["ch-sem-work-faq", "ch-sem-admission"],
+          ),
+          task(
+            "ch-se-plan",
+            "Business plan",
+            "Planned activities, market analysis, staff development and recruitment, planned investments, and turnover and profit forecasts.",
+            ["ch-sem-work-faq"],
+          ),
+          task(
+            "ch-se-company",
+            "Company documents",
+            "Organisational ties with other businesses, the articles of association and an extract from the commercial register.",
+            ["ch-sem-work-faq"],
+          ),
+        ]),
+        stage("ch-se-application", "02", "APPLICATION", "Apply to the canton yourself", "Self-employed people apply in person through the cantonal authorities.", "Before you move", [
+          task(
+            "ch-se-where",
+            "File with the cantonal authority",
+            "Apply to the cantonal immigration and employment market authority; SEM gives the final decision.",
+            ["ch-chch-working", "ch-sem-procedure"],
+          ),
+          task(
+            "ch-se-time",
+            "Allow extra time",
+            "Expect six to eight weeks; first-time business applications can take longer. A permit must be available under the quota.",
+            ["ch-sem-work-faq"],
+            "information",
+          ),
+        ]),
+        chArrival("ch-se", true),
+      ],
+    },
+  ],
+  sources: chSources,
+  disclaimer:
+    "DocRoute is a preparation tool, not legal advice. The cantonal authority and SEM decide; the commercial register and cantonal offices handle the company itself. Recheck sem.admin.ch before applying.",
+};
+
+const guides: CountryGuide[] = [czFamily, czBusiness, atWork, atFamily, atBusiness, deWork, deFamily, deBusiness, chWork, chFamily, chBusiness];
 
 export function findCountryGuide(country: string | null, purpose: string | null): CountryGuide | null {
   const code = (country ?? "").toUpperCase();
@@ -652,5 +1380,5 @@ export function hasCountryGuide(countryCode: string, purpose: string) {
   );
 }
 
-/** Only DocRoute's verified guides (Czechia, Austria). */
+/** Only DocRoute's verified guides (Czechia, Austria, Germany, Switzerland). */
 export const countryGuides: readonly CountryGuide[] = guides;

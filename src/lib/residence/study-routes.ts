@@ -1,7 +1,7 @@
 import type { RouteSource, RouteStage, RouteTask } from "@/types/route-preview";
 
 // Source-checked student residence routes for non-EU students (plan item 1,
-// 2026-11-05), used by the full study path in place of the official-link
+// 2026-11-05; Switzerland added the same day), used by the full study path in place of the official-link
 // step. Only facts the cited official page states are used: where a page
 // gives no amount, fee or deadline, none is shown. EU/EEA/Swiss citizens,
 // citizens of the country and people already living there keep the
@@ -365,6 +365,89 @@ const poland: StudyResidenceRoute = {
   ],
 };
 
+// ------------------------------------------------------------- Switzerland
+// Checked 2026-11-05: ch.ch (students without gainful activity) and SEM's
+// work FAQ (last modification 5 Jul 2026). Neither gives an amount for the
+// money students must show, so DocRoute shows none.
+
+const chSources = [
+  src(
+    "ch-living-without-gainful-employment",
+    "Living as a foreign national in Switzerland without work (students)",
+    "Swiss Confederation, ch.ch",
+    "https://www.ch.ch/en/foreign-nationals-in-switzerland/entry-and-stay-in-switzerland/living-in-switzerland-without-gainful-employment/",
+  ),
+  src("ch-sem-work-faq", "FAQ: working in Switzerland (last modification 5 Jul 2026)", "State Secretariat for Migration SEM", "https://www.sem.admin.ch/sem/en/home/themen/arbeit/faq.html"),
+];
+
+const switzerland: StudyResidenceRoute = {
+  countryCode: "CH",
+  permitName: "Residence permit for studies from the canton (plus a visa for some nationalities)",
+  sources: chSources,
+  stages: [
+    {
+      id: "residence-ch-permit",
+      number: "05",
+      eyebrow: "PERMIT BEFORE ARRIVAL",
+      title: "Residence permit for studies",
+      description: "Non-EU/EFTA students apply to the canton before they arrive.",
+      timing: "Right after admission",
+      tasks: [
+        task(
+          "ch-study-apply",
+          "Apply to the cantonal authority before you arrive",
+          "Apply for a residence permit to the cantonal immigration and employment market authority of the canton where you will study, before arriving in Switzerland.",
+          ["ch-living-without-gainful-employment"],
+          "attention",
+          "Before you travel",
+        ),
+        task(
+          "ch-study-visa",
+          "Visa from the Swiss representation, if needed",
+          "Depending on your nationality you also need a visa from the Swiss representation in your country.",
+          ["ch-living-without-gainful-employment"],
+        ),
+        task(
+          "ch-study-documents",
+          "Study plan, admission, CV and leaving confirmation",
+          "A personal study plan with the goal of your studies, proof of admission to a recognised institution (matriculation certificate), a CV and a confirmation that you will leave Switzerland at the end of your studies.",
+          ["ch-living-without-gainful-employment"],
+        ),
+        task(
+          "ch-study-money",
+          "Enough money and insurance",
+          "Show enough money to support yourself without social assistance (the canton sets what it accepts) and adequate accident and health insurance.",
+          ["ch-living-without-gainful-employment"],
+        ),
+      ],
+    },
+    {
+      id: "residence-ch-during",
+      number: "06",
+      eyebrow: "DURING AND AFTER STUDIES",
+      title: "Work while studying and after graduating",
+      description: "What the permit allows once you study in Switzerland.",
+      timing: "During studies",
+      tasks: [
+        task(
+          "ch-study-work",
+          "Part-time work: up to 15 hours a week after six months",
+          "With cantonal approval you may work up to 15 hours a week outside holidays, starting no sooner than six months after your course begins. The university confirms it will not delay your studies and the employer applies.",
+          ["ch-sem-work-faq"],
+          "information",
+        ),
+        task(
+          "ch-study-after",
+          "Six months to find a job after graduating",
+          "Graduates of a Swiss higher education institution have six months after their course to find work matching their qualification.",
+          ["ch-sem-work-faq"],
+          "information",
+        ),
+      ],
+    },
+  ],
+};
+
 function germanyVisaFreeStage(noWork: boolean): RouteStage {
   return {
     id: "residence-de-visa",
@@ -417,4 +500,5 @@ export const verifiedStudyResidence: Readonly<Record<string, StudyResidenceRoute
   AT: austria,
   DE: germany,
   PL: poland,
+  CH: switzerland,
 };

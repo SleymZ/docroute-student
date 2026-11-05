@@ -20,7 +20,9 @@ export default function CountriesPage() {
     const verifiedPurposes = (["work", "family", "business"] as const).filter(
       (purpose) => purposeRoute(country.code, purpose).coverage === "verified",
     );
-    const verifiedStudy = study.verified.length > 0;
+    // Study counts as verified with checked programmes or a checked student
+    // residence route (visa and permit).
+    const verifiedStudy = study.verified.length > 0 || study.residence === "verified";
     return { country, study, verified: [...(verifiedStudy ? ["study"] : []), ...verifiedPurposes] };
   });
 

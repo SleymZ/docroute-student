@@ -5,7 +5,7 @@ import { test } from "node:test";
 
 import universities from "../src/data/universities.json";
 import { universityCountryCodes } from "../src/data/university-countries";
-import { canUse, FREE_STEPS_PER_STAGE, limitTasks, needsAccount, signUpHref, tierFromPlan } from "../src/lib/access";
+import { canUse, isImportantStep, lockedStepCount, needsAccount, openStepIds, signUpHref, stepAccess, tierFromPlan } from "../src/lib/access";
 
 const root = process.env.REPO_ROOT ?? process.cwd();
 const read = (path: string) => readFileSync(join(root, path), "utf8");
@@ -20,11 +20,35 @@ test("guests browse; free builds a short route; plus gets everything", () => {
   }
 });
 
-test("the Free plan shows the first steps of a stage and counts the rest", () => {
-  const tasks = [1, 2, 3, 4, 5];
-  assert.deepEqual(limitTasks(tasks, "free"), { shown: tasks.slice(0, FREE_STEPS_PER_STAGE), hidden: 5 - FREE_STEPS_PER_STAGE });
-  assert.deepEqual(limitTasks(tasks, "plus"), { shown: tasks, hidden: 0 });
-  assert.deepEqual(limitTasks([1], "free"), { shown: [1], hidden: 0 });
+test("the Free plan opens the key steps of a stage and locks the rest in place", () => {
+  const tasks = [
+    { id: "a", status: "action" },
+    { id: "b", status: "action" },
+    { id: "c", status: "attention" },
+    { id: "d", status: "information" },
+    { id: "e", status: "attention" },
+  ];
+  assert.deepEqual(
+    stepAccess(tasks, "free").map((item) => `${item.task.id}:${item.locked ? "locked" : "open"}`),
+    ["a:open", "b:locked", "c:open", "d:locked", "e:open"],
+  );
+  assert.equal(lockedStepCount(tasks, "free"), 2);
+  assert.equal(lockedStepCount(tasks, "guest"), 2);
+  assert.equal(lockedStepCount(tasks, "plus"), 0);
+  assert.ok(stepAccess(tasks, "plus").every((item) => !item.locked));
+  assert.equal(isImportantStep({ status: "action" }, 0), true, "the first step starts the stage");
+  assert.deepEqual([...openStepIds([{ tasks }], "free")].sort(), ["a", "c", "e"]);
+  // Order and count are kept, so the visitor sees how much is behind Plus.
+  assert.equal(stepAccess(tasks, "free").length, tasks.length);
+});
+
+test("a locked step renders none of the real step", () => {
+  const source = read("src/components/Plus.tsx");
+  const locked = source.slice(source.indexOf("export function LockedStep"), source.indexOf("export function PlusMoreSteps"));
+  // Props are only position, class and tag: nothing from the step itself.
+  assert.match(locked, /\{ order: number; className\?: string; as\?: "li" \| "article" \}/);
+  assert.doesNotMatch(locked, /task|title|description|sourceIds|dueLabel/i);
+  assert.match(locked, /href="\/plus"/);
 });
 
 test("Plus needs a plus row that has not ended", () => {
@@ -49,18 +73,18 @@ test("every route asks a guest to sign up first; browsing stays public", () => {
   assert.match(proxy, /signUpHref\(/);
 });
 
-test("route screens shorten the checklist and lock dates and files on Free", () => {
+test("route screens lock the non-key steps and lock dates and files on Free", () => {
   for (const screen of ["WorkRouteScreen", "CzechiaRouteScreen", "PurposeRouteScreen", "RoutePreviewScreen"]) {
     const source = read(`src/components/${screen}.tsx`);
     assert.match(source, /useAccess\(\)/, screen);
-    assert.match(source, /limitTasks\(stage\.tasks, access\.tier\)\.shown/, screen);
+    assert.match(source, /stepAccess\(stage\.tasks, access\.tier\)\.map\(\(\{ task, locked \}, order\) => \{\s+if \(locked\) return <LockedStep /, screen);
     assert.match(source, /<PlusMoreSteps /, screen);
     assert.match(source, /<PlusFeature feature="dates" \/>/, screen);
     assert.match(source, /access\.plus && isIsoDate\(rawMoveDate\)/, screen);
   }
   for (const screen of ["FullPathScreen", "CountryGuideScreen"]) {
     const source = read(`src/components/${screen}.tsx`);
-    assert.match(source, /limitTasks\(stage\.tasks, access\.tier\)\.shown/, screen);
+    assert.match(source, /stepAccess\(stage\.tasks, access\.tier\)\.map\(\(\{ task, locked \}, order\) => \{\s+if \(locked\) return <LockedStep /, screen);
   }
   assert.match(read("src/components/SaveRoutePdf.tsx"), /if \(!access\.plus\)/);
   assert.match(read("src/components/ConfirmRoute.tsx"), /<PlusFeature feature="save" \/>/);

@@ -24,13 +24,14 @@ test("linked guides cover the other EU countries and Switzerland", () => {
   // Verified guides keep priority; Czech work stays at /route/czechia.
   assert.equal(findCountryGuide("CZ", "family")?.coverage, undefined);
   assert.equal(findCountryGuide("AT", "work")?.coverage, undefined);
-  assert.equal(findCountryGuide("de", "family")?.coverage, "official-link");
+  assert.equal(findCountryGuide("de", "family")?.coverage, undefined, "Germany is verified since 2026-11-05");
+  assert.equal(findCountryGuide("nl", "family")?.coverage, "official-link");
   assert.equal(hasCountryGuide("DE", "business"), true);
   assert.equal(hasCountryGuide("DE", "work"), true);
   assert.equal(hasCountryGuide("CZ", "work"), false);
   assert.equal(hasCountryGuide("SK", "work"), false, "Slovakia has its own /route/work");
   assert.equal(hasCountryGuide("SK", "family"), false, "Slovakia has its own /route/family");
-  assert.equal(countryGuides.length, 5);
+  assert.equal(countryGuides.length, 11);
 });
 
 test("every linked guide cites one official page and nothing else", () => {
