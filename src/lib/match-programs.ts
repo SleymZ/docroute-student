@@ -424,6 +424,115 @@ function matchCvutFit(
   return { requiredDocuments, entranceRoute };
 }
 
+// Shared policy for programmes that declare their rules as data
+// (AdmissionProgram.genericRules). It only restates the faculty's rules:
+// language proof, recognition of the school certificate and the entrance
+// route. Waiver grounds are listed in the programme's requirements and are
+// never assumed from a profile.
+function matchGeneric(
+  profile: ApplicantProfile,
+  program: AdmissionProgram,
+  checks: MatchCheck[],
+  nextActions: string[],
+): Pick<ProgramMatch, "requiredDocuments" | "entranceRoute"> {
+  const rules = program.genericRules!;
+  const school = profile.educationCountryCode;
+  const push = (id: string, label: string, status: MatchCheck["status"], detail: string, sourceIds: string[]) =>
+    checks.push({ id, label, status, detail, sourceIds });
+
+  let needsLanguageProof = false;
+  if (rules.language) {
+    const language = rules.language;
+    const exemptByCitizenship = language.exemptCitizenships.includes(profile.citizenshipCountryCode);
+    const exemptBySchool = language.exemptSchools.includes(school);
+    if (exemptByCitizenship || exemptBySchool) {
+      push(
+        "language",
+        `${language.name}: no separate proof needed`,
+        "met",
+        exemptByCitizenship
+          ? `Your citizenship is exempt from the ${language.name} proof. The programme is taught in ${program.instructionLanguages.map((item) => item.name).join(", ")}.`
+          : `Your school in ${school} is exempt from the ${language.name} proof (if your school did not teach in ${language.name} or a language the faculty accepts, ask the faculty).`,
+        language.sourceIds,
+      );
+    } else {
+      needsLanguageProof = true;
+      const enough = reachesLevel(bestLanguage(profile, [language.code]), language.minimumLevel);
+      push(
+        "language",
+        `${language.name} at ${language.minimumLevel} or higher`,
+        enough ? "action" : "missing",
+        enough ? language.proof : `You have not reported ${language.name} at ${language.minimumLevel}. ${language.proof}`,
+        language.sourceIds,
+      );
+      nextActions.push(`Get proof of ${language.name} at ${language.minimumLevel} or higher.`);
+    }
+  } else {
+    push(
+      "language",
+      "Language proof for foreign applicants",
+      "unknown",
+      rules.languageUnknownNote ??
+        "The faculty's checked pages do not state a language proof for applicants from abroad. Ask the faculty before applying.",
+      program.sources.map((source) => source.id),
+    );
+    nextActions.push("Ask the faculty which language proof applies to you.");
+  }
+
+  const foreignEducation = !rules.recognition.exemptSchools.includes(school);
+  push(
+    "recognition",
+    "Secondary education recognition",
+    foreignEducation ? "action" : "met",
+    foreignEducation
+      ? rules.recognition.text
+      : `A school certificate from ${school} needs no recognition step here; send the certified copy the faculty asks for.`,
+    rules.recognition.sourceIds,
+  );
+  if (foreignEducation) nextActions.push("Start the recognition of your school certificate early.");
+
+  push("entrance-route", rules.entrance.label, "action", rules.entrance.text, rules.entrance.sourceIds);
+  nextActions.push(rules.entrance.label + ": plan the dates now.");
+
+  const requiredDocuments = program.documents
+    .flatMap((document) => {
+      let applies = false;
+      let conditional = false;
+      switch (document.appliesWhen) {
+        case "always":
+        case "entrance-exam":
+          applies = true;
+          break;
+        case "foreign-education":
+          applies = foreignEducation;
+          break;
+        case "foreign-language-test":
+          applies = needsLanguageProof;
+          break;
+        case "graduating-this-year":
+          applies = profile.educationStatus !== "completed";
+          break;
+        case "graduated-earlier":
+          applies = profile.educationStatus === "completed";
+          break;
+        case "waiver-claim":
+          applies = true;
+          conditional = true;
+          break;
+        default:
+          applies = false;
+      }
+      return applies ? [{ ...document, conditional }] : [];
+    })
+    .sort((a, b) => {
+      const order = { application: 0, "admission-day": 1, enrolment: 2 };
+      return order[a.due] - order[b.due];
+    });
+
+  nextActions.push("Submit the application by " + formatDate(program.application.deadline) + ".");
+  return { requiredDocuments, entranceRoute: "exam" };
+}
+
 export function matchProgram(
   profile: ApplicantProfile,
   program: AdmissionProgram,
@@ -520,10 +629,15 @@ export function matchProgram(
     program.countryCode === "CZ" &&
     program.degreeLevel === "bachelor" &&
     program.intake === "2027/28";
+  const genericPolicy =
+    program.admissionPolicy === "generic-2027" &&
+    Boolean(program.genericRules) &&
+    program.intake === "2027/28";
   const languageTest = program.languagePolicy.foreignApplicantTest;
   if (
     !mffPolicy &&
     !cvutPolicy &&
+    !genericPolicy &&
     (program.admissionPolicy !== "uniza-fri-bachelor-2027" ||
       program.countryCode !== "SK" ||
       program.degreeLevel !== "bachelor" ||
@@ -606,6 +720,9 @@ export function matchProgram(
     return finishMatch(
       matchCvutFit(profile, program, checks, nextActions, sourceIds),
     );
+  }
+  if (genericPolicy) {
+    return finishMatch(matchGeneric(profile, program, checks, nextActions));
   }
   if (!languageTest) return unavailable("Missing language policy.", "more-information");
   const languageDeadline = formatDate(languageTest.deadline);

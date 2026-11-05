@@ -41,7 +41,7 @@ import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniver
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
 import { matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
-import { formatDegreeLevel } from "@/lib/profile-options";
+import { formatDegreeLevel, formatProgramDegree } from "@/lib/profile-options";
 import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -387,7 +387,7 @@ export default async function UniversityPage({
             ) : (
               <p className={styles.heroDescription}>
                 {availableRoute
-                  ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatDegreeLevel(availableRoute.degreeLevel)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}).`
+                  ? `${selectedFieldUnverified ? `${selectedProgram} requirements here are not verified yet. ` : ""}A verified route is available for ${availableRoute.category} · ${formatProgramDegree(availableRoute)} · ${availableRoute.intake} (${availableRouteProgramCount} ${availableRouteProgramCount === 1 ? "program" : "programs"} at ${availableRoute.faculty}).`
                   : pendingGroups.length > 0
                     ? `${pendingGroups[0].faculty}: ${pendingProgramCount} ${pendingGroups[0].category} programs for ${pendingGroups[0].intake} are coming soon. Build the full study path now, from application to residence; your profile is matched once the approved admission rules are published.`
                     : "Explore available study information and build a verified route from university application to student residence."}
@@ -485,7 +485,7 @@ export default async function UniversityPage({
               </strong>
               <p>
                 {verifiedProgram
-                  ? `Bachelor · ${verifiedProgram.durationYears} years · full-time`
+                  ? `${verifiedProgram.programType === "long-cycle" ? "Long-cycle master's" : "Bachelor"} · ${verifiedProgram.durationYears} years · full-time`
                   : pendingGroups.length > 0
                     ? `${pendingProgramCount} programs listed for ${pendingGroups[0].intake}`
                     : topCs?.name

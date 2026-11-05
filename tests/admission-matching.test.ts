@@ -53,7 +53,7 @@ function match(patch: Partial<ApplicantProfile> = {}) {
 
 for (const [label, patch] of [
   ["another country", { destinationCountryCode: "AT" }],
-  ["another subject", { studyCategory: "Medicine" }],
+  ["another subject", { studyCategory: "Law" }],
   ["master's degree", { degreeLevel: "master" }],
   ["another intake", { intake: "2028/29" }],
 ] as const) {
@@ -70,8 +70,10 @@ for (const [label, patch] of [
   });
 }
 
-test("four verified programs are returned for the exact first scenario", () => {
-  assert.equal(matchPrograms(profile(), verifiedPrograms, today).length, 4);
+test("four UNIZA programs plus FIIT and FMFI are returned for the exact first scenario", () => {
+  const matches = matchPrograms(profile(), verifiedPrograms, today);
+  assert.equal(matches.filter((item) => item.program.admissionPolicy === "uniza-fri-bachelor-2027").length, 4);
+  assert.equal(matches.length, 9);
 });
 
 test("an unknown policy never borrows UNIZA's matching thresholds", () => {
@@ -423,9 +425,11 @@ test("every generated requirement and document has a resolvable official source"
       assert.ok(detail.sourceIds.length);
       assert.ok(detail.sourceIds.every((id) => ids.has(id)));
     }
+    // Brno University of Technology's catalogue site is vutbr.cz, its pages vut.cz.
+    const hosts = item.universityHost === "vutbr.cz" ? ["vutbr.cz", "vut.cz"] : [item.universityHost];
     assert.ok(
       item.sources.every((source) =>
-        new URL(source.url).hostname.endsWith(item.universityHost),
+        hosts.some((host) => new URL(source.url).hostname.endsWith(host)),
       ),
     );
   }
