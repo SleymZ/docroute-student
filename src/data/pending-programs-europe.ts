@@ -592,40 +592,6 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
     },
   }),
 
-  // ---------------- Czechia (medicine in English) ----------------
-  group({
-    id: "upol-md-english-2027",
-    universityId: "c1127a53d31998aee60b",
-    universityHost: "upol.cz",
-    universityName: "Palacký University Olomouc",
-    faculty: "Faculty of Medicine and Dentistry",
-    country: "Czechia",
-    countryCode: "CZ",
-    city: "Olomouc",
-    category: "Medicine",
-    degreeLevel: "long-cycle",
-    status: "rules-published",
-    statusNote: publishedNote("Exam dates for 2027 will be posted by the end of 2026. Czech residence steps are on the Czechia route."),
-    programs: [{ programName: "General Medicine (English)", localProgramName: "General Medicine (MUDr.)" }],
-    sources: [source("upol-md-page-2027", "General Medicine (MUDr.)", "Palacký University Olomouc", "https://www.lf.upol.cz/en/studyat-our-faculty/general-medicine-mudr/")],
-    referenceRules: {
-      intake: "2027/28",
-      approvedNote: "Faculty page for September 2027 enrolment.",
-      facts: [
-        { label: "Application deadline", value: "Applications 1 November 2026 – 31 July 2027, at the latest two weeks before your chosen exam. Fee €80." },
-        { label: "Entrance exam", value: "Written test in biology, chemistry and physics or mathematics; once per year; English proof or the faculty's English test." },
-        { label: "Places and tuition", value: "About 80 admissions; €12,500 a year; 6 years." },
-      ],
-      programRules: [{ localProgramName: "General Medicine (MUDr.)", rule: "Six-year MUDr. taught in English." }],
-      overview: {
-        applicationDocuments: ["Online application, €80, two weeks before your exam."],
-        entranceRequirements: ["Biology, chemistry, physics/maths test.", "English proof."],
-        afterAdmission: ["Tuition €12,500 a year."],
-      },
-      sources: [source("upol-md-page-2027-ref", "General Medicine (MUDr.)", "Palacký University Olomouc", "https://www.lf.upol.cz/en/studyat-our-faculty/general-medicine-mudr/")],
-    },
-  }),
-
   // ---------------- Croatia ----------------
   group({
     id: "zagreb-md-english-2027",
@@ -2186,38 +2152,6 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
         afterAdmission: ["PLN 67,900 a year."],
       },
       sources: [source("umw-medicine-ref", "Medicine (English Division)", "Wroclaw Medical University", "https://admission.umw.edu.pl/oferta-kierunek-lekarski/", rechecked)],
-    },
-  }, rechecked),
-  group({
-    id: "muni-md-english-2027",
-    universityId: "1def63b3ac858b190c04",
-    universityHost: "muni.cz",
-    universityName: "Masaryk University",
-    faculty: "Faculty of Medicine, English programme",
-    country: "Czechia",
-    countryCode: "CZ",
-    city: "Brno",
-    category: "Medicine",
-    degreeLevel: "long-cycle",
-    status: "rules-not-published",
-    statusNote: standingNote("The programme page shows the previous procedure (2 January – 31 July 2026)."),
-    programs: [{ programName: "General Medicine (English)", localProgramName: "General Medicine" }],
-    sources: [source("muni-gm-en", "General Medicine (English)", "Masaryk University", "https://www.muni.cz/en/bachelors-and-masters-study-programmes/23439-general-medicine", rechecked)],
-    referenceRules: {
-      intake: "2026/27",
-      approvedNote: "Programme page with data from the previous admission procedure.",
-      facts: [
-        { label: "Application", value: "Previous procedure: 2 January – 31 July 2026." },
-        { label: "Entrance exam", value: "Written exam: chemistry, biology and physics, 40 questions each in 50 minutes." },
-        { label: "Tuition", value: "CZK 380,000 a year." },
-      ],
-      programRules: [{ localProgramName: "General Medicine", rule: "Six-year MD in English." }],
-      overview: {
-        applicationDocuments: ["Online application (dates in the application guide)."],
-        entranceRequirements: ["Chemistry, biology, physics tests."],
-        afterAdmission: ["CZK 380,000 a year."],
-      },
-      sources: [source("muni-gm-en-ref", "General Medicine", "Masaryk University", "https://www.muni.cz/en/bachelors-and-masters-study-programmes/23439-general-medicine", rechecked)],
     },
   }, rechecked),
   group({
