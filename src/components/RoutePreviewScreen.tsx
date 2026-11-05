@@ -29,9 +29,9 @@ import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
-import { PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
+import { LockedStep, PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
 import { useAccess } from "@/hooks/useAccess";
-import { limitTasks } from "@/lib/access";
+import { lockedStepCount, stepAccess } from "@/lib/access";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
@@ -377,7 +377,8 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                   )}
 
                   <div className={styles.taskList}>
-                    {limitTasks(stage.tasks, access.tier).shown.map((task) => {
+                    {stepAccess(stage.tasks, access.tier).map(({ task, locked }, order) => {
+                      if (locked) return <LockedStep key={task.id} order={order} className={styles.task} as="article" />;
                       const meta = statusMeta[task.status];
                       const StatusIcon = meta.icon;
                       const canComplete = isActionable(task.status);
@@ -443,7 +444,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                       );
                     })}
                   </div>
-                  <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
+                  <PlusMoreSteps hidden={lockedStepCount(stage.tasks, access.tier)} />
                 </div>
               </section>
             );

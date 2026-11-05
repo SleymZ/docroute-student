@@ -4,7 +4,6 @@ import { Check, Minus, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/Header";
 import storyStyles from "@/components/Stories.module.css";
-import { FREE_STEPS_PER_STAGE } from "@/lib/access";
 
 import styles from "./Plus.module.css";
 
@@ -23,8 +22,8 @@ const rows: { label: string; guest: Cell; free: Cell; plus: Cell }[] = [
   {
     label: "Steps in each stage",
     guest: false,
-    free: `First ${FREE_STEPS_PER_STAGE}`,
-    plus: "All",
+    free: "Key steps open, the rest locked",
+    plus: "All open",
   },
   { label: "Your own move date and a date for every step", guest: false, free: false, plus: true },
   { label: "Email reminders before deadlines", guest: false, free: false, plus: "At launch" },

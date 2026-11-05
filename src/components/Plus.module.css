@@ -89,7 +89,75 @@
   font-size: 12px;
 }
 
+/* Locked step (Free plan): bars only, never the real text. */
+/* Sits on the route screen's own step class, so spacing and borders match. */
+.locked {
+  align-items: flex-start;
+  list-style: none;
+}
+
+.lockedMark {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px dashed light-dark(rgba(212, 80, 47, 0.45), rgba(255, 121, 95, 0.45));
+  color: var(--coral);
+}
+
+.lockedBody {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.lockedBars {
+  display: grid;
+  gap: 8px;
+  max-width: 560px;
+  filter: blur(1.5px);
+  user-select: none;
+}
+
+.lockedBars span {
+  display: block;
+  height: 10px;
+  border-radius: 6px;
+  background: light-dark(rgba(16, 24, 32, 0.1), rgba(255, 255, 255, 0.1));
+}
+
+.lockedBars span[data-heading] {
+  height: 14px;
+  background: light-dark(rgba(16, 24, 32, 0.16), rgba(255, 255, 255, 0.16));
+}
+
+.lockedLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+  text-decoration: none;
+}
+
+.lockedLink strong {
+  color: var(--coral);
+}
+
+.lockedLink:hover {
+  color: var(--text);
+}
+
+.lockedLink:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
 @media print {
+  .locked,
   .more,
   .feature,
   .reminders {

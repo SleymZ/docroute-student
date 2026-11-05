@@ -3,14 +3,49 @@ import { BellRing, CalendarClock, FileImage, ListChecks, LockKeyhole, MapPinned,
 
 import styles from "./Plus.module.css";
 
-/** After a shortened stage on the Free plan: how many steps Plus adds. */
+/**
+ * A step the Free plan keeps closed. Nothing from the real step reaches the
+ * page: no title, text, date or link, only grey bars, so neither a
+ * screenshot nor the page's HTML gives the step away.
+ */
+export function LockedStep({ order, className, as: Tag = "li" }: { order: number; className?: string; as?: "li" | "article" }) {
+  // Bar widths vary by position so a stage of locked steps does not look
+  // like a copied block; they never depend on the hidden text.
+  const widths = [
+    ["62%", "92%", "48%"],
+    ["54%", "86%", "70%"],
+    ["70%", "78%", "40%"],
+  ][order % 3];
+  return (
+    <Tag className={className ? `${className} ${styles.locked}` : styles.locked} data-locked="" data-print-hide="">
+      <span className={styles.lockedMark} aria-hidden="true">
+        <LockKeyhole size={13} />
+      </span>
+      <div className={styles.lockedBody}>
+        <div className={styles.lockedBars} aria-hidden="true">
+          <span style={{ width: widths[0] }} data-heading="" />
+          <span style={{ width: widths[1] }} />
+          <span style={{ width: widths[2] }} />
+        </div>
+        <Link href="/plus" className={styles.lockedLink}>
+          <Sparkles size={12} aria-hidden="true" />
+          <span>
+            Step locked · open with <strong>Plus</strong>
+          </span>
+        </Link>
+      </div>
+    </Tag>
+  );
+}
+
+/** Under a stage with locked steps on the Free plan. */
 export function PlusMoreSteps({ hidden }: { hidden: number }) {
   if (hidden <= 0) return null;
   return (
     <Link href="/plus" className={styles.more} data-print-hide="">
       <LockKeyhole size={14} aria-hidden="true" />
       <span>
-        {hidden} more {hidden === 1 ? "step" : "steps"} in this stage with <strong>Plus</strong>
+        {hidden} {hidden === 1 ? "step" : "steps"} in this stage locked · unlock with <strong>Plus</strong>
       </span>
     </Link>
   );
@@ -66,7 +101,7 @@ export function RemindersNote() {
 }
 
 export const plusPerks = [
-  { icon: ListChecks, text: "The full checklist for every stage" },
+  { icon: ListChecks, text: "Every step of every stage, not only the key ones" },
   { icon: CalendarClock, text: "Your own move date and a date for every step" },
   { icon: BellRing, text: "Email reminders before each deadline" },
   { icon: MapPinned, text: "Your route saved in My route" },
