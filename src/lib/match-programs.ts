@@ -533,11 +533,25 @@ function matchGeneric(
   return { requiredDocuments, entranceRoute: "exam" };
 }
 
+// The round a profile is matched against: the main one, or after its
+// deadline the next verified later round of the same intake.
+export function programForDate(program: AdmissionProgram, asOfDate: string): AdmissionProgram {
+  const rounds = program.application.laterRounds;
+  if (!rounds?.length || asOfDate <= program.application.deadline) return program;
+  const next = rounds.find((round) => asOfDate <= round.deadline);
+  if (!next) return program;
+  return {
+    ...program,
+    application: { ...program.application, deadline: next.deadline, admissionDate: next.admissionDate },
+  };
+}
+
 export function matchProgram(
   profile: ApplicantProfile,
   program: AdmissionProgram,
   asOfDate: string,
 ): ProgramMatch {
+  program = programForDate(program, asOfDate);
   const checks: MatchCheck[] = [];
   const nextActions: string[] = [];
   const sourceIds = program.sources.map((source) => source.id);

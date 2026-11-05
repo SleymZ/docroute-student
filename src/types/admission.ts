@@ -204,6 +204,9 @@ export type AdmissionProgram = {
     languageProofDueLabel?: string;
     waiverEvidenceDueLabel?: string;
     applicationUrl: string;
+    // Later verified rounds of the same intake, in date order. Once the main
+    // deadline has passed, matching uses the next round still open.
+    laterRounds?: Array<{ deadline: string; admissionDate: string }>;
   };
   languagePolicy: {
     generalStatement: string;

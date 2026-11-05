@@ -183,3 +183,17 @@ test("second batch: English medicine, UPJŠ law, UPCE and ČZU economics, FIS an
   assert.equal(mi.application.admissionDate, "2027-05-22");
   assert.equal(findVerifiedProgram("vut-fp-economics-management-bc-2027")!.application.admissionDate, "2027-05-21");
 });
+
+test("later verified rounds keep English medicine open after the first deadline", () => {
+  const jlf = findVerifiedProgram("uniba-jlf-medicine-en-2027")!;
+  const april = matchProgram(profile({ studyCategory: "Medicine", languages: [{ code: "en", level: "C1", willingToStudyIn: true, proof: "certificate" }] }), jlf, "2027-04-01");
+  assert.equal(april.canBuildRoute, true);
+  assert.equal(april.program.application.deadline, "2027-06-13");
+  assert.equal(april.program.application.admissionDate, "2027-06-26");
+  const july = matchProgram(profile({ studyCategory: "Medicine" }), jlf, "2027-07-01");
+  assert.equal(july.canBuildRoute, false, "the visa-free August round is not used");
+  const dentistry = matchProgram(profile({ studyCategory: "Medicine" }), findVerifiedProgram("uniba-lf-dentistry-en-2027")!, "2027-05-01");
+  assert.equal(dentistry.program.application.admissionDate, "2027-08-17");
+  const early = matchProgram(profile({ studyCategory: "Medicine" }), jlf, today);
+  assert.equal(early.program.application.deadline, "2027-02-28");
+});
