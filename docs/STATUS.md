@@ -862,6 +862,13 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
+## CLAUDE.md and npm test (PR #47, 2026-11-05)
+
+- Standing working rules now live in `CLAUDE.md` (branches/PRs, Codex review,
+  PR stacks, tests, visual checks, SQL, decisions that cannot change).
+- `npm test` runs all tests with Node's type stripping and the loader in
+  `scripts/test-loader/` (alias `@/`, `.ts/.tsx/.json`), no tsx.
+
 ## Guest / Free / Plus access, map links, Google sign-in (2026-11-05)
 
 - Owner decision: guests browse universities (Explore, Top 100, university
