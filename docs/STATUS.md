@@ -862,6 +862,41 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
+## Student residence: Austria, Germany, Poland (2026-11-05, plan item 1)
+
+- `src/lib/residence/study-routes.ts`: source-checked first-arrival routes
+  for non-EU students, used by the full study path (`/route/full`) instead
+  of the official-link step. Coverage "verified". EU/EEA/Swiss citizens keep
+  the EU registration steps; people already living there keep "ask the
+  authority".
+- Austria (migration.gv.at "Temporary residence: Students"): where to file
+  (embassy, or in Austria after lawful entry: MA 35 / district authority),
+  money €722.58/month under 24 and €1,308.39 from 24, insurance, no
+  accommodation proof, Meldezettel within 3 days, AMS permit for any job
+  (≤ 20 h/week without labour-market test), extension with study success.
+  OeAD student-permit page (as of 2026): money shown for 12 months, rent
+  above €386.43/month and health insurance (€78.84/month self-insurance)
+  need extra money, fee €218 (not refunded), renewal in the last 3 months.
+- Germany (Make it in Germany "Visa for studying", as of January 2026;
+  Auswärtiges Amt funding and blocked-account pages): visa via Consular
+  Services Portal, fee €75, blocked account €11,904 (2026) or other proofs,
+  documents, address registration, German health insurance, § 16b permit
+  before the visa expires (fees up to €100). No registration deadline stated.
+  Citizens of AU, CA, GB, IL, JP, NZ, KR, US (and AD, BR, SV, HN, MC, SM
+  without employment) get "enter visa-free, apply in Germany" instead of the
+  visa step (Auswärtiges Amt FAQ).
+- Poland (study.gov.pl by NAWA; Poznań voivode office page): D visa at a
+  consulate (≤ 1 year, review up to 15 days), temporary residence permit
+  online in MOS by the last day of legal stay (university annex first),
+  stamp duty PLN 340, card PLN 100 (PLN 50 eligible students), proofs incl.
+  15 months of money (amounts listed by the voivode office; not stated by
+  DocRoute because the page is undated), fingerprints in person, 15-month
+  first permit, notify within 15 working days. Work without a work permit.
+  Visa-free nationals: a note to ask the Office for Foreigners before
+  skipping the visa (NAWA does not say they can apply after visa-free entry).
+- No date planner for these countries yet. Next: Netherlands, Hungary,
+  Italy; then work residence routes.
+
 ## CLAUDE.md and npm test (PR #47, 2026-11-05)
 
 - Standing working rules now live in `CLAUDE.md` (branches/PRs, Codex review,

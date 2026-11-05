@@ -35,6 +35,7 @@ import { slovakiaWorkRules } from "@/data/slovakia-work";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { matchStatusLabels } from "@/lib/match-programs";
 import { formatPlanDate } from "@/lib/residence/deadlines";
+import { STUDY_ROUTES_CHECKED } from "@/lib/residence/study-routes";
 import { formatDegreeLevel } from "@/lib/profile-options";
 import type { MatchStatus } from "@/types/admission";
 
@@ -423,6 +424,15 @@ export default function HowItWorksPage() {
                   <small>
                     Checked {formatPlanDate(czechiaResidenceRules.checkedAt)}
                   </small>
+                </li>
+                <li>
+                  <strong>Austria, Germany and Poland: residence for study</strong>
+                  <span>
+                    First-arrival student permit steps in the full study path
+                    for citizens of countries outside the EU, EEA and
+                    Switzerland, from the official pages (no date planner yet).
+                  </span>
+                  <small>Checked {formatPlanDate(STUDY_ROUTES_CHECKED)}</small>
                 </li>
                 <li>
                   <strong>Slovakia: family and business</strong>

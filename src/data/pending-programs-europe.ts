@@ -29,11 +29,11 @@ function group(input: GroupInput, at = checked): PendingProgramGroup {
 }
 
 const publishedNote = (extra = "") =>
-  "The university published its rules for the 2027 intake. They are summarised below for reference; DocRoute has not built a personalised route or document checklist from them, and residence steps for this country are not covered yet." +
+  "The university published its rules for the 2027 intake. They are summarised below for reference; DocRoute has not built a personalised route or document checklist from them; the full study path shows which residence steps DocRoute has checked for this country." +
   (extra ? " " + extra : "");
 
 const standingNote = (extra = "") =>
-  "The checked page does not state the 2027/28 rules for this programme, so DocRoute shows the latest published rules for orientation only. No personalised route or checklist, and residence steps for this country are not covered yet." +
+  "The checked page does not state the 2027/28 rules for this programme, so DocRoute shows the latest published rules for orientation only. No personalised route or checklist; the full study path shows which residence steps DocRoute has checked for this country." +
   (extra ? " " + extra : "");
 
 export const europePendingGroups: readonly PendingProgramGroup[] = [

@@ -2,7 +2,9 @@ import type { RouteSource } from "@/types/route-preview";
 
 // Official pages for the residence part of the full study path in countries
 // where DocRoute has not verified the student residence procedure itself
-// (everything except Slovakia and Czechia). They are links to check, not
+// (everything except Slovakia and Czechia; Austria, Germany and Poland use
+// these links only for people already living there, see
+// src/lib/residence/study-routes.ts). They are links to check, not
 // verified steps: the full path never states a fee, deadline or document
 // list for these countries. All checked 2026-11-01.
 

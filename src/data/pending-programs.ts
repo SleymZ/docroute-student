@@ -700,7 +700,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
     intake: "2027/28",
     status: "rules-not-published",
     statusNote:
-      "TUM's aptitude assessment is a standing statute, but the dates for winter 2027/28 are not announced yet. DocRoute does not build a personalised route or document checklist, and German residence rules are not covered yet.",
+      "TUM's aptitude assessment is a standing statute, but the dates for winter 2027/28 are not announced yet. DocRoute does not build a personalised route or document checklist; residence for non-EU students is in the full study path.",
     programs: [{ programName: "Informatics", localProgramName: "Informatik" }],
     sources: [
       {
@@ -1016,7 +1016,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
     intake: "2027/28",
     status: "rules-not-published",
     statusNote:
-      "On 29 October 2026 TU Wien listed dates only for winter 2026/27; the 2027 admission dates are not out yet. DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+      "On 29 October 2026 TU Wien listed dates only for winter 2026/27; the 2027 admission dates are not out yet. DocRoute does not build a personalised route; residence for non-EU students is in the full study path.",
     programs: [{ programName: "Informatics", localProgramName: "Informatik" }],
     sources: [
       {
@@ -1118,7 +1118,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
     intake: "2027/28",
     status: "rules-not-published",
     statusNote:
-      "On 29 October 2026 the admission procedure page showed the 2026 dates. DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+      "On 29 October 2026 the admission procedure page showed the 2026 dates. DocRoute does not build a personalised route; residence for non-EU students is in the full study path.",
     programs: [{ programName: "Computer Science", localProgramName: "Informatik" }],
     sources: [
       {
@@ -1190,7 +1190,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
     intake: "2027/28",
     status: "rules-not-published",
     statusNote:
-      "Taught in English. On 29 October 2026 JKU listed deadlines only for winter 2026/27. DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+      "Taught in English. On 29 October 2026 JKU listed deadlines only for winter 2026/27. DocRoute does not build a personalised route; residence for non-EU students is in the full study path.",
     programs: [{ programName: "Artificial Intelligence (English-taught)", localProgramName: "Artificial Intelligence" }],
     sources: [
       {
@@ -1273,7 +1273,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
     intake: "2027/28",
     status: "rules-published",
     statusNote:
-      "The joint MedAT site of the Austrian medical universities already gives the expected 2027 dates (marked as not yet confirmed). DocRoute does not build a personalised route, and Austrian residence rules are not covered yet.",
+      "The joint MedAT site of the Austrian medical universities already gives the expected 2027 dates (marked as not yet confirmed). DocRoute does not build a personalised route; residence for non-EU students is in the full study path.",
     programs: [
       { programName: "Human Medicine", localProgramName: "Humanmedizin" },
       { programName: "Dentistry", localProgramName: "Zahnmedizin" },
@@ -1363,7 +1363,7 @@ const centralEuropeGroups: readonly PendingProgramGroup[] = [
     intake: "2027/28",
     status: "rules-not-published",
     statusNote:
-      "KIT's programme page does not state an intake year; its rules (selection statute, 15 July deadline) are standing and apply each winter term. DocRoute does not build a personalised route, and German residence rules are not covered yet.",
+      "KIT's programme page does not state an intake year; its rules (selection statute, 15 July deadline) are standing and apply each winter term. DocRoute does not build a personalised route; residence for non-EU students is in the full study path.",
     programs: [{ programName: "Informatics", localProgramName: "Informatik" }],
     sources: [
       {
