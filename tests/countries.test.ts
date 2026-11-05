@@ -27,7 +27,7 @@ test("work, family and business routes exist for every country page", () => {
       }
       const params = new URL(route.href, "https://x").searchParams;
       assert.ok(findCountryGuide(params.get("country"), params.get("purpose")), `${code} ${purpose}`);
-      assert.equal(route.coverage, code === "AT" || code === "CZ" ? "verified" : "official-links", `${code} ${purpose}`);
+      assert.equal(route.coverage, ["AT", "CZ", "DE", "CH"].includes(code) ? "verified" : "official-links", `${code} ${purpose}`);
     }
   }
 });
@@ -38,6 +38,7 @@ test("study summaries come from the same data as the routes", () => {
   assert.ok(sk.verified.some((item) => item.faculty.includes("FIIT")));
   assert.equal(sk.residence, "verified");
   assert.equal(countryStudy("DE").residence, "verified");
+  assert.equal(countryStudy("CH").residence, "verified");
   assert.equal(countryStudy("FR").residence, "official-links");
   assert.equal(countryStudy("MT").verified.length, 0);
 });

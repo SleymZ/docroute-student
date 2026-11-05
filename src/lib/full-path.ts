@@ -337,7 +337,7 @@ function linkedResidenceStages(
   }
 
   // Source-checked student residence routes (Austria, Germany, Poland,
-  // 2026-11-05) for first arrivals. Someone already living there keeps the
+  // Switzerland, 2026-11-05) for first arrivals. Someone already living there keeps the
   // "ask the authority" steps below.
   const verifiedRoute = studyResidenceFor(group.countryCode, citizenship);
   if (verifiedRoute && !euCitizen && !alreadyResident.has(answers.currentResidenceStatus)) {
@@ -370,25 +370,6 @@ function linkedResidenceStages(
       status: "action",
       sourceIds,
     });
-  } else if (group.countryCode === "CH") {
-    tasks.push(
-      {
-        id: "ch-apply-before",
-        title: "Apply for a residence permit before you arrive",
-        description:
-          "Non-EU/EFTA students apply to the cantonal immigration and employment market authority before arriving; some nationalities also need a visa from a Swiss representation abroad.",
-        status: "action",
-        sourceIds,
-      },
-      {
-        id: "ch-documents",
-        title: "Prepare the study documents",
-        description:
-          "A study plan with your study goal, proof of admission to a recognised institution, a CV and confirmation that you will leave Switzerland after your studies, plus proof of enough money and health insurance.",
-        status: "action",
-        sourceIds,
-      },
-    );
   } else {
     tasks.push(
       {
@@ -427,10 +408,7 @@ function linkedResidenceStages(
         number: "05",
         eyebrow: "VISA AND RESIDENCE",
         title: `Student residence in ${country}`,
-        description:
-          group.countryCode === "CH"
-            ? "From the Swiss federal portal. DocRoute has not built a dated Swiss residence route."
-            : `Not verified by DocRoute yet: follow the official page. A source-checked residence route for ${country} is coming.`,
+        description: `Not verified by DocRoute yet: follow the official page. A source-checked residence route for ${country} is coming.`,
         timing: "Start right after admission",
         tasks,
       },

@@ -84,7 +84,7 @@ export default async function CountryPage({ params }: Props) {
           <div className={styles.blockHead}>
             <GraduationCap size={20} aria-hidden="true" />
             <h2 id="study-title">Study</h2>
-            <CoverageBadge coverage={study.verified.length ? "verified" : "official-links"} />
+            <CoverageBadge coverage={study.verified.length || study.residence === "verified" ? "verified" : "official-links"} />
           </div>
           <div className={styles.stats}>
             <div>
