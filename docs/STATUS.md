@@ -893,6 +893,15 @@ latest rules" (owner rule 2026-10-30):
   19 September 2022), Czechia (biometric Russian passports only). Added as
   "attention" tasks to every route's passport stage.
 
+## Plus email sender (2026-11-05, PR #55)
+
+- `scripts/send-plus-email.mjs`: one-off email to Plus members from a CSV
+  exported in the Supabase SQL editor (query in the script header; never
+  commit the CSV). Dry run by default (prints recipients); `--send` needs
+  `RESEND_API_KEY`, `MAIL_FROM` and `SITE_URL` in the environment.
+- Provider Resend is an assumption; no provider, key or verified sender
+  domain is set up yet. Reminder emails (plan item 5) remain to be built.
+
 ## Home: destination asked only after "Other country" (2026-11-05, PR #54)
 
 - `/home` route form: every purpose defaults to Slovakia; "I want to … in"
