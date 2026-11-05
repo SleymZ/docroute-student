@@ -35,6 +35,7 @@ import type {
 } from "@/types/destination";
 
 import { universityCountryCodes } from "@/data/university-countries";
+import { countryHref, findCountryPage } from "@/lib/country-list";
 import {
   countryCodeById,
   destinationPoints,
@@ -1048,6 +1049,13 @@ export function EuropeMap({
                 aria-hidden="true"
               />
             </button>
+          )}
+
+          {focusCode && findCountryPage(focusCode) && (
+            <Link href={countryHref(focusCode)} className={styles.countryPageButton}>
+              <span>Work, family, business in {activeCountryName}</span>
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
           )}
         </aside>
       )}

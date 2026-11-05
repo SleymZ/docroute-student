@@ -33,21 +33,21 @@ import {
 } from "lucide-react";
 
 import {
-  destinationOptions,
+  plannerDestinationCodes,
+  plannerDestinationOptions,
   documentCountryOptions,
   programOptions,
 } from "@/data/demo-destinations";
 
 import { movePurposes } from "@/data/move-purposes";
 import type { MovePurpose } from "@/data/move-purposes";
-import type { Destination } from "@/types/destination";
 import styles from "./RouteForm.module.css";
 
 type RouteFormProps = {
   purpose: MovePurpose;
   onPurposeChange: (value: MovePurpose) => void;
   documentCountry: string;
-  destination: Destination;
+  destination: string;
   program: string;
   routeAvailable: boolean;
   // Residence route only: university programmes there are not verified.
@@ -80,7 +80,7 @@ const countryCodes: Record<string, string> = {
 };
 
 function CountryFlag({ country }: { country: string }) {
-  const code = countryCodes[country];
+  const code = countryCodes[country] ?? plannerDestinationCodes[country]?.toLowerCase();
 
   return (
     <span className={styles.icon} aria-hidden="true">
@@ -517,7 +517,7 @@ export function RouteForm({
           }
           name="destination"
           value={destination}
-          options={destinationOptions}
+          options={plannerDestinationOptions}
           onChange={onDestinationChange}
           renderIcon={(country) => (
             <CountryFlag country={country} />

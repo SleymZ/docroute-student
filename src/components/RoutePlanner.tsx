@@ -5,7 +5,9 @@ import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import {
-  destinationOptions,
+  isFeaturedDestination,
+  plannerDestinationCodes,
+  plannerDestinationOptions,
   programOptions,
 } from "@/data/demo-destinations";
 import { verifiedPrograms } from "@/data/verified-programs";
@@ -16,13 +18,7 @@ import type { Destination } from "@/types/destination";
 import { RouteForm } from "@/components/RouteForm";
 import { EuropeMap } from "@/components/EuropeMap";
 
-const destinationCountryCodes: Record<Destination, string> = {
-  Slovakia: "SK",
-  Czechia: "CZ",
-  Austria: "AT",
-  Romania: "RO",
-  Bulgaria: "BG",
-};
+const destinationCountryCodes: Record<string, string> = plannerDestinationCodes;
 
 const educationCountryCodes: Record<string, string> = {
   Israel: "IL",
@@ -41,8 +37,10 @@ export function RoutePlanner() {
   const router = useRouter();
   const [purpose, setPurpose] = useState<MovePurpose>("study");
   const [documentCountry, setDocumentCountry] = useState("Israel");
-  const [destination, setDestination] =
-    useState<Destination>("Slovakia");
+  const [destination, setDestination] = useState<string>("Slovakia");
+  // The map keeps its five featured destinations: another country in the
+  // form leaves the map on the last featured one.
+  const [mapDestination, setMapDestination] = useState<Destination>("Slovakia");
   const [program, setProgram] = useState("Computer Science");
 
   const destinationCountryCode =
@@ -85,7 +83,7 @@ export function RoutePlanner() {
       }
       const requestedProgram = params.get("program");
 
-      const validDestination = destinationOptions.find(
+      const validDestination = plannerDestinationOptions.find(
         (item) => item === requestedDestination,
       );
 
@@ -95,6 +93,7 @@ export function RoutePlanner() {
 
       if (validDestination) {
         setDestination(validDestination);
+        if (isFeaturedDestination(validDestination)) setMapDestination(validDestination);
       }
 
       if (validProgram) {
@@ -169,13 +168,14 @@ export function RoutePlanner() {
   }
 
   function handleDestinationChange(value: string) {
-    const matchingDestination = destinationOptions.find(
+    const matchingDestination = plannerDestinationOptions.find(
       (option) => option === value,
     );
 
     if (!matchingDestination) return;
 
     setDestination(matchingDestination);
+    if (isFeaturedDestination(matchingDestination)) setMapDestination(matchingDestination);
   }
 
   function handleProgramChange(value: string) {
@@ -215,7 +215,7 @@ export function RoutePlanner() {
       </div>
 
       <EuropeMap
-        destination={destination}
+        destination={mapDestination}
         program={program}
         onDestinationChange={handleDestinationChange}
       />
