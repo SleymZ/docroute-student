@@ -833,7 +833,7 @@ const deWork: CountryGuide = {
           task(
             "de-oc-points",
             "Count your points",
-            "Partly recognised qualification 4; shortage occupation 1; experience 2 (2 of the last 5 years) or 3 (5 of the last 7); German A2 1, B1 2, B2+ 3, English C1 +1; age up to 35 2, 35–40 1; a continuous legal stay of 6 months in Germany within the last 5 years (not tourism or visits) 1; a partner who qualifies 1.",
+            "Partly recognised qualification 4; shortage occupation 1; work experience in your field after your qualification 2 (2 of the last 5 years) or 3 (5 of the last 7); German A2 1, B1 2, B2+ 3, English C1 +1; age up to 35 2, 35–40 1; a continuous legal stay of 6 months in Germany within the last 5 years (not tourism or visits) 1; a partner who qualifies 1.",
             ["de-miig-opportunity"],
           ),
           task(
