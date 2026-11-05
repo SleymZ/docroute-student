@@ -21,6 +21,7 @@ export function SiteFooter() {
               {page.label}
             </Link>
           ))}
+          <Link href="/plus">Plans</Link>
           <Link href="/feedback">Feedback</Link>
           <a href={contact.href}>Contact</a>
         </nav>

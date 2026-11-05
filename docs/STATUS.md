@@ -862,6 +862,44 @@ latest rules" (owner rule 2026-10-30):
   official page), per-nationality Irish and Swiss lists (linked, not
   copied), the Dutch TB exemption list itself.
 
+## CLAUDE.md and npm test (PR #47, 2026-11-05)
+
+- Standing working rules now live in `CLAUDE.md` (branches/PRs, Codex review,
+  PR stacks, tests, visual checks, SQL, decisions that cannot change).
+- `npm test` runs all tests with Node's type stripping and the loader in
+  `scripts/test-loader/` (alias `@/`, `.ts/.tsx/.json`), no tsx.
+
+## Guest / Free / Plus access, map links, Google sign-in (2026-11-05)
+
+- Owner decision: guests browse universities (Explore, Top 100, university
+  pages, home map) and stories only; every route page (`/route/*`),
+  `/explore/profile`, `/my-route` and `/stories/new` redirects a guest to
+  `/auth?mode=signup&next=…` in `src/proxy.ts` (only when Supabase answers;
+  nothing is blocked if it is unreachable). Full table: `docs/ACCESS.md`.
+- Free (signed in): first 2 steps of every stage (`FREE_STEPS_PER_STAGE`)
+  plus "N more steps with Plus"; no move date / deadline planner (a `move=`
+  date in the address is ignored), no PDF/PNG, no saving to My route.
+- Plus: everything, plus a new PNG export (canvas, light theme, on device).
+  Email reminders are not built yet (note "arrive with the Plus launch").
+- Migration `20261105120000_account_plans.sql` (owner runs it): table
+  `account_plans` (own row readable, no API writes; owner grants Plus by SQL),
+  `has_plus()`; inserting or changing `confirmed_routes` now needs Plus (RLS).
+  Tested on local Postgres 16 (free insert refused, plus allowed, expired
+  plus refused, anon denied, cascade on account delete). Download my data
+  includes `plan`; Privacy row and deletion text updated; Terms updated.
+- Page `/plus` compares the plans (footer "Plans", sitemap). Plus is not
+  sold: during the beta the owner gives it to testers.
+- Home map: every European country with universities in the directory gets
+  "Universities in <country>" → `/explore/universities?country=XX`
+  (`countryCodeById`, `src/data/university-countries.ts`, test keeps the
+  list in sync). Highlighted countries unchanged.
+- Google sign-in was already in the code; added the official G mark, a clear
+  message when the provider is not enabled in Supabase, and a hint on the
+  sign-up screen when a guest arrives from a route. The owner must enable
+  the Google provider in Supabase (steps in the PR / chat).
+- Limit: route builders run in the browser, so the Free step limit is an
+  interface limit; real enforcement needs server-built routes.
+
 ## Entry page, story photos, comments and likes (2026-11-04)
 
 - **Entry page at `/`** (owner request): no site navigation, only the

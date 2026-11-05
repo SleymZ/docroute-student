@@ -29,6 +29,9 @@ import { findVerifiedProgram } from "@/data/verified-programs";
 import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
+import { PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
+import { useAccess } from "@/hooks/useAccess";
+import { limitTasks } from "@/lib/access";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
@@ -94,6 +97,7 @@ function isActionable(status: RouteTaskStatus) {
 }
 
 export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
+  const access = useAccess();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -121,7 +125,8 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
   // The move date lives in the URL so it survives reloads, can be shared and
   // renders the same on the server and in the browser.
   const rawMoveDate = searchParams.get("move") ?? "";
-  const moveDate = isIsoDate(rawMoveDate) ? rawMoveDate : "";
+  // Dates are part of Plus: a date in the address is ignored on the Free plan.
+  const moveDate = access.plus && isIsoDate(rawMoveDate) ? rawMoveDate : "";
   const czechRoute = useMemo(
     () => (profile && program?.countryCode === "CZ" ? czechStudyRoute(profile) : null),
     [profile, program],
@@ -304,6 +309,8 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
 
       <div className={styles.layout}>
         <div className={styles.timeline}>
+          {access.plus ? (
+            <>
           <MovePlanner
             moveDate={moveDate}
             minDate={addDays(asOfDate, 1)}
@@ -323,6 +330,11 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
             }
             onMoveDateChange={changeMoveDate}
           />
+              <RemindersNote />
+            </>
+          ) : (
+            <PlusFeature feature="dates" />
+          )}
 
           {route.stages.map((stage) => {
             const stageActionable = stage.tasks.filter(
@@ -365,7 +377,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                   )}
 
                   <div className={styles.taskList}>
-                    {stage.tasks.map((task) => {
+                    {limitTasks(stage.tasks, access.tier).shown.map((task) => {
                       const meta = statusMeta[task.status];
                       const StatusIcon = meta.icon;
                       const canComplete = isActionable(task.status);
@@ -431,6 +443,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                       );
                     })}
                   </div>
+                  <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
                 </div>
               </section>
             );
@@ -560,7 +573,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
 
-          <SaveRoutePdf title={`Route to ${program.universityName}`} block />
+          <SaveRoutePdf title={`Route to ${program.universityName}`} block stages={route.stages} completed={completedTasks} asOfDate={asOfDate} />
 
           <p className={styles.disclaimer}>{route.disclaimer}</p>
         </aside>

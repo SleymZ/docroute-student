@@ -12,6 +12,9 @@ import { citizenshipStage } from "@/data/citizenship-notes";
 import { isEuEeaSwissCitizen } from "@/lib/profile-options";
 import { linkedCountryName, linkedGuideCountries } from "@/lib/residence/linked-guides";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
+import { PlusMoreSteps } from "@/components/Plus";
+import { useAccess } from "@/hooks/useAccess";
+import { limitTasks } from "@/lib/access";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import { formatPlanDate } from "@/lib/residence/deadlines";
@@ -25,6 +28,7 @@ function isActionableTask(status: RouteTaskStatus) {
 }
 
 export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
+  const access = useAccess();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -94,7 +98,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
           </p>
         </div>
         <div className={styles.headActions}>
-          <SaveRoutePdf title={guide.title} />
+          <SaveRoutePdf title={guide.title} stages={stages} completed={completed} asOfDate={asOfDate} />
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
@@ -186,7 +190,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
                 </div>
               </header>
               <ul className={styles.tasks}>
-                {stage.tasks.map((task) => {
+                {limitTasks(stage.tasks, access.tier).shown.map((task) => {
                   const canTick = isActionableTask(task.status);
                   const done = completed.has(task.id);
                   return (
@@ -226,6 +230,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
                   );
                 })}
               </ul>
+              <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
             </section>
           ))}
 

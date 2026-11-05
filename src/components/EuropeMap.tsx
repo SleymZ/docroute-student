@@ -34,7 +34,9 @@ import type {
   Destination,
 } from "@/types/destination";
 
+import { universityCountryCodes } from "@/data/university-countries";
 import {
+  countryCodeById,
   destinationPoints,
   graticulePath,
   MAP_HEIGHT,
@@ -224,6 +226,12 @@ export function EuropeMap({
     activeDetails?.capital ??
     activeCountryName;
 
+  // Every country on the map opens its university directory (owner request
+  // 2026-11-05). Countries with route data keep the study field filter.
+  const focusCode = mapFocus
+    ? countryCodeById[mapFocus.id]
+    : undefined;
+
   const universitiesHref =
     activeDetails
       ? `/explore/universities?${new URLSearchParams(
@@ -233,7 +241,12 @@ export function EuropeMap({
             program,
           },
         ).toString()}`
-      : null;
+      : focusCode &&
+          universityCountryCodes.has(focusCode)
+        ? `/explore/universities?${new URLSearchParams(
+            { country: focusCode },
+          ).toString()}`
+        : null;
 
   function selectDestination(
     country: Destination,
@@ -1005,7 +1018,9 @@ export function EuropeMap({
               }
             >
               <span>
-                Explore universities
+                {activeDetails
+                  ? "Explore universities"
+                  : `Universities in ${activeCountryName}`}
               </span>
 
               <ArrowRight

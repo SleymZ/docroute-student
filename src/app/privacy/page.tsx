@@ -35,14 +35,20 @@ const dataRows = [
     kept: "Until you remove them or delete your account.",
   },
   {
+    what: "Your plan (Free or Plus): whether your account has Plus, until when, and how it was given (by the DocRoute team during the beta; payment details are never stored by DocRoute).",
+    why: "To show the features of your plan, such as dates, PDF/PNG and My route.",
+    basis: "Contract (Art. 6(1)(b)).",
+    kept: "Until your plan changes or you delete your account.",
+  },
+  {
     what: "Public profile and stories (only if you create them): the name you choose, an optional photo and short text about you, the stories you send with their countries, year, reason for moving, optional university or employer and up to 4 photos, and the comments you write. This information is visible to everyone on DocRoute once published; your email and applicant profile are never shown. Likes: which stories you liked; others see only the number of likes, not who gave them.",
     why: "To show your story and profile on the Stories page so others can learn from your move.",
     basis: "Contract — publishing what you asked us to publish (Art. 6(1)(b)). Please do not include health, religion or other special-category data.",
     kept: "Until you delete it or your account. Stories and comments we decline or hide stay visible only to you until you delete them. Comments you wrote on a story are removed when its author deletes the story.",
   },
   {
-    what: "Answers to route questions and your move date when you are not signed in. These live only in the page address (URL) and on your device; we do not save them in our database.",
-    why: "So the route can be built and shared as a link without an account.",
+    what: "Answers to route questions and your move date while you build a route. These live in the page address (URL) and on your device; we save them in our database only when you confirm the route as My route (see above).",
+    why: "So the route can be built, reopened and shared as a link.",
     basis: "Contract (Art. 6(1)(b)).",
     kept: "Not stored by us, apart from technical logs below.",
   },
@@ -279,7 +285,7 @@ export default function PrivacyPage() {
         use <strong>Download my data</strong> or{" "}
         <strong>Delete my account</strong> on the{" "}
         <Link href="/account">Account</Link> page. Deleting your account
-        removes your account, profile, saved universities, progress, My route and
+        removes your account, profile, plan, saved universities, progress, My route and
         waitlist entries made with the same email from our database
         immediately; copies in our providers&apos; backups are
         overwritten within their backup cycle. For anything else, email{" "}

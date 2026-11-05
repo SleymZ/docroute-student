@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { updateSupabaseSession } from "@/lib/supabase/proxy";
+import { needsAccount, signUpHref } from "@/lib/access";
 import { hasAuthCookie, VISITED_COOKIE, VISITED_MAX_AGE } from "@/lib/visited";
 
 export async function proxy(request: NextRequest) {
@@ -16,7 +17,28 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const response = await updateSupabaseSession(request);
+  const { response, signedIn } = await updateSupabaseSession(request);
+
+  // Guests browse universities and stories; building a route needs an
+  // account (owner decision 2026-11-05, docs/ACCESS.md). Send them straight
+  // to sign-up and back to the same page afterwards. Without a reachable
+  // Supabase (signedIn null) nothing is blocked.
+  if (signedIn === false && needsAccount(request.nextUrl.pathname)) {
+    const url = request.nextUrl.clone();
+    const target = new URL(signUpHref(`${request.nextUrl.pathname}${request.nextUrl.search}`), url);
+    const redirect = NextResponse.redirect(target);
+    for (const cookie of response.cookies.getAll()) redirect.cookies.set(cookie);
+    if (!request.cookies.has(VISITED_COOKIE)) {
+      redirect.cookies.set(VISITED_COOKIE, "1", {
+        path: "/",
+        maxAge: VISITED_MAX_AGE,
+        sameSite: "lax",
+        httpOnly: true,
+        secure: request.nextUrl.protocol === "https:",
+      });
+    }
+    return redirect;
+  }
   if (!request.cookies.has(VISITED_COOKIE)) {
     response.cookies.set(VISITED_COOKIE, "1", {
       path: "/",

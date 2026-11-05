@@ -17,6 +17,9 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
+import { PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
+import { useAccess } from "@/hooks/useAccess";
+import { limitTasks } from "@/lib/access";
 import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
@@ -280,6 +283,7 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
 }
 
 export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
+  const access = useAccess();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -308,7 +312,8 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
   const completed = routeProgress.values;
 
   const rawMoveDate = searchParams.get("move") ?? "";
-  const moveDate = isIsoDate(rawMoveDate) ? rawMoveDate : "";
+  // Dates are part of Plus: a date in the address is ignored on the Free plan.
+  const moveDate = access.plus && isIsoDate(rawMoveDate) ? rawMoveDate : "";
   const plan = useMemo(
     () => (route && moveDate ? planCzechiaDeadlines(route, moveDate, asOfDate) : null),
     [route, moveDate, asOfDate],
@@ -409,7 +414,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
           </p>
         </div>
         <div className={styles.headActions}>
-          <SaveRoutePdf title={title} />
+          <SaveRoutePdf title={title} stages={route.stages} completed={completed} asOfDate={asOfDate} />
           <Link href={`/route/czechia?${editParams.toString()}`} className={styles.editLink} data-print-hide="">
             Edit answers
           </Link>
@@ -478,7 +483,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
               </header>
 
               <ul className={styles.tasks}>
-                {stage.tasks.map((task) => {
+                {limitTasks(stage.tasks, access.tier).shown.map((task) => {
                   const canTick = isActionableTask(task.status);
                   const done = completed.has(task.id);
                   const due = datedLabels.get(task.id) ?? task.dueLabel;
@@ -526,6 +531,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
                   );
                 })}
               </ul>
+              <PlusMoreSteps hidden={limitTasks(stage.tasks, access.tier).hidden} />
             </section>
           ))}
 
@@ -553,7 +559,8 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
 
         <aside className={styles.side} aria-label="Dates and progress">
           {dated ? (
-            <>
+            access.plus ? (
+              <>
               <label className={styles.dateField}>
                 <span>{profile.purpose === "work" ? "When do you start work?" : "When do you need to be in Czechia?"}</span>
                 <DateInput
@@ -578,7 +585,11 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
                 </ol>
               )}
               {plan && <p className={styles.sideHint}>Periods are calendar days; leave a margin.</p>}
-            </>
+              <RemindersNote />
+              </>
+            ) : (
+              <PlusFeature feature="dates" />
+            )
           ) : (
             <p className={styles.sideHint}>No residence deadlines to plan for your answers.</p>
           )}
