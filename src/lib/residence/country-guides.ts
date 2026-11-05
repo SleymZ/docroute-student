@@ -737,7 +737,7 @@ const deWork: CountryGuide = {
       id: "blue-card",
       label: "EU Blue Card (degree + salary threshold)",
       summary:
-        "A recognised university degree and a job of at least six months paying at least €50,700 gross a year (2026), or €45,934.20 in bottleneck occupations or within three years of graduating. IT specialists without a degree can qualify with three years of experience.",
+        "A recognised university degree and a job matching it, for at least six months, paying at least €50,700 gross a year (2026), or €45,934.20 in bottleneck occupations or within three years of graduating. IT specialists without a degree can qualify with three years of experience.",
       keyFacts: [
         { label: "Salary", value: "At least €50,700 gross a year (2026)" },
         { label: "Lower threshold", value: "€45,934.20: bottleneck jobs, recent graduates, IT without a degree" },
@@ -754,7 +754,7 @@ const deWork: CountryGuide = {
           task(
             "de-bc-salary",
             "Job offer of six months or more at the threshold",
-            "A concrete job offer or contract for at least six months paying at least €50,700 gross a year (2026). €45,934.20 is enough in bottleneck occupations, within three years of graduating, and for IT specialists without a degree.",
+            "A concrete job offer or contract for at least six months in a job that matches your qualification, paying at least €50,700 gross a year (2026). €45,934.20 is enough in bottleneck occupations, within three years of graduating, and for IT specialists without a degree.",
             ["de-miig-blue-card"],
           ),
           task(
@@ -773,7 +773,7 @@ const deWork: CountryGuide = {
       id: "skilled-worker",
       label: "Skilled worker with a recognised qualification",
       summary:
-        "A foreign academic or vocational qualification recognised as equivalent or comparable and a concrete job offer. From age 45: at least €55,770 gross a year (2026) or adequate retirement provision.",
+        "A foreign academic or vocational qualification recognised as equivalent or comparable and a concrete offer for qualified work it enables. From age 45: at least €55,770 gross a year (2026) or adequate retirement provision.",
       keyFacts: [
         { label: "Qualification", value: "Recognised academic or vocational" },
         { label: "From age 45", value: "€55,770 gross a year (2026) or a pension" },
@@ -787,7 +787,12 @@ const deWork: CountryGuide = {
             "Your academic or vocational qualification must be recognised as equivalent or comparable; some jobs also need a licence to practise.",
             ["de-miig-skilled"],
           ),
-          task("de-sw-offer", "Concrete job offer or contract", "A concrete job offer in Germany or a valid employment contract.", ["de-miig-skilled"]),
+          task(
+            "de-sw-offer",
+            "Qualified job offer or contract",
+            "A concrete job offer or valid employment contract in Germany for qualified work that your qualification enables you to do, not an auxiliary or unskilled position.",
+            ["de-miig-skilled"],
+          ),
           task(
             "de-sw-age",
             "From age 45: salary or pension",

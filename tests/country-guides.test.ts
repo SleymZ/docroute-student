@@ -66,6 +66,8 @@ test("Germany: 2026 thresholds from Make it in Germany; Switzerland states no am
   const blue = pickVariant(findCountryGuide("DE", "work")!, "blue-card");
   assert.match(JSON.stringify(blue), /€50,700/);
   assert.match(JSON.stringify(blue), /€45,934\.20/);
+  assert.match(JSON.stringify(blue), /matches your qualification/);
+  assert.match(JSON.stringify(pickVariant(findCountryGuide("DE", "work")!, "skilled-worker")), /not an auxiliary or unskilled position/);
   assert.match(JSON.stringify(pickVariant(findCountryGuide("DE", "work")!, "skilled-worker")), /€55,770/);
   assert.match(JSON.stringify(pickVariant(findCountryGuide("DE", "work")!, "opportunity-card")), /€1,091/);
   // The points route still needs a qualification recognised where it was obtained.
