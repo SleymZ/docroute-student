@@ -27,6 +27,8 @@ import { programOptions } from "@/data/demo-destinations";
 import { pendingProgramGroups } from "@/data/pending-programs";
 import { verifiedPrograms } from "@/data/verified-programs";
 
+import { t } from "@/i18n/client";
+
 import styles from "./ExploreCatalog.module.css";
 
 type CountryOption = {
@@ -146,8 +148,10 @@ function flagSrc(code: string) {
   return `https://flagcdn.com/w80/${code.toLowerCase()}.png`;
 }
 
+// Matches the English text and the text as shown in the visitor's language.
 function matches(text: string, query: string) {
-  return text.toLowerCase().includes(query.trim().toLowerCase());
+  const needle = query.trim().toLocaleLowerCase();
+  return text.toLocaleLowerCase().includes(needle) || t(text).toLocaleLowerCase().includes(needle);
 }
 
 function SearchBox({

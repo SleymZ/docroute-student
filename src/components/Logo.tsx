@@ -66,8 +66,9 @@ export function LogoMark({
 /** "DocRoute" with "Route" in coral, as in the style board. */
 export function LogoWord({ className }: { className?: string }) {
   return (
-    <span className={className}>
-      Doc<span style={{ color: BRAND_COLOR }}>Route</span>
+    // translate="no": the brand name stays as it is in every language.
+    <span className={className} translate="no">
+      Doc<span style={{ color: BRAND_COLOR }} translate="no">Route</span>
     </span>
   );
 }

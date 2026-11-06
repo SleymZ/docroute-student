@@ -11,6 +11,7 @@ import {
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import styles from "./Header.module.css";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function AuthNavigation() {
@@ -44,6 +45,7 @@ export function AuthNavigation() {
 
   return (
     <div className={styles.actions}>
+      <LanguageSwitcher compact />
       <ThemeToggle />
 
       {signedIn ? (

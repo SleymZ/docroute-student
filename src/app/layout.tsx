@@ -4,6 +4,9 @@ import { Geist_Mono, Inter } from "next/font/google";
 import { ConsentedAnalytics } from "@/components/ConsentedAnalytics";
 import { CookieNotice } from "@/components/CookieNotice";
 import { SiteFooter } from "@/components/SiteFooter";
+import { LocaleProvider } from "@/i18n/client";
+import { LOCALE_TAGS } from "@/i18n/config";
+import { dictionaryFor, prepareServerLocale } from "@/i18n/server";
 import { getSiteUrl } from "@/lib/site-url";
 import { themeInitScript } from "@/lib/theme";
 
@@ -12,7 +15,7 @@ import "./globals.css";
 // Inter, the brand typeface from the DocRoute style board.
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin", "latin-ext", "cyrillic"],
 });
 
 const geistMono = Geist_Mono({
@@ -66,10 +69,13 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // The visitor's language (cookie or browser), for server components via
+  // the JSX runtime and for client components via LocaleProvider.
+  const locale = await prepareServerLocale();
   return (
     <html
-      lang="en"
+      lang={LOCALE_TAGS[locale]}
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
       // The theme script below may set data-theme before React hydrates.
       suppressHydrationWarning
@@ -80,10 +86,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full flex flex-col">
-        {children}
-        <SiteFooter />
-        <CookieNotice />
-        <ConsentedAnalytics />
+        <LocaleProvider locale={locale} dictionary={dictionaryFor(locale)}>
+          {children}
+          <SiteFooter />
+          <CookieNotice />
+          <ConsentedAnalytics />
+        </LocaleProvider>
       </body>
     </html>
   );

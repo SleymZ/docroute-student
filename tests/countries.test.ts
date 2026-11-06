@@ -130,3 +130,15 @@ test("Chinese passports get the China-specific steps of each verified country, f
   // No processing times in passport notes.
   for (const point of track.points) assert.doesNotMatch(point.text, /\d+\s?(–\d+\s?)?(days|weeks)\b(?! of)/);
 });
+
+test("every citizenship code has a fixed English name (no Intl in client lists)", async () => {
+  const lists = await import("../src/data/citizenship-lists");
+  const { REGION_NAMES } = await import("../src/data/region-names");
+  for (const value of Object.values(lists)) {
+    if (!Array.isArray(value)) continue;
+    for (const code of value) if (typeof code === "string" && /^[A-Z]{2}$/.test(code)) assert.ok(REGION_NAMES[code], code);
+  }
+  for (const file of ["src/data/applicant-countries.ts", "src/data/citizenship-notes.ts"]) {
+    assert.doesNotMatch(readFileSync(join(root, file), "utf8"), /Intl\.DisplayNames/, file);
+  }
+});

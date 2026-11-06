@@ -16,6 +16,7 @@ import {
   schengenVisaRequired,
 } from "./citizenship-lists";
 import { chinaDocumentsNote, chinaNationalityNote, chinaNotes, chinaSources } from "./china-notes";
+import { regionName } from "./region-names";
 import { ruBySources, russiaBelarusNotes } from "./russia-belarus";
 
 // What changes for a particular passport, added as its own stage to the
@@ -186,13 +187,12 @@ export function hasCitizenshipNotes(citizenship: string | null | undefined) {
   return /^[A-Z]{2}$/.test(code) && code !== "ZZ" && !euEeaSwiss.has(code);
 }
 
-const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 const withArticle = /^(United |Netherlands|Philippines|Bahamas|Gambia|Marshall Islands|Solomon Islands|Comoros|Maldives|Seychelles|Central African|Dominican Republic|Czech)/;
 
 /** English country name for sentences ("the United States", "India"). */
 export function citizenshipName(code: string) {
   if (code === "PS") return "the Palestinian territories";
-  const name = regionNames.of(code) ?? code;
+  const name = regionName(code);
   return withArticle.test(name) ? `the ${name}` : name;
 }
 
