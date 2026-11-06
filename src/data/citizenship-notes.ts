@@ -15,6 +15,7 @@ import {
   schengenVisaFree,
   schengenVisaRequired,
 } from "./citizenship-lists";
+import { chinaDocumentsNote, chinaNationalityNote, chinaNotes, chinaSources } from "./china-notes";
 import { ruBySources, russiaBelarusNotes } from "./russia-belarus";
 
 // What changes for a particular passport, added as its own stage to the
@@ -22,7 +23,7 @@ import { ruBySources, russiaBelarusNotes } from "./russia-belarus";
 // citizenship outside the EU/EEA/Switzerland gets the general notes (entry
 // visa, airport transit, apostille or legalisation) from the official lists
 // in citizenship-lists.ts; some get extra notes where an official source
-// grants relief or adds a check (India, Ukraine, Germany's and the
+// grants relief or adds a check (China, India, Ukraine, Germany's and the
 // Netherlands' nationality lists). No fee, threshold or deadline is stated.
 
 const checked = "2026-11-02";
@@ -151,11 +152,11 @@ const sources = {
   },
 } satisfies Record<string, RouteSource>;
 
-export const citizenshipNoteSources: readonly RouteSource[] = [...Object.values(sources), ...Object.values(ruBySources)];
+export const citizenshipNoteSources: readonly RouteSource[] = [...Object.values(sources), ...Object.values(ruBySources), ...Object.values(chinaSources)];
 
 /** Citizenships with notes beyond the general ones. Every citizenship
  *  outside the EU/EEA/Switzerland gets the general notes. */
-export const citizenshipNoteCountries = ["IN", "UA"] as const;
+export const citizenshipNoteCountries = ["CN", "IN", "UA"] as const;
 
 export type NotePurpose = "study" | "work" | "family" | "business";
 
@@ -370,6 +371,10 @@ function documentsNote(
       [sources.hcchStatus],
     );
   }
+  if (code === "CN") {
+    const item = chinaDocumentsNote(documents);
+    return note(item.id, item.title, item.description, "action", item.sources);
+  }
   if (code === "IN") {
     return note(
       "citizen-documents",
@@ -478,6 +483,16 @@ export function citizenshipStage(
   for (const item of russiaBelarusNotes(code, destination)) {
     if (options.existingResident && item.id === "ru-eu-short-stay") continue;
     notes.push(note(item.id, item.title, item.description, "attention", item.sources));
+  }
+  // China: APS, appointments and documents asked for by the destination's
+  // missions in China (china-notes.ts). They concern applying from China,
+  // so someone already living in the country does not get them.
+  if (code === "CN" && !options.existingResident) {
+    for (const item of chinaNotes(destination, purpose)) notes.push(note(item.id, item.title, item.description, "attention", item.sources));
+  }
+  if (code === "CN") {
+    const item = chinaNationalityNote();
+    notes.push(note(item.id, item.title, item.description, "information", item.sources));
   }
   if (destination === "DE" && purpose === "work") notes.push(germanyWorkNote(code, name));
   if (destination === "NL" && !options.existingResident) notes.push(netherlandsTbNote());
