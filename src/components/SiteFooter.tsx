@@ -3,6 +3,7 @@ import Link from "next/link";
 import { contact, legalPages } from "@/data/legal";
 
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { TranslationNotice } from "./TranslationNotice";
 import styles from "./SiteFooter.module.css";
 
 export function SiteFooter() {
@@ -15,6 +16,7 @@ export function SiteFooter() {
           Universities and authorities make every decision; check each rule on
           its official source.
         </p>
+        <TranslationNotice />
 
         <nav className={styles.links} aria-label="Legal">
           {legalPages.map((page) => (

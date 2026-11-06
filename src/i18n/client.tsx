@@ -6,7 +6,7 @@
 // renders. Plain createElement here, because this file is itself compiled
 // with that runtime.
 
-import { Fragment, createContext, createElement, useContext, useMemo, type ReactNode } from "react";
+import { Fragment, createContext, createElement, useCallback, useContext, useMemo, type ReactNode } from "react";
 
 import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_MAX_AGE, type Locale } from "./config";
 import { TRANSLATED_ATTRIBUTES, buildCatalog, translateChildren, translateText, type Catalog, type Dictionary } from "./translate";
@@ -72,7 +72,8 @@ export function useLocale(): Locale {
 /** Translate a string outside JSX (alerts, document titles, labels in code). */
 export function useT() {
   const catalog = useContext(CatalogContext);
-  return (text: string) => translateText(catalog, text);
+  // Stable per language, so it can sit in useMemo dependencies.
+  return useCallback((text: string) => translateText(catalog, text), [catalog]);
 }
 
 /** For code outside React (confirm dialogs, alerts). */

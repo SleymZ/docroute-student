@@ -58,3 +58,30 @@ test("the brand name and the account-deletion word are never translated", () => 
     for (const key of ["Doc", "Route", "DocRoute", "DELETE"]) assert.equal(catalog[key], undefined, `${locale}: ${key}`);
   }
 });
+
+test("joined sentences translate run by run, never half-way", () => {
+  const catalog = buildCatalog("ru", {
+    "Citizens of {0} need a visa to enter {1}": "Гражданам страны «{0}» нужна виза для въезда: {1}",
+    "{0} is on the EU list (Annex I). Do not travel visa-free.": "{0} — в списке ЕС (Приложение I). Не въезжайте без визы.",
+    China: "Китай",
+    Germany: "Германия",
+  });
+  // Title + description, each a catalog entry: both translated.
+  assert.equal(
+    translateText(catalog, "Citizens of China need a visa to enter Germany. China is on the EU list (Annex I). Do not travel visa-free."),
+    "Гражданам страны «Китай» нужна виза для въезда: Германия. Китай — в списке ЕС (Приложение I). Не въезжайте без визы.",
+  );
+  // A sentence without a translation: the whole text stays English, and the
+  // title template does not swallow it as a variable.
+  const english = "Citizens of China need a visa to enter Germany. Something not in the catalog.";
+  assert.equal(translateText(catalog, english), english);
+  const zh = buildCatalog("zh", { "Citizens of {0} need a visa to enter {1}": "{0}公民入境{1}需要签证", "Apply early.": "请尽早申请。" });
+  assert.equal(translateText(zh, "Citizens of China need a visa to enter Germany. Apply early."), "China公民入境Germany需要签证。请尽早申请。");
+});
+
+test("a template variable is a name, number or date, not an English phrase", () => {
+  const catalog = buildCatalog("ru", { "Before {0}": "До {0}", "Programmes at {0}": "Программы: {0}" });
+  assert.equal(translateText(catalog, "Before 1 September 2027"), "До 1 сентября 2027 г.");
+  assert.equal(translateText(catalog, "Before the entry visa expires"), "Before the entry visa expires");
+  assert.equal(translateText(catalog, "Programmes at Faculty of Arts and Letters of the University"), "Программы: Faculty of Arts and Letters of the University");
+});

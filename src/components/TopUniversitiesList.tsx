@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+
+import { useT } from "@/i18n/client";
 import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, Search, X } from "lucide-react";
 
@@ -41,6 +43,7 @@ export function TopUniversitiesList({
   countries: string[];
 }) {
   const [query, setQuery] = useState("");
+  const translate = useT();
   const [country, setCountry] = useState("");
   const [englishCs, setEnglishCs] = useState(false);
 
@@ -64,9 +67,9 @@ export function TopUniversitiesList({
         (!country || university.country === country) &&
         (!englishCs || computerScience?.language === "English" || Boolean(computerScience?.note?.includes("English-taught track"))) &&
         (!needle ||
-          normalise(`${university.name} ${university.country}`).includes(needle)),
+          normalise(`${university.name} ${university.country} ${translate(university.country)}`).includes(needle)),
     );
-  }, [entries, query, country, englishCs]);
+  }, [entries, query, country, englishCs, translate]);
 
   return (
     <section className={styles.listSection} aria-label="Top 100 universities">

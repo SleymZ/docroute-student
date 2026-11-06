@@ -16,6 +16,8 @@ import {
   X,
 } from "lucide-react";
 
+import { useT } from "@/i18n/client";
+
 import styles from "./CountryPicker.module.css";
 
 export type CountryOption = {
@@ -45,24 +47,26 @@ export function CountryPicker({
   const searchRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  // Search the names as shown (translated) as well as the English ones.
+  const translate = useT();
 
   const selectedCountry = options.find(
     (country) => country.code === value,
   );
 
   const filteredOptions = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase("en");
+    const normalizedQuery = query.trim().toLocaleLowerCase();
 
     if (!normalizedQuery) {
       return options;
     }
 
     return options.filter((country) =>
-      `${country.name} ${country.code}`
-        .toLocaleLowerCase("en")
+      `${country.name} ${translate(country.name)} ${country.code}`
+        .toLocaleLowerCase()
         .includes(normalizedQuery),
     );
-  }, [options, query]);
+  }, [options, query, translate]);
 
   useEffect(() => {
     if (!open) {
