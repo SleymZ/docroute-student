@@ -112,9 +112,21 @@ test("Chinese passports get the China-specific steps of each verified country, f
   for (const source of de.sources) assert.equal(source.authority, "official");
   // Already living there: the China-side steps are left out.
   const resident = citizenshipStage("CN", "DE", "Germany", "study", { existingResident: true, asOf: "2026-11-05" })!;
-  assert.ok(!resident.stage.tasks.some((task) => task.id.startsWith("cn-")));
+  // ...except the nationality law, which matters for naturalising later.
+  assert.deepEqual(
+    resident.stage.tasks.filter((task) => task.id.startsWith("cn-")).map((task) => task.id),
+    ["cn-dual-nationality-cn"],
+  );
+  assert.ok(ids("CZ", "Czechia", "work").includes("cn-cz-appointment-work-cn"));
   // The country page shows them too; Hong Kong passports are not China's.
   const track = passportTrack("CN", "AT", "Austria")!;
   assert.ok(track.points.some((point) => point.text.startsWith("APS verification")));
   assert.ok(!(passportTrack("HK", "AT", "Austria")?.points ?? []).some((point) => point.text.includes("APS")));
+  // Czech page keeps both the study/family and the employee-card guidance.
+  const cz = passportTrack("CN", "CZ", "Czechia")!;
+  assert.ok(cz.points.some((point) => point.text.includes("Student Facilitation Program")));
+  assert.ok(cz.points.some((point) => point.text.includes("employee card")));
+  assert.ok(track.points.some((point) => point.text.startsWith("China does not recognise dual nationality")));
+  // No processing times in passport notes.
+  for (const point of track.points) assert.doesNotMatch(point.text, /\d+\s?(–\d+\s?)?(days|weeks)\b(?! of)/);
 });

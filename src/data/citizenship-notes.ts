@@ -15,7 +15,7 @@ import {
   schengenVisaFree,
   schengenVisaRequired,
 } from "./citizenship-lists";
-import { chinaDocumentsNote, chinaNotes, chinaSources } from "./china-notes";
+import { chinaDocumentsNote, chinaNationalityNote, chinaNotes, chinaSources } from "./china-notes";
 import { ruBySources, russiaBelarusNotes } from "./russia-belarus";
 
 // What changes for a particular passport, added as its own stage to the
@@ -489,6 +489,10 @@ export function citizenshipStage(
   // so someone already living in the country does not get them.
   if (code === "CN" && !options.existingResident) {
     for (const item of chinaNotes(destination, purpose)) notes.push(note(item.id, item.title, item.description, "attention", item.sources));
+  }
+  if (code === "CN") {
+    const item = chinaNationalityNote();
+    notes.push(note(item.id, item.title, item.description, "information", item.sources));
   }
   if (destination === "DE" && purpose === "work") notes.push(germanyWorkNote(code, name));
   if (destination === "NL" && !options.existingResident) notes.push(netherlandsTbNote());

@@ -3,7 +3,7 @@ import {
   germanyVisaFreeLongStayNoWork,
   netherlandsMvvExempt,
 } from "@/data/citizenship-lists";
-import { chinaNotes } from "@/data/china-notes";
+import { chinaNationalityNote, chinaNotes } from "@/data/china-notes";
 import { citizenshipName, citizenshipStage } from "@/data/citizenship-notes";
 import { russiaBelarusNotes } from "@/data/russia-belarus";
 import type { RouteSource } from "@/types/route-preview";
@@ -182,6 +182,8 @@ export function passportTrack(citizenship: string, destination: string, destinat
         points.push({ text: `${item.title}. ${item.description}`, sources: item.sources });
       }
     }
+    const nationality = chinaNationalityNote();
+    points.push({ text: `${nationality.title}. ${nationality.description}`, sources: nationality.sources });
   }
   if (!points.length) return null;
 

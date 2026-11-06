@@ -59,6 +59,15 @@ export const chinaSources = {
     "Embassy of the Czech Republic in Beijing",
     "https://mzv.gov.cz/beijing/en/consular_information/visas_1/economic_migration_programs/index.html",
   ),
+  nationalityLaw: {
+    ...src(
+      "cn-nia-nationality-law",
+      "Nationality Law of the People's Republic of China (Articles 3 and 9)",
+      "National Immigration Administration of China",
+      "https://en.nia.gov.cn/n147418/n147458/c155976/content.html",
+    ),
+    checkedAt: "2026-11-06",
+  },
   skEmployment: src(
     "sk-vac-china-national-visa-employment",
     "Checklist: national visa (D) for employment purposes, visa application centres in China",
@@ -108,14 +117,15 @@ export function chinaNotes(destination: string, purpose: NotePurpose): Restricti
       id: "cn-ch-student-visa",
       title: "Swiss student visa from China: VFS appointment, notarised diplomas",
       description:
-        "Apply in person at the Swiss Embassy in Beijing or the Consulates General in Shanghai or Guangzhou, with an appointment booked through VFS Global. Previous certificates and diplomas must be notarised and translated into French, German or Italian; for English-taught studies an IELTS or TOEFL result is required. The embassy states 8–12 weeks for the decision.",
+        "Apply in person at the Swiss Embassy in Beijing or the Consulates General in Shanghai or Guangzhou, with an appointment booked through VFS Global. Previous certificates and diplomas must be notarised and translated into French, German or Italian; for English-taught studies an IELTS or TOEFL result is required.",
       sources: [chinaSources.chStudent],
     });
   }
 
   if (country === "CZ") {
+    // Separate ids for study/other and work: the country page shows both.
     notes.push({
-      id: "cn-cz-appointment",
+      id: purpose === "work" ? "cn-cz-appointment-work" : "cn-cz-appointment",
       title: "Czech long-term applications in China need registration first",
       description:
         purpose === "work"
@@ -136,4 +146,16 @@ export function chinaNotes(destination: string, purpose: NotePurpose): Restricti
   }
 
   return notes;
+}
+
+/** China does not recognise dual nationality: matters for anyone planning
+ *  to naturalise later, including people already living in the country. */
+export function chinaNationalityNote(): RestrictionNote {
+  return {
+    id: "cn-dual-nationality",
+    title: "China does not recognise dual nationality",
+    description:
+      "Under the Nationality Law, a Chinese national who settles abroad and is naturalised, or acquires a foreign nationality of their own accord, loses Chinese nationality automatically. A residence permit does not affect it; keep this in mind before you apply for citizenship later.",
+    sources: [chinaSources.nationalityLaw],
+  };
 }
