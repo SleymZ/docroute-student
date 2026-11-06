@@ -62,8 +62,11 @@ export function transform(type: unknown, props: Props): { props: Props; element?
     if (!store.ready) {
       // The root layout and the page render in parallel, so the page may
       // not know the language yet: the client translates instead.
+      // Client navigation reuses the layout, so the language stays unknown
+      // for the whole page render. Text inside components (next/link) is
+      // handed to the client too: their own runtime does not translate it.
       if (intrinsic && attrs.length) return { props, element: reactJsx(TrElement, { as: type as string, props }) };
-      if (intrinsic && translateKids) return { props: { ...props, children: reactJsx(Tr, { parts: children }) } };
+      if (translateKids) return { props: { ...props, children: reactJsx(Tr, { parts: children }) } };
       return { props };
     }
     catalog = store.catalog;
@@ -95,5 +98,8 @@ export function jsx(type: React.ElementType, props: Props, key?: React.Key) {
 export function jsxs(type: React.ElementType, props: Props, key?: React.Key) {
   const result = transform(type, props);
   if (result.element) return withKey(result.element, key);
-  return reactJsxs(type, result.props, key);
+  // Children replaced by one element (Tr) are no longer a static array.
+  return Array.isArray(result.props?.children) || result.props === props
+    ? reactJsxs(type, result.props, key)
+    : reactJsx(type, result.props, key);
 }

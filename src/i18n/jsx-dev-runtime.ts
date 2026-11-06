@@ -15,6 +15,9 @@ export function jsxDEV(type: DevArgs[0], props: DevArgs[1], key: DevArgs[2], isS
     return reactJsxDEV(inner.type, inner.props, key, isStatic, source, self);
   }
   const next = result.props as DevArgs[1];
-  const translatedArray = next !== props && Array.isArray((next as { children?: unknown })?.children);
-  return reactJsxDEV(type, next, key, isStatic || translatedArray, source, self);
+  // When the runtime replaced the children, they are static only if they
+  // are still an array (a translated sentence with links), not when they
+  // became one string or one Tr element.
+  const staticChildren = next === props ? isStatic : Array.isArray((next as { children?: unknown })?.children);
+  return reactJsxDEV(type, next, key, staticChildren, source, self);
 }

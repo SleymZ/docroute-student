@@ -48,7 +48,10 @@ export function LocaleProvider({
 export function Tr({ parts }: { parts: unknown }) {
   const catalog = useContext(CatalogContext);
   const result = translateChildren(catalog, parts);
-  return (Array.isArray(result) ? createElement(Fragment, null, ...result) : result) as ReactNode;
+  if (!Array.isArray(result)) return result as ReactNode;
+  // Empty strings render no text on the server but an empty text node in
+  // the browser, which breaks hydration (React error 418): leave them out.
+  return createElement(Fragment, null, ...result.filter((item) => item !== "")) as ReactNode;
 }
 
 /** An HTML element from a server component whose readable attributes
