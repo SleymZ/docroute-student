@@ -894,6 +894,30 @@ latest rules" (owner rule 2026-10-30):
   19 September 2022), Czechia (biometric Russian passports only). Added as
   "attention" tasks to every route's passport stage.
 
+## Site languages: Russian, Spanish, Chinese, Hindi (2026-11-06, PR #60)
+
+- Owner request 2026-11-05 ("Indian" = Hindi). Details: `docs/I18N.md`.
+- Language: `docroute-lang` cookie, else the browser's languages, else
+  English; addresses unchanged; switcher in the header and footer. A site
+  JSX runtime (`jsxImportSource: @/i18n`) translates rendered text and
+  readable attributes from `src/i18n/catalogs/{ru,es,zh,hi}.json`, keyed by
+  the English text. Root layout reads cookies, so pages render per request.
+- Translated: the whole interface (~1,580 strings) plus passport notes
+  (visa, apostille, Russia/Belarus, China), Slovak deadlines, cookie table
+  (~1,725 entries per language). Source titles and publishers stay as
+  published.
+- Not yet translated (~4,400 strings): residence route steps (~21k words),
+  university/programme data (~35k words), legal pages. They show in
+  English; a footer notice in non-English languages says the English text
+  and official sources prevail.
+- Engine rules: joined texts translate sentence run by sentence run or stay
+  English; a template variable may not hold untranslated English words;
+  search boxes match English and translated names.
+- Fixes found on the way: text inside components (next/link) on client
+  navigation; textarea placeholders; hydration error on every country page
+  (Node vs browser country names, now a fixed table
+  `src/data/region-names.ts`).
+
 ## Chinese passports in the verified countries (2026-11-06, PR #59)
 
 - `src/data/china-notes.ts` (official pages read 2026-11-05/06), added to

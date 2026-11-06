@@ -129,6 +129,7 @@ test("Chinese passports get the China-specific steps of each verified country, f
   assert.ok(track.points.some((point) => point.text.startsWith("China does not recognise dual nationality")));
   // No processing times in passport notes.
   for (const point of track.points) assert.doesNotMatch(point.text, /\d+\s?(–\d+\s?)?(days|weeks)\b(?! of)/);
+});
 
 test("every citizenship code has a fixed English name (no Intl in client lists)", async () => {
   const lists = await import("../src/data/citizenship-lists");
