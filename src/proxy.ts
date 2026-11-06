@@ -5,6 +5,19 @@ import { needsAccount, signUpHref } from "@/lib/access";
 import { hasAuthCookie, VISITED_COOKIE, VISITED_MAX_AGE } from "@/lib/visited";
 
 export async function proxy(request: NextRequest) {
+  // Supabase sends the sign-in code to its "Site URL" (the bare domain)
+  // when the requested /auth/callback address is not on its redirect allow
+  // list. Finish the sign-in there instead of dropping the code.
+  const { pathname, searchParams } = request.nextUrl;
+  if ((pathname === "/" || pathname === "/home") && searchParams.has("code") && !searchParams.has("error")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/callback";
+    url.search = "";
+    url.searchParams.set("code", searchParams.get("code")!);
+    url.searchParams.set("next", "/home");
+    return NextResponse.redirect(url);
+  }
+
   // The entry page is for first visits only (owner decision 2026-11-04):
   // anyone who has been here before or is signed in goes straight to the
   // site. The check reads cookies only, so it costs no network call.

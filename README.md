@@ -162,8 +162,14 @@ local and deployed callback URLs to the Supabase redirect allow list:
 
 ```text
 http://localhost:3000/auth/callback
-https://your-domain.example/auth/callback
+https://docroute-student.vercel.app/auth/callback
+https://*-sleymzs-projects.vercel.app/auth/callback
 ```
+
+Set **Site URL** (Authentication → URL Configuration) to the production
+address, not localhost: Supabase sends the sign-in code there whenever the
+requested callback is not on the list. The site then forwards a code that
+lands on `/` or `/home` to `/auth/callback` (`src/proxy.ts`).
 
 ### Checks
 

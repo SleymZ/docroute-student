@@ -894,6 +894,18 @@ latest rules" (owner rule 2026-10-30):
   19 September 2022), Czechia (biometric Russian passports only). Added as
   "attention" tasks to every route's passport stage.
 
+## Google sign-in on production (2026-11-06)
+
+- Symptom: after Google sign-in on production the browser opened
+  `localhost:3000/?code=…`; the account was created, the session was not.
+  Cause: Supabase "Site URL" was `http://localhost:3000` and the production
+  callback was not on the redirect allow list (previews were), so Supabase
+  fell back to the Site URL. Fix in Supabase (owner): Site URL
+  `https://docroute-student.vercel.app`, Redirect URLs include
+  `https://docroute-student.vercel.app/auth/callback`.
+- Code safety net: a `code` that lands on `/` or `/home` is forwarded to
+  `/auth/callback` (`src/proxy.ts`).
+
 ## Entry page: larger logo and tagline (2026-11-06, PR #61)
 
 - Logo mark 56 px (46 on phones), wordmark 26 px (22 on phones), tagline

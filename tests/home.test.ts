@@ -106,3 +106,11 @@ test("the entry map highlights the same countries as the home map", () => {
   assert.match(read("src/lib/landing-map.ts"), /highlightedCountryIds\.has\(id\)/);
   assert.match(read("src/lib/europe-map.ts"), /from "@\/data\/highlighted-countries"/);
 });
+
+test("a sign-in code that lands on the bare domain finishes the sign-in", () => {
+  const proxy = read("src/proxy.ts");
+  assert.match(proxy, /\(pathname === "\/" \|\| pathname === "\/home"\) && searchParams\.has\("code"\)/);
+  assert.match(proxy, /url\.pathname = "\/auth\/callback"/);
+  // Before the first-visit redirect, so the code is not lost on the way to /home.
+  assert.ok(proxy.indexOf('url.pathname = "/auth/callback"') < proxy.indexOf('url.pathname = "/home"'));
+});
