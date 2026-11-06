@@ -47,10 +47,13 @@ function clientCatalog(): Catalog | null {
 export function transform(type: unknown, props: Props): { props: Props; element?: unknown } {
   if (!props || typeof props !== "object") return { props };
   const intrinsic = typeof type === "string";
-  if (intrinsic && (UNTRANSLATED_ELEMENTS.has(type as string) || props.translate === "no")) return { props };
+  if (props.translate === "no" && intrinsic) return { props };
+  // Code and form values keep their content, but a <textarea>'s placeholder
+  // or title is still read by people.
+  const keepContent = intrinsic && UNTRANSLATED_ELEMENTS.has(type as string);
 
   const children = props.children;
-  const translateKids = hasText(children);
+  const translateKids = !keepContent && hasText(children);
   // Readable attributes, also on components (next/link passes aria-label
   // through to its <a>, rendered by React's own runtime).
   const attrs: string[] = TRANSLATED_ATTRIBUTES.filter((name) => typeof props[name] === "string" && /[A-Za-z]/.test(props[name] as string));

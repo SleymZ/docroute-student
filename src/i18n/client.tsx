@@ -9,7 +9,7 @@
 import { Fragment, createContext, createElement, useCallback, useContext, useMemo, type ReactNode } from "react";
 
 import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_MAX_AGE, type Locale } from "./config";
-import { TRANSLATED_ATTRIBUTES, buildCatalog, translateChildren, translateText, type Catalog, type Dictionary } from "./translate";
+import { TRANSLATED_ATTRIBUTES, UNTRANSLATED_ELEMENTS, buildCatalog, translateChildren, translateText, type Catalog, type Dictionary } from "./translate";
 
 export const CatalogContext = createContext<Catalog | null>(null);
 const LocaleContext = createContext<Locale>(DEFAULT_LOCALE);
@@ -63,7 +63,8 @@ export function TrElement({ as, props }: { as: string; props: Record<string, unk
   for (const name of TRANSLATED_ATTRIBUTES) {
     if (typeof next[name] === "string") next[name] = translateText(catalog, next[name] as string);
   }
-  const kids = next.children === undefined ? undefined : translateChildren(catalog, next.children);
+  const kids =
+    next.children === undefined || UNTRANSLATED_ELEMENTS.has(as) ? next.children : translateChildren(catalog, next.children);
   delete next.children;
   return Array.isArray(kids) ? createElement(as, next, ...kids) : createElement(as, next, kids as ReactNode);
 }
