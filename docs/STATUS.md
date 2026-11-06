@@ -894,6 +894,12 @@ latest rules" (owner rule 2026-10-30):
   19 September 2022), Czechia (biometric Russian passports only). Added as
   "attention" tasks to every route's passport stage.
 
+## Entry page: larger logo and tagline (2026-11-06, PR #61)
+
+- Logo mark 56 px (46 on phones), wordmark 26 px (22 on phones), tagline
+  "Official steps. Real deadlines." under the wordmark (translated).
+- Headline "Start your journey" smaller: clamp(44px, 5.6vw, 88px).
+
 ## Site languages: Russian, Spanish, Chinese, Hindi (2026-11-06, PR #60)
 
 - Owner request 2026-11-05 ("Indian" = Hindi). Details: `docs/I18N.md`.
