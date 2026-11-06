@@ -144,9 +144,14 @@ export function EntryScreen() {
 
       <header className={styles.bar}>
         <Link href="/" className={styles.brand} aria-label="DocRoute">
-          <LogoMark size={40} className={styles.brandMark} />
-          <LogoWord className={styles.brandName} />
-          <span className={styles.beta}>Beta</span>
+          <LogoMark size={56} className={styles.brandMark} />
+          <span className={styles.brandText}>
+            <span className={styles.brandLine}>
+              <LogoWord className={styles.brandName} />
+              <span className={styles.beta}>Beta</span>
+            </span>
+            <span className={styles.tagline}>Official steps. Real deadlines.</span>
+          </span>
         </Link>
         <EntryAccountLink />
       </header>

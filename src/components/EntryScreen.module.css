@@ -180,7 +180,7 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: var(--text);
   text-decoration: none;
 }
@@ -188,12 +188,32 @@
 .brandMark {
   display: block;
   flex: none;
-  width: 40px;
-  height: 40px;
+  width: 56px;
+  height: 56px;
+}
+
+/* Name + Beta on the first line, the tagline under them. */
+.brandText {
+  display: grid;
+  gap: 3px;
+}
+
+.brandLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .brandName {
-  font-size: 19px;
+  font-size: 26px;
+  line-height: 1;
   font-weight: 750;
   letter-spacing: -0.02em;
 }
@@ -242,7 +262,7 @@
 .title {
   margin: 0;
   color: var(--text);
-  font-size: clamp(54px, 8vw, 124px);
+  font-size: clamp(44px, 5.6vw, 88px);
   font-weight: 500;
   line-height: 0.92;
   letter-spacing: -0.06em;
@@ -772,6 +792,19 @@
 @media (max-width: 480px) {
   .bar {
     padding-block: 16px;
+  }
+
+  .brandMark {
+    width: 46px;
+    height: 46px;
+  }
+
+  .brandName {
+    font-size: 22px;
+  }
+
+  .tagline {
+    font-size: 12px;
   }
 
   .beta {
