@@ -894,6 +894,31 @@ latest rules" (owner rule 2026-10-30):
   19 September 2022), Czechia (biometric Russian passports only). Added as
   "attention" tasks to every route's passport stage.
 
+## Chinese passports in the verified countries (2026-11-06, PR #59)
+
+- `src/data/china-notes.ts` (official pages read 2026-11-05/06), added to
+  the passport stage of every route for `citizenship=CN` and to "Path by
+  passport" (Hong Kong and Macao passports are separate codes):
+  - Germany, study: APS certificate before the visa (German missions in
+    China checklist, July 2024).
+  - Austria, study: APS verification and gaokao/huikao recommendation
+    (BMBWF, from 1 March 2022).
+  - Switzerland, study: VFS appointment, notarised diplomas with FR/DE/IT
+    translation, IELTS/TOEFL for English-taught (no processing time stated).
+  - Czechia: registration by e-mail at the Beijing embassy (study/family);
+    employee cards by e-mail + economic migration programmes (work);
+    Shanghai covers Shanghai, Anhui, Jiangsu, Zhejiang. The country page
+    shows both notes.
+  - Slovakia, work: national visa D for employment at the visa centre in
+    China; apostilled criminal record with official Slovak translation.
+  - Documents: China applies the Apostille Convention since 7 Nov 2023
+    (notary certificate → MFA or provincial foreign affairs office).
+  - Nationality law (National Immigration Administration): China does not
+    recognise dual nationality; naturalising abroad ends Chinese
+    nationality. Shown also to people already living in the country.
+- Not found on official pages: China-specific steps for Slovak study or
+  family/business routes, or for Polish study.
+
 ## Plus email sender (2026-11-05, PR #55)
 
 - `scripts/send-plus-email.mjs`: one-off email to Plus members from a CSV
