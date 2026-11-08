@@ -29,12 +29,18 @@ export const chinaSources = {
     "German Embassy Beijing",
     "https://china.diplo.de/blob/1302044/3a2b548d9c46572797f72d2f1b7ed126/pdf-merkblatt-natvisum-studium-data.pdf",
   ),
-  atChina: src(
-    "at-bmbwf-china-admission-2022",
-    "Recommendation on admission of applicants with Chinese certificates (in force from 1 March 2022)",
-    "Federal Ministry of Education, Science and Research (BMBWF), Austria",
-    "https://www.BMBWF.gv.at/dam/jcr:2413c9f0-dbd0-466d-a7ce-7af765f16be1/2.4.13.8%20China_EmpfZul_M%C3%A4rz_2022E.pdf",
-  ),
+  // Rechecked 2026-11-08: the ministry's English PDF moved; ENIC NARIC
+  // Austria (at OeAD) now publishes the same recommendation (in German,
+  // status October 2025, in force since 1 March 2022).
+  atChina: {
+    ...src(
+      "at-bmbwf-china-admission-2022",
+      "Admission recommendation China 2022: admission with Chinese school-leaving certificates (in force from 1 March 2022; status October 2025, in German)",
+      "ENIC NARIC Austria at OeAD, for the Federal Ministry of Education",
+      "https://oead.at/fileadmin/Dokumente/oead.at/OeAD_Hauptmenueseiten/Studieren_Forschen_Lehren/ENIC_NARIC_PDFs/China__Zulassung.pdf",
+    ),
+    checkedAt: "2026-11-08",
+  },
   chStudent: src(
     "ch-embassy-china-student-2025",
     "National visa D for students: requirements (China, April 2025)",

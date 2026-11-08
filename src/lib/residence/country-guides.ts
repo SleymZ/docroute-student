@@ -102,12 +102,17 @@ const atSources: RouteSource[] = [
     "https://www.migration.gv.at/en/types-of-immigration/permanent-immigration/self-employedkeyworkers/",
   ),
   src("at-mig-startup", "Start-up founders", MIG, "https://www.migration.gv.at/en/types-of-immigration/permanent-immigration/start-up-founders/"),
-  src(
-    "at-oegv-registration",
-    "Checklist: living in Austria for third-country nationals (updated 13 January 2026)",
-    "oesterreich.gv.at",
-    "https://www.oesterreich.gv.at/de/themen/bauen_und_wohnen/umzug/2/1/Seite.180663",
-  ),
+  // Rechecked 2026-11-08: the old "living in Austria" checklist page is
+  // gone; this page states the three-day deadline (Meldegesetz § 3).
+  {
+    ...src(
+      "at-oegv-registration",
+      "Registering a new main or secondary residence: within three days of moving in",
+      "oesterreich.gv.at (Federal Chancellery and Ministry of the Interior)",
+      "https://www.oesterreich.gv.at/de/themen/persoenliche_dokumente_und_bestaetigungen/an__abmeldung_des_wohnsitzes/Seite.1180200",
+    ),
+    checkedAt: "2026-11-08",
+  },
 ];
 
 function task(id: string, title: string, description: string, sourceIds: string[], status: RouteTask["status"] = "action", dueLabel?: string): RouteTask {
