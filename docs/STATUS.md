@@ -80,8 +80,9 @@ horizontal scroll, secrets, verified-and-coming-soon overlaps or past
 deadlines in verified programmes. Free locks steps, dates, PDF/PNG and My
 route; Plus opens everything.
 
-PRs opened (not merged; wait for the owner's «мержим»), each with tests,
-green Vercel and a clean Codex review:
+PRs opened, each with tests, green Vercel and a clean Codex review; all
+merged 2026-11-08 on the owner's «мерджи» (#68 and #71 rebased, translation
+catalogs merged key by key):
 
 | PR | What |
 | --- | --- |
@@ -92,14 +93,17 @@ green Vercel and a clean Codex review:
 | #67 | 8 dead official links replaced (Austrian registration, Chinese certificates, Vienna ×2, Cologne, NKUA, Cattolica, AUBG); AUBG fall 2027 deadlines corrected to 15 Jan / 15 Mar / 15 May |
 | #68 | `src/lib/auth-errors.ts`: plain translated sign-in errors; `/auth?error=` shows only fixed sentences |
 | #69 | Security headers (frame-ancestors/X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy) |
+| #70 | This section |
+| #71 | Any country: `applicantCountryOptions` = 243 countries and inhabited territories (residence, education, "moved from", home "Documents issued in" now a searchable `CountryPicker variant="inline"`); `citizenshipCountryOptions` = 201 nationalities, `DEPENDENT_TERRITORIES` never a citizenship (`isCitizenshipCode` in every route parser); pickers sort in the site language; country names in ru/es/zh/hi from CLDR. Language switcher: flag + name button, listbox with flags (`LOCALE_FLAGS`: en GB, ru RU, es ES, zh CN, hi IN) |
 
 Open (owner decision or action):
 
 1. **Blocker:** Supabase's built-in email sends only to project team
    members, 2 an hour. Test sign-up with an outside address; if no email
    arrives, either Google-only sign-in for the beta or custom SMTP.
-2. **Blocker (GDPR Art. 13):** no private contact and no operator identity;
-   needs a mailbox for `legalInfo.contactEmail` and a decision on the name.
+2. **Blocker (GDPR Art. 13):** contact mailbox decided 2026-11-08:
+   docroutestu@gmail.com (`legalInfo.contactEmail`, separate PR). Operator
+   name still open.
 3. Locked Free steps are in the public JS chunks (blocker for selling Plus;
    needs server-built routes, 3–5 days).
 4. No spam limit on waitlist/feedback inserts; no error monitoring; ~1.7–2.4
