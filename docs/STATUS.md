@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-08 (launch review). Keep this file factual: describe what exists and
+Last updated: 2026-11-08 (launch review, welcome email, videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -189,6 +189,16 @@ the address), own domain, AdSense account in the owner's name.
   red warnings appear: visa, residence permit, first 3 months, longer
   stays, permanent residence (Switzerland: work, self-employed, job
   seekers). The country-page track no longer repeats those points.
+
+## Sign-up error text for server failures (2026-11-08, PR #80)
+
+- A sign-up got 500 from Supabase Auth because Gmail SMTP refused the
+  login (535 BadCredentials, wrong or missing app password). supabase-js
+  marks 5xx as AuthRetryableFetchError, so the form said "No connection to
+  the sign-in service".
+- `src/lib/auth-errors.ts`: "Error sending … email"/SMTP → the translated
+  "We could not send an email to this address right now…"; other 5xx → the
+  general message; a real lost connection still shows the network text.
 
 ## Verified coverage
 
