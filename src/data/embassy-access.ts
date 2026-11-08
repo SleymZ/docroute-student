@@ -7,7 +7,8 @@ import type { RouteSource } from "@/types/route-preview";
 // country. Read on 2026-11-08. Only what the two official pages state: the
 // competent embassy, and that a long-stay or residence application may also
 // be filed where the applicant holds long-term or permanent residence after
-// at least 2 years. No fees or processing times. Venezuela is left out: its
+// at least 2 years, and that inside the Schengen area all Czech visa
+// services are at the visa centre in Dresden. No fees or processing times. Venezuela is left out: its
 // citizens may apply at any Czech embassy.
 
 export const EMBASSY_ACCESS_CHECKED = "2026-11-08";
@@ -26,6 +27,15 @@ const czLocalCompetence: RouteSource = {
   title: "Where to apply: local consular competence (long-stay visas and residence)",
   publisher: "Ministry of Foreign Affairs of the Czech Republic",
   url: "https://mzv.gov.cz/jnp/cz/informace_pro_cizince/pobytova_opravneni_k_pobytu_nad_90_dnu/mistni_prislusnost_zu_v_rizeni_o_vizum_a/index.html",
+  checkedAt: EMBASSY_ACCESS_CHECKED,
+  authority: "official",
+};
+
+const czWhereToApply: RouteSource = {
+  id: "cz-mzv-where-to-apply",
+  title: "Where to apply for a visa (Schengen area: visa centre at the Consulate General in Dresden)",
+  publisher: "Ministry of Foreign Affairs of the Czech Republic",
+  url: "https://mzv.gov.cz/jnp/cz/informace_pro_cizince/kde_podat_zadost_o_vizum/index.html",
   checkedAt: EMBASSY_ACCESS_CHECKED,
   authority: "official",
 };
@@ -63,8 +73,8 @@ export function embassyAccessNotes(citizenship: string, destination: string): Re
       title: `No Czech visa service in your country: apply in ${embassy}`,
       description: `Czech visa and residence applications from citizens of this country are handled by the Czech embassy in ${embassy}. You need to travel there and stay there legally for the appointment and the decision.`,
       severity: "restricted",
-      solution: `Book an appointment at the Czech embassy in ${embassy}. If you have held long-term or permanent residence in another country for at least 2 years, you can apply for a long-stay visa or residence at the Czech embassy there instead.`,
-      sources: [czDistricts, czLocalCompetence],
+      solution: `Book an appointment at the Czech embassy in ${embassy}. If you have held long-term or permanent residence in another country outside the Schengen area for at least 2 years, you can apply for a long-stay visa or residence at the Czech office competent for that country instead. If you live in a Schengen country, Czech visa services there are provided only by the visa centre at the Czech Consulate General in Dresden.`,
+      sources: [czDistricts, czLocalCompetence, czWhereToApply],
     },
   ];
 }

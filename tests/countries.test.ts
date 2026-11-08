@@ -226,7 +226,8 @@ test("war and crisis passports: where to file Czech applications, from the minis
   const [af] = passportWarnings("AF", "CZ");
   assert.equal(af?.severity, "restricted");
   assert.match(af.title, /Islamabad, Pakistan/);
-  assert.match(af.solution ?? "", /at least 2 years/);
+  assert.match(af.solution ?? "", /outside the Schengen area for at least 2 years/);
+  assert.match(af.solution ?? "", /Dresden/);
   assert.match(passportWarnings("SY", "CZ")[0].title, /Beirut, Lebanon/);
   assert.match(passportWarnings("SD", "CZ")[0].title, /Cairo, Egypt/);
   assert.deepEqual(passportWarnings("AF", "SK"), []);
