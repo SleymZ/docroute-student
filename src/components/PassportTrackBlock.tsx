@@ -35,7 +35,9 @@ export function PassportTrackBlock({ code, name }: { code: string; name: string 
   const Icon = track ? icons[track.kind] : RouteIcon;
   // Points already shown in the red warning above are not repeated.
   const warned = citizenship ? passportWarnings(citizenship, code).map((item) => item.title) : [];
-  const points = track ? track.points.filter((point) => !warned.some((title) => point.text.startsWith(title))) : [];
+  // Free movement: the green table above already says it, point by point.
+  const points =
+    track && track.kind !== "eu" ? track.points.filter((point) => !warned.some((title) => point.text.startsWith(title))) : [];
 
   function choose(value: string) {
     const params = new URLSearchParams(searchParams.toString());

@@ -194,3 +194,39 @@ export function passportTrack(citizenship: string, destination: string, destinat
     points,
   };
 }
+
+export type FreeMovementRow = { label: string; value: string };
+
+/** Green "easier for you" table for EU, EEA and Swiss citizens moving to
+ *  another of these countries: the same facts as the "eu" track, one row
+ *  per question. Null for every other passport and for own citizens. */
+export function freeMovementTable(
+  citizenship: string,
+  destination: string,
+): { rows: FreeMovementRow[]; sources: RouteSource[] } | null {
+  const code = citizenship.toUpperCase();
+  const country = destination.toUpperCase();
+  if (!euEeaSwiss.has(code) || !euEeaSwiss.has(country) || code === country) return null;
+  if (country === "CH") {
+    return {
+      rows: [
+        { label: "Visa", value: "Not needed" },
+        { label: "Work up to 3 months", value: "No residence permit; your employer notifies the authorities at least a day before you start" },
+        { label: "Longer employment", value: "Apply for a residence permit at your commune before you start work (ID or passport and your contract)" },
+        { label: "Self-employed", value: "Register your arrival within 14 days, then apply for a residence permit and show you can support yourself" },
+        { label: "Job seekers", value: "Up to 6 months, no permit for the first 3" },
+      ],
+      sources: [swissWork],
+    };
+  }
+  return {
+    rows: [
+      { label: "Visa", value: "Not needed" },
+      { label: "Residence permit", value: "Not needed: you may live there as a worker, student, jobseeker or pensioner" },
+      { label: "First 3 months", value: "No registration (some countries ask you to report your presence)" },
+      { label: "Longer stays", value: "You may need to register your residence" },
+      { label: "Permanent residence", value: "Right of permanent residence after five years of legal residence" },
+    ],
+    sources: [yourEurope],
+  };
+}

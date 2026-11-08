@@ -64,3 +64,87 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* ===== EU, EEA and Swiss citizens: what is easier ===== */
+
+.easier {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid light-dark(rgba(22, 128, 74, 0.32), rgba(86, 214, 140, 0.35));
+  border-left: 4px solid light-dark(#16804a, #56d68c);
+  border-radius: 12px;
+  background: light-dark(#eefaf2, rgba(20, 110, 60, 0.2));
+  color: light-dark(#173d28, #d6f3e2);
+  text-align: left;
+}
+
+.easierKicker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: light-dark(#13703f, #6be39f);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.easierTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.easierTable th,
+.easierTable td {
+  padding: 7px 10px;
+  border-top: 1px solid light-dark(rgba(22, 128, 74, 0.18), rgba(86, 214, 140, 0.18));
+  vertical-align: top;
+  text-align: left;
+}
+
+.easierTable tr:first-child th,
+.easierTable tr:first-child td {
+  border-top: 0;
+}
+
+.easierTable th {
+  width: 34%;
+  color: light-dark(#13703f, #7be8aa);
+  font-weight: 650;
+}
+
+.easierSources {
+  margin: 0;
+  color: light-dark(#3f6b52, #a9d9bd);
+  font-size: 12px;
+}
+
+.easierSources a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  .easierTable th,
+  .easierTable td {
+    display: block;
+    width: auto;
+    padding: 4px 0;
+    border-top: 0;
+  }
+
+  .easierTable tr {
+    display: block;
+    padding: 6px 0;
+    border-top: 1px solid light-dark(rgba(22, 128, 74, 0.18), rgba(86, 214, 140, 0.18));
+  }
+
+  .easierTable tr:first-child {
+    border-top: 0;
+  }
+}

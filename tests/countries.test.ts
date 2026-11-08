@@ -275,3 +275,21 @@ test("Russian passports everywhere in Schengen; Denmark, Sweden, Latvia; Gambia:
     }
   }
 });
+
+test("EU, EEA and Swiss citizens get a green 'easier' table, translated, with the official source", async () => {
+  const { freeMovementTable } = await import("../src/lib/passport-track");
+  const de = freeMovementTable("DE", "SK");
+  assert.ok(de && de.rows[0].value === "Not needed" && de.sources[0].authority === "official");
+  assert.ok(freeMovementTable("FR", "CH")?.rows.some((row) => row.label === "Job seekers"));
+  assert.equal(freeMovementTable("SK", "SK"), null);
+  assert.equal(freeMovementTable("RU", "SK"), null);
+  assert.equal(freeMovementTable("DE", "US"), null);
+  const component = readFileSync(join(root, "src/components/PassportWarning.tsx"), "utf8");
+  assert.match(component, /freeMovementTable\(citizenship, destination\)/);
+  const rows = [...(freeMovementTable("DE", "SK")?.rows ?? []), ...(freeMovementTable("FR", "CH")?.rows ?? [])];
+  for (const locale of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${locale}.json`), "utf8"));
+    for (const row of rows) for (const text of [row.label, row.value]) assert.ok(catalog[text], `${locale}: ${text}`);
+    assert.ok(catalog["Easier for you: EU free movement"], locale);
+  }
+});
