@@ -33,6 +33,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./WorkRouteScreen.module.css";
 import { PassportWarning } from "@/components/PassportWarning";
+import { PassportBadge } from "@/components/PassportBadge";
 
 // "EU, EEA or Swiss passport" keeps its capitals; "Temporary residence…" does not.
 function lowerFirst(value: string) {
@@ -212,6 +213,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <PassportBadge citizenship={path.answers.citizenshipCountryCode} verified={path.residenceCoverage === "verified"} />
       <ConfirmRoute title={title} purpose="study" countryCode={group.countryCode} routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
       <PassportWarning citizenship={path.answers.citizenshipCountryCode} destination={group.countryCode} residenceStatus={path.answers.currentResidenceStatus} />
 

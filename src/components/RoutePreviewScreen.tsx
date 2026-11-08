@@ -53,6 +53,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 import styles from "./RoutePreviewScreen.module.css";
 import { flagSrc } from "@/lib/flags";
 import { PassportWarning } from "@/components/PassportWarning";
+import { PassportBadge } from "@/components/PassportBadge";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -274,6 +275,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <PassportBadge citizenship={profile?.citizenshipCountryCode} />
       <ConfirmRoute title={`${program.programName} · ${program.universityName}`} purpose="study" countryCode={program.countryCode} routePath={confirmPath} routeKey={routeKey} stepIds={actionableTasks.map((task) => task.id)} />
       <PassportWarning citizenship={profile?.citizenshipCountryCode} destination={program.countryCode} residenceStatus={profile?.currentResidenceStatus} />
 

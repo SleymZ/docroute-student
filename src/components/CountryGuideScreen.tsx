@@ -23,6 +23,7 @@ import type { RouteSource, RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./WorkRouteScreen.module.css";
 import { PassportWarning } from "@/components/PassportWarning";
+import { PassportBadge } from "@/components/PassportBadge";
 
 function isActionableTask(status: RouteTaskStatus) {
   return status === "action" || status === "attention";
@@ -103,6 +104,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <PassportBadge citizenship={citizenship} verified={guide.coverage !== "official-link"} />
       <ConfirmRoute title={guide.title} purpose={guide.purpose} countryCode={guide.country} routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {guide.variants.length > 1 && (

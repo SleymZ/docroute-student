@@ -237,3 +237,16 @@ test("war and crisis passports: where to file Czech applications, from the minis
   const catalogs = ["ru", "es", "zh", "hi"].map((locale) => JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${locale}.json`), "utf8")));
   for (const embassy of Object.values(czechEmbassyAbroad)) for (const catalog of catalogs) assert.ok(catalog[embassy], embassy);
 });
+test("every route says whose passport it is built for", () => {
+  const badge = readFileSync(join(root, "src/components/PassportBadge.tsx"), "utf8");
+  assert.match(badge, /isEuEeaSwissCitizen\(code\)\) return null/);
+  assert.match(readFileSync(join(root, "src/components/CountryGuideScreen.tsx"), "utf8"), /verified=\{guide\.coverage !== "official-link"\}/);
+  assert.match(readFileSync(join(root, "src/components/FullPathScreen.tsx"), "utf8"), /verified=\{path\.residenceCoverage === "verified"\}/);
+  for (const screen of ["PurposeRouteScreen", "WorkRouteScreen", "CzechiaRouteScreen", "CountryGuideScreen", "FullPathScreen", "RoutePreviewScreen"]) {
+    assert.match(readFileSync(join(root, `src/components/${screen}.tsx`), "utf8"), /<PassportBadge citizenship=/, screen);
+  }
+  for (const locale of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${locale}.json`), "utf8"));
+    assert.ok(catalog["Route for citizens of {0}"]?.includes("{0}"), locale);
+  }
+});

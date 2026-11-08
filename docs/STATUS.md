@@ -160,6 +160,13 @@ the address), own domain, AdSense account in the owner's name.
   then Authentication → Rate Limits → emails per hour (30 by default with
   custom SMTP). This removes launch blocker 1 (built-in email reaches only
   team members, 2 an hour).
+## Passport label on every route (2026-11-08)
+
+- `src/components/PassportBadge.tsx`: flag + "Route for citizens of
+  {country}" + "Visa, documents and restrictions on this page are checked
+  for this citizenship", under the header of every route (Slovak work,
+  family, business; Czech routes; country guides; full study path; study
+  route preview). Name from `regionName()`, the same as the passport stage.
 
 ## Verified coverage
 
