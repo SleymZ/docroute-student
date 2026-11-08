@@ -152,6 +152,8 @@ export function AuthScreen({
       }
 
       if (data.session) {
+        // New account signed in at once: the server sends the welcome email.
+        void fetch("/api/welcome", { method: "POST", keepalive: true }).catch(() => {});
         router.replace(destination);
         router.refresh();
       } else {
