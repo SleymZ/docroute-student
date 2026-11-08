@@ -273,6 +273,9 @@ test("Russian passports everywhere in Schengen; Denmark, Sweden, Latvia; Gambia:
         assert.ok(item.solution, item.id);
       }
     }
+  }
+});
+
 test("EU, EEA and Swiss citizens get a green 'easier' table, translated, with the official source", async () => {
   const { freeMovementTable } = await import("../src/lib/passport-track");
   const de = freeMovementTable("DE", "SK");
