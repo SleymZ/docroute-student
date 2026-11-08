@@ -28,7 +28,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/check-links.mjs
+      - run: node --experimental-strip-types --no-warnings --import ./scripts/test-loader/register.mjs scripts/check-links.mjs
+        env:
+          CHECK_LINKS_LOAD_MODULES: "1"
       - run: cat link-report.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:

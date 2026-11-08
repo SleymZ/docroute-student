@@ -19,3 +19,28 @@ test("the link check separates broken links from sites that refuse robots", () =
   assert.equal(classify(403, "https://example.eu/page"), "blocked");
   assert.equal(classify(0, null, "AbortError"), "blocked");
 });
+
+test("the link check keeps parentheses that belong to the address", () => {
+  const found: Set<string> = extractUrls(
+    '"https://www.uni-goettingen.de/en/application+and+enrolment+(for+eu+and+non-eu+applicants)/46792.html" (see https://ipc.gov.cz/en/b/)',
+  );
+  assert.deepEqual([...found], [
+    "https://www.uni-goettingen.de/en/application+and+enrolment+(for+eu+and+non-eu+applicants)/46792.html",
+    "https://ipc.gov.cz/en/b/",
+  ]);
+});
+
+test("a law number in the path is not a 'not found' page; .invalid addresses are skipped", () => {
+  assert.equal(classify(200, "https://static.slov-lex.sk/static/SK/ZZ/2011/404/20260715.html"), "ok");
+  assert.equal(classify(200, "https://example.eu/page-not-found/"), "broken");
+  assert.equal(extractUrls("https://docroute.invalid/route").size, 0);
+});
+
+test("links built by helpers are found in the loaded data", async () => {
+  // @ts-expect-error plain JavaScript script without types
+  const { collectUrls } = await import("../scripts/check-links.mjs");
+  const { euPortalSource } = await import("@/data/eu-immigration-portal");
+  const found: Set<string> = collectUrls({ sources: [euPortalSource("eu-blue-card", "FR")] });
+  assert.equal(found.size, 1);
+  assert.match([...found][0], /^https:\/\/home-affairs\.ec\.europa\.eu\/.+_en$/);
+});

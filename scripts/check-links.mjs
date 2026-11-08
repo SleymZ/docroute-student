@@ -14,16 +14,45 @@ import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const roots = ["src/data", "src/lib"];
-const urlPattern = /https?:\/\/[^\s"'`<>()\\]+/g;
+const urlPattern = /https?:\/\/[^\s"'`<>\\]+/g;
+
+/** Drops punctuation after a URL in prose, and a ")" that closes text
+ *  around the URL rather than a "(" inside it. */
+function trimUrl(url) {
+  let out = url.replace(/[.,;:]+$/, "");
+  while (out.endsWith(")") && (out.match(/\(/g) ?? []).length < (out.match(/\)/g) ?? []).length) {
+    out = out.slice(0, -1).replace(/[.,;:]+$/, "");
+  }
+  return out;
+}
+
+function keep(url) {
+  if (url.includes("${")) return false; // template: the resolved value comes from the modules
+  if (/localhost|example\.(com|org|eu)|your-project|\.invalid([/:]|$)/.test(url)) return false;
+  return true;
+}
 
 export function extractUrls(text) {
   const found = new Set();
   for (const match of text.matchAll(urlPattern)) {
-    let url = match[0].replace(/[.,;:]+$/, "");
-    if (url.includes("${")) continue; // template, not a real address
-    if (/localhost|example\.(com|org)|your-project/.test(url)) continue;
-    found.add(url);
+    const url = trimUrl(match[0]);
+    if (keep(url)) found.add(url);
   }
+  return found;
+}
+
+/** Every URL string inside a value (objects, arrays, maps, sets). Helpers
+ *  such as euPortalSource() build addresses from templates, so the loaded
+ *  data holds links the source text does not spell out. */
+export function collectUrls(value, found = new Set(), seen = new Set()) {
+  if (typeof value === "string") {
+    for (const url of extractUrls(value)) found.add(url);
+    return found;
+  }
+  if (!value || typeof value !== "object" || seen.has(value)) return found;
+  seen.add(value);
+  const items = value instanceof Map ? [...value.values()] : value instanceof Set ? [...value] : Object.values(value);
+  for (const item of items) collectUrls(item, found, seen);
   return found;
 }
 
@@ -40,7 +69,9 @@ export function classify(status, finalUrl, error) {
   if (error) return /timeout|abort|ECONNRESET|UND_ERR_SOCKET/i.test(error) ? "blocked" : "broken";
   if (status === 404 || status === 410) return "broken";
   if (status >= 200 && status < 400) {
-    return /\/(404|not-?found|error)(\b|\/|\.)|[?&]error=404/i.test(finalUrl ?? "") ? "broken" : "ok";
+    // A redirect to a "not found" page; a path like /404/2011 (an act's
+    // number) is not one.
+    return /\/(404|not-?found|error)(\.html?|\.php)?\/?$|\/(not-?found|page-not-found)[/.]|[?&]error=404/i.test(finalUrl ?? "") ? "broken" : "ok";
   }
   if ([401, 403, 405, 406, 429, 503].includes(status)) return "blocked";
   return status >= 500 ? "blocked" : "broken";
@@ -77,6 +108,45 @@ async function main() {
         if (!sources.has(url)) sources.set(url, new Set());
         sources.get(url).add(file);
       }
+    }
+  }
+  // With Node's TypeScript support and the test loader (see the workflow),
+  // also load the data modules and read the links they build.
+  if (process.env.CHECK_LINKS_LOAD_MODULES) {
+    const { pathToFileURL } = await import("node:url");
+    for (const root of roots) {
+      for (const file of walk(root).filter((name) => name.endsWith(".ts"))) {
+        try {
+          const module = await import(pathToFileURL(join(process.cwd(), file)).href);
+          for (const url of collectUrls(module)) {
+            if (!sources.has(url)) sources.set(url, new Set());
+            sources.get(url).add(file);
+          }
+        } catch (error) {
+          console.warn(`Could not load ${file}: ${String(error).slice(0, 120)}`);
+        }
+      }
+    }
+    // Links built per country on demand: call the helpers for every
+    // country they know.
+    try {
+      const portal = await import(pathToFileURL(join(process.cwd(), "src/data/eu-immigration-portal.ts")).href);
+      const study = await import(pathToFileURL(join(process.cwd(), "src/data/study-residence-links.ts")).href);
+      const built = [];
+      for (const code of Object.keys(portal.euPortalCountries)) {
+        for (const category of ["family-member", "self-employed-worker", "employed-worker", "highly-qualified-worker", "eu-blue-card"]) {
+          built.push(["src/data/eu-immigration-portal.ts", portal.euPortalSource(category, code)]);
+        }
+      }
+      for (const code of study.studyResidenceLinkCountries) built.push(["src/data/study-residence-links.ts", study.thirdCountryStudySource(code, code)]);
+      for (const [file, source] of built) {
+        for (const url of collectUrls(source)) {
+          if (!sources.has(url)) sources.set(url, new Set());
+          sources.get(url).add(file);
+        }
+      }
+    } catch (error) {
+      console.warn(`Could not build portal links: ${String(error).slice(0, 120)}`);
     }
   }
   const urls = [...sources.keys()].sort();
