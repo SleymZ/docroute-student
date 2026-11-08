@@ -200,6 +200,26 @@ the address), own domain, AdSense account in the owner's name.
   "We could not send an email to this address right now…"; other 5xx → the
   general message; a real lost connection still shows the network text.
 
+## Welcome email after sign-up (2026-11-08, PR #81)
+
+- Owner request: a thank-you email after registration in the site's style.
+  `src/lib/welcome-email.ts`: HTML + text in en/ru/es/zh/hi, chosen by the
+  site language (cream page, coral #d4502f, logo `public/email/docroute-logo.png`),
+  three first steps (/home, /explore/top, /explore/profile), reply goes to
+  docroutestu@gmail.com.
+- `src/lib/welcome.ts`: once per account. The account is claimed in
+  `user_metadata.welcome_sent_at` before the response; delivery runs in
+  Next `after()` so sign-in never waits for SMTP; a failed send clears the
+  claim; accounts created more than 24 h ago never get it.
+- Triggers: `/auth/callback` (Google, confirmation link) and
+  `POST /api/welcome` (email sign-up with an immediate session).
+- `src/lib/mailer.ts`: Gmail SMTP, needs **`SMTP_PASS` (Google app password)
+  in Vercel env, Production and Preview**; without it nothing is sent.
+  Timeouts 10–15 s. `@types/nodemailer` added.
+- Privacy Policy: mentions the welcome email and Gmail as email deliverer.
+- Owner state 2026-11-08: Google blocked creating an app password on a new
+  device (passkey + "couldn't verify"); the owner reports it fixed.
+
 ## Verified coverage
 
 | Area | Coverage | Checked |

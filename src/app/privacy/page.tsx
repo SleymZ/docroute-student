@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 const dataRows = [
   {
     what: "Account: email address and password (stored only as a hash by our authentication provider). If you sign in with Google: your Google email, name and profile picture link sent by Google.",
-    why: "To create your account, let you sign in and send emails you ask for (confirming your address, resetting your password).",
+    why: "To create your account, let you sign in and send emails about your account: one welcome email after you sign up, and the emails you ask for (confirming your address, resetting your password).",
     basis: "Contract — providing the service you asked for (GDPR Art. 6(1)(b)).",
     kept: "Until you delete your account.",
   },
@@ -97,7 +97,7 @@ const processors = [
   },
   {
     name: "Google LLC / Google Ireland Ltd",
-    role: "Only if you choose “Continue with Google”: confirms your identity to us.",
+    role: "Only if you choose “Continue with Google”: confirms your identity to us. Gmail also delivers DocRoute's emails from docroutestu@gmail.com (it receives your email address and the message).",
     link: "https://policies.google.com/privacy",
   },
   {

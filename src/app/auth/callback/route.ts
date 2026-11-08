@@ -1,7 +1,10 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { getLocale } from "@/i18n/server";
+import { welcomeNewAccount } from "@/lib/mailer";
 import { safeNextPath } from "@/lib/safe-next-path";
+import { getSiteUrl } from "@/lib/site-url";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
@@ -33,6 +36,10 @@ export async function GET(request: NextRequest) {
     redirectUrl.searchParams.set("error", error.message);
     return NextResponse.redirect(redirectUrl);
   }
+
+  // First sign-in of a new account (Google, or the link in the confirmation
+  // email): send the welcome email once. Failures never block the sign-in.
+  await welcomeNewAccount(supabase, await getLocale(), getSiteUrl());
 
   return NextResponse.redirect(new URL(next, url.origin));
 }
