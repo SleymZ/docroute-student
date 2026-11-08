@@ -51,6 +51,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
 import { citizenshipFromUrl } from "@/data/region-names";
+import { PassportWarning } from "@/components/PassportWarning";
 
 const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
 
@@ -193,6 +194,7 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
           placeholder="Select citizenship"
           onChange={setCitizenship}
         />
+        <PassportWarning citizenship={citizenship} destination="CZ" />
 
         <label className={styles.field}>
           <span>Passport and current residence status</span>
@@ -423,6 +425,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
       </header>
       <PrintNote asOfDate={asOfDate} />
       <ConfirmRoute title={title} purpose={profile.purpose === "work" ? "work" : "study"} countryCode="CZ" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
+      <PassportWarning citizenship={profile.citizenshipCountryCode} destination="CZ" />
 
       {route.procedure && (
         <ol className={styles.strip} aria-label="Route stages">

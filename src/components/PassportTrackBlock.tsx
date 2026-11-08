@@ -9,6 +9,8 @@ import { purposeRoute, type CountryPurpose } from "@/lib/country-list";
 import { passportTrack, type TrackKind } from "@/lib/passport-track";
 
 import styles from "@/app/countries/Countries.module.css";
+import { PassportWarning } from "@/components/PassportWarning";
+import { passportWarnings } from "@/data/russia-belarus";
 
 const icons: Record<TrackKind, typeof Sparkles> = {
   own: BadgeCheck,
@@ -31,6 +33,9 @@ export function PassportTrackBlock({ code, name }: { code: string; name: string 
   const citizenship = (searchParams.get("citizenship") ?? "").toUpperCase();
   const track = citizenship ? passportTrack(citizenship, code, name) : null;
   const Icon = track ? icons[track.kind] : RouteIcon;
+  // Points already shown in the red warning above are not repeated.
+  const warned = citizenship ? passportWarnings(citizenship, code).map((item) => item.title) : [];
+  const points = track ? track.points.filter((point) => !warned.some((title) => point.text.startsWith(title))) : [];
 
   function choose(value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -68,28 +73,32 @@ export function PassportTrackBlock({ code, name }: { code: string; name: string 
           nationality), standard, or harder because of extra national restrictions.
         </p>
       ) : (
+        <>
+        <PassportWarning citizenship={citizenship} destination={code} />
         <div className={styles.track} data-kind={track.kind}>
           <p className={styles.trackLabel}>
             <Icon size={15} aria-hidden="true" />
             {track.label}
           </p>
           <h3>{track.title}</h3>
-          <ul>
-            {track.points.map((point) => (
-              <li key={point.text}>
-                {point.text}
-                {point.sources.length > 0 && (
-                  <span className={styles.trackSources}>
-                    {point.sources.map((source) => (
-                      <a key={source.id} href={source.url} target="_blank" rel="noreferrer">
-                        {source.publisher}
-                      </a>
-                    ))}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+          {points.length > 0 && (
+            <ul>
+              {points.map((point) => (
+                <li key={point.text}>
+                  {point.text}
+                  {point.sources.length > 0 && (
+                    <span className={styles.trackSources}>
+                      {point.sources.map((source) => (
+                        <a key={source.id} href={source.url} target="_blank" rel="noreferrer">
+                          {source.publisher}
+                        </a>
+                      ))}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
           {track.kind !== "own" && (
             <div className={styles.trackLinks}>
               {purposes.map((purpose) => {
@@ -104,6 +113,7 @@ export function PassportTrackBlock({ code, name }: { code: string; name: string 
             </div>
           )}
         </div>
+        </>
       )}
     </section>
   );

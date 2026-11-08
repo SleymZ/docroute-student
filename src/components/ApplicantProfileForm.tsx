@@ -50,6 +50,7 @@ import { degreeLevels, studyIntakes } from "@/types/admission";
 
 import styles from "./ApplicantProfileForm.module.css";
 import { flagSrc } from "@/lib/flags";
+import { PassportWarning } from "@/components/PassportWarning";
 
 type LanguageRow = ApplicantLanguage & {
   id: string;
@@ -490,6 +491,7 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
               placeholder="Select citizenship"
               onChange={setCitizenship}
             />
+            <PassportWarning citizenship={citizenship} destination={countryCode} />
 
             <CountryPicker
               label={

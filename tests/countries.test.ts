@@ -184,3 +184,33 @@ test("a territory is never read as a citizenship, from the form or the address",
   const planner = readFileSync(join(root, "src/components/RoutePlanner.tsx"), "utf8");
   assert.doesNotMatch(planner, /const citizenship = knownCountry\(/);
 });
+
+test("red passport warnings: Czechia blocks Russian and Belarusian applications, every warning has an official source and is translated", async () => {
+  const { passportWarnings, restrictedFor } = await import("../src/data/russia-belarus");
+  for (const code of ["RU", "BY"]) {
+    const [first] = passportWarnings(code, "CZ");
+    assert.equal(first?.severity, "blocked", code);
+    assert.match(first.title, /Czechia does not accept visa or residence applications/);
+    assert.ok(first.solution, code);
+    assert.ok(restrictedFor(code).includes("CZ"), code);
+  }
+  assert.match(passportWarnings("BY", "CZ")[0].solution ?? "", /Belarusian students/);
+  assert.deepEqual(passportWarnings("RU", "SK"), []);
+  assert.deepEqual(passportWarnings("IN", "CZ"), []);
+  assert.ok(passportWarnings("RU", "EE").some((item) => item.severity === "blocked"));
+  assert.ok(!passportWarnings("RU", "FI").some((item) => item.severity === "info"));
+  const catalogs = ["ru", "es", "zh", "hi"].map((locale) => JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${locale}.json`), "utf8")));
+  for (const code of ["RU", "BY"]) {
+    for (const country of ["CZ", "EE", "FI", "LV", "LT", "PL"]) {
+      for (const item of passportWarnings(code, country)) {
+        assert.ok(item.sources.length && item.sources.every((source) => source.authority === "official"), item.id);
+        for (const text of [item.title, item.description, item.solution].filter(Boolean) as string[]) {
+          for (const catalog of catalogs) assert.ok(catalog[text], text.slice(0, 60));
+        }
+      }
+    }
+  }
+  for (const screen of ["CzechiaRouteScreen", "CountryGuideScreen", "FullPathScreen", "RoutePreviewScreen", "ApplicantProfileForm", "PassportTrackBlock"]) {
+    assert.match(readFileSync(join(root, `src/components/${screen}.tsx`), "utf8"), /<PassportWarning /, screen);
+  }
+});
