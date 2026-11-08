@@ -128,7 +128,7 @@ export function passportTrack(citizenship: string, destination: string, destinat
 
   const restrictions = russiaBelarusNotes(code, country);
   if (restrictions.length) {
-    const national = restrictions.filter((item) => item.id !== "ru-eu-short-stay");
+    const national = restrictions.filter((item) => !item.id.startsWith("ru-eu-"));
     return {
       kind: "harder",
       label: labels.harder,

@@ -141,6 +141,20 @@ the address), own domain, AdSense account in the owner's name.
   applications (e.g. AF → Islamabad), plus the 2-year residence alternative
   outside Schengen (inside Schengen: only the Dresden visa centre).
   Venezuela is left out (may apply at any Czech embassy).
+- Sweep of all passports, 2026-11-08 (official sources only):
+  - Russia, every Schengen destination (`SCHENGEN` in russia-belarus.ts;
+    not IE, CY): single-entry Schengen visas and enhanced checks since
+    2025-11-07 (Commission decision), non-acceptance of passports issued in
+    occupied regions of Ukraine and Georgia (Decision (EU) 2022/2512), and
+    non-biometric passports refused by more and more countries (Latvian MFA
+    + EU table). Slovakia itself has no national restriction (MZV SR states
+    its visa policy is unchanged).
+  - Russia, national: SE and LV refuse non-biometric passports; DK's
+    embassy in Moscow takes no visa or residence applications.
+  - The Gambia, every Schengen destination: Council Implementing Decision
+    (EU) 2021/1781 (still in force; only the fee increase was repealed).
+    Ethiopia's measures were repealed 2026-05-18; Vanuatu is simply on the
+    EU visa list (Regulation (EU) 2025/11).
 - Not covered yet: Slovakia and the other destinations for these passports
   (no official list of competent embassies found; each country page would
   need checking).
