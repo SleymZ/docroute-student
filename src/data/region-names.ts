@@ -304,3 +304,16 @@ export const DEPENDENT_TERRITORIES: ReadonlySet<string> = new Set([
 export function regionName(code: string): string {
   return REGION_NAMES[code.toUpperCase()] ?? code;
 }
+
+/** A code that can stand for a citizenship: a country with its own
+ *  nationality, or "ZZ" (other / stateless). Territories are rejected so a
+ *  place of residence or education is never read as a passport. */
+export function isCitizenshipCode(code: string): boolean {
+  return code === "ZZ" || (Boolean(REGION_NAMES[code]) && !DEPENDENT_TERRITORIES.has(code));
+}
+
+/** Citizenship prefilled from an address: kept only when it is one. */
+export function citizenshipFromUrl(value: string | null | undefined): string {
+  const code = (value ?? "").toUpperCase();
+  return isCitizenshipCode(code) ? code : "";
+}

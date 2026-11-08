@@ -22,6 +22,7 @@ import {
   type CurrentResidenceStatus,
 } from "@/types/admission";
 import type { RouteSource, RouteStage, RouteTask } from "@/types/route-preview";
+import { isCitizenshipCode } from "@/data/region-names";
 
 // The full study path for a "coming soon" programme: from choosing it to
 // living in the country. Admission stages come from the faculty's published
@@ -79,7 +80,7 @@ export function parseFullPathAnswers(params: {
 }): FullPathAnswers | null {
   const citizenship = params.get("citizenship")?.toUpperCase() ?? "";
   const status = params.get("status");
-  if (!/^[A-Z]{2}$/.test(citizenship) || !isFullPathStatus(status)) return null;
+  if (!isCitizenshipCode(citizenship) || !isFullPathStatus(status)) return null;
   return { citizenshipCountryCode: citizenship, currentResidenceStatus: status };
 }
 

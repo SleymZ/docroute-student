@@ -169,3 +169,18 @@ test("every country name is translated in every site language", async () => {
     assert.deepEqual(missing, [], locale);
   }
 });
+
+test("a territory is never read as a citizenship, from the form or the address", async () => {
+  const { citizenshipFromUrl, isCitizenshipCode } = await import("../src/data/region-names");
+  const { parseWorkProfile } = await import("../src/lib/work-profile");
+  assert.ok(isCitizenshipCode("RU") && isCitizenshipCode("ZZ") && isCitizenshipCode("XK"));
+  assert.ok(!isCitizenshipCode("GF") && !isCitizenshipCode("PR") && !isCitizenshipCode("XX"));
+  assert.equal(citizenshipFromUrl("gf"), "");
+  assert.equal(citizenshipFromUrl("by"), "BY");
+  const work = (citizenship: string) =>
+    parseWorkProfile(new URLSearchParams({ country: "SK", citizenship, residenceStatus: "non-eu-passport-no-residence", offer: "yes", skGraduate: "no", blueCard: "no", shortage: "no" }));
+  assert.ok(work("IL"));
+  assert.equal(work("GF"), null);
+  const planner = readFileSync(join(root, "src/components/RoutePlanner.tsx"), "utf8");
+  assert.doesNotMatch(planner, /const citizenship = knownCountry\(/);
+});

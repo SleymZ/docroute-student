@@ -1,6 +1,7 @@
 import { normalizeCurrentResidenceStatus } from "@/lib/profile-options";
 import type { YesNo, YesNoUnsure } from "@/lib/work-profile";
 import type { CurrentResidenceStatus } from "@/types/admission";
+import { isCitizenshipCode } from "@/data/region-names";
 
 export type CzechPurpose = "study" | "work";
 
@@ -78,7 +79,7 @@ export function parseCzechProfile(params: URLSearchParams): CzechProfile | null 
   const citizenship = (params.get("citizenship") ?? "").toUpperCase();
   const status = normalizeCurrentResidenceStatus(params.get("residenceStatus"));
 
-  if ((purpose !== "study" && purpose !== "work") || !/^[A-Z]{2}$/.test(citizenship) || !status) {
+  if ((purpose !== "study" && purpose !== "work") || !isCitizenshipCode(citizenship) || !status) {
     return null;
   }
 

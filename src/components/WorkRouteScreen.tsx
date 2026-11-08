@@ -49,6 +49,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 
 import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
+import { citizenshipFromUrl } from "@/data/region-names";
 
 function isActionableTask(status: RouteTaskStatus) {
   return status === "action" || status === "attention";
@@ -130,7 +131,7 @@ function readYesNoUnsure(value: string | null): YesNoUnsure | "" {
 function WorkQuestionnaire({ initial }: { initial: URLSearchParams }) {
   const router = useRouter();
   const [citizenship, setCitizenship] = useState(
-    (initial.get("citizenship") ?? "").toUpperCase(),
+    citizenshipFromUrl(initial.get("citizenship")),
   );
   const [status, setStatus] = useState<CurrentResidenceStatus | "">(() => {
     const value = initial.get("residenceStatus");

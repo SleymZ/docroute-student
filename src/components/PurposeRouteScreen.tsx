@@ -59,6 +59,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 
 import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
+import { citizenshipFromUrl } from "@/data/region-names";
 
 export type PurposeKind = "family" | "business";
 
@@ -128,7 +129,7 @@ const read = <T extends string>(options: readonly T[], value: string | null): T 
 
 function Questionnaire({ kind, initial }: { kind: PurposeKind; initial: URLSearchParams }) {
   const router = useRouter();
-  const [citizenship, setCitizenship] = useState((initial.get("citizenship") ?? "").toUpperCase());
+  const [citizenship, setCitizenship] = useState(citizenshipFromUrl(initial.get("citizenship")));
   const [status, setStatus] = useState<CurrentResidenceStatus | "">(
     read(currentResidenceStatuses, initial.get("residenceStatus")),
   );
