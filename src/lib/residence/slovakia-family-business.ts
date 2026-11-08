@@ -8,6 +8,7 @@ import {
 import type { ResidenceFiling } from "@/lib/residence/slovakia";
 import type { CurrentResidenceStatus } from "@/types/admission";
 import type { RouteSource, RouteStage, RouteTask } from "@/types/route-preview";
+import { isCitizenshipCode } from "@/data/region-names";
 
 export const FAMILY_ROUTE_VERSION = "sk-family-2026-10-29";
 export const BUSINESS_ROUTE_VERSION = "sk-business-2026-10-29";
@@ -99,7 +100,7 @@ function baseParams(params: URLSearchParams) {
   if ((params.get("country") ?? "SK").toUpperCase() !== "SK") return null;
   const citizenship = (params.get("citizenship") ?? "").toUpperCase();
   const status = normalizeCurrentResidenceStatus(params.get("residenceStatus"));
-  if (!/^[A-Z]{2}$/.test(citizenship) || !status) return null;
+  if (!isCitizenshipCode(citizenship) || !status) return null;
   return { citizenship, status };
 }
 

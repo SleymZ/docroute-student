@@ -35,10 +35,11 @@ import {
 import {
   plannerDestinationCodes,
   plannerDestinationOptions,
-  documentCountryOptions,
   programOptions,
 } from "@/data/demo-destinations";
 
+import { CountryPicker } from "@/components/CountryPicker";
+import { applicantCountryOptions } from "@/data/applicant-countries";
 import { movePurposes } from "@/data/move-purposes";
 import type { MovePurpose } from "@/data/move-purposes";
 import styles from "./RouteForm.module.css";
@@ -69,10 +70,6 @@ type VisualSelectProps = {
 };
 
 const countryCodes: Record<string, string> = {
-  Ukraine: "ua",
-  Israel: "il",
-  India: "in",
-  "United Kingdom": "gb",
   Slovakia: "sk",
   Czechia: "cz",
   Austria: "at",
@@ -495,15 +492,13 @@ export function RouteForm({
       <PurposeSelector value={purpose} onChange={onPurposeChange} />
 
       <div className={purpose === "study" ? "form-grid" : "form-grid form-grid-two"}>
-        <VisualSelect
+        <CountryPicker
           label="Documents issued in"
-          name="documentCountry"
           value={documentCountry}
-          options={documentCountryOptions}
+          options={applicantCountryOptions}
+          placeholder="Select country"
           onChange={onDocumentCountryChange}
-          renderIcon={(country) => (
-            <CountryFlag country={country} />
-          )}
+          variant="inline"
         />
 
         <VisualSelect

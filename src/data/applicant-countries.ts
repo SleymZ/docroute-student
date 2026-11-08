@@ -1,54 +1,38 @@
 import catalog from "@/data/universities.json";
-import { apostilleParties, schengenVisaFree, schengenVisaRequired } from "@/data/citizenship-lists";
-import { regionName } from "@/data/region-names";
+import { DEPENDENT_TERRITORIES, REGION_NAMES } from "@/data/region-names";
 
-// Countries offered for citizenship and education: every catalog country
-// plus common origin countries. "ZZ" stands for any other country.
-const applicantCountries = [
-  ["IL", "Israel"],
-  ["IN", "India"],
-  ["US", "United States"],
-  ["CA", "Canada"],
-  ["AU", "Australia"],
-  ["AE", "United Arab Emirates"],
-  ["KZ", "Kazakhstan"],
-  ["UZ", "Uzbekistan"],
-  ["CN", "China"],
-  ["JP", "Japan"],
-  ["KR", "South Korea"],
-  ["PK", "Pakistan"],
-  ["BD", "Bangladesh"],
-  ["NP", "Nepal"],
-  ["LK", "Sri Lanka"],
-  ["EG", "Egypt"],
-  ["MA", "Morocco"],
-  ["NG", "Nigeria"],
-  ["ZA", "South Africa"],
-  ["BR", "Brazil"],
-  ["MX", "Mexico"],
-  ["ZZ", "Other country"],
-] as const;
+export type CountryOption = { code: string; name: string };
 
-export const applicantCountryOptions = [
-  ...new Map([
-    ...catalog.universities.map(
-      (university) =>
-        [university.countryCode, university.country] as const,
-    ),
-    ...applicantCountries,
+// Fixed English names that differ from REGION_NAMES on purpose.
+const NAME_OVERRIDES: Readonly<Record<string, string>> = {
+  PS: "Palestinian territories",
+};
+
+function byName(a: CountryOption, b: CountryOption) {
+  if (a.code === "ZZ") return 1;
+  if (b.code === "ZZ") return -1;
+  return a.name.localeCompare(b.name, "en");
+}
+
+// Every country and inhabited territory, plus the catalog countries (their
+// names as the catalog spells them). "ZZ" stands for "other country" —
+// stateless people, or a place missing from the list.
+const allPlaces: CountryOption[] = [
+  ...new Map<string, string>([
+    ...Object.entries(REGION_NAMES).map(([code, name]) => [code, NAME_OVERRIDES[code] ?? name] as const),
+    ...catalog.universities.map((university) => [university.countryCode, university.country] as const),
+    ["ZZ", "Other country"],
   ]).entries(),
 ]
   .map(([code, name]) => ({ code, name }))
-  .sort((a, b) => a.name.localeCompare(b.name, "en"));
+  .sort(byName);
 
-const listedCodes = new Set(applicantCountryOptions.map((option) => option.code));
+/** Places people live, study or move from: every country and inhabited
+ *  territory, so any country of residence or education can be chosen. */
+export const applicantCountryOptions: readonly CountryOption[] = allPlaces;
 
-/** Citizenships for passport notes: the applicant countries plus every
- *  country on the EU visa lists or in the Apostille Convention, so any
- *  passport can be chosen. */
-export const citizenshipCountryOptions = [
-  ...applicantCountryOptions,
-  ...[...new Set([...schengenVisaRequired, ...schengenVisaFree, ...apostilleParties])]
-    .filter((code) => !listedCodes.has(code))
-    .map((code) => ({ code, name: code === "PS" ? "Palestinian territories" : regionName(code) })),
-].sort((a, b) => (a.code === "ZZ" ? 1 : b.code === "ZZ" ? -1 : a.name.localeCompare(b.name, "en")));
+/** Citizenships: every country with its own nationality (territories whose
+ *  people hold another country's passport are left out). */
+export const citizenshipCountryOptions: readonly CountryOption[] = allPlaces.filter(
+  (country) => !DEPENDENT_TERRITORIES.has(country.code),
+);

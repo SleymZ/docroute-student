@@ -55,14 +55,6 @@ export const destinationOptions: Destination[] = [
   "Bulgaria",
 ];
 
-export const documentCountryOptions = [
-  "Israel",
-  "Ukraine",
-  "India",
-  "United Kingdom",
-  "Other country",
-];
-
 export const programOptions = [
   "Medicine",
   "Law",

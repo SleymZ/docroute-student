@@ -1,52 +1,161 @@
-.switcher {
+.root {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
   flex-shrink: 0;
-  min-height: 36px;
-  padding: 0 10px;
-  border: 1px solid light-dark(rgba(68, 107, 123, 0.2), rgba(132, 184, 206, 0.16));
-  border-radius: 12px;
-  background: light-dark(rgba(255, 255, 255, 0.75), rgba(13, 31, 42, 0.6));
-  color: light-dark(#3d5560, #c6d7df);
-  font-size: 13px;
-  font-weight: 600;
 }
 
-.switcher:focus-within {
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 10px 0 9px;
+  border: 1px solid light-dark(rgba(68, 107, 123, 0.24), rgba(132, 184, 206, 0.2));
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, light-dark(rgba(72, 175, 192, 0.05), rgba(121, 221, 239, 0.05)), transparent),
+    light-dark(rgba(255, 255, 255, 0.85), rgba(13, 31, 42, 0.7));
+  color: light-dark(#2d454f, #d3e2e9);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.trigger:hover {
+  border-color: light-dark(rgba(207, 96, 72, 0.45), rgba(255, 139, 113, 0.45));
+}
+
+.trigger:focus-visible {
   outline: 2px solid var(--coral);
   outline-offset: 2px;
 }
 
-.compact {
+.trigger[aria-expanded="true"] {
+  border-color: light-dark(rgba(207, 96, 72, 0.7), rgba(255, 139, 113, 0.7));
+  box-shadow: 0 0 0 3px light-dark(rgba(234, 109, 85, 0.08), rgba(255, 128, 103, 0.1));
+}
+
+.compact .trigger {
   min-height: 44px;
+  padding: 0 9px;
+  gap: 6px;
 }
 
-.select {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  padding-right: 2px;
+.flag {
+  width: 22px;
+  height: 16px;
+  flex: 0 0 auto;
+  border: 1px solid light-dark(rgba(62, 74, 76, 0.16), rgba(224, 242, 246, 0.16));
+  border-radius: 3px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px light-dark(rgba(24, 52, 66, 0.1), rgba(0, 0, 0, 0.25));
 }
 
-.select:focus {
-  outline: none;
-}
-
-.select option {
-  background: light-dark(#ffffff, #0d1f2a);
-  color: light-dark(#1d2b31, #e3edf2);
-}
-
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
+.name {
   white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.chevron {
+  flex: 0 0 auto;
+  color: light-dark(#5d7680, #8fb0bd);
+  transition: transform 160ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  z-index: 60;
+  right: 0;
+  display: grid;
+  min-width: 190px;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid light-dark(rgba(68, 107, 123, 0.2), rgba(132, 184, 206, 0.18));
+  border-radius: 14px;
+  background: light-dark(#ffffff, #0d1f2a);
+  box-shadow: 0 18px 40px light-dark(rgba(24, 52, 66, 0.16), rgba(0, 0, 0, 0.45));
+}
+
+.compact .menu {
+  top: calc(100% + 8px);
+}
+
+/* On phones the header button sits near the left edge: open to the right. */
+@media (max-width: 720px) {
+  .compact .menu {
+    right: auto;
+    left: 0;
+  }
+}
+
+/* Footer: open upwards, aligned to the left edge of the button. */
+.footer .menu {
+  right: auto;
+  left: 0;
+  bottom: calc(100% + 8px);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: light-dark(#1d2b31, #e3edf2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover,
+.option:focus-visible {
+  outline: none;
+  background: light-dark(rgba(72, 175, 192, 0.1), rgba(121, 221, 239, 0.08));
+}
+
+.option[aria-selected="true"] {
+  font-weight: 650;
+  background: light-dark(rgba(212, 80, 47, 0.07), rgba(255, 121, 95, 0.09));
+}
+
+.optionName {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+.code {
+  color: light-dark(#6a808a, #7f9cab);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.check,
+.checkSpace {
+  width: 15px;
+  flex: 0 0 auto;
+}
+
+.check {
+  color: var(--coral);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .chevron {
+    transition: none;
+  }
 }

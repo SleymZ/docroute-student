@@ -1,5 +1,6 @@
 import { normalizeCurrentResidenceStatus } from "@/lib/profile-options";
 import type { CurrentResidenceStatus } from "@/types/admission";
+import { isCitizenshipCode } from "@/data/region-names";
 
 export type YesNo = "yes" | "no";
 export type YesNoUnsure = "yes" | "no" | "unsure";
@@ -50,7 +51,7 @@ export function parseWorkProfile(params: URLSearchParams): WorkProfile | null {
   const shortageOccupation = yesNoUnsure(params.get("shortage"));
 
   if (
-    !/^[A-Z]{2}$/.test(citizenship) ||
+    !isCitizenshipCode(citizenship) ||
     !status ||
     !jobOffer ||
     !slovakGraduate ||

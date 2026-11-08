@@ -12,6 +12,7 @@ import {
   isStudyIntake,
   normalizeCurrentResidenceStatus,
 } from "@/lib/profile-options";
+import { isCitizenshipCode } from "@/data/region-names";
 
 type SearchParamsReader = {
   get(name: string): string | null;
@@ -123,6 +124,7 @@ export function parseApplicantProfile(
       citizenshipCountryCode,
       educationCountryCode,
     ].every((code) => /^[A-Z]{2}$/.test(code)) ||
+    !isCitizenshipCode(citizenshipCountryCode) ||
     !isDegreeLevel(rawDegreeLevel) ||
     !isStudyIntake(rawIntake) ||
     !residenceStatus ||

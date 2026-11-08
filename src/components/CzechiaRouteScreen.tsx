@@ -24,7 +24,7 @@ import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-n
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
-import { applicantCountryOptions } from "@/data/applicant-countries";
+import { applicantCountryOptions, citizenshipCountryOptions } from "@/data/applicant-countries";
 import { czechiaResidenceRules } from "@/data/czechia-residence";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import {
@@ -50,6 +50,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 
 import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
+import { citizenshipFromUrl } from "@/data/region-names";
 
 const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
 
@@ -129,7 +130,7 @@ const read = <T extends string>(value: string | null, allowed: readonly T[]): T 
 function Questionnaire({ initial }: { initial: URLSearchParams }) {
   const router = useRouter();
   const [purpose, setPurpose] = useState(read(initial.get("purpose"), ["study", "work"] as const));
-  const [citizenship, setCitizenship] = useState((initial.get("citizenship") ?? "").toUpperCase());
+  const [citizenship, setCitizenship] = useState(citizenshipFromUrl(initial.get("citizenship")));
   const [status, setStatus] = useState(read(initial.get("residenceStatus"), currentResidenceStatuses));
   const [offer, setOffer] = useState(read(initial.get("offer"), ["yes", "no"] as const));
   const [graduate, setGraduate] = useState(read(initial.get("czGraduate"), ["yes", "no"] as const));
@@ -188,7 +189,7 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
         <CountryPicker
           label="Citizenship"
           value={citizenship}
-          options={applicantCountryOptions}
+          options={citizenshipCountryOptions}
           placeholder="Select citizenship"
           onChange={setCitizenship}
         />

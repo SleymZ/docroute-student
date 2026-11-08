@@ -234,3 +234,50 @@
   outline: 2px solid light-dark(#cb634a, #ff9277);
   outline-offset: 2px;
 }
+
+/* ===== Inline variant: a row with the home page selects ===== */
+
+.inline:focus-within {
+  z-index: 10;
+}
+
+.inline .label {
+  color: var(--muted, light-dark(#4c616c, #a6bdca));
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.inline .trigger {
+  min-height: 42px;
+  gap: 8px;
+  padding: 9px 10px;
+  border-color: light-dark(rgba(68, 107, 123, 0.25), rgba(132, 184, 206, 0.25));
+  border-radius: 9px;
+  background: light-dark(#f4fafe, #102431);
+  font-size: 13px;
+}
+
+.inline .trigger,
+.inline .selection {
+  min-width: 0;
+}
+
+.inline .selection {
+  flex: 1 1 auto;
+  gap: 9px;
+  overflow: hidden;
+}
+
+.inline .flag {
+  width: 22px;
+  height: 16px;
+}
+
+.inline .popover {
+  right: auto;
+  width: min(320px, calc(100vw - 48px));
+  z-index: 20;
+}
