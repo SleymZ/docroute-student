@@ -50,6 +50,7 @@ import type { ProgramMatch } from "@/types/admission";
 
 import styles from "./ExploreCatalog.module.css";
 import linkStyles from "./UniversityResults.module.css";
+import { flagSrc } from "@/lib/flags";
 
 const PAGE_SIZE = 8;
 
@@ -522,7 +523,7 @@ export function UniversityResults({
 
         {!anyCountry && (
           <Image
-            src={`https://flagcdn.com/w160/${countryCode.toLowerCase()}.png`}
+            src={flagSrc(countryCode)}
             alt={`${countryName} flag`}
             width={80}
             height={60}
@@ -775,7 +776,7 @@ export function UniversityResults({
                   </span>
 
                   <Image
-                    src={`https://flagcdn.com/w80/${university.countryCode.toLowerCase()}.png`}
+                    src={flagSrc(university.countryCode)}
                     alt=""
                     width={34}
                     height={25}

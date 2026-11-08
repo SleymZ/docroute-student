@@ -42,6 +42,7 @@ import {
 import { movePurposes } from "@/data/move-purposes";
 import type { MovePurpose } from "@/data/move-purposes";
 import styles from "./RouteForm.module.css";
+import { flagSrc } from "@/lib/flags";
 
 type RouteFormProps = {
   purpose: MovePurpose;
@@ -86,7 +87,7 @@ function CountryFlag({ country }: { country: string }) {
     <span className={styles.icon} aria-hidden="true">
       {code ? (
         <Image
-          src={`https://flagcdn.com/w80/${code}.png`}
+          src={flagSrc(code)}
           alt=""
           width={24}
           height={18}

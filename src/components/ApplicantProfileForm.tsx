@@ -49,6 +49,7 @@ import type {
 import { degreeLevels, studyIntakes } from "@/types/admission";
 
 import styles from "./ApplicantProfileForm.module.css";
+import { flagSrc } from "@/lib/flags";
 
 type LanguageRow = ApplicantLanguage & {
   id: string;
@@ -449,7 +450,7 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
 
         <aside className={styles.routeSummary}>
           <Image
-            src={`https://flagcdn.com/w80/${countryCode.toLowerCase()}.png`}
+            src={flagSrc(countryCode)}
             alt=""
             width={42}
             height={30}
