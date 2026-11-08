@@ -9,6 +9,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { LogoMark, LogoWord } from "./Logo";
 import styles from "./UpdatePasswordScreen.module.css";
+import { authErrorMessage } from "@/lib/auth-errors";
 
 export function UpdatePasswordScreen() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export function UpdatePasswordScreen() {
     setBusy(false);
 
     if (error) {
-      setMessage(error.message);
+      setMessage(authErrorMessage(error));
       return;
     }
 

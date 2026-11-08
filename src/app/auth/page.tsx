@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AuthScreen } from "@/components/AuthScreen";
+import { linkErrorMessage } from "@/lib/auth-errors";
 
 export const metadata: Metadata = {
   title: "Account",
@@ -40,7 +41,7 @@ export default async function AuthPage({
     <AuthScreen
       initialMode={initialMode}
       nextPath={rawNext}
-      initialMessage={rawError ?? ""}
+      initialMessage={linkErrorMessage(rawError)}
     />
   );
 }
