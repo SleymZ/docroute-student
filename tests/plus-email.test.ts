@@ -29,13 +29,13 @@ test("the Plus email goes out from DocRoute's Gmail mailbox and replies come bac
   const { mailSettings, DOCROUTE_MAILBOX } = await import("../scripts/send-plus-email.mjs");
   assert.equal(DOCROUTE_MAILBOX, "docroutestu@gmail.com");
   const smtp = mailSettings({ SMTP_PASS: "x" });
-  assert.equal(smtp.kind, "smtp");
+  assert.ok(smtp && smtp.kind === "smtp");
   assert.equal(smtp.host, "smtp.gmail.com");
   assert.equal(smtp.port, 465);
   assert.equal(smtp.user, "docroutestu@gmail.com");
   assert.equal(smtp.from, "DocRoute <docroutestu@gmail.com>");
   assert.equal(smtp.replyTo, "docroutestu@gmail.com");
-  assert.equal(mailSettings({ RESEND_API_KEY: "k", MAIL_FROM: "DocRoute <a@b.c>" }).kind, "resend");
+  assert.equal(mailSettings({ RESEND_API_KEY: "k", MAIL_FROM: "DocRoute <a@b.c>" })?.kind, "resend");
   assert.equal(mailSettings({}), null);
   const { legalInfo } = await import("../src/data/legal");
   assert.equal(legalInfo.contactEmail, DOCROUTE_MAILBOX);
