@@ -22,7 +22,8 @@ permissions:
 jobs:
   links:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 1,100 links × 15 s worst case ÷ 16 workers ≈ 17 minutes, plus setup.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -86,7 +86,7 @@ export function classify(status, finalUrl, error) {
 
 async function check(url) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 25000);
+  const timer = setTimeout(() => controller.abort(), 15000);
   try {
     const response = await fetch(url, {
       redirect: "follow",
@@ -160,7 +160,7 @@ async function main() {
   const results = [];
   let next = 0;
   await Promise.all(
-    Array.from({ length: 12 }, async () => {
+    Array.from({ length: 16 }, async () => {
       while (next < urls.length) {
         const url = urls[next++];
         results.push({ ...(await check(url)), files: [...sources.get(url)] });
