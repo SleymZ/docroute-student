@@ -297,7 +297,7 @@ export function russiaBelarusNotes(citizenship: string, destination: string): Re
         description:
           "Under Decision (EU) 2022/2512, Schengen countries do not accept Russian travel documents issued in, or to residents of, the Russian-occupied regions of Ukraine (Crimea and Sevastopol, Donetsk, Luhansk, Kherson, Zaporizhzhia) or Abkhazia and South Ossetia, for a visa or to cross the external border.",
         severity: "restricted",
-        solution: "Russian passports issued elsewhere are not affected. With an affected passport no Schengen visa can be issued in it.",
+        solution: "Not affected: Russian passports issued outside these regions to people who do not live there. With an affected passport no Schengen visa can be issued in it.",
         appliesToResidents: true,
         sources: [ruBySources.euOccupied],
       });
