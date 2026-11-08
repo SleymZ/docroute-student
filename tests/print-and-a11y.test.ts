@@ -36,3 +36,9 @@ test("the university image role does not contain the credit links", () => {
   const closes = (between.match(/<\/div>/g) ?? []).length;
   assert.ok(closes > opens, "credit is outside the image element");
 });
+
+test("the password field has its own accessible name", () => {
+  const source = readFileSync(join(process.env.REPO_ROOT ?? process.cwd(), "src/components/AuthScreen.tsx"), "utf8");
+  const input = source.slice(source.indexOf('name="password"') - 200, source.indexOf('name="password"') + 200);
+  assert.match(input, /aria-label="Password"/);
+});

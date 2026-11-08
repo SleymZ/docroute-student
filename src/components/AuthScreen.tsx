@@ -479,9 +479,13 @@ export function AuthScreen({
                   aria-hidden="true"
                 />
 
+                {/* The label also holds the "Forgot password?" button, which
+                    would otherwise become the label's control: name the
+                    field itself. */}
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  aria-label="Password"
                   placeholder={isLogin ? "Your password" : "At least 8 characters"}
                   autoComplete={
                     isLogin ? "current-password" : "new-password"
