@@ -220,6 +220,27 @@ the address), own domain, AdSense account in the owner's name.
 - Owner state 2026-11-08: Google blocked creating an app password on a new
   device (passkey + "couldn't verify"); the owner reports it fixed.
 
+## Promo videos for Instagram / TikTok (2026-11-08, PR #79)
+
+Sources only (`marketing/`); rendered MP4s are not committed. Each video in
+en/ru/es/zh/hi, 1080×1920, 30 fps; HTML animation → headless Chrome →
+ffmpeg; texts in each folder's `texts.json`; claims checked against the
+site (2,598 universities in 46 countries, passport label, Top 100 apply-by,
+profile statuses; example cards are labelled "Example").
+
+- `marketing/promo/`: 25 s product promo, silent track (sound added in
+  the app). Captions for posts in its README.
+- `marketing/story/`: founder story in first person (no origin or
+  destination named), voice-over (Russian RHVoice aleksandr-hq, others
+  Kokoro), map from world-atlas, burned-in captions, synthesized pad,
+  41–56 s.
+- `marketing/teen/`: 25 s university video for a younger audience in the
+  brand's dark style (owner rejected the loud-colour version), synthesized
+  120 bpm beat.
+- Advice given: separate accounts per language, start with English and
+  Russian; TikTok is banned in India (Hindi → Reels/Shorts); TikTok and
+  Instagram are unavailable in mainland China.
+
 ## Verified coverage
 
 | Area | Coverage | Checked |

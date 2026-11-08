@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 600; src: url("../promo/fonts/noto-sans-devanagari-devanagari-500-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("../promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("../promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  :root { --bg: #0e1014; --ink: #f5f2ee; --muted: #a3a0a6; --coral: #ff795f; --card: #181b21; --line: #2a2e36; --ok: #5ad48a; --amber: #f2b84b; --red: #ff6b6b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", "Noto Sans Devanagari", "Noto Sans CJK SC", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #glow { position: absolute; inset: 0; }
+  .layer { position: absolute; inset: 0; }
+  .center { position: absolute; left: 90px; right: 90px; text-align: center; }
+  .mega { font-size: 108px; font-weight: 800; line-height: 1.06; letter-spacing: -0.035em; }
+  .h2 { font-size: 76px; font-weight: 800; line-height: 1.12; letter-spacing: -0.028em; }
+  .sub { font-size: 46px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+  body.hi .mega, body.hi .h2 { letter-spacing: 0; line-height: 1.3; }
+  body.zh .mega, body.zh .h2 { letter-spacing: 0.01em; }
+  .card { position: absolute; left: 80px; right: 80px; background: var(--card); border: 2px solid var(--line); border-radius: 36px; box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+  .tab { position: absolute; left: 90px; right: 90px; display: flex; align-items: center; gap: 24px; padding: 30px 34px; font-size: 46px; font-weight: 700; line-height: 1.2; background: var(--card); border: 2px solid var(--line); border-radius: 28px; box-shadow: 0 24px 50px rgba(0,0,0,.5); }
+  .tab .ic { flex: 0 0 56px; height: 56px; border-radius: 16px; background: rgba(255,107,107,.14); color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; }
+  .tab .x { margin-left: auto; color: #5d616b; font-weight: 500; }
+  .pill { display: inline-block; font-size: 40px; font-weight: 700; padding: 14px 30px; border-radius: 999px; border: 2px solid var(--line); background: var(--card); color: var(--ink); }
+  .tag { font-size: 28px; font-weight: 700; color: var(--muted); border: 2px solid var(--line); border-radius: 999px; padding: 8px 22px; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 28px 0; border-top: 2px solid var(--line); font-size: 42px; font-weight: 700; }
+  .row:first-child { border-top: 0; padding-top: 6px; }
+  .st { font-size: 34px; font-weight: 700; padding: 10px 24px; border-radius: 999px; white-space: nowrap; }
+  .word { font-weight: 800; letter-spacing: -0.035em; }
+  .btn { display: inline-block; background: var(--coral); color: #1a0d09; font-weight: 800; border-radius: 999px; padding: 32px 60px; box-shadow: 0 20px 60px rgba(255,121,95,.3); }
+  .count { font-size: 230px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<canvas id="glow" width="1080" height="1920"></canvas>
+<div id="root" class="layer"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 4);
+const easeIn = x => x * x * x;
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+// cut on the beat: slide up into place, leave upward at the end of the scene
+function show(e, t, a, b, rot = 0) {
+  const on = t >= a && t < b; e.style.visibility = on ? "visible" : "hidden"; if (!on) return;
+  const i = easeOut(prog(t, a, a + .4)), o = easeIn(prog(t, b - .18, b));
+  e.style.opacity = i * (1 - o); e.style.filter = `blur(${(1 - i) * 10 + o * 8}px)`;
+  e.style.transform = `translateY(${(1 - i) * 90 - o * 70}px) rotate(${rot}deg)`;
+}
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span style="color:var(--coral)">Route</span></span>`;
+function fit(e, max) { let fs = parseFloat(getComputedStyle(e).fontSize); const lh = () => parseFloat(getComputedStyle(e).lineHeight); while (e.offsetHeight > lh() * max + 2 && fs > 40) { fs -= 4; e.style.fontSize = fs + "px"; } }
+let S = {};
+function build() {
+  const T = window.T, root = document.getElementById("root"); document.body.classList.add(window.LANG);
+  // 0–3 hook
+  S.hook = el("div", "layer", `<div class="center mega">${esc(T.hook)}</div><div class="center sub">${esc(T.hookSub)}</div>`); root.append(S.hook);
+  const [hk, hs] = S.hook.children; fit(hk, 4); hk.style.top = (820 - hk.offsetHeight / 2) + "px"; hs.style.top = (hk.offsetTop + hk.offsetHeight + 44) + "px";
+  // 3–8 the usual chaos
+  S.tabs = T.pains.map((p, i) => { const e = el("div", "tab", `<span class="ic">!</span><span>${esc(p)}</span><span class="x">×</span>`); root.append(e); return e; });
+  let y = 420; S.tabs.forEach((e, i) => { e.style.top = y + "px"; y += e.offsetHeight + 46; });
+  // 8–9 stop, 9–10 the easier way
+  S.stop = el("div", "center", `<div style="font-size:230px;font-weight:800;letter-spacing:-0.045em;color:var(--coral)">${esc(T.stop)}</div>`); S.stop.style.top = "700px"; root.append(S.stop);
+  S.easier = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:500px;display:flex;justify-content:center">${logoSVG(300)}</div>
+    <div class="center word" style="top:860px;font-size:124px">${wordmark()}</div>
+    <div class="center sub" style="top:1040px;color:var(--ink)">${esc(T.easier)}</div>`); root.append(S.easier);
+  // 10–13 the count
+  S.count = el("div", "layer", `<div class="center count" style="top:640px"><span class="n">0</span></div>
+    <div class="center" style="top:900px;display:flex;justify-content:center"><div class="bar" style="height:10px;width:520px;border-radius:5px;background:var(--coral);transform-origin:center"></div></div>
+    <div class="center h2" style="top:960px">${esc(T.countLabel)}</div>
+    <div class="center" style="top:1090px"><span class="pill">${esc(T.countSub)}</span></div>`); root.append(S.count);
+  S.n = S.count.querySelector(".n"); S.bar = S.count.querySelector(".bar");
+  // 13–16 Top 100 deadline
+  S.topT = el("div", "center h2", esc(T.topTitle)); S.topT.style.top = "300px"; root.append(S.topT); fit(S.topT, 3);
+  S.topC = el("div", "card", `<div style="padding:44px"><div style="display:flex;justify-content:space-between;align-items:center;gap:20px"><span style="font-size:42px;font-weight:800">${esc(T.uni)}</span><span class="tag">${esc(T.example)}</span></div>
+    <div style="margin-top:36px;font-size:36px;font-weight:600;color:var(--muted)">${esc(T.applyBy)}</div>
+    <div style="font-size:92px;font-weight:800;letter-spacing:-0.03em;margin-top:6px">${esc(T.date)}</div>
+    <div class="left" style="display:inline-block;margin-top:26px;font-size:44px;font-weight:800;background:rgba(255,121,95,.16);color:var(--coral);border-radius:999px;padding:14px 34px">${esc(T.left)}</div></div>`); root.append(S.topC);
+  S.topC.style.top = (S.topT.offsetTop + S.topT.offsetHeight + 70) + "px"; S.left = S.topC.querySelector(".left");
+  // 16–19.5 profile vs rules
+  S.profT = el("div", "center h2", esc(T.profileTitle)); S.profT.style.top = "300px"; root.append(S.profT); fit(S.profT, 3);
+  const st = [["rgba(90,212,138,.14)", "var(--ok)", "✓"], ["rgba(90,212,138,.14)", "var(--ok)", "✓"], ["rgba(242,184,75,.14)", "var(--amber)", "…"], ["rgba(255,107,107,.14)", "var(--red)", "✕"]];
+  S.profC = el("div", "card", `<div style="padding:30px 44px">` + T.rows.map((r, i) => `<div class="row"><span>${esc(r)}</span><span class="st" style="background:${st[i][0]};color:${st[i][1]}">${st[i][2]} ${esc(T.status[i])}</span></div>`).join("") + `</div>`); root.append(S.profC);
+  S.profC.style.top = (S.profT.offsetTop + S.profT.offsetHeight + 70) + "px"; S.sts = [...S.profC.querySelectorAll(".st")];
+  // 19.5–21.5 official sources
+  S.src = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:470px;display:flex;justify-content:center"><svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="#ff795f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></div>
+    <div class="center h2 s1">${esc(T.sourceTitle)}</div><div class="center sub s2">${esc(T.sourceSub)}</div>`); root.append(S.src);
+  const s1 = S.src.querySelector(".s1"), s2 = S.src.querySelector(".s2"); s1.style.top = "690px"; fit(s1, 3); s2.style.top = (690 + s1.offsetHeight + 40) + "px";
+  // 21.5–25 call to action
+  S.cta = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:330px;display:flex;justify-content:center">${logoSVG(230)}</div>
+    <div class="center word" style="top:610px;font-size:112px">${wordmark()}</div>
+    <div class="center h2" style="top:780px">${esc(T.cta)}</div>
+    <div class="center" style="top:960px"><span class="btn" style="font-size:48px">docroute-student.vercel.app</span></div>
+    <div class="center sub" style="top:1160px;font-size:38px">${esc(T.small)}</div>`); root.append(S.cta);
+  S.ctaParts = [...S.cta.children];
+}
+function glow(t) {
+  const c = document.getElementById("glow"), g = c.getContext("2d"); g.clearRect(0, 0, 1080, 1920);
+  const blob = (x, y, r, col) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1920); };
+  const k = Math.exp(-((t % .5) / .5) * 5) * (t > 9 ? 1 : .5);
+  blob(780 + Math.sin(t * .6) * 220, 520 + Math.cos(t * .45) * 220, 820, `rgba(255,121,95,${.17 + .05 * k})`);
+  blob(260 - Math.sin(t * .5) * 200, 1480 + Math.sin(t * .35) * 180, 800, `rgba(110,120,255,${.13 + .03 * k})`);
+}
+function setTime(t) {
+  glow(t);
+  const k = Math.exp(-((t % .5) / .5) * 6), full = t >= 9 && t < 24;
+  document.getElementById("root").style.transform = `scale(${1 + (full ? .006 : .003) * k})`;
+  show(S.hook, t, 0, 3);
+  S.tabs.forEach((e, i) => { show(e, t, 3 + i, 8, 0); if (t > 6.2 && t < 8) { const j = (t - 6.2); e.style.transform += ` translateX(${Math.sin(t * 40 + i) * 3 * clamp(j * 2)}px) rotate(${(i % 2 ? 1 : -1) * 1.5 * clamp(j)}deg)`; } });
+  show(S.stop, t, 8, 9); if (t >= 8 && t < 9) S.stop.style.transform += ` scale(${1.25 - .25 * easeOut(prog(t, 8, 8.35))})`;
+  show(S.easier, t, 9, 10);
+  show(S.count, t, 10, 13);
+  const cp = easeOut(prog(t, 10.1, 11.7)); S.n.textContent = t >= 11.7 ? window.T.count : String(Math.round(2598 * cp)); S.bar.style.transform = `scaleX(${cp})`;
+  show(S.topT, t, 13, 16); show(S.topC, t, 13.4, 16);
+  S.left.style.transform = `scale(${1 + .04 * k * (t > 14 ? 1 : 0)})`;
+  show(S.profT, t, 16, 19.5); show(S.profC, t, 16.4, 19.5);
+  S.sts.forEach((e, i) => { const a = 17 + i * .5, p = easeOut(prog(t, a, a + .3)); e.style.opacity = p; e.style.transform = `translateX(${(1 - p) * 40}px)`; });
+  show(S.src, t, 19.5, 21.5);
+  S.cta.style.visibility = t >= 21.5 ? "visible" : "hidden";
+  S.ctaParts.forEach((e, i) => { const a = 21.5 + i * .2, p = easeOut(prog(t, a, a + .45)); e.style.opacity = p; e.style.filter = `blur(${(1 - p) * 10}px)`; e.style.transform = `translateY(${(1 - p) * 70}px)`; });
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+{
+  "en": {
+    "lines": [
+      "When I moved to Europe, the hardest part wasn't packing. It was finding information.",
+      "The rules were scattered across dozens of websites.",
+      "And when I finally found them, they were in a language I didn't speak — and even a translator couldn't tell me what I actually had to do.",
+      "I decided it shouldn't be this hard.",
+      "So I built DocRoute — a service that helps people move to Europe from all over the world.",
+      "Choose your citizenship and your goal — study, work, family or business — and get one route: every step, every deadline, and a link to the official source.",
+      "The site already works in five languages.",
+      "DocRoute. Start your journey."
+    ],
+    "say": {
+      "DocRoute": "Doc Root"
+    },
+    "goals": [
+      "Study",
+      "Work",
+      "Family",
+      "Business"
+    ],
+    "steps": [
+      "Apply to the university",
+      "Apostille your documents",
+      "File the residence permit",
+      "Register after arrival"
+    ],
+    "source": "Official source",
+    "example": "Example",
+    "translator": "Translate",
+    "cta": "Start your journey"
+  },
+  "ru": {
+    "lines": [
+      "Когда я переезжал в Европу, самым трудным оказались не чемоданы, а информация.",
+      "Правила были разбросаны по десяткам сайтов.",
+      "А когда я их всё-таки находил, они были на чужом языке — и даже переводчик не помогал понять, что от меня нужно.",
+      "Я решил, что так быть не должно.",
+      "Так появился DocRoute — сервис, который помогает переехать в Европу из разных стран.",
+      "Выберите гражданство и цель — учёба, работа, семья или бизнес — и получите один маршрут: каждый шаг, каждый срок и ссылку на официальный источник.",
+      "Сайт уже работает на пяти языках.",
+      "DocRoute. Начните свой путь."
+    ],
+    "say": {
+      "DocRoute": "Док Рут"
+    },
+    "goals": [
+      "Учёба",
+      "Работа",
+      "Семья",
+      "Бизнес"
+    ],
+    "steps": [
+      "Подать документы в вуз",
+      "Поставить апостиль",
+      "Подать на ВНЖ",
+      "Регистрация после приезда"
+    ],
+    "source": "Официальный источник",
+    "example": "Пример",
+    "translator": "Перевести",
+    "cta": "Начать путь"
+  },
+  "es": {
+    "lines": [
+      "Cuando me mudé a Europa, lo más difícil no fue hacer las maletas, sino encontrar información.",
+      "Las normas estaban repartidas en decenas de sitios web.",
+      "Y cuando por fin las encontraba, estaban en un idioma que no hablaba, y ni siquiera un traductor me aclaraba qué tenía que hacer.",
+      "Decidí que no debería ser tan difícil.",
+      "Así nació DocRoute, un servicio que ayuda a mudarse a Europa desde distintos países.",
+      "Elige tu ciudadanía y tu objetivo —estudios, trabajo, familia o negocios— y obtén una sola ruta: cada paso, cada plazo y el enlace a la fuente oficial.",
+      "La web ya funciona en cinco idiomas.",
+      "DocRoute. Empieza tu camino."
+    ],
+    "say": {
+      "DocRoute": "Dok Rut"
+    },
+    "goals": [
+      "Estudios",
+      "Trabajo",
+      "Familia",
+      "Negocios"
+    ],
+    "steps": [
+      "Solicita plaza en la universidad",
+      "Apostilla tus documentos",
+      "Pide el permiso de residencia",
+      "Regístrate al llegar"
+    ],
+    "source": "Fuente oficial",
+    "example": "Ejemplo",
+    "translator": "Traducir",
+    "cta": "Empieza tu camino"
+  },
+  "zh": {
+    "lines": [
+      "我搬到欧洲的时候，最难的不是收拾行李，而是找信息。",
+      "各种规定分散在几十个网站上。",
+      "好不容易找到了，却是我看不懂的语言，连翻译软件也没法让我弄清楚到底要做什么。",
+      "我觉得，这件事不该这么难。",
+      "于是我做了 DocRoute，一个帮助来自不同国家的人搬到欧洲的服务。",
+      "选择你的国籍和目的：留学、工作、家庭或创业，就能得到一条路线：每一步、每个期限，都附官方来源链接。",
+      "网站已经支持五种语言。",
+      "DocRoute，开始你的旅程。"
+    ],
+    "say": {
+      "DocRoute": "DocRoute"
+    },
+    "goals": [
+      "留学",
+      "工作",
+      "家庭",
+      "创业"
+    ],
+    "steps": [
+      "申请大学",
+      "办理文件海牙认证",
+      "递交居留许可申请",
+      "抵达后登记"
+    ],
+    "source": "官方来源",
+    "example": "示例",
+    "translator": "翻译",
+    "cta": "开始你的旅程"
+  },
+  "hi": {
+    "lines": [
+      "जब मैं यूरोप गया, तो सबसे मुश्किल सामान बाँधना नहीं था, बल्कि सही जानकारी ढूँढना था।",
+      "नियम दर्जनों वेबसाइटों पर बिखरे हुए थे।",
+      "और जब आख़िरकार मिलते, तो ऐसी भाषा में होते जो मुझे नहीं आती थी — अनुवाद करके भी समझ नहीं आता था कि असल में करना क्या है।",
+      "मैंने तय किया कि यह इतना मुश्किल नहीं होना चाहिए।",
+      "इसलिए मैंने DocRoute बनाया — एक सेवा जो अलग-अलग देशों के लोगों को यूरोप जाने में मदद करती है।",
+      "अपनी नागरिकता और मकसद चुनें — पढ़ाई, नौकरी, परिवार या बिज़नेस — और पाएँ एक मार्ग: हर कदम, हर समय-सीमा, और आधिकारिक स्रोत का लिंक।",
+      "साइट पहले से पाँच भाषाओं में चलती है।",
+      "DocRoute. अपनी यात्रा शुरू करें।"
+    ],
+    "say": {
+      "DocRoute": "डॉक रूट"
+    },
+    "goals": [
+      "पढ़ाई",
+      "नौकरी",
+      "परिवार",
+      "बिज़नेस"
+    ],
+    "steps": [
+      "यूनिवर्सिटी में आवेदन करें",
+      "दस्तावेज़ों पर एपोस्टिल लगवाएँ",
+      "निवास परमिट का आवेदन करें",
+      "पहुँचने के बाद पंजीकरण करें"
+    ],
+    "source": "आधिकारिक स्रोत",
+    "example": "उदाहरण",
+    "translator": "अनुवाद करें",
+    "cta": "अपनी यात्रा शुरू करें"
+  }
+}
