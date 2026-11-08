@@ -15,10 +15,10 @@ export const legalInfo = {
   /** Country where the operator lives; Slovak law applies. */
   operatorCountry: "Slovakia",
   /**
-   * Address for questions, data requests and complaints. Until the
-   * dedicated mailbox exists, people are sent to GitHub issues.
+   * Address for questions, data requests and complaints (owner decision
+   * 2026-11-08). Set it to null to fall back to GitHub issues.
    */
-  contactEmail: null as string | null,
+  contactEmail: "docroutestu@gmail.com" as string | null,
   contactFallbackUrl: "https://github.com/SleymZ/docroute-student/issues",
   /**
    * DocRoute is run by a private individual as a free, non-commercial
@@ -30,9 +30,9 @@ export const legalInfo = {
   /** Minimum age to create an account (GDPR digital-consent age in Slovakia). */
   minimumAccountAge: 16,
   /** Date the current versions of the documents take effect. */
-  termsUpdated: "2026-11-04",
-  privacyUpdated: "2026-11-04",
-  cookiesUpdated: "2026-10-28",
+  termsUpdated: "2026-11-08",
+  privacyUpdated: "2026-11-08",
+  cookiesUpdated: "2026-11-08",
   /** Slovak data protection authority, where anyone can complain. */
   supervisoryAuthority: {
     name: "Office for Personal Data Protection of the Slovak Republic (Úrad na ochranu osobných údajov SR)",

@@ -96,3 +96,10 @@ test("the operator stays unnamed while the beta is free", () => {
     assert.ok(!read(`src/app/${page}/page.tsx`).includes("[OWNER"));
   }
 });
+
+test("people reach the operator by the private mailbox, not public GitHub issues", async () => {
+  const { contact, legalInfo } = await import("../src/data/legal");
+  assert.equal(legalInfo.contactEmail, "docroutestu@gmail.com");
+  assert.equal(contact.href, "mailto:docroutestu@gmail.com");
+  assert.ok(contact.isEmail);
+});
