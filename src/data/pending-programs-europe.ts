@@ -1698,21 +1698,21 @@ export const europePendingGroups: readonly PendingProgramGroup[] = [
     status: "rules-published",
     statusNote: publishedNote("AUBG lists fall 2027 deadlines and 2027/28 tuition; requirements are on separate pages."),
     programs: [{ programName: "Computer Science (English)", localProgramName: "Computer Science" }],
-    sources: [source("aubg-deadlines", "Application deadlines", "American University in Bulgaria", "https://www.aubg.edu/apply/deadlines", rechecked)],
+    sources: [source("aubg-deadlines", "Bachelor's degrees: application deadlines for fall 2027", "American University in Bulgaria", "https://www.aubg.edu/admissions/bachelors/", "2026-11-08")],
     referenceRules: {
       intake: "2027/28",
       approvedNote: "Deadlines and cost pages for 2027/28.",
       facts: [
-        { label: "Application deadline", value: "Early admission 1 March (better aid), regular 1 June (for fall 2027)." },
+        { label: "Application deadline", value: "Priority admission 15 January (best chance of aid, earliest decision), early 15 March, regular 15 May (last chance for fall 2027)." },
         { label: "Tuition", value: "€7,100 a semester in 2027/28, the same for all nationalities, before financial aid." },
       ],
       programRules: [{ localProgramName: "Computer Science", rule: "US-style liberal arts bachelor in English." }],
       overview: {
-        applicationDocuments: ["Online application by 1 March or 1 June."],
+        applicationDocuments: ["Online application or Common App by 15 January, 15 March or 15 May."],
         entranceRequirements: ["See the admissions page."],
         afterAdmission: ["€7,100 a semester (2027/28)."],
       },
-      sources: [source("aubg-deadlines-ref", "Application deadlines", "American University in Bulgaria", "https://www.aubg.edu/apply/deadlines", rechecked), source("aubg-cost", "Tuition, fees and financial support", "American University in Bulgaria", "https://www.aubg.edu/admissions/bachelors/cost-aid/", rechecked)],
+      sources: [source("aubg-deadlines-ref", "Bachelor's degrees: application deadlines for fall 2027", "American University in Bulgaria", "https://www.aubg.edu/admissions/bachelors/", "2026-11-08"), source("aubg-cost", "Tuition, fees and financial support", "American University in Bulgaria", "https://www.aubg.edu/admissions/bachelors/cost-aid/", rechecked)],
     },
   }, rechecked),
   group({
