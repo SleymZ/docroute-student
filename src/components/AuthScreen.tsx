@@ -24,6 +24,7 @@ import { safeNextPath } from "@/lib/safe-next-path";
 import { LogoMark, LogoWord } from "./Logo";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { authErrorMessage } from "@/lib/auth-errors";
 
 type AuthMode = "login" | "signup";
 
@@ -69,7 +70,8 @@ export function AuthScreen({
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(initialMessage);
   const buildingRoute = /^\/(route(\/|$|\?)|explore\/profile)/.test(nextPath ?? "");
-  const [messageIsError, setMessageIsError] = useState(false);
+  // A message from the address is always a sign-in link error.
+  const [messageIsError, setMessageIsError] = useState(Boolean(initialMessage));
   const [busy, setBusy] = useState(false);
 
   const isLogin = mode === "login";
@@ -159,11 +161,7 @@ export function AuthScreen({
       }
     } catch (error) {
       setMessageIsError(true);
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Authentication failed. Please try again.",
-      );
+      setMessage(authErrorMessage(error));
     } finally {
       setBusy(false);
     }
@@ -198,7 +196,7 @@ export function AuthScreen({
       setMessage(
         /provider is not enabled|unsupported provider/i.test(error.message)
           ? "Google sign-in is not switched on yet. Please use your email for now."
-          : error.message,
+          : authErrorMessage(error),
       );
     }
   }
@@ -233,7 +231,7 @@ export function AuthScreen({
 
     if (error) {
       setMessageIsError(true);
-      setMessage(error.message);
+      setMessage(authErrorMessage(error));
       return;
     }
 
