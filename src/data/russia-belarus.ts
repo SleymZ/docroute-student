@@ -90,6 +90,9 @@ export type RestrictionNote = {
   /** Blocked: who can still apply. Restricted: how to get past it. Only
    *  what the official source states. */
   solution?: string;
+  /** Also concerns someone already living in the destination with a
+   *  permit or visa (filing there, not at an embassy). Default: no. */
+  appliesToResidents?: boolean;
   sources: RouteSource[];
 };
 
@@ -182,6 +185,7 @@ export function russiaBelarusNotes(citizenship: string, destination: string): Re
           "Since 3 July 2024 Czechia recognises only biometric Russian travel documents (transition periods ended in 2024–2025). Without a biometric passport a residence application cannot be granted; exceptions include children under 15.",
         severity: "restricted",
         solution: "Get a biometric Russian passport before you apply.",
+        appliesToResidents: true,
         sources: [ruBySources.cz],
       });
     }
@@ -222,10 +226,17 @@ export function russiaBelarusNotes(citizenship: string, destination: string): Re
 
 /** Barriers worth a red warning (blocked or restricted), most serious
  *  first; the "info" notes stay as ordinary route steps. */
-export function passportWarnings(citizenship: string, destination: string): RestrictionNote[] {
+export function passportWarnings(
+  citizenship: string,
+  destination: string,
+  // Already living in the destination with a permit or visa: embassy and
+  // entry barriers do not apply, only those marked appliesToResidents.
+  options: { existingResident?: boolean } = {},
+): RestrictionNote[] {
   const order: Record<RestrictionSeverity, number> = { blocked: 0, restricted: 1, info: 2 };
   return russiaBelarusNotes(citizenship, destination)
     .filter((item) => item.severity === "blocked" || item.severity === "restricted")
+    .filter((item) => !options.existingResident || item.appliesToResidents)
     .sort((a, b) => order[a.severity ?? "info"] - order[b.severity ?? "info"]);
 }
 

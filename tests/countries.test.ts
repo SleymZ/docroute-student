@@ -195,6 +195,10 @@ test("red passport warnings: Czechia blocks Russian and Belarusian applications,
     assert.ok(restrictedFor(code).includes("CZ"), code);
   }
   assert.match(passportWarnings("BY", "CZ")[0].solution ?? "", /Belarusian students/);
+  // Already living in Czechia: no embassy barrier, the biometric passport rule stays.
+  assert.deepEqual(passportWarnings("RU", "CZ", { existingResident: true }).map((item) => item.id), ["ru-cz-biometric"]);
+  assert.deepEqual(passportWarnings("BY", "CZ", { existingResident: true }), []);
+  assert.deepEqual(passportWarnings("RU", "EE", { existingResident: true }), []);
   assert.deepEqual(passportWarnings("RU", "SK"), []);
   assert.deepEqual(passportWarnings("IN", "CZ"), []);
   assert.ok(passportWarnings("RU", "EE").some((item) => item.severity === "blocked"));

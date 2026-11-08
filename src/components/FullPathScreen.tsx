@@ -92,7 +92,7 @@ function FullPathQuestions({
           placeholder="Select citizenship"
           onChange={setCitizenship}
         />
-        <PassportWarning citizenship={citizenship} destination={group.countryCode} />
+        <PassportWarning citizenship={citizenship} destination={group.countryCode} residenceStatus={status} />
         <label className={styles.field}>
           <span>Passport and current residence status</span>
           <select
@@ -213,7 +213,7 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
       </header>
       <PrintNote asOfDate={asOfDate} />
       <ConfirmRoute title={title} purpose="study" countryCode={group.countryCode} routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
-      <PassportWarning citizenship={path.answers.citizenshipCountryCode} destination={group.countryCode} />
+      <PassportWarning citizenship={path.answers.citizenshipCountryCode} destination={group.countryCode} residenceStatus={path.answers.currentResidenceStatus} />
 
       <ol className={styles.strip} aria-label="Path stages">
         {path.stages.map((stage, index) => {

@@ -275,7 +275,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
       </header>
       <PrintNote asOfDate={asOfDate} />
       <ConfirmRoute title={`${program.programName} · ${program.universityName}`} purpose="study" countryCode={program.countryCode} routePath={confirmPath} routeKey={routeKey} stepIds={actionableTasks.map((task) => task.id)} />
-      <PassportWarning citizenship={profile?.citizenshipCountryCode} destination={program.countryCode} />
+      <PassportWarning citizenship={profile?.citizenshipCountryCode} destination={program.countryCode} residenceStatus={profile?.currentResidenceStatus} />
 
       <section className={styles.routeFacts}>
         <article>

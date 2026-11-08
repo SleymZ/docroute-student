@@ -491,7 +491,7 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
               placeholder="Select citizenship"
               onChange={setCitizenship}
             />
-            <PassportWarning citizenship={citizenship} destination={countryCode} />
+            <PassportWarning citizenship={citizenship} destination={countryCode} residenceStatus={currentResidenceStatus} />
 
             <CountryPicker
               label={

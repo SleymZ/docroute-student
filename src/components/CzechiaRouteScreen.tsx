@@ -194,7 +194,7 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
           placeholder="Select citizenship"
           onChange={setCitizenship}
         />
-        <PassportWarning citizenship={citizenship} destination="CZ" />
+        <PassportWarning citizenship={citizenship} destination="CZ" residenceStatus={status} />
 
         <label className={styles.field}>
           <span>Passport and current residence status</span>
@@ -425,7 +425,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
       </header>
       <PrintNote asOfDate={asOfDate} />
       <ConfirmRoute title={title} purpose={profile.purpose === "work" ? "work" : "study"} countryCode="CZ" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
-      <PassportWarning citizenship={profile.citizenshipCountryCode} destination="CZ" />
+      <PassportWarning citizenship={profile.citizenshipCountryCode} destination="CZ" residenceStatus={profile.currentResidenceStatus} />
 
       {route.procedure && (
         <ol className={styles.strip} aria-label="Route stages">

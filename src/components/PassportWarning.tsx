@@ -1,5 +1,6 @@
 import { OctagonAlert, TriangleAlert } from "lucide-react";
 
+import { isExistingResidentStatus } from "@/data/citizenship-notes";
 import { passportWarnings } from "@/data/russia-belarus";
 
 import styles from "./PassportWarning.module.css";
@@ -13,11 +14,16 @@ import styles from "./PassportWarning.module.css";
 export function PassportWarning({
   citizenship,
   destination,
+  residenceStatus,
 }: {
   citizenship: string | null | undefined;
   destination: string;
+  /** Current residence status, when the screen asks for it: someone who
+   *  already lives in the destination does not get embassy barriers. */
+  residenceStatus?: string | null;
 }) {
-  const warnings = citizenship ? passportWarnings(citizenship, destination) : [];
+  const existingResident = isExistingResidentStatus(residenceStatus);
+  const warnings = citizenship ? passportWarnings(citizenship, destination, { existingResident }) : [];
   if (!warnings.length) return null;
 
   return (
