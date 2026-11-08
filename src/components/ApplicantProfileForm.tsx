@@ -21,7 +21,7 @@ import {
 
 import { CountryPicker } from "@/components/CountryPicker";
 import { useApplicantProfile } from "@/hooks/useApplicantProfile";
-import { applicantCountryOptions } from "@/data/applicant-countries";
+import { applicantCountryOptions, citizenshipCountryOptions } from "@/data/applicant-countries";
 import { programOptions } from "@/data/demo-destinations";
 import {
   findResidenceStatusConflict,
@@ -486,7 +486,7 @@ function ApplicantProfileFields({ initialProfile }: { initialProfile: ApplicantP
             <CountryPicker
               label="Citizenship"
               value={citizenship}
-              options={countryOptions}
+              options={citizenshipCountryOptions}
               placeholder="Select citizenship"
               onChange={setCitizenship}
             />

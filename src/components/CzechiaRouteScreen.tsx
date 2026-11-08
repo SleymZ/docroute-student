@@ -24,7 +24,7 @@ import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-n
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
-import { applicantCountryOptions } from "@/data/applicant-countries";
+import { applicantCountryOptions, citizenshipCountryOptions } from "@/data/applicant-countries";
 import { czechiaResidenceRules } from "@/data/czechia-residence";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
 import {
@@ -188,7 +188,7 @@ function Questionnaire({ initial }: { initial: URLSearchParams }) {
         <CountryPicker
           label="Citizenship"
           value={citizenship}
-          options={applicantCountryOptions}
+          options={citizenshipCountryOptions}
           placeholder="Select citizenship"
           onChange={setCitizenship}
         />

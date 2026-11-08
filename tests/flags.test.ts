@@ -39,3 +39,13 @@ test("every country the site can show has a flag file", () => {
   assert.deepEqual(missing, []);
   assert.ok(existsSync(join(root, "public/flags/LICENSE.txt")));
 });
+
+test("the language switcher shows a flag for every site language", async () => {
+  const { LOCALES } = await import("@/i18n/config");
+  const source = readFileSync(join(root, "src/components/LanguageSwitcher.tsx"), "utf8");
+  const flags = Object.fromEntries([...source.matchAll(/^  (\w\w): "([A-Z]{2})",$/gm)].map((match) => [match[1], match[2]]));
+  for (const locale of LOCALES) {
+    assert.ok(flags[locale], locale);
+    assert.ok(existsSync(join(root, "public", flagSrc(flags[locale]))), locale);
+  }
+});

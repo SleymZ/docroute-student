@@ -142,3 +142,30 @@ test("every citizenship code has a fixed English name (no Intl in client lists)"
     assert.doesNotMatch(readFileSync(join(root, file), "utf8"), /Intl\.DisplayNames/, file);
   }
 });
+
+test("any country can be chosen: residence and education lists hold every country, citizenship every nationality", async () => {
+  const { applicantCountryOptions, citizenshipCountryOptions } = await import("../src/data/applicant-countries");
+  const { DEPENDENT_TERRITORIES, REGION_NAMES } = await import("../src/data/region-names");
+  const places = new Set(applicantCountryOptions.map((country) => country.code));
+  const citizenships = new Set(citizenshipCountryOptions.map((country) => country.code));
+  for (const code of Object.keys(REGION_NAMES)) assert.ok(places.has(code), code);
+  assert.ok(places.size >= 240, String(places.size));
+  for (const code of ["RU", "BY", "IN", "CN", "IL", "UA", "KE", "PE", "XK", "PS", "HK", "TW", "ZZ"]) {
+    assert.ok(citizenships.has(code), code);
+  }
+  for (const code of DEPENDENT_TERRITORIES) {
+    assert.ok(places.has(code), code);
+    assert.ok(!citizenships.has(code), code);
+  }
+  assert.equal(applicantCountryOptions.at(-1)?.code, "ZZ");
+  assert.equal(new Set(applicantCountryOptions.map((country) => country.name)).size, applicantCountryOptions.length);
+});
+
+test("every country name is translated in every site language", async () => {
+  const { applicantCountryOptions } = await import("../src/data/applicant-countries");
+  for (const locale of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${locale}.json`), "utf8"));
+    const missing = applicantCountryOptions.map((country) => country.name).filter((name) => !catalog[name]);
+    assert.deepEqual(missing, [], locale);
+  }
+});

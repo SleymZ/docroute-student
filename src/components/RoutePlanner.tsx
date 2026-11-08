@@ -20,12 +20,11 @@ import { EuropeMap } from "@/components/EuropeMap";
 
 const destinationCountryCodes: Record<string, string> = plannerDestinationCodes;
 
-const educationCountryCodes: Record<string, string> = {
-  Israel: "IL",
-  Ukraine: "UA",
-  India: "IN",
-  "United Kingdom": "GB",
-};
+// "Documents issued in" holds a country code; "ZZ" (other country) is not
+// passed on, so the next screen asks for it.
+function knownCountry(code: string) {
+  return /^[A-Z]{2}$/.test(code) && code !== "ZZ" ? code : undefined;
+}
 
 // Verified work routes: Slovakia and Czechia.
 const workRouteCountries = new Set(["SK", "CZ"]);
@@ -36,7 +35,7 @@ const studyResidenceRouteCountries = new Set(["CZ"]);
 export function RoutePlanner() {
   const router = useRouter();
   const [purpose, setPurpose] = useState<MovePurpose>("study");
-  const [documentCountry, setDocumentCountry] = useState("Israel");
+  const [documentCountry, setDocumentCountry] = useState("IL");
   const [destination, setDestination] = useState<string>("Slovakia");
   // The map keeps its five featured destinations: another country in the
   // form leaves the map on the last featured one.
@@ -110,7 +109,7 @@ export function RoutePlanner() {
     if (destinationCountryCode === "CZ" && (purpose === "work" || residenceOnly)) {
       if (!routeAvailable) return;
       const czParams = new URLSearchParams({ country: "CZ", purpose });
-      const citizenship = educationCountryCodes[documentCountry];
+      const citizenship = knownCountry(documentCountry);
       if (citizenship) czParams.set("citizenship", citizenship);
       router.push(`/route/czechia?${czParams.toString()}`);
       return;
@@ -128,7 +127,7 @@ export function RoutePlanner() {
     if (purpose === "family" || purpose === "business") {
       if (!routeAvailable) return;
       const purposeParams = new URLSearchParams({ country: "SK" });
-      const citizenship = educationCountryCodes[documentCountry];
+      const citizenship = knownCountry(documentCountry);
       if (citizenship) purposeParams.set("citizenship", citizenship);
       router.push(`/route/${purpose}?${purposeParams.toString()}`);
       return;
@@ -137,7 +136,7 @@ export function RoutePlanner() {
     if (purpose === "work") {
       if (!routeAvailable) return;
       const workParams = new URLSearchParams({ country: destinationCountryCode });
-      const citizenship = educationCountryCodes[documentCountry];
+      const citizenship = knownCountry(documentCountry);
       if (citizenship) workParams.set("citizenship", citizenship);
       router.push(`/route/work?${workParams.toString()}`);
       return;
@@ -147,7 +146,7 @@ export function RoutePlanner() {
       country: destinationCountryCode,
       program,
     });
-    const educationCountry = educationCountryCodes[documentCountry];
+    const educationCountry = knownCountry(documentCountry);
 
     if (educationCountry) {
       params.set("educationCountry", educationCountry);

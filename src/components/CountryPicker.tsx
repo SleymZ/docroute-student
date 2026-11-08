@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 
-import { useT } from "@/i18n/client";
+import { useLocale, useT } from "@/i18n/client";
 
 import styles from "./CountryPicker.module.css";
 import { flagSrc } from "@/lib/flags";
@@ -32,6 +32,9 @@ type CountryPickerProps = {
   options: readonly CountryOption[];
   placeholder: string;
   onChange: (countryCode: string) => void;
+  /** "inline": small uppercase label and a compact field, to sit in a row
+   *  with the home page selects; the list opens wider than the field. */
+  variant?: "default" | "inline";
 };
 
 export function CountryPicker({
@@ -40,7 +43,9 @@ export function CountryPicker({
   options,
   placeholder,
   onChange,
+  variant = "default",
 }: CountryPickerProps) {
+  const inline = variant === "inline";
   const labelId = useId();
   const listboxId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -50,6 +55,15 @@ export function CountryPicker({
   const [query, setQuery] = useState("");
   // Search the names as shown (translated) as well as the English ones.
   const translate = useT();
+  const locale = useLocale();
+
+  // Alphabetical in the site language, "Other country" last.
+  const sortedOptions = useMemo(() => {
+    const collator = new Intl.Collator(locale);
+    return [...options].sort((a, b) =>
+      a.code === "ZZ" ? 1 : b.code === "ZZ" ? -1 : collator.compare(translate(a.name), translate(b.name)),
+    );
+  }, [options, locale, translate]);
 
   const selectedCountry = options.find(
     (country) => country.code === value,
@@ -59,15 +73,15 @@ export function CountryPicker({
     const normalizedQuery = query.trim().toLocaleLowerCase();
 
     if (!normalizedQuery) {
-      return options;
+      return sortedOptions;
     }
 
-    return options.filter((country) =>
+    return sortedOptions.filter((country) =>
       `${country.name} ${translate(country.name)} ${country.code}`
         .toLocaleLowerCase()
         .includes(normalizedQuery),
     );
-  }, [options, query, translate]);
+  }, [sortedOptions, query, translate]);
 
   useEffect(() => {
     if (!open) {
@@ -111,7 +125,7 @@ export function CountryPicker({
 
   return (
     <div
-      className={styles.root}
+      className={inline ? `${styles.root} ${styles.inline}` : styles.root}
       ref={rootRef}
       onKeyDown={(event) => {
         if (event.key === "Escape" && open) {

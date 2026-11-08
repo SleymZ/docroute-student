@@ -23,7 +23,7 @@ import { lockedStepCount, stepAccess } from "@/lib/access";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { WaitlistCta } from "@/components/WaitlistCta";
-import { applicantCountryOptions } from "@/data/applicant-countries";
+import { applicantCountryOptions, citizenshipCountryOptions } from "@/data/applicant-countries";
 import { slovakiaFamilyBusinessRules } from "@/data/slovakia-family-business";
 import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
 import { useRouteProgress } from "@/hooks/useRouteProgress";
@@ -176,7 +176,7 @@ function Questionnaire({ kind, initial }: { kind: PurposeKind; initial: URLSearc
         <CountryPicker
           label="Citizenship"
           value={citizenship}
-          options={applicantCountryOptions}
+          options={citizenshipCountryOptions}
           placeholder="Select citizenship"
           onChange={setCitizenship}
         />
