@@ -1,0 +1,192 @@
+{
+  "en": {
+    "hook": "Choosing a university in Europe?",
+    "pains": [
+      "The website is only in the local language",
+      "Deadline? Somewhere in an 80-page PDF",
+      "Requirements… from last year?!",
+      "27 tabs open"
+    ],
+    "stop": "Stop.",
+    "easier": "There's an easier way",
+    "count": "2,598",
+    "countLabel": "universities",
+    "countSub": "in 46 countries",
+    "topTitle": "Top 100: the last day to apply — and how many days are left",
+    "uni": "Top 100 university",
+    "applyBy": "Apply by",
+    "date": "15 Jan 2027",
+    "left": "68 days left",
+    "example": "Example",
+    "profileTitle": "Check your profile against the rules",
+    "rows": [
+      "Teaching language",
+      "School certificate",
+      "Language test",
+      "Entrance exam"
+    ],
+    "status": [
+      "Met",
+      "Met",
+      "Still to do",
+      "Missing"
+    ],
+    "sourceTitle": "Every rule links to the official source",
+    "sourceSub": "No made-up “chances”. Just facts.",
+    "cta": "Find your uni",
+    "small": "Browse universities without signing up · 5 languages",
+    "hookSub": "Here's how it usually goes."
+  },
+  "ru": {
+    "hook": "Выбираешь вуз в Европе?",
+    "pains": [
+      "Сайт только на местном языке",
+      "Дедлайн? Где-то в PDF на 80 страниц",
+      "Требования… за прошлый год?!",
+      "27 открытых вкладок"
+    ],
+    "stop": "Стоп.",
+    "easier": "Есть способ проще",
+    "count": "2 598",
+    "countLabel": "вузов",
+    "countSub": "в 46 странах",
+    "topTitle": "Топ-100: последний день подачи и сколько дней осталось",
+    "uni": "Вуз из Топ-100",
+    "applyBy": "Подать до",
+    "date": "15 янв 2027",
+    "left": "Осталось 68 дней",
+    "example": "Пример",
+    "profileTitle": "Сравни свой профиль с правилами",
+    "rows": [
+      "Язык обучения",
+      "Аттестат",
+      "Языковой тест",
+      "Вступительный экзамен"
+    ],
+    "status": [
+      "Выполнено",
+      "Выполнено",
+      "Ещё сделать",
+      "Не хватает"
+    ],
+    "sourceTitle": "У каждого правила — официальный источник",
+    "sourceSub": "Без выдуманных «шансов». Только факты.",
+    "cta": "Найди свой вуз",
+    "small": "Вузы можно смотреть без регистрации · 5 языков",
+    "hookSub": "Обычно это выглядит так."
+  },
+  "es": {
+    "hook": "¿Eligiendo universidad en Europa?",
+    "pains": [
+      "La web solo está en el idioma local",
+      "¿El plazo? En algún PDF de 80 páginas",
+      "¿Requisitos… del año pasado?!",
+      "27 pestañas abiertas"
+    ],
+    "stop": "Para.",
+    "easier": "Hay una forma más fácil",
+    "count": "2598",
+    "countLabel": "universidades",
+    "countSub": "en 46 países",
+    "topTitle": "Top 100: el último día para solicitar y cuántos días quedan",
+    "uni": "Universidad del Top 100",
+    "applyBy": "Solicita antes del",
+    "date": "15 ene 2027",
+    "left": "Quedan 68 días",
+    "example": "Ejemplo",
+    "profileTitle": "Compara tu perfil con las normas",
+    "rows": [
+      "Idioma de enseñanza",
+      "Título de bachillerato",
+      "Examen de idioma",
+      "Examen de acceso"
+    ],
+    "status": [
+      "Cumplido",
+      "Cumplido",
+      "Pendiente",
+      "Falta"
+    ],
+    "sourceTitle": "Cada norma enlaza a la fuente oficial",
+    "sourceSub": "Sin «probabilidades» inventadas. Solo hechos.",
+    "cta": "Encuentra tu uni",
+    "small": "Explora universidades sin registrarte · 5 idiomas",
+    "hookSub": "Normalmente es así."
+  },
+  "zh": {
+    "hook": "在挑欧洲的大学？",
+    "pains": [
+      "官网只有当地语言",
+      "截止日期？藏在 80 页的 PDF 里",
+      "招生要求……还是去年的？！",
+      "开了 27 个网页"
+    ],
+    "stop": "停。",
+    "easier": "有更简单的办法",
+    "count": "2598",
+    "countLabel": "所大学",
+    "countSub": "覆盖 46 个国家",
+    "topTitle": "前 100 名：申请截止日，还剩几天",
+    "uni": "前 100 名大学",
+    "applyBy": "申请截止",
+    "date": "2027年1月15日",
+    "left": "还剩 68 天",
+    "example": "示例",
+    "profileTitle": "把你的条件和招生规定对比",
+    "rows": [
+      "授课语言",
+      "高中毕业证书",
+      "语言考试",
+      "入学考试"
+    ],
+    "status": [
+      "已满足",
+      "已满足",
+      "待完成",
+      "缺少"
+    ],
+    "sourceTitle": "每条规定都附官方来源",
+    "sourceSub": "不编造“录取概率”，只讲事实。",
+    "cta": "找到你的大学",
+    "small": "无需注册即可浏览大学 · 5 种语言",
+    "hookSub": "通常是这样的。"
+  },
+  "hi": {
+    "hook": "यूरोप में यूनिवर्सिटी चुन रहे हो?",
+    "pains": [
+      "वेबसाइट सिर्फ़ स्थानीय भाषा में",
+      "डेडलाइन? 80 पेज की किसी PDF में",
+      "शर्तें… पिछले साल की?!",
+      "27 टैब खुले हैं"
+    ],
+    "stop": "रुको।",
+    "easier": "इसका आसान तरीका है",
+    "count": "2,598",
+    "countLabel": "यूनिवर्सिटी",
+    "countSub": "46 देशों में",
+    "topTitle": "टॉप 100: आवेदन की आख़िरी तारीख़ और कितने दिन बचे",
+    "uni": "टॉप 100 यूनिवर्सिटी",
+    "applyBy": "आवेदन की आख़िरी तारीख़",
+    "date": "15 जन॰ 2027",
+    "left": "68 दिन बचे",
+    "example": "उदाहरण",
+    "profileTitle": "अपनी प्रोफ़ाइल को नियमों से मिलाओ",
+    "rows": [
+      "पढ़ाई की भाषा",
+      "स्कूल सर्टिफ़िकेट",
+      "भाषा टेस्ट",
+      "प्रवेश परीक्षा"
+    ],
+    "status": [
+      "पूरा",
+      "पूरा",
+      "अभी करना है",
+      "कमी है"
+    ],
+    "sourceTitle": "हर नियम के साथ आधिकारिक स्रोत",
+    "sourceSub": "कोई मनगढ़ंत “चांस” नहीं। सिर्फ़ तथ्य।",
+    "cta": "अपनी यूनिवर्सिटी ढूँढो",
+    "small": "बिना साइन-अप के यूनिवर्सिटी देखो · 5 भाषाएँ",
+    "hookSub": "आमतौर पर ऐसा होता है।"
+  }
+}
