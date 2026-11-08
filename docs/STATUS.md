@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-04. Keep this file factual: describe what exists and
+Last updated: 2026-11-08 (launch review). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -63,6 +63,58 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Launch review 2026-11 (2026-11-08, before the 9 November beta)
+
+Full review of main at #62 (not #58: #59–#62 were merged since). Report:
+"DocRoute: готовность к запуску" (https://claude.ai/artifact/HNXGBmYj5F1LL9691kwoaM).
+
+How it was checked: local build + headless Chrome; 200 pages each as guest,
+Free and Plus (plans faked locally, not committed); 46 Free and 23 Plus
+end-to-end scenarios (study via profile → universities → university →
+route for SK/CZ × 4 fields; work, family, business, Czechia study/work for
+passports RU, BY, UA, IN, CN, ZZ); light/dark, 1280 px and 390 px; 1,065
+official links checked from GitHub Actions; RLS read from migrations;
+secrets searched in code and all 291 commits. No crashes, console errors,
+horizontal scroll, secrets, verified-and-coming-soon overlaps or past
+deadlines in verified programmes. Free locks steps, dates, PDF/PNG and My
+route; Plus opens everything.
+
+PRs opened (not merged; wait for the owner's «мержим»), each with tests,
+green Vercel and a clean Codex review:
+
+| PR | What |
+| --- | --- |
+| #63 | `scripts/check-links.mjs` + weekly workflow: every official link (text and helper-built), report as PR comment / issue |
+| #64 | Flags from `public/flags` (flag-icons, MIT) instead of flagcdn.com, which the Privacy Policy did not list |
+| #65 | `not-found.tsx` and `error.tsx` with the header, both themes, 4 languages |
+| #66 | `aria-label` on the sign-in password field |
+| #67 | 8 dead official links replaced (Austrian registration, Chinese certificates, Vienna ×2, Cologne, NKUA, Cattolica, AUBG); AUBG fall 2027 deadlines corrected to 15 Jan / 15 Mar / 15 May |
+| #68 | `src/lib/auth-errors.ts`: plain translated sign-in errors; `/auth?error=` shows only fixed sentences |
+| #69 | Security headers (frame-ancestors/X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy) |
+
+Open (owner decision or action):
+
+1. **Blocker:** Supabase's built-in email sends only to project team
+   members, 2 an hour. Test sign-up with an outside address; if no email
+   arrives, either Google-only sign-in for the beta or custom SMTP.
+2. **Blocker (GDPR Art. 13):** no private contact and no operator identity;
+   needs a mailbox for `legalInfo.contactEmail` and a decision on the name.
+3. Locked Free steps are in the public JS chunks (blocker for selling Plus;
+   needs server-built routes, 3–5 days).
+4. No spam limit on waitlist/feedback inserts; no error monitoring; ~1.7–2.4
+   MB JS per page (world-atlas 50m map ≈ 800 KB; map shape is locked);
+   Vercel Analytics must be enabled in the project; 162 links refuse robots
+   (open by hand).
+5. Minor: no OG image, sitemap without /explore/top and university pages,
+   no skip link, /favicon.ico 404, default Next SVGs in /public.
+
+Payment needs: trade licence (IČO), provider (merchant of record such as
+Paddle/Lemon Squeezy vs Stripe), sale terms with the 14-day withdrawal
+waiver, seller identity on the site, Vercel Pro, server-built routes,
+webhook → `account_plans` (`source = 'payment'`). Ads need: an IAB TCF
+certified CMP, Cookie/Privacy updates, no ads on `/route/*` (answers are in
+the address), own domain, AdSense account in the owner's name.
 
 ## Verified coverage
 
