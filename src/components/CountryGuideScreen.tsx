@@ -22,6 +22,7 @@ import { findCountryGuide, pickVariant } from "@/lib/residence/country-guides";
 import type { RouteSource, RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./WorkRouteScreen.module.css";
+import { PassportWarning } from "@/components/PassportWarning";
 
 function isActionableTask(status: RouteTaskStatus) {
   return status === "action" || status === "attention";
@@ -132,6 +133,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
           placeholder="Select citizenship"
           onChange={chooseCitizenship}
         />
+        <PassportWarning citizenship={citizenship} destination={guide.country} />
       </div>
 
       <ol className={styles.strip} aria-label="Route stages">

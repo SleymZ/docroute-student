@@ -120,6 +120,24 @@ webhook → `account_plans` (`source = 'payment'`). Ads need: an IAB TCF
 certified CMP, Cookie/Privacy updates, no ads on `/route/*` (answers are in
 the address), own domain, AdSense account in the owner's name.
 
+## Red passport warnings (2026-11-08)
+
+- `RestrictionNote.severity` in `src/data/russia-belarus.ts`: "blocked"
+  (applications not accepted except listed groups, `solution` = the groups),
+  "restricted" (`solution` = the step that solves it), "info" (route step
+  only). `passportWarnings()` feeds `src/components/PassportWarning.tsx`, a
+  red box with the official source under the citizenship field and above
+  the route (country pages, Czech routes, guides, full path, study profile,
+  route preview).
+- Czechia (Government Decree No. 55/2024, MZV page updated 2026-02-09):
+  visa and residence applications from RU and BY citizens are not accepted
+  except listed groups, also with a second citizenship. Blocked: CZ (RU,
+  BY), EE (RU), LT (RU). Restricted: FI, LV, PL, CZ biometric passports
+  (RU), EE short-term work (BY).
+- Not covered yet: other passports with closed missions or conflicts (for
+  example Afghanistan, Syria, Yemen, Sudan); each needs the destination's
+  official page before a warning is added.
+
 ## Verified coverage
 
 | Area | Coverage | Checked |
