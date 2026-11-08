@@ -182,6 +182,14 @@ the address), own domain, AdSense account in the owner's name.
   family, business; Czech routes; country guides; full study path; study
   route preview). Name from `regionName()`, the same as the passport stage.
 
+## Green "easier" table for EU, EEA and Swiss citizens (2026-11-08)
+
+- `freeMovementTable()` in `src/lib/passport-track.ts` (Your Europe; for
+  Switzerland ch.ch) feeds a green table in `PassportWarning` wherever the
+  red warnings appear: visa, residence permit, first 3 months, longer
+  stays, permanent residence (Switzerland: work, self-employed, job
+  seekers). The country-page track no longer repeats those points.
+
 ## Verified coverage
 
 | Area | Coverage | Checked |

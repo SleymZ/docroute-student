@@ -1,7 +1,8 @@
-import { OctagonAlert, TriangleAlert } from "lucide-react";
+import { BadgeCheck, OctagonAlert, TriangleAlert } from "lucide-react";
 
 import { isExistingResidentStatus } from "@/data/citizenship-notes";
 import { passportWarnings } from "@/data/russia-belarus";
+import { freeMovementTable } from "@/lib/passport-track";
 
 import styles from "./PassportWarning.module.css";
 
@@ -9,7 +10,8 @@ import styles from "./PassportWarning.module.css";
  * Red warning when the destination refuses or limits applications from
  * this passport (official sources only, russia-belarus.ts). "Blocked" says
  * the move is not possible except for the listed groups; "restricted" says
- * what solves it. Renders nothing for every other passport.
+ * what solves it. EU, EEA and Swiss citizens get a green table of what is
+ * easier for them instead. Renders nothing for every other passport.
  */
 export function PassportWarning({
   citizenship,
@@ -24,6 +26,41 @@ export function PassportWarning({
 }) {
   const existingResident = isExistingResidentStatus(residenceStatus);
   const warnings = citizenship ? passportWarnings(citizenship, destination, { existingResident }) : [];
+  // EU, EEA and Swiss citizens: a green table of what is easier for them.
+  const easier = citizenship && !warnings.length ? freeMovementTable(citizenship, destination) : null;
+  if (easier) {
+    return (
+      <div className={styles.stack}>
+        <section className={styles.easier} role="note" data-easier="">
+          <p className={styles.easierKicker}>
+            <BadgeCheck size={16} strokeWidth={2.2} aria-hidden="true" />
+            Easier for you: EU free movement
+          </p>
+          <table className={styles.easierTable}>
+            <tbody>
+              {easier.rows.map((row) => (
+                <tr key={row.label}>
+                  <th scope="row">{row.label}</th>
+                  <td>{row.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className={styles.easierSources}>
+            Official source:{" "}
+            {easier.sources.map((source, index) => (
+              <span key={source.id}>
+                {index > 0 && " · "}
+                <a href={source.url} target="_blank" rel="noreferrer" title={source.title}>
+                  {source.publisher}
+                </a>
+              </span>
+            ))}
+          </p>
+        </section>
+      </div>
+    );
+  }
   if (!warnings.length) return null;
 
   return (
