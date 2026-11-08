@@ -144,6 +144,22 @@ the address), own domain, AdSense account in the owner's name.
 - Not covered yet: Slovakia and the other destinations for these passports
   (no official list of competent embassies found; each country page would
   need checking).
+## Email from docroutestu@gmail.com (2026-11-08)
+
+- Owner decision: the site's mailbox docroutestu@gmail.com is the contact
+  (`legalInfo.contactEmail`, #72) and the sender of every email.
+- `scripts/send-plus-email.mjs` sends through Gmail SMTP (`nodemailer`,
+  smtp.gmail.com:465, user = the mailbox) when `SMTP_PASS` holds a Google
+  app password; Reply-To is the mailbox. Resend stays as a fallback
+  (`RESEND_API_KEY` + `MAIL_FROM`, needs an own domain). Gmail allows about
+  500 messages a day.
+- Sign-in emails (confirmation, password reset) are sent by Supabase Auth:
+  the owner sets Authentication → Emails → SMTP Settings → Enable custom
+  SMTP: sender docroutestu@gmail.com, name DocRoute, host smtp.gmail.com,
+  port 465, username docroutestu@gmail.com, password = the app password;
+  then Authentication → Rate Limits → emails per hour (30 by default with
+  custom SMTP). This removes launch blocker 1 (built-in email reaches only
+  team members, 2 an hour).
 
 ## Verified coverage
 
