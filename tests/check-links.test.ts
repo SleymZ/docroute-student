@@ -42,3 +42,9 @@ test("links built by helpers are found in the loaded data", async () => {
   assert.equal(found.size, 1);
   assert.match([...found][0], /^https:\/\/home-affairs\.ec\.europa\.eu\/.+_en$/);
 });
+
+test("a URL prefix kept in a constant is not checked as a link; a timeout is 'blocked'", () => {
+  const found: Set<string> = extractUrls('const MIIG_PDF = "https://www.make-it-in-germany.com/fileadmin/Visagrafik_EN/";\nconst url = `${MIIG_PDF}Visum_EN.pdf`;');
+  assert.equal(found.size, 0);
+  assert.equal(classify(0, null, "ETIMEDOUT"), "blocked");
+});

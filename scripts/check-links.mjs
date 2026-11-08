@@ -32,11 +32,18 @@ function keep(url) {
   return true;
 }
 
+/** Address prefixes kept in an upper-case constant and joined with file
+ *  names elsewhere (const MIIG_PDF = "https://…/"): not links themselves. */
+export function prefixConstants(text) {
+  return new Set([...text.matchAll(/const [A-Z][A-Z0-9_]* = "(https?:\/\/[^"]+\/)";/g)].map((match) => match[1]));
+}
+
 export function extractUrls(text) {
   const found = new Set();
+  const prefixes = prefixConstants(text);
   for (const match of text.matchAll(urlPattern)) {
     const url = trimUrl(match[0]);
-    if (keep(url)) found.add(url);
+    if (keep(url) && !prefixes.has(url)) found.add(url);
   }
   return found;
 }
@@ -66,7 +73,7 @@ function walk(dir, files = []) {
 }
 
 export function classify(status, finalUrl, error) {
-  if (error) return /timeout|abort|ECONNRESET|UND_ERR_SOCKET/i.test(error) ? "blocked" : "broken";
+  if (error) return /timeout|timedout|abort|ECONNRESET|UND_ERR_SOCKET/i.test(error) ? "blocked" : "broken";
   if (status === 404 || status === 410) return "broken";
   if (status >= 200 && status < 400) {
     // A redirect to a "not found" page; a path like /404/2011 (an act's
