@@ -50,6 +50,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
 import { citizenshipFromUrl } from "@/data/region-names";
+import { PassportBadge } from "@/components/PassportBadge";
 
 function isActionableTask(status: RouteTaskStatus) {
   return status === "action" || status === "attention";
@@ -423,6 +424,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <PassportBadge citizenship={profile.citizenshipCountryCode} />
       <ConfirmRoute title="Working in Slovakia" purpose="work" countryCode="SK" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {route.authorisation && (

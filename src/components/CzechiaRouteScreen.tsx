@@ -52,6 +52,7 @@ import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
 import { citizenshipFromUrl } from "@/data/region-names";
 import { PassportWarning } from "@/components/PassportWarning";
+import { PassportBadge } from "@/components/PassportBadge";
 
 const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
 
@@ -424,6 +425,7 @@ export function CzechiaRouteScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <PassportBadge citizenship={profile.citizenshipCountryCode} />
       <ConfirmRoute title={title} purpose={profile.purpose === "work" ? "work" : "study"} countryCode="CZ" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
       <PassportWarning citizenship={profile.citizenshipCountryCode} destination="CZ" residenceStatus={profile.currentResidenceStatus} />
 

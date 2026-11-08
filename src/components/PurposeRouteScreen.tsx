@@ -60,6 +60,7 @@ import type { RouteTaskStatus } from "@/types/route-preview";
 import { DateInput } from "./DateInput";
 import styles from "./WorkRouteScreen.module.css";
 import { citizenshipFromUrl } from "@/data/region-names";
+import { PassportBadge } from "@/components/PassportBadge";
 
 export type PurposeKind = "family" | "business";
 
@@ -380,6 +381,7 @@ export function PurposeRouteScreen({ kind, asOfDate }: { kind: PurposeKind; asOf
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
+      <PassportBadge citizenship={route.profile.citizenshipCountryCode} />
       <ConfirmRoute title={text.title} purpose={kind} countryCode="SK" routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {route.applicable && (
