@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Globe2 } from "lucide-react";
 
 import { isCitizenshipCode, regionName } from "@/data/region-names";
+import { isEuEeaSwissCitizen } from "@/lib/profile-options";
 import { flagSrc } from "@/lib/flags";
 
 import styles from "./PassportBadge.module.css";
@@ -15,7 +16,10 @@ import styles from "./PassportBadge.module.css";
 export function PassportBadge({ citizenship }: { citizenship: string | null | undefined }) {
   const code = (citizenship ?? "").toUpperCase();
   if (!code) return null;
-  if (!isCitizenshipCode(code)) return null;
+  // EU, EEA and Swiss citizens move under free movement: these routes are
+  // for other passports, so the label would promise checks that do not
+  // apply to them (the screens say so in their own notice).
+  if (!isCitizenshipCode(code) || isEuEeaSwissCitizen(code)) return null;
   const other = code === "ZZ";
   // The same short name the route's own passport stage uses ("Russia").
   const name = code === "PS" ? "Palestinian territories" : regionName(code);

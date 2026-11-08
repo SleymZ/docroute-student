@@ -238,6 +238,8 @@ test("war and crisis passports: where to file Czech applications, from the minis
   for (const embassy of Object.values(czechEmbassyAbroad)) for (const catalog of catalogs) assert.ok(catalog[embassy], embassy);
 });
 test("every route says whose passport it is built for", () => {
+  const badge = readFileSync(join(root, "src/components/PassportBadge.tsx"), "utf8");
+  assert.match(badge, /isEuEeaSwissCitizen\(code\)\) return null/);
   for (const screen of ["PurposeRouteScreen", "WorkRouteScreen", "CzechiaRouteScreen", "CountryGuideScreen", "FullPathScreen", "RoutePreviewScreen"]) {
     assert.match(readFileSync(join(root, `src/components/${screen}.tsx`), "utf8"), /<PassportBadge citizenship=/, screen);
   }
