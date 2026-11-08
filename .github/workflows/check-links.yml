@@ -1,0 +1,52 @@
+# Checks the official links in the route and university data
+# (scripts/check-links.mjs). Runs on pull requests that touch the data,
+# every Monday, and by hand. Never blocks a merge: it only reports.
+name: Official link check
+
+on:
+  pull_request:
+    paths:
+      - "src/data/**"
+      - "src/lib/**"
+      - "scripts/check-links.mjs"
+      - ".github/workflows/check-links.yml"
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    # 1,100 links × 15 s worst case ÷ 16 workers ≈ 17 minutes, plus setup.
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --experimental-strip-types --no-warnings --import ./scripts/test-loader/register.mjs scripts/check-links.mjs
+        env:
+          CHECK_LINKS_LOAD_MODULES: "1"
+      - run: cat link-report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: link-report
+          path: link-report.*
+      - name: Report on the pull request
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment "${{ github.event.pull_request.number }}" --body-file link-report.md --edit-last --create-if-none
+      - name: Open an issue when links are broken (weekly run)
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if grep -q '^### Broken' link-report.md; then
+            gh issue create --title "Broken official links $(date +%F)" --body-file link-report.md
+          fi
