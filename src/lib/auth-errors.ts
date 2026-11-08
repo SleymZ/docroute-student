@@ -44,6 +44,12 @@ function knownAuthErrorMessage(error: unknown): string | null {
   const message = typeof value.message === "string" ? value.message : "";
   const code = value.code ?? "";
 
+  // supabase-js also marks server errors (5xx) as "retryable": those are not
+  // a lost connection. A failed confirmation email (for example, the SMTP
+  // server refused the login) comes back as 500 "Error sending … email".
+  const serverError = typeof value.status === "number" && value.status >= 500;
+  if (/error sending .*(e-?mail|mail)|smtp/i.test(message)) return authErrorMessages.emailNotAuthorized;
+  if (serverError) return authErrorMessages.fallback;
   if (value.name === "AuthRetryableFetchError" || /failed to fetch|networkerror|load failed|fetch failed|network request failed/i.test(message)) {
     return authErrorMessages.network;
   }

@@ -34,3 +34,12 @@ test("every new message is translated", () => {
     for (const text of Object.values(authErrorMessages)) assert.ok(catalog[text], `${lang}: ${text}`);
   }
 });
+
+test("server errors are not shown as a lost connection", () => {
+  assert.equal(
+    authErrorMessage({ name: "AuthRetryableFetchError", message: "Error sending confirmation email", status: 500, code: "unexpected_failure" }),
+    authErrorMessages.emailNotAuthorized,
+  );
+  assert.equal(authErrorMessage({ name: "AuthRetryableFetchError", message: "{}", status: 502 }), authErrorMessages.fallback);
+  assert.equal(authErrorMessage({ name: "AuthRetryableFetchError", message: "Failed to fetch", status: 0 }), authErrorMessages.network);
+});
