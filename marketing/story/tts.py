@@ -25,7 +25,9 @@ for lang in langs:
         else:
             if kok is None:
                 from kokoro_onnx import Kokoro
-                kok = Kokoro(os.path.join(models, "kokoro.onnx"), os.path.join(models, "voices.bin"))
+                model = next(p for p in ("kokoro-v1.0.int8.onnx", "kokoro.onnx") if os.path.exists(os.path.join(models, p)))
+                voices = next(p for p in ("voices-v1.0.bin", "voices.bin") if os.path.exists(os.path.join(models, p)))
+                kok = Kokoro(os.path.join(models, model), os.path.join(models, voices))
             voice, code, speed = KOKORO[lang]
             samples, sr = kok.create(say, voice=voice, speed=speed, lang=code)
             sf.write(wav, samples, sr)
