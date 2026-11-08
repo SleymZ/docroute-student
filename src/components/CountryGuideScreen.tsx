@@ -104,7 +104,7 @@ export function CountryGuideScreen({ asOfDate }: { asOfDate: string }) {
         </div>
       </header>
       <PrintNote asOfDate={asOfDate} />
-      <PassportBadge citizenship={citizenship} />
+      <PassportBadge citizenship={citizenship} verified={guide.coverage !== "official-link"} />
       <ConfirmRoute title={guide.title} purpose={guide.purpose} countryCode={guide.country} routeKey={routeKey} stepIds={actionable.map((task) => task.id)} />
 
       {guide.variants.length > 1 && (

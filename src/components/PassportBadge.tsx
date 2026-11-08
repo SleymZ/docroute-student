@@ -13,7 +13,15 @@ import styles from "./PassportBadge.module.css";
  * restrictions on the page depend on it, so the reader sees at once that
  * the steps are not generic.
  */
-export function PassportBadge({ citizenship }: { citizenship: string | null | undefined }) {
+export function PassportBadge({
+  citizenship,
+  verified = true,
+}: {
+  citizenship: string | null | undefined;
+  /** False for guides built only from official links: the passport notes
+   *  are added, but the procedure itself is not checked step by step. */
+  verified?: boolean;
+}) {
   const code = (citizenship ?? "").toUpperCase();
   if (!code) return null;
   // EU, EEA and Swiss citizens move under free movement: these routes are
@@ -35,7 +43,11 @@ export function PassportBadge({ citizenship }: { citizenship: string | null | un
       )}
       <span className={styles.text}>
         <strong>{other ? "Route for citizens of another country" : `Route for citizens of ${name}`}</strong>
-        <small>Visa, documents and restrictions on this page are checked for this citizenship.</small>
+        <small>
+          {verified
+            ? "Visa, documents and restrictions on this page are checked for this citizenship."
+            : "The passport notes on this page are for this citizenship; the procedure itself is not checked step by step."}
+        </small>
       </span>
     </p>
   );
