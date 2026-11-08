@@ -1,4 +1,5 @@
 import { embassyAccessNotes } from "@/data/embassy-access";
+import { euVisaMeasureNotes } from "@/data/eu-visa-measures";
 import type { RouteSource } from "@/types/route-preview";
 
 // Extra restrictions for citizens of Russia and Belarus (plan item 2),
@@ -9,6 +10,13 @@ import type { RouteSource } from "@/types/route-preview";
 // "Path by passport" block on the country pages.
 
 export const RU_BY_CHECKED = "2026-11-05";
+
+/** Schengen members among the destination pages (the 27 EU members and
+ *  Switzerland, without Ireland and Cyprus): EU Schengen visa rules apply. */
+export const SCHENGEN: ReadonlySet<string> = new Set([
+  "AT", "BE", "BG", "HR", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IT", "LV",
+  "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "CH",
+]);
 
 function src(id: string, title: string, publisher: string, url: string): RouteSource {
   return { id, title, publisher, url, checkedAt: RU_BY_CHECKED, authority: "official" };
@@ -66,6 +74,54 @@ export const ruBySources = {
     title: "Current visa activity of the consular section (Embassy in Moscow)",
     publisher: "Ministry of Foreign Affairs of the Czech Republic",
     url: "https://mzv.gov.cz/moscow/cz/viza_a_konzularni_informace/aktualni_vizova_cinnost_konzularniho/index.html",
+    checkedAt: "2026-11-08",
+    authority: "official",
+  },
+  euMultipleEntry: {
+    id: "ec-ru-multiple-entry-2025",
+    title: "Commission implementing decision establishing rules on the issuing of multiple-entry visas to Russian nationals (7 November 2025)",
+    publisher: "European Commission, Migration and Home Affairs",
+    url: "https://home-affairs.ec.europa.eu/commission-implementing-decision-establishing-rules-issuing-multiple-entry-visas-russian-nationals_en",
+    checkedAt: "2026-11-08",
+    authority: "official",
+  },
+  euOccupied: {
+    id: "eu-dec-2022-2512",
+    title: "Decision (EU) 2022/2512 on the non-acceptance of travel documents of the Russian Federation issued in Ukraine and Georgia",
+    publisher: "EUR-Lex, European Union",
+    url: "https://eur-lex.europa.eu/eli/dec/2022/2512/oj",
+    checkedAt: "2026-11-08",
+    authority: "official",
+  },
+  lvPassports: {
+    id: "lv-mfa-ru-non-biometric",
+    title: "Questions and answers: non-recognition of Russian Federation non-biometric passports in the Republic of Latvia",
+    publisher: "Ministry of Foreign Affairs of Latvia",
+    url: "https://www.mfa.gov.lv/en/questions-and-answers-non-recognition-russian-federation-non-biometric-passports-republic-latvia",
+    checkedAt: "2026-11-08",
+    authority: "official",
+  },
+  euTravelDocs: {
+    id: "be-dofi-recognised-travel-documents",
+    title: "List of recognised travel documents (links to the European Commission's table)",
+    publisher: "Immigration Office of Belgium (DOFI)",
+    url: "https://dofi.ibz.be/en/themes/entry/border-control/travel-documents/list-recognised-travel-documents",
+    checkedAt: "2026-11-08",
+    authority: "official",
+  },
+  sePassports: {
+    id: "se-migrationsverket-ru-non-biometric",
+    title: "Russian non-biometric passports will no longer be recognised from 1 October (2026)",
+    publisher: "Swedish Migration Agency (Migrationsverket)",
+    url: "https://www.migrationsverket.se/en/newsarchive/russiannonbiometricpassportswillnolongerberecognisedfrom1october.5.15b2309e1a04e5ed207d3b.html",
+    checkedAt: "2026-11-08",
+    authority: "official",
+  },
+  dkMoscow: {
+    id: "dk-um-moscow-visa-applicants",
+    title: "Regarding consular and visa services (Embassy of Denmark in Moscow)",
+    publisher: "Ministry of Foreign Affairs of Denmark",
+    url: "https://um.dk/rusland/en/news/visa-applicants/",
     checkedAt: "2026-11-08",
     authority: "official",
   },
@@ -190,14 +246,74 @@ export function russiaBelarusNotes(citizenship: string, destination: string): Re
         sources: [ruBySources.cz],
       });
     }
-    notes.push({
-      id: "ru-eu-short-stay",
-      title: "Short-stay visas: no visa facilitation for Russia",
-      description:
-        "The EU fully suspended its visa facilitation agreement with Russia in September 2022: Schengen short-stay visas take longer, need extra supporting documents and multiple-entry visas are issued more strictly. Long-stay visas and residence permits follow each country's rules.",
-      severity: "info",
-        sources: [ruBySources.euSuspension],
-    });
+    if (country === "SE") {
+      notes.push({
+        id: "ru-se-non-biometric",
+        title: "Sweden does not recognise non-biometric Russian passports",
+        description:
+          "Since 1 October 2026 Sweden does not recognise ordinary non-biometric Russian passports: they cannot be used to enter Sweden or to get a visa or residence permit. Until 31 December 2026 they are still accepted with a valid visa or residence permit issued before 1 October 2026 by an EU or Schengen country.",
+        severity: "restricted",
+        solution: "Apply with a biometric Russian passport (with a chip).",
+        appliesToResidents: true,
+        sources: [ruBySources.sePassports],
+      });
+    }
+    if (country === "LV") {
+      notes.push({
+        id: "ru-lv-non-biometric",
+        title: "Latvia does not recognise non-biometric Russian passports",
+        description:
+          "Since 15 July 2025 Latvia does not recognise non-biometric Russian passports. Holders of a valid Latvian residence permit cannot enter Latvia with such a passport either.",
+        severity: "restricted",
+        solution: "Apply and travel with a biometric Russian passport (with a chip).",
+        appliesToResidents: true,
+        sources: [ruBySources.lvPassports],
+      });
+    }
+    if (country === "DK") {
+      notes.push({
+        id: "ru-dk-moscow-closed",
+        title: "Denmark's embassy in Moscow takes no visa or residence applications",
+        description:
+          "The Embassy of Denmark in Moscow does not receive applications for Schengen visas or residence permits to Denmark.",
+        severity: "restricted",
+        solution: "Apply at a Danish application centre in another country; the Danish Foreign Ministry lists where to apply.",
+        sources: [ruBySources.dkMoscow],
+      });
+    }
+    if (SCHENGEN.has(country)) {
+      notes.push({
+        id: "ru-eu-short-stay",
+        title: "Schengen visas for Russians: single entry only and stricter checks",
+        description:
+          "The EU suspended its visa facilitation agreement with Russia in September 2022. Since 7 November 2025 Russian citizens applying in Russia are issued only single-entry Schengen visas, and every application gets enhanced checks; close family members of EU citizens and of Russians living in the EU are among the exceptions.",
+        severity: "restricted",
+        solution: "This concerns short-stay (C) visas. Long-stay (D) visas and residence permits follow the destination's own rules: apply for those at its embassy.",
+        sources: [ruBySources.euMultipleEntry, ruBySources.euSuspension],
+      });
+      notes.push({
+        id: "ru-eu-occupied-passports",
+        title: "Russian passports issued in occupied regions of Ukraine or Georgia are not accepted",
+        description:
+          "Under Decision (EU) 2022/2512, Schengen countries do not accept Russian travel documents issued in, or to residents of, the Russian-occupied regions of Ukraine (Crimea and Sevastopol, Donetsk, Luhansk, Kherson, Zaporizhzhia) or Abkhazia and South Ossetia, for a visa or to cross the external border.",
+        severity: "restricted",
+        solution: "Russian passports issued elsewhere are not affected. With an affected passport no Schengen visa can be issued in it.",
+        appliesToResidents: true,
+        sources: [ruBySources.euOccupied],
+      });
+      if (!["CZ", "EE", "FI", "LV", "SE"].includes(country)) {
+        notes.push({
+          id: "ru-eu-non-biometric",
+          title: "Non-biometric Russian passports: refused by more and more Schengen countries",
+          description:
+            "Several Schengen countries no longer recognise non-biometric Russian passports for visas, residence or entry (the Latvian Foreign Ministry names Denmark, Czechia, France, Estonia and Lithuania), and others are following. Each country's position is in the European Commission's table of recognised travel documents.",
+          severity: "restricted",
+          solution: "Apply with a biometric Russian passport (with a chip).",
+          appliesToResidents: true,
+          sources: [ruBySources.lvPassports, ruBySources.euTravelDocs],
+        });
+      }
+    }
   }
 
   if (code === "BY" && country === "EE") {
@@ -207,6 +323,7 @@ export function russiaBelarusNotes(citizenship: string, destination: string): Re
       description:
         "Belarusian citizens are not issued visas for short-term employment, business (including start-ups) or teleworking, and consular services in Minsk are suspended.",
       severity: "restricted",
+      solution: "This rule covers short-term work, business and teleworking only. Consular services in Minsk are suspended, so apply at an Estonian mission in another country.",
         sources: [ruBySources.ee],
     });
   }
@@ -236,7 +353,11 @@ export function passportWarnings(
   options: { existingResident?: boolean } = {},
 ): RestrictionNote[] {
   const order: Record<RestrictionSeverity, number> = { blocked: 0, restricted: 1, info: 2 };
-  return [...russiaBelarusNotes(citizenship, destination), ...embassyAccessNotes(citizenship, destination)]
+  return [
+    ...russiaBelarusNotes(citizenship, destination),
+    ...embassyAccessNotes(citizenship, destination),
+    ...euVisaMeasureNotes(citizenship, destination),
+  ]
     .filter((item) => item.severity === "blocked" || item.severity === "restricted")
     .filter((item) => !options.existingResident || item.appliesToResidents)
     .sort((a, b) => order[a.severity ?? "info"] - order[b.severity ?? "info"]);
@@ -245,7 +366,7 @@ export function passportWarnings(
 /** Countries whose own pages add restrictions for this passport. */
 export function restrictedFor(citizenship: string): string[] {
   const code = citizenship.toUpperCase();
-  if (code === "RU") return ["CZ", "EE", "FI", "LT", "LV", "PL"];
+  if (code === "RU") return ["CZ", "DK", "EE", "FI", "LT", "LV", "PL", "SE"];
   if (code === "BY") return ["CZ", "EE", "LT"];
   return [];
 }

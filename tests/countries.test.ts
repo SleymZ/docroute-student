@@ -196,10 +196,10 @@ test("red passport warnings: Czechia blocks Russian and Belarusian applications,
   }
   assert.match(passportWarnings("BY", "CZ")[0].solution ?? "", /Belarusian students/);
   // Already living in Czechia: no embassy barrier, the biometric passport rule stays.
-  assert.deepEqual(passportWarnings("RU", "CZ", { existingResident: true }).map((item) => item.id), ["ru-cz-biometric"]);
+  assert.deepEqual(passportWarnings("RU", "CZ", { existingResident: true }).map((item) => item.id), ["ru-cz-biometric", "ru-eu-occupied-passports"]);
   assert.deepEqual(passportWarnings("BY", "CZ", { existingResident: true }), []);
-  assert.deepEqual(passportWarnings("RU", "EE", { existingResident: true }), []);
-  assert.deepEqual(passportWarnings("RU", "SK"), []);
+  assert.deepEqual(passportWarnings("RU", "EE", { existingResident: true }).map((item) => item.id), ["ru-eu-occupied-passports"]);
+  assert.ok(!passportWarnings("RU", "SK").some((item) => item.severity === "blocked")); // EU-wide rules only
   assert.deepEqual(passportWarnings("IN", "CZ"), []);
   assert.ok(passportWarnings("RU", "EE").some((item) => item.severity === "blocked"));
   assert.ok(!passportWarnings("RU", "FI").some((item) => item.severity === "info"));
@@ -248,5 +248,30 @@ test("every route says whose passport it is built for", () => {
   for (const locale of ["ru", "es", "zh", "hi"]) {
     const catalog = JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${locale}.json`), "utf8"));
     assert.ok(catalog["Route for citizens of {0}"]?.includes("{0}"), locale);
+  }
+});
+
+test("Russian passports everywhere in Schengen; Denmark, Sweden, Latvia; Gambia: official sources only", async () => {
+  const { passportWarnings, SCHENGEN } = await import("../src/data/russia-belarus");
+  const ids = (code: string, country: string, existingResident = false) =>
+    passportWarnings(code, country, { existingResident }).map((item) => item.id);
+  // Slovakia: no national ban for Russians, but the EU-wide rules apply.
+  assert.deepEqual(ids("RU", "SK"), ["ru-eu-short-stay", "ru-eu-occupied-passports", "ru-eu-non-biometric"]);
+  assert.deepEqual(ids("RU", "SK", true), ["ru-eu-occupied-passports", "ru-eu-non-biometric"]);
+  assert.deepEqual(ids("RU", "IE"), []); // not Schengen
+  assert.ok(ids("RU", "DK").includes("ru-dk-moscow-closed"));
+  assert.ok(!ids("RU", "DK", true).includes("ru-dk-moscow-closed"));
+  assert.ok(ids("RU", "SE").includes("ru-se-non-biometric") && !ids("RU", "SE").includes("ru-eu-non-biometric"));
+  assert.ok(ids("RU", "LV").includes("ru-lv-non-biometric"));
+  assert.deepEqual(ids("GM", "DE"), ["gm-eu-visa-measures"]);
+  assert.deepEqual(ids("ET", "DE"), []); // repealed 18 May 2026
+  assert.equal(SCHENGEN.size, 26);
+  for (const country of SCHENGEN) {
+    for (const code of ["RU", "BY", "GM", "AF", "SY"]) {
+      for (const item of passportWarnings(code, country)) {
+        assert.ok(item.sources.length > 0 && item.sources.every((source) => source.authority === "official" && source.url.startsWith("https://")), item.id);
+        assert.ok(item.solution, item.id);
+      }
+    }
   }
 });
