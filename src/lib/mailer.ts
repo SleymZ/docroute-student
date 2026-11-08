@@ -4,8 +4,10 @@
 // optional SMTP_HOST, SMTP_PORT, SMTP_USER, MAIL_FROM. Without SMTP_PASS
 // nothing is sent.
 
+import { after } from "next/server";
+
 import type { Locale } from "@/i18n/config";
-import type { AuthLike, WelcomeMail } from "./welcome";
+import { sendWelcomeIfNew, type AuthLike, type WelcomeMail } from "./welcome";
 
 export const DOCROUTE_MAILBOX = "docroutestu@gmail.com";
 
@@ -18,6 +20,10 @@ export async function mailerFromEnv(env: Record<string, string | undefined> = pr
     port,
     secure: port === 465,
     auth: { user: env.SMTP_USER || DOCROUTE_MAILBOX, pass: env.SMTP_PASS },
+    // a slow or unreachable mail server gives up instead of hanging
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
   });
   const from = env.MAIL_FROM || `DocRoute <${DOCROUTE_MAILBOX}>`;
   return async (mail: WelcomeMail) => {
@@ -25,13 +31,21 @@ export async function mailerFromEnv(env: Record<string, string | undefined> = pr
   };
 }
 
-/** Send the welcome email if this is a new account; never throws. */
+/** Claim and schedule the welcome email for a new account; never throws.
+ *  The email itself leaves after the response (Next's after()). */
 export async function welcomeNewAccount(supabase: AuthLike, locale: Locale, siteUrl: string) {
   try {
-    const send = await mailerFromEnv();
-    if (!send) return "no-mailer";
-    const { sendWelcomeIfNew } = await import("./welcome");
-    return await sendWelcomeIfNew({ supabase, locale, siteUrl, send });
+    if (!process.env.SMTP_PASS) return "no-mailer";
+    return await sendWelcomeIfNew({
+      supabase,
+      locale,
+      siteUrl,
+      send: async (mail) => {
+        const send = await mailerFromEnv();
+        if (send) await send(mail);
+      },
+      schedule: (task) => after(task),
+    });
   } catch (error) {
     console.error("Welcome email failed", error);
     return "failed";

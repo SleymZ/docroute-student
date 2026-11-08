@@ -40,7 +40,8 @@ test("the welcome email goes once, only to new accounts", async () => {
   const send = async (mail: WelcomeMail) => { sent.push(mail); };
 
   const fresh = fakeSupabase({ email: "new@example.com", created_at: "2026-11-08T18:59:00Z", user_metadata: {} });
-  assert.equal(await sendWelcomeIfNew({ supabase: fresh, locale: "ru", siteUrl: SITE, send, now }), "sent");
+  assert.equal(await sendWelcomeIfNew({ supabase: fresh, locale: "ru", siteUrl: SITE, send, now }), "scheduled");
+  await new Promise((r) => setTimeout(r, 0));
   assert.equal(sent.length, 1);
   assert.equal(sent[0].to, "new@example.com");
   assert.equal(sent[0].subject, welcomeCopy("ru").subject);
@@ -54,4 +55,20 @@ test("the welcome email goes once, only to new accounts", async () => {
 
   assert.equal(await sendWelcomeIfNew({ supabase: fakeSupabase(null), locale: "en", siteUrl: SITE, send, now }), "no-user");
   assert.equal(sent.length, 1);
+});
+
+test("a failed delivery removes the claim so a later sign-in can try again", async () => {
+  const now = Date.parse("2026-11-08T19:00:00Z");
+  const fresh = fakeSupabase({ email: "new@example.com", created_at: "2026-11-08T18:59:00Z" });
+  const tasks: (() => Promise<void>)[] = [];
+  const result = await sendWelcomeIfNew({
+    supabase: fresh, locale: "en", siteUrl: SITE, now,
+    send: async () => { throw new Error("SMTP down"); },
+    schedule: (task) => { tasks.push(task); },
+  });
+  assert.equal(result, "scheduled");
+  assert.equal(fresh.updates.length, 1, "claimed before the response");
+  const original = console.error; console.error = () => {};
+  try { await tasks[0](); } finally { console.error = original; }
+  assert.deepEqual(fresh.updates[1], { welcome_sent_at: null });
 });
