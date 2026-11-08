@@ -1,3 +1,4 @@
+import { embassyAccessNotes } from "@/data/embassy-access";
 import type { RouteSource } from "@/types/route-preview";
 
 // Extra restrictions for citizens of Russia and Belarus (plan item 2),
@@ -225,7 +226,8 @@ export function russiaBelarusNotes(citizenship: string, destination: string): Re
 }
 
 /** Barriers worth a red warning (blocked or restricted), most serious
- *  first; the "info" notes stay as ordinary route steps. */
+ *  first: Russia/Belarus rules and passports whose home country has no
+ *  Czech visa service (embassy-access.ts). "Info" notes stay route steps. */
 export function passportWarnings(
   citizenship: string,
   destination: string,
@@ -234,7 +236,7 @@ export function passportWarnings(
   options: { existingResident?: boolean } = {},
 ): RestrictionNote[] {
   const order: Record<RestrictionSeverity, number> = { blocked: 0, restricted: 1, info: 2 };
-  return russiaBelarusNotes(citizenship, destination)
+  return [...russiaBelarusNotes(citizenship, destination), ...embassyAccessNotes(citizenship, destination)]
     .filter((item) => item.severity === "blocked" || item.severity === "restricted")
     .filter((item) => !options.existingResident || item.appliesToResidents)
     .sort((a, b) => order[a.severity ?? "info"] - order[b.severity ?? "info"]);

@@ -134,9 +134,16 @@ the address), own domain, AdSense account in the owner's name.
   except listed groups, also with a second citizenship. Blocked: CZ (RU,
   BY), EE (RU), LT (RU). Restricted: FI, LV, PL, CZ biometric passports
   (RU), EE short-term work (BY).
-- Not covered yet: other passports with closed missions or conflicts (for
-  example Afghanistan, Syria, Yemen, Sudan); each needs the destination's
-  official page before a warning is added.
+- War and crisis passports, Czechia (`src/data/embassy-access.ts`, MZV
+  territorial districts + local competence, read 2026-11-08): AF, SY, YE,
+  SD, SS, SO, LY, PS, ER, HT, MM, ML, BF, NE, CF, KP get a "restricted"
+  warning and a route step naming the Czech embassy abroad that takes their
+  applications (e.g. AF → Islamabad), plus the 2-year residence alternative
+  outside Schengen (inside Schengen: only the Dresden visa centre).
+  Venezuela is left out (may apply at any Czech embassy).
+- Not covered yet: Slovakia and the other destinations for these passports
+  (no official list of competent embassies found; each country page would
+  need checking).
 
 ## Verified coverage
 

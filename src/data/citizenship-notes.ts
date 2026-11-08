@@ -16,6 +16,7 @@ import {
   schengenVisaRequired,
 } from "./citizenship-lists";
 import { chinaDocumentsNote, chinaNationalityNote, chinaNotes, chinaSources } from "./china-notes";
+import { embassyAccessNotes } from "./embassy-access";
 import { regionName } from "./region-names";
 import { ruBySources, russiaBelarusNotes } from "./russia-belarus";
 
@@ -483,6 +484,11 @@ export function citizenshipStage(
   for (const item of russiaBelarusNotes(code, destination)) {
     if (options.existingResident && item.id === "ru-eu-short-stay") continue;
     notes.push(note(item.id, item.title, item.description, "attention", item.sources));
+  }
+  // No Czech visa service in the home country (war or crisis): where to
+  // apply instead (embassy-access.ts). Not for someone already living there.
+  if (!options.existingResident) {
+    for (const item of embassyAccessNotes(code, destination)) notes.push(note(item.id, item.title, item.description, "attention", item.sources));
   }
   // China: APS, appointments and documents asked for by the destination's
   // missions in China (china-notes.ts). They concern applying from China,

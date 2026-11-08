@@ -218,3 +218,22 @@ test("red passport warnings: Czechia blocks Russian and Belarusian applications,
     assert.match(readFileSync(join(root, `src/components/${screen}.tsx`), "utf8"), /<PassportWarning /, screen);
   }
 });
+
+test("war and crisis passports: where to file Czech applications, from the ministry's district list", async () => {
+  const { passportWarnings } = await import("../src/data/russia-belarus");
+  const { czechEmbassyAbroad } = await import("../src/data/embassy-access");
+  const { citizenshipStage } = await import("../src/data/citizenship-notes");
+  const [af] = passportWarnings("AF", "CZ");
+  assert.equal(af?.severity, "restricted");
+  assert.match(af.title, /Islamabad, Pakistan/);
+  assert.match(af.solution ?? "", /outside the Schengen area for at least 2 years/);
+  assert.match(af.solution ?? "", /Dresden/);
+  assert.match(passportWarnings("SY", "CZ")[0].title, /Beirut, Lebanon/);
+  assert.match(passportWarnings("SD", "CZ")[0].title, /Cairo, Egypt/);
+  assert.deepEqual(passportWarnings("AF", "SK"), []);
+  assert.deepEqual(passportWarnings("VE", "CZ"), []); // may apply at any Czech embassy
+  assert.deepEqual(passportWarnings("AF", "CZ", { existingResident: true }), []);
+  assert.ok(citizenshipStage("AF", "CZ", "Czechia", "work")?.stage.tasks.some((task) => task.id.startsWith("af-cz-embassy-abroad")));
+  const catalogs = ["ru", "es", "zh", "hi"].map((locale) => JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${locale}.json`), "utf8")));
+  for (const embassy of Object.values(czechEmbassyAbroad)) for (const catalog of catalogs) assert.ok(catalog[embassy], embassy);
+});
