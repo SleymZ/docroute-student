@@ -75,6 +75,23 @@
   border-color: light-dark(#1a6f7b, #8cdae7);
 }
 
+/* "Try again" on the error page: the main action, in the accent colour. */
+.retry {
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--coral);
+  color: light-dark(#ffffff, #1b0d08);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.retry:hover {
+  filter: brightness(1.06);
+}
+
 .body {
   color: light-dark(#2b3438, #dfe7eb);
   font-size: 15px;
