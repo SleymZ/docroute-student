@@ -34,7 +34,7 @@ Instagram does not make links in captions clickable: put the URL in the bio.
 ## Render again
 
 ```bash
-cd /tmp && npm pack @fontsource/noto-sans-devanagari && tar xzf fontsource-noto-sans-devanagari-*.tgz
+(cd /tmp && npm pack @fontsource/noto-sans-devanagari && tar xzf fontsource-noto-sans-devanagari-*.tgz)
 mkdir -p marketing/promo/fonts && cp /tmp/package/files/noto-sans-devanagari-devanagari-{500,700,800}-normal.woff2 marketing/promo/fonts/
 node marketing/promo/render.mjs en ru es zh hi            # videos → marketing/promo/out/
 node marketing/promo/render.mjs en --frames 7.5,16.5      # stills only, for checking

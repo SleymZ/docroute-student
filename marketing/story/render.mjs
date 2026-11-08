@@ -30,7 +30,11 @@ await Promise.all(langs.map(async lang => {
   const page = await browser.newPage(); await page.setViewport({ width: 1080, height: 1920, deviceScaleFactor: 1 });
   await page.evaluateOnNewDocument((d) => Object.assign(window, d), { T: T[lang], P: P[lang], MAP, LOGO, TL, LANG: lang });
   await page.goto("file://" + path.join(here, "story.html"));
-  await page.evaluate(async () => { await document.fonts.ready; build(); });
+  await page.evaluate(async () => {
+    // load every face before measuring, or headlines are laid out with a fallback font
+    for (const w of ["500", "700", "800"]) await Promise.all([document.fonts.load(`${w} 40px "Noto Sans Devanagari"`, "अ"), document.fonts.load(`${w} 40px "Noto Sans CJK SC"`, "中"), document.fonts.load(`${w} 40px Inter`, "A")]);
+    await document.fonts.ready; build();
+  });
   if (stills) { for (const t of stills) { await page.evaluate(t => setTime(t), t); await page.screenshot({ path: path.join(out, `still-${lang}-${t}.jpg`), type: "jpeg", quality: 85 }); } return; }
   // scenes: one file per spoken line (the last one runs to the end)
   const cuts = [0, ...TL.slice(1).map(l => Math.round((l.a - 0.25) * FPS) / FPS), total];

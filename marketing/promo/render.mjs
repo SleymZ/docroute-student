@@ -42,7 +42,11 @@ async function open(lang) {
   await page.setViewport({ width: 1080, height: 1920, deviceScaleFactor: 1 });
   await page.evaluateOnNewDocument((T, L, LANG) => { window.T = T; window.LOGO = L; window.LANG = LANG; }, texts[lang], LOGO, lang);
   await page.goto("file://" + path.join(here, "promo.html"));
-  await page.evaluate(async () => { await document.fonts.ready; build(); });
+  await page.evaluate(async () => {
+    // load every face before measuring, or headlines are laid out with a fallback font
+    for (const w of ["500", "700", "800"]) await Promise.all([document.fonts.load(`${w} 40px "Noto Sans Devanagari"`, "अ"), document.fonts.load(`${w} 40px "Noto Sans CJK SC"`, "中"), document.fonts.load(`${w} 40px Inter`, "A")]);
+    await document.fonts.ready; build();
+  });
   await page.evaluate(() => Promise.all([...document.images].map(i => i.decode().catch(() => {}))));
   return page;
 }
