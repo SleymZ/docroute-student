@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-// @ts-expect-error plain JavaScript script without types
 import { classify, extractUrls } from "../scripts/check-links.mjs";
 
 test("the link check finds real addresses and skips templates and examples", () => {
@@ -37,7 +36,6 @@ test("a law number in the path is not a 'not found' page; .invalid addresses are
 });
 
 test("links built by helpers are found in the loaded data", async () => {
-  // @ts-expect-error plain JavaScript script without types
   const { collectUrls } = await import("../scripts/check-links.mjs");
   const { euPortalSource } = await import("@/data/eu-immigration-portal");
   const found: Set<string> = collectUrls({ sources: [euPortalSource("eu-blue-card", "FR")] });
