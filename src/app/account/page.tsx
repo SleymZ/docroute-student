@@ -47,6 +47,7 @@ import { loadSavedUniversityIds } from "@/lib/supabase/user-memory";
 import type { ApplicantProfile } from "@/types/admission";
 
 import styles from "./AccountPage.module.css";
+import { flagSrc } from "@/lib/flags";
 
 export const metadata: Metadata = {
   title: "Applicant profile",
@@ -92,7 +93,7 @@ function CountryValue({ code }: { code: string }) {
     <span className={styles.countryValue}>
       {code !== "ZZ" && (
         <Image
-          src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
+          src={flagSrc(code)}
           alt=""
           width={20}
           height={15}
@@ -598,7 +599,7 @@ export default async function AccountPage() {
                 <li key={university.id}>
                   <Link href={`/universities/${encodeURIComponent(university.id)}`}>
                     <Image
-                      src={`https://flagcdn.com/w40/${university.countryCode.toLowerCase()}.png`}
+                      src={flagSrc(university.countryCode)}
                       alt=""
                       width={22}
                       height={16}

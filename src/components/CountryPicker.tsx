@@ -19,6 +19,7 @@ import {
 import { useT } from "@/i18n/client";
 
 import styles from "./CountryPicker.module.css";
+import { flagSrc } from "@/lib/flags";
 
 export type CountryOption = {
   code: string;
@@ -136,7 +137,7 @@ export function CountryPicker({
         <span className={styles.selection}>
           {selectedCountry && selectedCountry.code !== "ZZ" ? (
             <Image
-              src={`https://flagcdn.com/w40/${selectedCountry.code.toLowerCase()}.png`}
+              src={flagSrc(selectedCountry.code)}
               alt=""
               width={24}
               height={18}
@@ -208,7 +209,7 @@ export function CountryPicker({
                   >
                     {country.code !== "ZZ" ? (
                       <Image
-                        src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
+                        src={flagSrc(country.code)}
                         alt=""
                         width={25}
                         height={18}

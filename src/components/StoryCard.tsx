@@ -14,6 +14,7 @@ import {
 
 import { Avatar } from "./Avatar";
 import styles from "./Stories.module.css";
+import { flagSrc } from "@/lib/flags";
 
 export function storyCountryName(code: string) {
   return applicantCountryOptions.find((country) => country.code === code)?.name ?? code;
@@ -23,7 +24,7 @@ function Flag({ code }: { code: string }) {
   if (code === "ZZ") return null;
   return (
     <Image
-      src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
+      src={flagSrc(code)}
       alt=""
       width={20}
       height={15}

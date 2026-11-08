@@ -30,6 +30,7 @@ import { verifiedPrograms } from "@/data/verified-programs";
 import { t } from "@/i18n/client";
 
 import styles from "./ExploreCatalog.module.css";
+import { flagSrc } from "@/lib/flags";
 
 type CountryOption = {
   code: string;
@@ -144,9 +145,6 @@ const programMeta: Record<
   },
 };
 
-function flagSrc(code: string) {
-  return `https://flagcdn.com/w80/${code.toLowerCase()}.png`;
-}
 
 // Matches the English text and the text as shown in the visitor's language.
 function matches(text: string, query: string) {

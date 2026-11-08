@@ -51,6 +51,7 @@ import {
 import type { RouteTaskStatus } from "@/types/route-preview";
 
 import styles from "./RoutePreviewScreen.module.css";
+import { flagSrc } from "@/lib/flags";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -263,7 +264,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
             </p>
           </div>
           <Image
-            src={`https://flagcdn.com/w80/${program.countryCode.toLowerCase()}.png`}
+            src={flagSrc(program.countryCode)}
             alt={`${program.country} flag`}
             width={36}
             height={26}

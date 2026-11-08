@@ -48,6 +48,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import styles from "./UniversityPage.module.css";
+import { flagSrc } from "@/lib/flags";
 
 type RawSearchParams = Record<
   string,
@@ -382,7 +383,7 @@ export default async function UniversityPage({
           <div className={styles.heroContent}>
             <div className={styles.location}>
               <Image
-                src={`https://flagcdn.com/w80/${university.countryCode.toLowerCase()}.png`}
+                src={flagSrc(university.countryCode)}
                 alt={`${university.country} flag`}
                 width={32}
                 height={24}
