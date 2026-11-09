@@ -1,7 +1,10 @@
 """Russian voice, timeline and sound for the Russian-passport video.
-python3 marketing/ru-passport/voice.py  (RHVoice aleksandr-hq: apt rhvoice rhvoice-russian)
+python3 marketing/ru-passport/voice.py [piper model.onnx]
+Default: Piper neural voice ru-irinia-medium (pip piper-tts; model from the
+rhasspy/piper GitHub release v0.0.2, voice-ru-irinia-medium.tar.gz).
+Without a model path the old RHVoice aleksandr-hq is used.
 → out/voice/timeline.json, out/mix.wav (voice + hits on the cards + calm pad), out/mix-nomusic.wav"""
-import json, os, subprocess
+import json, os, subprocess, sys
 import numpy as np, soundfile as sf
 from scipy.signal import butter, sosfilt
 here = os.path.dirname(os.path.abspath(__file__)); out = os.path.join(here, "out"); vd = os.path.join(out, "voice"); os.makedirs(vd, exist_ok=True)
@@ -23,7 +26,11 @@ trim = "silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.03,a
 t, tl = LEAD, []
 for i, (line, gap) in enumerate(LINES):
     raw, w = os.path.join(vd, f"{i}-raw.wav"), os.path.join(vd, f"{i}.wav")
-    subprocess.run(["RHVoice-test", "-p", "aleksandr-hq", "-r", "112", "-o", raw], input=line.replace("DocRoute", "Док Рут").encode(), check=True)
+    say = line.replace("DocRoute", "Док Рут")
+    if len(sys.argv) > 1:
+        subprocess.run([sys.executable, "-m", "piper", "-m", sys.argv[1], "-f", raw, "--length-scale", "0.95"], input=say.encode(), check=True, stderr=subprocess.DEVNULL)
+    else:
+        subprocess.run(["RHVoice-test", "-p", "aleksandr-hq", "-r", "112", "-o", raw], input=say.encode(), check=True)
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", raw, "-af", trim, "-ar", str(SR), "-ac", "1", w], check=True)
     d = sf.info(w).duration; tl.append({"line": line, "a": round(t, 2), "b": round(t + d, 2)}); t += d + gap
 total = round(t + TAIL, 2); N = int(total * SR)

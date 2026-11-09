@@ -1,0 +1,80 @@
+{
+ "total": 49.75,
+ "lines": [
+  {
+   "line": "I used to feel like I was going nowhere.",
+   "a": 1.5,
+   "b": 4.17
+  },
+  {
+   "line": "Same days. Same routine. No real purpose.",
+   "a": 5.17,
+   "b": 8.3
+  },
+  {
+   "line": "Then I moved to Europe.",
+   "a": 9.4,
+   "b": 10.91
+  },
+  {
+   "line": "And slowly, everything started to change.",
+   "a": 12.11,
+   "b": 14.74
+  },
+  {
+   "line": "I started running every morning.",
+   "a": 15.74,
+   "b": 17.63
+  },
+  {
+   "line": "Exploring new cities.",
+   "a": 18.08,
+   "b": 19.55
+  },
+  {
+   "line": "Climbing mountains.",
+   "a": 20.0,
+   "b": 21.31
+  },
+  {
+   "line": "Actually enjoying life again.",
+   "a": 21.81,
+   "b": 23.71
+  },
+  {
+   "line": "But here's what I realized.",
+   "a": 25.01,
+   "b": 26.76
+  },
+  {
+   "line": "Moving didn't magically change my life.",
+   "a": 27.66,
+   "b": 30.15
+  },
+  {
+   "line": "It gave me a chance to change it myself.",
+   "a": 30.85,
+   "b": 33.11
+  },
+  {
+   "line": "And I wanted other people to have that chance too.",
+   "a": 34.31,
+   "b": 36.91
+  },
+  {
+   "line": "So I built DocRoute.",
+   "a": 37.91,
+   "b": 39.36
+  },
+  {
+   "line": "A free place to start planning your journey to study in Europe.",
+   "a": 40.26,
+   "b": 43.78
+  },
+  {
+   "line": "Maybe your next chapter starts here.",
+   "a": 44.88,
+   "b": 46.75
+  }
+ ]
+}

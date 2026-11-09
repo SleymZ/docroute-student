@@ -31,7 +31,9 @@ for lang in langs:
         say = line
         for k, v in SAY[lang].items(): say = say.replace(k, v)
         raw, wav = os.path.join(tmp, f"{lang}-{i}-raw.wav"), os.path.join(tmp, f"{lang}-{i}.wav")
-        if lang == "ru":
+        if lang == "ru" and os.environ.get("PIPER_RU"):   # neural Russian voice (Piper ru-irinia-medium)
+            subprocess.run([sys.executable, "-m", "piper", "-m", os.environ["PIPER_RU"], "-f", raw, "--length-scale", "0.92"], input=say.encode(), check=True, stderr=subprocess.DEVNULL)
+        elif lang == "ru":
             subprocess.run(["RHVoice-test", "-p", "aleksandr-hq", "-r", "115", "-o", raw], input=say.encode(), check=True)
         else:
             if kok is None:
