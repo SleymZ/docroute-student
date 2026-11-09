@@ -12,6 +12,7 @@ import {
   LikeButton,
   RemovePhotoButton,
 } from "@/components/StoryEngagement";
+import { DeleteStoryButton } from "@/components/StoryForm";
 import styles from "@/components/Stories.module.css";
 import {
   isUuid,
@@ -186,6 +187,21 @@ export default async function StoryPage({ params, searchParams }: Props) {
           <p className={styles.panelLead}>
             Personal experience, not legal advice: rules change, so check your own route.
           </p>
+
+          {user?.id === story.user_id && (
+            <section className={styles.ownerPanel} aria-label="Your story">
+              <p>
+                <strong>This is your story.</strong> You can change it or delete it, with its photos, comments and
+                likes, at any time.
+              </p>
+              <div className={styles.actions}>
+                <Link href="/stories/new#your-stories" className={styles.secondary}>
+                  Edit story
+                </Link>
+              </div>
+              <DeleteStoryButton storyId={story.id} userId={story.user_id} redirectTo="/stories" />
+            </section>
+          )}
 
           {published && (
             <div>

@@ -808,3 +808,25 @@
   outline: 2px solid var(--cyan);
   outline-offset: 2px;
 }
+
+/* The author's own controls under a story (edit, delete). */
+.ownerPanel {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-light);
+}
+
+.ownerPanel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ownerPanel strong {
+  color: var(--text);
+}
