@@ -109,6 +109,18 @@ export function AccountDataControls() {
     setBusy("delete");
     setMessage(null);
     const supabase = createSupabaseBrowserClient();
+    // A Plus subscription bought through Whop must stop renewing before the
+    // account goes, or the person would keep paying for a deleted account.
+    try {
+      const response = await fetch("/api/billing/cancel", { method: "POST" });
+      if (!response.ok) throw new Error(String(response.status));
+    } catch {
+      setBusy(null);
+      setMessage(
+        "Your Plus subscription could not be cancelled, so nothing was deleted. Cancel it in your Whop orders, then try again.",
+      );
+      return;
+    }
     // Profile and story photos live in Storage, which SQL cannot delete: remove the
     // account's folder first. If that fails, stop before deleting the
     // account, so the person can retry and no public photo is left behind.
@@ -140,6 +152,13 @@ export function AccountDataControls() {
       return;
     }
     const { error } = await supabase.rpc("delete_my_account");
+    if (error?.hint === "plus-subscription-renews") {
+      setBusy(null);
+      setMessage(
+        "Your Plus subscription could not be cancelled, so nothing was deleted. Cancel it in your Whop orders, then try again.",
+      );
+      return;
+    }
     if (error) {
       setBusy(null);
       setMessage(

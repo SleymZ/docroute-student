@@ -17,7 +17,7 @@ import {
   whopConfig,
   WHOP_API_VERSION,
 } from "@/lib/whop";
-import { syncWhopEvent, type ApplyPlan } from "@/lib/whop-sync";
+import { cancelRenewalBeforeDeletion, syncWhopEvent, type ApplyPlan } from "@/lib/whop-sync";
 
 const root = process.env.REPO_ROOT ?? process.cwd();
 const SECRET = "ws_test_secret_123";
@@ -229,7 +229,8 @@ test("migration: only the server's secret key may write a plan from Whop", () =>
   assert.match(sql, /from authenticated;/);
   assert.match(sql, /from anon;/);
   assert.match(sql, /to service_role;/);
-  assert.doesNotMatch(sql, /to authenticated/);
+  assert.doesNotMatch(sql, /apply_whop_membership\([^)]*\) to authenticated/);
+  assert.match(sql, /apply_whop_membership\([^)]*\) from authenticated/);
   assert.match(sql, /kept-owner-grant/);
   assert.match(sql, /return 'stale'/);
   assert.match(sql, /owner_grant_until/);
@@ -243,4 +244,33 @@ test("secrets never get a public name and the webhook skips the session proxy", 
   }
   const proxy = fs.readFileSync(path.join(root, "src/proxy.ts"), "utf8");
   assert.match(proxy, /api\/webhooks/);
+});
+
+test("account deletion: the renewal is cancelled first, only for the account's own membership", async () => {
+  const end = new Date(NOW + 20 * DAY).toISOString();
+  const { fetcher, calls } = fakeWhop({
+    "/memberships/mem_A1/cancel": { id: "mem_A1", status: "active", cancel_at_period_end: true, current_period_end: end, metadata: { docroute_user_id: USER } },
+    "/memberships/mem_A1": { id: "mem_A1", status: "active", current_period_end: end, metadata: { docroute_user_id: USER } },
+    "/memberships/mem_X9": { id: "mem_X9", status: "active", metadata: { docroute_user_id: "11111111-2222-3333-4444-555555555555" } },
+  });
+  const { applied, apply } = recorder();
+  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1", status: "active" }, apply, { fetcher, now: NOW }), "cancelled");
+  const cancel = calls.find((call) => call.url.endsWith("/memberships/mem_A1/cancel"));
+  assert.equal(cancel?.init?.method, "POST");
+  assert.equal(JSON.parse(String(cancel?.init?.body)).cancel_at_period_end, true);
+  assert.equal(applied[0].p_status, "canceling");
+  assert.equal(applied[0].p_plus_until, end);
+
+  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: null, status: null }, apply), "nothing-to-cancel");
+  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1", status: "canceling" }, apply), "nothing-to-cancel");
+  await assert.rejects(cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_X9", status: "active" }, apply, { fetcher }));
+  const down = fakeWhop({});
+  await assert.rejects(cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1", status: "active" }, apply, { fetcher: down.fetcher }));
+});
+
+test("account deletion is refused in the database while a subscription still renews", () => {
+  const sql = fs.readFileSync(path.join(root, "supabase/migrations/20261109120000_whop_payments.sql"), "utf8");
+  assert.match(sql, /plus-subscription-renews/);
+  const ui = fs.readFileSync(path.join(root, "src/components/AccountDataControls.tsx"), "utf8");
+  assert.ok(ui.indexOf("/api/billing/cancel") < ui.indexOf('rpc("delete_my_account")'));
 });

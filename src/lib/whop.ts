@@ -326,6 +326,19 @@ export function getMembership(config: WhopConfig, id: string, fetcher?: FetchLik
   return whopRequest<WhopMembership>(config, `/memberships/${id}`, { fetcher });
 }
 
+/** Stops renewal; access runs to the end of the paid period. */
+export function cancelMembershipRenewal(config: WhopConfig, id: string, fetcher?: FetchLike): Promise<WhopMembership> {
+  if (!MEMBERSHIP_ID.test(id)) throw new WhopApiError("Bad membership id", 400);
+  return whopRequest<WhopMembership>(config, `/memberships/${id}/cancel`, {
+    method: "POST",
+    body: { cancel_at_period_end: true, reason: "DocRoute account deleted" },
+    fetcher,
+  });
+}
+
+/** Statuses after which Whop charges again. */
+export const RENEWING_STATUSES = new Set(["active", "trialing", "past_due"]);
+
 export function getPayment(
   config: WhopConfig,
   id: string,

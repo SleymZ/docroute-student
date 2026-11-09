@@ -187,3 +187,51 @@ revoke all on function public.apply_whop_membership(uuid, text, text, boolean, t
 revoke all on function public.apply_whop_membership(uuid, text, text, boolean, timestamptz, text, timestamptz) from anon;
 revoke all on function public.apply_whop_membership(uuid, text, text, boolean, timestamptz, text, timestamptz) from authenticated;
 grant execute on function public.apply_whop_membership(uuid, text, text, boolean, timestamptz, text, timestamptz) to service_role;
+
+-- Deleting the account while a Whop subscription still renews would leave
+-- the person paying for an account that no longer exists. The Account page
+-- cancels the renewal first (/api/billing/cancel); this refuses deletion if
+-- that did not happen. A subscription set to end ("canceling") is fine.
+create or replace function public.delete_my_account()
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  current_user_id uuid := auth.uid();
+  current_email text;
+begin
+  if current_user_id is null then
+    raise exception 'Not signed in' using errcode = '42501';
+  end if;
+
+  if exists (
+    select 1 from public.account_plans p
+    where p.user_id = current_user_id
+      and p.whop_membership_id is not null
+      and p.whop_status in ('active', 'trialing', 'past_due')
+  ) then
+    raise exception 'Cancel the Plus subscription first'
+      using errcode = 'P0001', hint = 'plus-subscription-renews';
+  end if;
+
+  select lower(btrim(email)) into current_email
+  from auth.users
+  where id = current_user_id;
+
+  delete from public.success_stories where user_id = current_user_id;
+  delete from public.public_profiles where user_id = current_user_id;
+  delete from public.route_task_progress where user_id = current_user_id;
+  delete from public.saved_universities where user_id = current_user_id;
+  delete from public.applicant_profiles where user_id = current_user_id;
+  if current_email is not null then
+    delete from public.waitlist_signups where email = current_email;
+  end if;
+  delete from auth.users where id = current_user_id;
+end;
+$$;
+
+revoke all on function public.delete_my_account() from public;
+revoke all on function public.delete_my_account() from anon;
+grant execute on function public.delete_my_account() to authenticated;

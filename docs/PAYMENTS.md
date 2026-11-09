@@ -35,6 +35,11 @@ subscription). DocRoute provides Plus itself and never sees card details.
 6. Account page: "Plan: Plus · renews automatically · Manage or cancel on
    Whop" (Whop orders page, or the membership's own manage link).
 
+Deleting the account: the Account page first calls `POST /api/billing/cancel`,
+which stops the Whop renewal of the person's own membership (checked against
+its metadata) and stores the new state; if that fails nothing is deleted.
+`delete_my_account()` also refuses while the stored status still renews.
+
 Refunds are made by the owner in the Whop dashboard. A refund alone may leave
 the membership active; to end Plus, also cancel the membership there.
 

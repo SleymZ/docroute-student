@@ -106,7 +106,7 @@ export default function TermsPage() {
                 Whop orders
               </a>{" "}
               (also linked from your Account page). Plus then stays open until the end of the period you have paid
-              for and is not renewed again.
+              for and is not renewed again. Deleting your DocRoute account also cancels the renewal.
             </li>
             <li>
               <strong>Right of withdrawal.</strong> Consumers in the EU normally have 14 days to withdraw from an

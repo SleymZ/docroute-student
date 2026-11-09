@@ -4,10 +4,12 @@
 // with a fake Whop API and a fake database.
 
 import {
+  cancelMembershipRenewal,
   eventReference,
   getMembership,
   getPayment,
   plusFromMembership,
+  RENEWING_STATUSES,
   userIdFromMetadata,
   type WhopConfig,
   type WhopEvent,
@@ -66,4 +68,34 @@ export async function syncWhopEvent(
   });
   if (error) throw new Error(`apply_whop_membership failed: ${error.message}`);
   return { outcome: "applied", result: data ?? "", userId, membershipId: membership.id, active: state.active };
+}
+
+/** Before an account is deleted: stop the Whop renewal of the account's own
+ *  membership and store the new state, so delete_my_account() lets it go.
+ *  Throws when Whop or the database fails (the deletion is then not made). */
+export async function cancelRenewalBeforeDeletion(
+  config: WhopConfig,
+  plan: { userId: string; membershipId: string | null; status: string | null },
+  apply: ApplyPlan,
+  options: { fetcher?: FetchLike; now?: number } = {},
+): Promise<"nothing-to-cancel" | "cancelled"> {
+  if (!plan.membershipId || !plan.status || !RENEWING_STATUSES.has(plan.status)) return "nothing-to-cancel";
+  const current = await getMembership(config, plan.membershipId, options.fetcher);
+  // Only the account's own membership, never one named by someone else.
+  if (userIdFromMetadata(current.metadata) !== plan.userId) throw new Error("Membership belongs to another account");
+  const after = current.cancel_at_period_end || !RENEWING_STATUSES.has(current.status)
+    ? current
+    : await cancelMembershipRenewal(config, plan.membershipId, options.fetcher);
+  const state = plusFromMembership({ ...after, cancel_at_period_end: after.cancel_at_period_end ?? true }, options.now);
+  const { error } = await apply({
+    p_user_id: plan.userId,
+    p_membership_id: after.id ?? plan.membershipId,
+    p_status: state.status,
+    p_active: state.active,
+    p_plus_until: state.plusUntil,
+    p_manage_url: state.manageUrl,
+    p_updated_at: state.updatedAt,
+  });
+  if (error) throw new Error(`apply_whop_membership failed: ${error.message}`);
+  return "cancelled";
 }

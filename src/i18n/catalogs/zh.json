@@ -1875,6 +1875,7 @@
 "You must file within {0} days of the confirmation. If you file on the latest date, a confirmation issued before {1} would already be too old.": "须在确认书签发后 {0} 天内递交。如在最晚日期递交，{1}之前签发的确认书将已过期。",
 "You selected a non-EU passport, but your citizenship is in the EU, EEA or Switzerland. Select the passport you will travel with or choose the EU, EEA or Swiss passport status.": "你选择了非欧盟护照，但你的国籍属于欧盟、欧洲经济区或瑞士。请选择你出行使用的护照，或选择欧盟、欧洲经济区或瑞士护照身份。",
 "You selected an EU, EEA or Swiss passport, but your citizenship is outside the EU, EEA and Switzerland. Select the citizenship of that passport or choose your actual residence status.": "你选择了欧盟、欧洲经济区或瑞士护照，但你的国籍不在欧盟、欧洲经济区和瑞士之内。请选择该护照的国籍，或选择你的实际居留身份。",
+"Your Plus subscription could not be cancelled, so nothing was deleted. Cancel it in your Whop orders, then try again.": "无法取消你的 Plus 订阅，因此未删除任何内容。请在 Whop 订单中取消后再试。",
 "Your applicant": "你的",
 "Your applicant <0/>": "你的<0/>",
 "Your applicant profile is empty": "你的申请人档案为空",

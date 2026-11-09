@@ -93,7 +93,10 @@ environment variables and the pre-launch list: `docs/PAYMENTS.md`.
   on; Privacy lists Whop. Email-reminder promises now say "coming soon".
 - Not done (owner/lawyer): IČO, seller identity, `isCommercial`, lawyer
   review, Vercel Pro, server-built routes (locked steps still in JS).
-- Tests: `tests/whop.test.ts` (13).
+- Deleting an account first cancels a renewing Whop subscription
+  (`/api/billing/cancel`); `delete_my_account()` refuses while it still
+  renews (checked on local Postgres 16).
+- Tests: `tests/whop.test.ts` (15).
 
 ## Launch review 2026-11 (2026-11-08, before the 9 November beta)
 
