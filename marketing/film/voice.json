@@ -1,0 +1,21 @@
+{
+  "voice": "am_michael", "speed": 0.94,
+  "lines": [
+    ["I used to feel like I was going nowhere.", 1.0],
+    ["Same days. Same routine. No real purpose.", 1.1],
+    ["Then I moved to Europe.", 1.2],
+    ["And slowly, everything started to change.", 1.0],
+    ["I started running every morning.", 0.45],
+    ["Exploring new cities.", 0.45],
+    ["Climbing mountains.", 0.5],
+    ["Actually enjoying life again.", 1.3],
+    ["But here's what I realized.", 0.9],
+    ["Moving didn't magically change my life.", 0.7],
+    ["It gave me a chance to change it myself.", 1.2],
+    ["And I wanted other people to have that chance too.", 1.0],
+    ["So I built DocRoute.", 0.9],
+    ["A free place to start planning your journey to study in Europe.", 1.1],
+    ["Maybe your next chapter starts here.", 0]
+  ],
+  "lead": 1.5, "tail": 3.0
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("/home/claude/docroute-student/marketing/promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("/home/claude/docroute-student/marketing/promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #1F2937; font-family: "Inter", "Noto Sans Devanagari", sans-serif; }
+  canvas { position: absolute; inset: 0; }
+  #logo { position: absolute; left: 0; right: 0; top: 250px; display: none; flex-direction: column; align-items: center; gap: 26px; }
+  #logo .w { font-size: 120px; font-weight: 800; letter-spacing: -0.035em; color: #f5f2ee; }
+  #logo .u { font-size: 40px; font-weight: 600; color: #c9ccd3; letter-spacing: .01em; margin-top: -6px; }
+  #cap { position: absolute; left: 70px; right: 70px; top: 930px; text-align: center; font-size: 52px; font-weight: 700; line-height: 1.3; color: #fff; text-shadow: 0 3px 20px rgba(0,0,0,.9); }
+  #cap .w { opacity: .38; } #cap .w.on { opacity: 1; }
+  #shot { position: absolute; inset: 0; display: none; color: #f5f2ee; }
+  #shot .n { position: absolute; left: 80px; top: 120px; font-size: 44px; font-weight: 800; letter-spacing: .1em; opacity: .7; }
+  #shot .d { position: absolute; left: 80px; right: 80px; top: 760px; font-size: 64px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+  #shot .v { position: absolute; left: 80px; right: 80px; top: 1500px; font-size: 40px; font-weight: 500; line-height: 1.35; opacity: .75; font-style: italic; }
+  #shot .tag { position: absolute; left: 80px; top: 190px; font-size: 30px; font-weight: 700; border: 2px solid rgba(255,255,255,.4); border-radius: 999px; padding: 8px 22px; opacity: .8; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="logo"></div><div id="cap"></div>
+<div id="shot"><div class="n"></div><div class="tag">ANIMATIC · PLACEHOLDER</div><div class="d"></div><div class="v"></div></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const ORANGE = "#FF7A00", NAVY = "#1F2937";
+let M, country, pts = [], segLen = [], total = 0;
+function build() {
+  M = window.MAP; country = new Path2D(M.all);
+  // a smooth line through the stops (Catmull–Rom), sampled into points
+  const s = M.stops, P = [s[0], ...s, s[s.length - 1]];
+  for (let i = 1; i < P.length - 2; i++) for (let k = 0; k < 40; k++) {
+    const t = k / 40, [p0, p1, p2, p3] = [P[i - 1], P[i], P[i + 1], P[i + 2]];
+    const f = (a, b, c, d) => .5 * ((2 * b) + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (-a + 3 * b - 3 * c + d) * t * t * t);
+    pts.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+  }
+  pts.push(s[s.length - 1]);
+  for (let i = 1; i < pts.length; i++) { total += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); segLen.push(total); }
+  if (window.MODE === "endlogo") {
+    const L = window.LOGO, el = document.getElementById("logo"); el.style.display = "flex";
+    el.innerHTML = `<svg width="240" height="240" viewBox="0 0 100 100"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg><div class="w">Doc<span style="color:#ff795f">Route</span></div><div class="u">docroute-student.vercel.app</div>`;
+  }
+}
+function drawEnd(g, t) {   // t = seconds since the end card starts
+  const grd = g.createLinearGradient(0, 0, 0, 1920); grd.addColorStop(0, "#18212e"); grd.addColorStop(.5, NAVY); grd.addColorStop(1, "#151c27");
+  g.fillStyle = grd; g.fillRect(0, 0, 1080, 1920);
+  // the map fades in and stays faint near the logo area
+  g.save(); g.globalAlpha = .9 * easeOut(prog(t, 0, 1.4));
+  g.fillStyle = "#263345"; g.fill(country); g.strokeStyle = "#3a4a62"; g.lineWidth = 1.3; g.stroke(country); g.restore();
+  const fade = g.createLinearGradient(0, 540, 0, 900); fade.addColorStop(0, NAVY); fade.addColorStop(1, "rgba(31,41,55,0)");
+  g.fillStyle = fade; g.fillRect(0, 540, 1080, 360); g.fillStyle = NAVY; g.fillRect(0, 0, 1080, 540);
+  // the route draws from west to east
+  const p = ease(prog(t, .8, 5.2)), L = p * total; let n = segLen.findIndex(v => v >= L); if (n < 0) n = segLen.length - 1;
+  const head = pts[Math.min(pts.length - 1, n + 1)];
+  const line = (w, a, blur) => { g.save(); g.lineCap = "round"; g.lineJoin = "round"; g.strokeStyle = ORANGE; g.globalAlpha = a; g.lineWidth = w; g.shadowColor = ORANGE; g.shadowBlur = blur; g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i <= n + 1 && i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]); g.stroke(); g.restore(); };
+  if (p > 0) { line(26, .18, 50); line(10, .55, 24); line(5, 1, 12); }
+  // stops light up as the route reaches them, then pulse gently
+  M.stops.forEach((s, i) => {
+    const idx = i * 40, reached = segLen[Math.max(0, Math.min(segLen.length - 1, idx - 1))] <= L + .5 || (i === 0 && p > 0);
+    if (!reached || s[0] < 0) return;
+    const k = 1 + .25 * Math.sin(t * 2.4 + i);
+    g.save(); g.fillStyle = ORANGE; g.shadowColor = ORANGE; g.shadowBlur = 30; g.beginPath(); g.arc(s[0], s[1], (i === M.stops.length - 1 ? 13 : 8) * k, 0, 7); g.fill();
+    g.globalAlpha = .9; g.fillStyle = "#fff3e6"; g.beginPath(); g.arc(s[0], s[1], 3.5, 0, 7); g.fill(); g.restore();
+  });
+  // travelling light at the head of the route
+  if (p > 0 && p < 1) { g.save(); const r = g.createRadialGradient(head[0], head[1], 0, head[0], head[1], 90); r.addColorStop(0, "rgba(255,190,120,.95)"); r.addColorStop(.3, "rgba(255,122,0,.5)"); r.addColorStop(1, "rgba(255,122,0,0)"); g.fillStyle = r; g.fillRect(head[0] - 90, head[1] - 90, 180, 180); g.restore(); }
+  // a soft orange glow under the finished route
+  const glow = .25 * prog(t, 5, 6.5) * (1 + .15 * Math.sin(t * 1.6));
+  if (glow > 0) { g.save(); const r = g.createRadialGradient(560, 1300, 0, 560, 1300, 620); r.addColorStop(0, `rgba(255,122,0,${glow})`); r.addColorStop(1, "rgba(255,122,0,0)"); g.fillStyle = r; g.fillRect(0, 600, 1080, 1320); g.restore(); }
+  // the cut in from shot 14, which ends in orange light
+  const flash = 1 - easeOut(prog(t, 0, .7)); if (flash > 0) { g.fillStyle = `rgba(255,122,0,${flash * .85})`; g.fillRect(0, 0, 1080, 1920); }
+  // logo version: the logo fades in after the route
+  const lg = document.getElementById("logo"); if (window.MODE === "endlogo") { const q = easeOut(prog(t, 4.6, 5.6)); lg.style.opacity = q; lg.style.transform = `translateY(${(1 - q) * 30}px)`; }
+}
+function drawShot(g, t) {   // animatic placeholder: colour of the grade, shot number, what goes there
+  const S = window.SHOTS, sh = S.find(s => t >= s.a && t < s.b) || S[S.length - 1];
+  const [c1, c2] = sh.grade; const grd = g.createLinearGradient(0, 0, 0, 1920); grd.addColorStop(0, c1); grd.addColorStop(1, c2);
+  g.fillStyle = grd; g.fillRect(0, 0, 1080, 1920);
+  const el = document.getElementById("shot"); el.style.display = "block";
+  el.querySelector(".n").textContent = `SHOT ${sh.id}  ·  ${sh.a.toFixed(1)}–${sh.b.toFixed(1)} s`;
+  el.querySelector(".d").textContent = sh.picture;
+  const vo = window.VO.filter(l => t >= l.a - .2 && t < l.b + .6).map(l => l.line).join(" ");
+  el.querySelector(".v").textContent = vo;
+}
+let ci = -2;
+function caps(t) {
+  const cap = document.getElementById("cap"), C = window.CAPS || []; if (!C.length) { cap.style.display = "none"; return; }
+  let k = -1; C.forEach((l, i) => { if (t >= l.a - .1 && t < l.b + .6) k = i; });
+  if (k !== ci) { ci = k; cap.innerHTML = k >= 0 ? C[k].line.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${p}</span>`).join("") : ""; cap.ws = [...cap.querySelectorAll(".w")]; cap.wl = cap.ws.map(w => w.textContent.length); }
+  if (k >= 0) { const l = C[k], p = prog(t, l.a, l.b), tot = cap.wl.reduce((a, b) => a + b, 0) || 1; let acc = 0; cap.ws.forEach((w, i) => { w.classList.toggle("on", acc / tot <= p + .02); acc += cap.wl[i]; }); cap.style.opacity = prog(t, l.a - .1, l.a + .1) * (1 - prog(t, l.b + .4, l.b + .6)); }
+}
+function setTime(t) { caps(t);
+  const g = document.getElementById("c").getContext("2d");
+  if (window.MODE === "animatic") {
+    const endAt = window.END_AT; const el = document.getElementById("shot");
+    if (t < endAt) drawShot(g, t); else { el.style.display = "none"; drawEnd(g, t - endAt); }
+  } else drawEnd(g, t);
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
