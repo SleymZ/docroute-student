@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 500; src: url("../promo/fonts/noto-sans-devanagari-devanagari-500-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("../promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("../promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  :root { --bg: #0f1115; --ink: #f5f2ee; --muted: #a9a5a1; --coral: #ff795f; --card: #191c22; --line: #2b2f37; --ok: #5ad48a; --amber: #f2b84b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", "Noto Sans Devanagari", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #glow { position: absolute; inset: -200px; }
+  .layer { position: absolute; inset: 0; }
+  .center { position: absolute; left: 70px; right: 70px; text-align: center; }
+  .h1 { font-size: 92px; font-weight: 800; line-height: 1.08; letter-spacing: -0.03em; }
+  .h2 { font-size: 64px; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+  body.hi .h1, body.hi .h2 { letter-spacing: 0; line-height: 1.3; }
+  .coral { color: var(--coral); }
+  .muted { color: var(--muted); }
+  .stepn { position: absolute; left: 70px; right: 70px; top: 190px; display: flex; align-items: center; gap: 30px; }
+  .stepn .n { flex: 0 0 130px; height: 130px; border-radius: 36px; background: var(--coral); color: #1a0d09; font-size: 84px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+  .stepn .tx small { display: block; font-size: 34px; font-weight: 800; color: var(--coral); letter-spacing: .08em; text-transform: uppercase; }
+  .stepn .tx b { display: block; font-size: 56px; font-weight: 800; line-height: 1.15; }
+  .card { position: absolute; left: 70px; right: 70px; background: var(--card); border: 2px solid var(--line); border-radius: 40px; padding: 40px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  .prof { display: flex; align-items: center; gap: 30px; }
+  .avatar { width: 170px; height: 170px; border-radius: 50%; background: #0f1115; border: 4px solid var(--coral); display: flex; align-items: center; justify-content: center; }
+  .prof .nm { font-size: 54px; font-weight: 800; }
+  .prof .bio { font-size: 32px; color: var(--muted); margin-top: 8px; }
+  .link { margin-top: 34px; display: flex; align-items: center; gap: 18px; font-size: 40px; font-weight: 700; color: #9ec5ff; background: #20242c; border-radius: 22px; padding: 22px 26px; }
+  .arrowup { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .arrowup span { font-size: 46px; font-weight: 800; color: var(--coral); }
+  .frow { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; border-top: 2px solid var(--line); font-size: 44px; }
+  .frow:first-child { border-top: 0; padding-top: 6px; }
+  .frow .k { color: var(--muted); font-weight: 600; }
+  .frow .v { display: flex; align-items: center; gap: 18px; font-weight: 800; background: #23262e; border-radius: 18px; padding: 14px 24px; }
+  .frow .v img { width: 70px; height: 52px; border-radius: 8px; object-fit: cover; }
+  .frow .ok { color: var(--ok); font-weight: 900; margin-left: 6px; }
+  .badge { display: flex; align-items: center; gap: 22px; border: 3px solid var(--coral); border-radius: 26px; padding: 22px 26px; font-size: 40px; font-weight: 700; }
+  .badge img { width: 92px; height: 69px; border-radius: 10px; object-fit: cover; }
+  .visa { margin-top: 24px; border: 3px solid var(--amber); background: #2a2212; border-radius: 26px; padding: 22px 26px; }
+  .visa b { display: block; font-size: 38px; line-height: 1.25; color: #ffeccc; }
+  .visa span { display: block; margin-top: 8px; font-size: 28px; font-weight: 600; color: var(--muted); }
+  .step { display: flex; gap: 22px; align-items: center; padding: 18px 0; border-top: 2px solid var(--line); }
+  .step:first-of-type { margin-top: 18px; }
+  .num { flex: 0 0 58px; height: 58px; border-radius: 50%; border: 4px solid #3a3f49; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: var(--muted); }
+  .step b { display: block; font-size: 36px; font-weight: 700; }
+  .src { display: inline-block; margin-top: 6px; font-size: 25px; font-weight: 600; color: var(--ok); background: rgba(90,212,138,.12); border-radius: 999px; padding: 4px 16px; }
+  .tag { font-size: 26px; font-weight: 700; color: var(--muted); border: 2px solid var(--line); border-radius: 999px; padding: 6px 20px; }
+  .count { font-size: 230px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; font-family: Inter, sans-serif; }
+  .url { font-size: 44px; font-weight: 700; }
+  #cap { position: absolute; left: 60px; right: 60px; top: 1640px; text-align: center; font-size: 46px; font-weight: 700; line-height: 1.3; text-shadow: 0 3px 18px rgba(0,0,0,.95); }
+  #cap .w { opacity: .35; } #cap .w.on { opacity: 1; }
+</style>
+</head>
+<body>
+<canvas id="glow" width="1480" height="2320"></canvas>
+<div id="root" class="layer"></div>
+<div id="cap"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function io(t, a, b, inD = .4, outD = .3) { const i = easeOut(prog(t, a, a + inD)), o = easeInOut(prog(t, b - outD, b)); return { op: i * (1 - o), dy: (1 - i) * 50 - o * 50 }; }
+function setIO(e, s, extra = "") { e.style.opacity = s.op; e.style.transform = `translateY(${s.dy}px) ${extra}`; e.style.visibility = s.op <= .001 ? "hidden" : "visible"; }
+function fit(e, maxLines) { let fs = parseFloat(getComputedStyle(e).fontSize); const lh = () => parseFloat(getComputedStyle(e).lineHeight); while (e.offsetHeight > lh() * maxLines + 2 && fs > 36) { fs -= 4; e.style.fontSize = fs + "px"; } }
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span class="coral">Route</span></span>`;
+const ARROW = s => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="#ff795f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V4"/><path d="M5 11l7-7 7 7"/></svg>`;
+let S = {}, TL, A, E;
+function stepHead(n, label) { const X = window.T.s; const e = el("div", "stepn", `<div class="n">${n}</div><div class="tx"><small>${esc(X.step)} ${n}</small><b>${esc(label)}</b></div>`); document.getElementById("root").append(e); return e; }
+function build() {
+  const X = window.T.s, root = document.getElementById("root"); TL = window.TL; document.body.classList.add(window.LANG);
+  A = i => TL[i].a; E = i => (TL[i + 1] ? TL[i + 1].a : TL[i].b + 3.2);
+  // hook with a one-minute ring
+  S.hook = el("div", "layer", `<div class="center h1 a">${esc(X.hook1)}</div><div class="center h1 coral b">${esc(X.hook2)}</div>
+    <div style="position:absolute;left:0;right:0;display:flex;justify-content:center" class="ring"><svg width="300" height="300" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#2b2f37" stroke-width="7"/><circle class="arc" cx="50" cy="50" r="44" fill="none" stroke="#ff795f" stroke-width="7" stroke-linecap="round" stroke-dasharray="276.5" transform="rotate(-90 50 50)"/><text class="tm" x="50" y="58" text-anchor="middle" font-size="24" font-weight="800" fill="#f5f2ee" font-family="Inter">1:00</text></svg></div>`); root.append(S.hook);
+  const [ha, hb, hr] = S.hook.children; ha.style.top = "300px"; fit(ha, 3); hb.style.top = (300 + ha.offsetHeight + 10) + "px"; fit(hb, 2); hr.style.top = (hb.offsetTop + hb.offsetHeight + 90) + "px";
+  S.arc = S.hook.querySelector(".arc"); S.tm = S.hook.querySelector(".tm"); S.hparts = [ha, hb, hr];
+  // step 1: the profile link
+  S.h1 = stepHead(1, X.s1);
+  S.prof = el("div", "card", `<div class="prof"><div class="avatar">${logoSVG(120)}</div><div><div class="nm">${wordmark()}</div><div class="bio">${esc(X.ctaSub)}</div></div></div>
+    <div class="link"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9ec5ff" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>docroute-student.vercel.app</div>`);
+  S.prof.style.top = "560px"; root.append(S.prof); S.link = S.prof.querySelector(".link");
+  S.up1 = el("div", "arrowup", `${ARROW(150)}<span>${esc(X.linkProfile)}</span>`); root.append(S.up1); S.up1.style.top = (560 + S.prof.offsetHeight + 40) + "px";
+  // step 2: the form
+  S.h2 = stepHead(2, X.s2);
+  S.form = el("div", "card", [[X.passport, `<img src="flags/${X.pcode}.svg">${esc(X.pc)}`], [X.goal, esc(X.goalV)], [X.country, `<img src="flags/sk.svg">${esc(X.dest)}`]]
+    .map(([k, v]) => `<div class="frow"><span class="k">${esc(k)}</span><span class="v">${v}<span class="ok">✓</span></span></div>`).join(""));
+  S.form.style.top = "560px"; root.append(S.form); S.frows = [...S.form.querySelectorAll(".frow .v")];
+  // step 3: what applies to you
+  S.h3 = stepHead(3, X.s3);
+  S.route = el("div", "card", `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><span style="font-size:38px;font-weight:800">${wordmark()}</span><span class="tag">${esc(X.example)}</span></div>
+    <div class="badge"><img src="flags/${X.pcode}.svg"><span>${esc(X.badge)}</span></div>
+    <div class="visa"><b>${esc(X.visa)}</b><span>${esc(X.visaSrc)}</span></div>` +
+    X.steps.map((s, i) => `<div class="step"><div class="num">${i + 1}</div><div><b>${esc(s)}</b><span class="src">✓ ${esc(X.source)}</span></div></div>`).join(""));
+  S.route.style.top = "520px"; root.append(S.route); S.visa = S.route.querySelector(".visa"); S.rsteps = [...S.route.querySelectorAll(".step")];
+  // universities
+  S.unis = el("div", "layer", `<div class="center count" style="top:560px"><span class="n">0</span></div><div class="center h2" style="top:820px">${esc(X.unis)}</div><div class="center h2 muted" style="top:930px;font-size:48px">${esc(X.unisSub)}</div>`); root.append(S.unis); S.un = S.unis.querySelector(".n");
+  // free account
+  S.free = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:460px;display:flex;justify-content:center"><svg width="220" height="220" viewBox="0 0 24 24" fill="none" stroke="#5ad48a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 7.8-1.2"/></svg></div>
+    <div class="center h1" style="top:730px">${esc(X.free)}</div><div class="center h2 muted" style="top:960px;font-size:52px">${esc(X.freeSub)}</div>`); root.append(S.free);
+  // call to action: big arrow up to the profile
+  S.end = el("div", "layer", `<div class="arrowup" style="top:200px">${ARROW(260)}</div>
+    <div class="center h1" style="top:520px">${esc(X.cta)}</div>
+    <div class="center h2 muted" style="top:760px;font-size:52px">${esc(X.ctaSub)}</div>
+    <div style="position:absolute;left:0;right:0;top:930px;display:flex;justify-content:center;align-items:center;gap:24px">${logoSVG(110)}<span style="font-size:80px;font-weight:800;letter-spacing:-0.03em">${wordmark()}</span></div>
+    <div class="center url" style="top:1110px">docroute-student.vercel.app</div>
+    <div class="center muted" style="top:1200px;font-size:30px;font-weight:500">${esc(X.small)}</div>`); root.append(S.end);
+  S.endParts = [...S.end.children]; S.bigArrow = S.endParts[0]; fit(S.endParts[1], 2);
+  S.capLines = TL.map(l => l.line.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${esc(p)}</span>`).join(""));
+}
+function glow(t) {
+  const c = document.getElementById("glow"), g = c.getContext("2d"); g.clearRect(0, 0, c.width, c.height);
+  const x = 740 + Math.sin(t * .5) * 260, y = 700 + Math.cos(t * .37) * 300;
+  let r = g.createRadialGradient(x, y, 0, x, y, 900); r.addColorStop(0, "rgba(255,121,95,.17)"); r.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+  r = g.createRadialGradient(500, 1800, 0, 500, 1800, 800); r.addColorStop(0, "rgba(90,120,255,.1)"); r.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+}
+let capIdx = -2;
+function setTime(t) {
+  glow(t); const X = window.T.s;
+  // hook
+  S.hparts.forEach((e, i) => setIO(e, io(t, i === 0 ? -1 : .25 + i * .3, E(0), .35)));
+  const rp = prog(t, .4, E(0)); S.arc.style.strokeDashoffset = 276.5 * rp; const sec = 60 - Math.round(rp * 8); S.tm.textContent = sec >= 60 ? "1:00" : "0:" + String(sec).padStart(2, "0");
+  // step 1
+  setIO(S.h1, io(t, A(1), E(1), .35)); setIO(S.prof, io(t, A(1) + .2, E(1), .4));
+  const lp = prog(t, A(1) + .9, A(1) + 1.3); S.link.style.boxShadow = `0 0 0 ${6 * lp}px rgba(255,121,95,${.9 * lp})`;
+  setIO(S.up1, io(t, A(1) + 1.0, E(1), .35), `translateY(${-14 * Math.abs(Math.sin(t * 5))}px)`);
+  // step 2
+  setIO(S.h2, io(t, A(2), E(2), .35)); setIO(S.form, io(t, A(2) + .2, E(2), .4));
+  S.frows.forEach((v, i) => { const p = easeOut(prog(t, A(2) + .7 + i * .55, A(2) + 1.05 + i * .55)); v.style.opacity = .25 + .75 * p; v.querySelector(".ok").style.opacity = p > .9 ? 1 : 0; v.style.transform = `scale(${1 + .06 * Math.sin(Math.PI * p)})`; });
+  // step 3 (two spoken lines)
+  setIO(S.h3, io(t, A(3), E(4), .35)); setIO(S.route, io(t, A(3) + .2, E(4), .4));
+  const vp = prog(t, A(4), A(4) + .4); S.visa.style.boxShadow = vp > 0 && t < A(4) + 1.6 ? `0 0 0 6px rgba(242,184,75,${.6 * vp})` : "none";
+  S.rsteps.forEach((s, i) => { const d = prog(t, A(4) + 1.2 + i * .45, A(4) + 1.5 + i * .45), n = s.querySelector(".num"); n.style.borderColor = d > 0 ? "var(--ok)" : "#3a3f49"; n.style.background = `rgba(90,212,138,${.9 * d})`; n.style.color = d > .5 ? "#0f1115" : "var(--muted)"; n.textContent = d > .5 ? "✓" : String(i + 1); });
+  // universities
+  setIO(S.unis, io(t, A(5), E(5), .35));
+  const n = Math.round(2598 * easeOut(prog(t, A(5) + .2, A(5) + 1.6))); S.un.textContent = window.LANG === "ru" ? n.toLocaleString("ru-RU").replace(/\s/g, " ") : n.toLocaleString("en-US");
+  // free
+  setIO(S.free, io(t, A(6), E(6), .35));
+  // call to action
+  S.end.style.visibility = t >= A(7) - .1 ? "visible" : "hidden";
+  S.endParts.forEach((e, i) => setIO(e, io(t, A(7) - .1 + i * .14, 99, .4), i === 0 ? `translateY(${-24 * Math.abs(Math.sin((t - A(7)) * 4))}px)` : ""));
+  // captions
+  const cap = document.getElementById("cap");
+  let k = -1; TL.forEach((l, i) => { if (t >= l.a - .1 && t < l.b + .35) k = i; });
+  if (k !== capIdx) { capIdx = k; cap.innerHTML = k >= 0 ? S.capLines[k] : ""; S.ws = [...cap.querySelectorAll(".w")]; S.wl = S.ws.map(w => w.textContent.length); let fs = 46; cap.style.fontSize = fs + "px"; while (cap.offsetHeight > 190 && fs > 34) { fs -= 2; cap.style.fontSize = fs + "px"; } }
+  if (k >= 0) { const l = TL[k], p = prog(t, l.a, l.b), tot = S.wl.reduce((a, b) => a + b, 0) || 1; let acc = 0; S.ws.forEach((w, i) => { w.classList.toggle("on", acc / tot <= p + .02); acc += S.wl[i]; }); }
+  cap.style.display = k === 0 || k === 7 ? "none" : "block";
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
