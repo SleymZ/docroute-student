@@ -1,0 +1,83 @@
+{
+ "en": {
+  "voice": ["kokoro", "am_michael", "en-us"],
+  "say": {"DocRoute": "Doc Root"},
+  "lines": [
+   ["Before you apply anywhere in Europe, do this one-minute check.", 0.4],
+   ["Step one: open the link in our profile.", 0.35],
+   ["Step two: choose your passport, your goal and the country.", 0.35],
+   ["Step three: see what applies to you.", 0.2],
+   ["Whether you need a visa, every step in order, and the official source for each one.", 0.5],
+   ["Just looking at universities? Two thousand five hundred ninety-eight, with deadlines, and no account needed.", 0.45],
+   ["Your route is free with an account. It takes a minute.", 0.5],
+   ["Link in our profile. Your route starts there.", 0]
+  ],
+  "s": {
+   "hook1": "Before you apply anywhere in Europe", "hook2": "do this 1-minute check",
+   "step": "Step", "s1": "Open the link in our profile", "linkProfile": "Link in profile",
+   "s2": "Choose your passport, goal and country", "passport": "Passport", "goal": "Goal", "country": "Country",
+   "pc": "Nigeria", "pcode": "ng", "goalV": "Study", "dest": "Slovakia",
+   "s3": "See what applies to you", "badge": "Route for citizens of Nigeria",
+   "visa": "Citizens of Nigeria need a visa to enter Slovakia", "visaSrc": "EU Regulation 2018/1806",
+   "steps": ["Apply to the university", "Apostille your documents", "File the residence permit", "Register after arrival"],
+   "source": "Official source", "example": "Example",
+   "unis": "universities", "unisSub": "with deadlines · no account needed",
+   "free": "Free account", "freeSub": "Your route in about a minute",
+   "cta": "Link in profile", "ctaSub": "Your route starts there", "small": "Free to start · A preparation tool, not legal advice."
+  }
+ },
+ "ru": {
+  "voice": ["piper", "/tmp/ruv/vits-piper-ru_RU-dmitri-medium/ru_RU-dmitri-medium.onnx"],
+  "say": {"DocRoute": "Док Рут"},
+  "lines": [
+   ["Прежде чем подавать документы в Европу, сделайте эту проверку. Она займёт минуту.", 0.4],
+   ["Шаг первый: откройте ссылку в нашем профиле.", 0.35],
+   ["Шаг второй: выберите паспорт, цель и страну.", 0.35],
+   ["Шаг третий: посмотрите, что действует именно для вас.", 0.2],
+   ["Нужна ли виза, все шаги по порядку и официальный источник для каждого.", 0.5],
+   ["Хотите просто посмотреть вузы? Их почти две тысячи шестьсот, со сроками подачи и без регистрации.", 0.45],
+   ["Маршрут бесплатный, нужен только аккаунт. Это минута.", 0.5],
+   ["Ссылка в профиле. Ваш маршрут начинается там.", 0]
+  ],
+  "s": {
+   "hook1": "Прежде чем подавать документы в Европу", "hook2": "сделайте проверку за 1 минуту",
+   "step": "Шаг", "s1": "Откройте ссылку в нашем профиле", "linkProfile": "Ссылка в профиле",
+   "s2": "Выберите паспорт, цель и страну", "passport": "Паспорт", "goal": "Цель", "country": "Страна",
+   "pc": "Казахстан", "pcode": "kz", "goalV": "Учёба", "dest": "Словакия",
+   "s3": "Посмотрите, что действует для вас", "badge": "Маршрут для граждан страны «Казахстан»",
+   "visa": "Гражданам Казахстана нужна виза для въезда в Словакию", "visaSrc": "Регламент ЕС 2018/1806",
+   "steps": ["Подать документы в вуз", "Поставить апостиль", "Подать на ВНЖ", "Регистрация после приезда"],
+   "source": "Официальный источник", "example": "Пример",
+   "unis": "вузов", "unisSub": "со сроками подачи · без регистрации",
+   "free": "Бесплатный аккаунт", "freeSub": "Маршрут примерно за минуту",
+   "cta": "Ссылка в профиле", "ctaSub": "Ваш маршрут начинается там", "small": "Начать можно бесплатно · Инструмент подготовки, а не юридическая консультация."
+  }
+ },
+ "hi": {
+  "voice": ["kokoro", "hm_omega", "hi"],
+  "say": {"DocRoute": "डॉक रूट"},
+  "lines": [
+   ["यूरोप में कहीं भी आवेदन करने से पहले, यह एक मिनट की जाँच कर लीजिए।", 0.4],
+   ["पहला कदम: हमारी प्रोफ़ाइल में दिया लिंक खोलिए।", 0.35],
+   ["दूसरा कदम: अपना पासपोर्ट, मकसद और देश चुनिए।", 0.35],
+   ["तीसरा कदम: देखिए आप पर क्या लागू होता है।", 0.2],
+   ["वीज़ा चाहिए या नहीं, हर कदम क्रम से, और हर एक का आधिकारिक स्रोत।", 0.5],
+   ["सिर्फ़ यूनिवर्सिटी देखनी हैं? लगभग छब्बीस सौ, आवेदन की तारीख़ों के साथ, बिना अकाउंट के।", 0.45],
+   ["मार्ग मुफ़्त है, बस एक अकाउंट चाहिए। एक मिनट लगता है।", 0.5],
+   ["लिंक हमारी प्रोफ़ाइल में है। आपका मार्ग वहीं से शुरू होता है।", 0]
+  ],
+  "s": {
+   "hook1": "यूरोप में आवेदन करने से पहले", "hook2": "1 मिनट की यह जाँच कीजिए",
+   "step": "कदम", "s1": "हमारी प्रोफ़ाइल का लिंक खोलिए", "linkProfile": "लिंक प्रोफ़ाइल में",
+   "s2": "पासपोर्ट, मकसद और देश चुनिए", "passport": "पासपोर्ट", "goal": "मकसद", "country": "देश",
+   "pc": "भारत", "pcode": "in", "goalV": "पढ़ाई", "dest": "स्लोवाकिया",
+   "s3": "देखिए आप पर क्या लागू होता है", "badge": "भारत के नागरिकों के लिए मार्ग",
+   "visa": "भारत के नागरिकों को स्लोवाकिया जाने के लिए वीज़ा चाहिए", "visaSrc": "EU विनियम 2018/1806",
+   "steps": ["यूनिवर्सिटी में आवेदन करें", "दस्तावेज़ों पर एपोस्टिल लगवाएँ", "निवास परमिट का आवेदन करें", "पहुँचने के बाद पंजीकरण करें"],
+   "source": "आधिकारिक स्रोत", "example": "उदाहरण",
+   "unis": "यूनिवर्सिटी", "unisSub": "आवेदन की तारीख़ों के साथ · बिना अकाउंट",
+   "free": "मुफ़्त अकाउंट", "freeSub": "लगभग एक मिनट में आपका मार्ग",
+   "cta": "लिंक प्रोफ़ाइल में", "ctaSub": "आपका मार्ग वहीं से शुरू होता है", "small": "मुफ़्त में शुरू करें · यह तैयारी का टूल है, कानूनी सलाह नहीं।"
+  }
+ }
+}
