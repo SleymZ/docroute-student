@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --bg: #0f1115; --ink: #f5f2ee; --muted: #a9a5a1; --coral: #ff795f; --card: #191c22; --line: #2b2f37; --ok: #5ad48a; --red: #ff6b6b; --amber: #f2b84b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #glow { position: absolute; inset: -200px; }
+  .layer { position: absolute; inset: 0; }
+  .center { position: absolute; left: 70px; right: 70px; text-align: center; }
+  .h1 { font-size: 88px; font-weight: 800; line-height: 1.06; letter-spacing: -0.03em; }
+  .h2 { font-size: 70px; font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; }
+  .coral { color: var(--coral); }
+  .warn { position: absolute; left: 60px; right: 60px; display: flex; gap: 26px; align-items: center; padding: 26px 30px; border-radius: 28px; border: 3px solid var(--red); background: #2a1215; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
+  .warn.amber { border-color: var(--amber); background: #2a2212; }
+  .warn .fl { flex: 0 0 auto; display: flex; gap: 8px; }
+  .warn .fl img { width: 84px; height: 63px; border-radius: 8px; object-fit: cover; box-shadow: 0 0 0 2px rgba(255,255,255,.15); }
+  .warn .fl .eu { width: 84px; height: 63px; border-radius: 8px; background: #1f3a93; display: flex; align-items: center; justify-content: center; color: #ffd43b; font-size: 34px; font-weight: 800; }
+  .warn b { display: block; font-size: 44px; font-weight: 800; line-height: 1.2; color: #ffe1e1; }
+  .warn.amber b { color: #ffeccc; }
+  .warn .s { display: block; margin-top: 10px; font-size: 27px; font-weight: 600; color: var(--muted); }
+  .word { font-size: 110px; font-weight: 800; letter-spacing: -0.035em; }
+  .badge { position: absolute; left: 70px; right: 70px; display: flex; align-items: center; gap: 26px; background: var(--card); border: 3px solid var(--coral); border-radius: 30px; padding: 28px 34px; }
+  .badge img { width: 110px; height: 82px; border-radius: 10px; object-fit: cover; box-shadow: 0 0 0 2px rgba(255,255,255,.15); }
+  .badge .bt { font-size: 44px; font-weight: 700; }
+  .box { position: absolute; left: 70px; right: 70px; border: 3px solid var(--red); background: #241114; border-radius: 30px; padding: 34px 36px; }
+  .box .k { font-size: 30px; font-weight: 800; color: var(--red); letter-spacing: .02em; text-transform: uppercase; }
+  .box h3 { font-size: 44px; font-weight: 800; line-height: 1.2; margin-top: 12px; color: #ffe1e1; }
+  .box .ex { margin-top: 22px; font-size: 34px; line-height: 1.4; color: #e6dcdc; }
+  .box .ex strong { color: #fff; }
+  .box ul { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
+  .box li { font-size: 33px; line-height: 1.35; color: #e6dcdc; padding-left: 36px; position: relative; margin-top: 8px; }
+  .box li::before { content: "•"; position: absolute; left: 8px; color: var(--red); }
+  .box .src { display: inline-block; margin-top: 24px; font-size: 28px; font-weight: 700; color: var(--ok); background: rgba(90,212,138,.13); border-radius: 999px; padding: 10px 24px; }
+  .btn { display: inline-block; background: var(--coral); color: #1a0d09; font-weight: 800; font-size: 58px; border-radius: 999px; padding: 32px 64px; box-shadow: 0 20px 60px rgba(255,121,95,.35); }
+  .lead { font-size: 44px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+  #cap { position: absolute; left: 60px; right: 60px; top: 1700px; text-align: center; font-size: 46px; font-weight: 700; line-height: 1.3; text-shadow: 0 3px 18px rgba(0,0,0,.95); }
+  #cap .w { opacity: .35; } #cap .w.on { opacity: 1; }
+</style>
+</head>
+<body>
+<canvas id="glow" width="1480" height="2320"></canvas>
+<div id="root" class="layer"></div>
+<div id="cap"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function io(t, a, b, inD = .4, outD = .3) { const i = easeOut(prog(t, a, a + inD)), o = easeInOut(prog(t, b - outD, b)); return { op: i * (1 - o), dy: (1 - i) * 50 - o * 50 }; }
+function setIO(e, s, extra = "") { e.style.opacity = s.op; e.style.transform = `translateY(${s.dy}px) ${extra}`; e.style.visibility = s.op <= .001 ? "hidden" : "visible"; }
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span class="coral">Route</span></span>`;
+// facts from the official pages the site cites (src/data/russia-belarus.ts, checked 2026-11-05/08)
+const CARDS = [
+  { fl: ["cz"], t: "Чехия не принимает заявления на визы и ВНЖ от граждан России", s: "МИД Чехии · Постановление правительства № 55/2024", c: "" },
+  { fl: ["ee", "lt"], t: "Эстония и Литва не принимают визовые заявления", s: "МИД Эстонии · МИД Литвы", c: "" },
+  { fl: ["eu"], t: "Шенгенские визы — как правило, однократные, проверки строже", s: "Еврокомиссия · решение от 7 ноября 2025", c: "amber" },
+  { fl: ["fi", "se"], t: "Небиометрические паспорта не признают: Финляндия — с 1.06.2026, Швеция — с 1.10.2026", s: "МИД Финляндии · Migrationsverket", c: "amber" },
+];
+let S = {}, TL, A, E;
+function build() {
+  TL = window.TL; A = i => TL[i].a; E = i => (TL[i + 1] ? TL[i + 1].a : TL[i].b + 3);
+  const root = document.getElementById("root");
+  S.h = el("div", "center h1", `С российским паспортом — <span class="coral">в Европу?</span>`); S.h.style.top = "170px"; root.append(S.h);
+  S.h2 = el("div", "center h2", "Правила меняются постоянно."); root.append(S.h2);
+  let y = Math.max(560, S.h.offsetTop + S.h.offsetHeight + 60);
+  S.cards = CARDS.map(c => { const e = el("div", "warn " + c.c, `<div class="fl">${c.fl.map(f => f === "eu" ? `<div class="eu">ЕС</div>` : `<img src="flags/${f}.svg">`).join("")}</div><div><b>${esc(c.t)}</b><span class="s">${esc(c.s)}</span></div>`); e.style.top = y + "px"; root.append(e); y += e.offsetHeight + 30; return e; });
+  S.h2.style.top = (S.h.offsetTop + S.h.offsetHeight / 2 - 80) + "px";
+  S.drop = el("div", "center h2", "И всё это — на десятках сайтов и на разных языках."); S.drop.style.top = (y + 40) + "px"; S.drop.style.color = "#d9d5d0"; root.append(S.drop);
+  S.logo = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:520px;display:flex;justify-content:center">${logoSVG(320)}</div>
+    <div class="center word" style="top:880px">${wordmark()}</div>
+    <div class="center h2" style="top:1050px;font-size:62px">собирает это в одном месте</div>`); root.append(S.logo); S.logoParts = [...S.logo.children];
+  S.badge = el("div", "badge", `<img src="flags/ru.svg"><div class="bt">Маршрут для граждан страны «Россия»</div>`); S.badge.style.top = "170px"; root.append(S.badge);
+  S.box = el("div", "box", `<div class="k">С этим паспортом переезд сейчас невозможен</div>
+    <h3>Чехия не принимает заявления на визы и ВНЖ от граждан России</h3>
+    <div class="ex ex1"><strong>Исключения:</strong><ul><li>члены семьи граждан ЕС (краткосрочная виза)</li><li>супруг и дети иностранца, живущего в Чехии</li><li>владельцы чешского свидетельства соотечественника</li><li>и другие группы из постановления</li></ul></div>
+    <div class="ex">Иначе выберите другую страну.</div>
+    <span class="src">✓ Официальный источник · МИД Чехии · проверено 08.11.2026</span>`);
+  S.box.style.top = (170 + S.badge.offsetHeight + 40) + "px"; root.append(S.box);
+  S.ex = S.box.querySelector(".ex1"); S.src = S.box.querySelector(".src");
+  S.end = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:280px;display:flex;justify-content:center">${logoSVG(230)}</div>
+    <div class="center word" style="top:550px;font-size:104px">${wordmark()}</div>
+    <div class="center h2" style="top:720px;font-size:62px">Проверьте свою страну, прежде чем подавать документы</div>
+    <div class="center" style="top:1000px"><span class="btn">Начать путь</span></div>
+    <div class="center lead" style="top:1190px">Начать можно бесплатно</div>
+    <div class="center" style="top:1280px;font-size:44px;font-weight:700">docroute-student.vercel.app</div>
+    <div class="center" style="top:1370px;font-size:30px;font-weight:500;color:var(--muted)">Инструмент подготовки, а не юридическая консультация.</div>`); root.append(S.end); S.endParts = [...S.end.children];
+  S.capLines = TL.map(l => l.line.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${esc(p)}</span>`).join(""));
+}
+function glow(t) {
+  const c = document.getElementById("glow"), g = c.getContext("2d"); g.clearRect(0, 0, c.width, c.height);
+  const tense = clamp(prog(t, 0, .3) - prog(t, A(6) - .3, A(6) + .5)); const warm = prog(t, A(7) - .3, A(7) + .8);
+  const x = 740 + Math.sin(t * .5) * 260, y = 700 + Math.cos(t * .37) * 300;
+  let r = g.createRadialGradient(x, y, 0, x, y, 900); r.addColorStop(0, `rgba(255,${Math.round(121 - 60 * tense)},${Math.round(95 - 30 * tense)},${.1 + .1 * Math.max(tense, warm)})`); r.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+  r = g.createRadialGradient(500, 1800, 0, 500, 1800, 800); r.addColorStop(0, "rgba(90,120,255,.1)"); r.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+}
+let capIdx = -2;
+function setTime(t) {
+  glow(t);
+  // hook: headline, cards slam in on the hits
+  setIO(S.h, io(t, -1, A(1) - .1, .25, .25));
+  setIO(S.h2, io(t, A(1), A(6), .35));
+  const slams = window.SLAMS;
+  S.cards.forEach((c, i) => {
+    const a = slams[i], on = t >= a - .02 && t < E(6) - .05;
+    c.style.visibility = on ? "visible" : "hidden"; if (!on) return;
+    const p = prog(t, a, a + .18), shake = Math.exp(-(t - a) * 12) * 16 * Math.sin(t * 90);
+    let op = 1, sc = 1 + .25 * (1 - easeOut(p));
+    // while a fact is spoken it is lit, the others dim
+    const cur = [2, 3, 4, 5].findIndex(k => t >= A(k) - .1 && t < E(k) - .1);
+    if (cur >= 0) { op = cur === i ? 1 : .35; if (cur === i) sc *= 1.03; }
+    if (t >= A(6) - .1) { op = .2 * (1 - prog(t, E(6) - .6, E(6) - .1)) + 0; c.style.filter = "grayscale(1)"; } else c.style.filter = "none";
+    c.style.opacity = op * prog(t, a - .02, a + .04); c.style.transform = `translateX(${shake}px) scale(${sc})`;
+  });
+  setIO(S.drop, io(t, A(6), E(6), .8));
+  // DocRoute
+  S.logoParts.forEach((e, i) => setIO(e, io(t, A(7) + i * .2, E(7), .45), i === 0 ? `scale(${.7 + .3 * back(prog(t, A(7), A(7) + .5))})` : ""));
+  // the route for a Russian passport
+  setIO(S.badge, io(t, A(8), E(9), .4)); setIO(S.box, io(t, A(8) + .6, E(9), .45));
+  const ep = easeOut(prog(t, A(9) - .2, A(9) + .4)); S.ex.style.outline = ep > 0 ? `3px solid rgba(255,121,95,${.8 * ep * (1 - prog(t, A(9) + 2.2, A(9) + 2.6))})` : "none"; S.ex.style.outlineOffset = "10px"; S.ex.style.borderRadius = "12px";
+  const sp = prog(t, A(9) + 2.4, A(9) + 2.8); S.src.style.transform = `scale(${1 + .1 * Math.sin(Math.PI * sp)})`; S.src.style.boxShadow = sp > 0 && sp < 1 ? "0 0 0 4px rgba(90,212,138,.5)" : "none";
+  // call to action
+  S.end.style.visibility = t >= A(10) - .1 ? "visible" : "hidden";
+  S.endParts.forEach((e, i) => { const s = io(t, A(10) - .1 + i * .15, 99, .4); setIO(e, s, i === 0 ? `scale(${.6 + .4 * back(prog(t, A(10) - .1, A(10) + .4))})` : ""); });
+  // captions (most people watch without sound)
+  const cap = document.getElementById("cap");
+  let k = -1; TL.forEach((l, i) => { if (t >= l.a - .1 && t < l.b + .35) k = i; });
+  if (k !== capIdx) { capIdx = k; cap.innerHTML = k >= 0 ? S.capLines[k] : ""; S.ws = [...cap.querySelectorAll(".w")]; S.wl = S.ws.map(w => w.textContent.length); }
+  if (k >= 0) { const l = TL[k], p = prog(t, l.a, l.b), tot = S.wl.reduce((a, b) => a + b, 0) || 1; let acc = 0; S.ws.forEach((w, i) => { w.classList.toggle("on", acc / tot <= p + .02); acc += S.wl[i]; }); }
+  cap.style.display = [0, 1, 6, 10].includes(k) ? "none" : "block";
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
