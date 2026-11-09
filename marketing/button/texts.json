@@ -1,0 +1,18 @@
+{
+  "lines": [
+    "What happens when you press this button?",
+    "First, choose why you're moving, where your documents are from, and where you want to go.",
+    "Then press it.",
+    "Six quick questions — for example, whether you already have a job offer.",
+    "Press the button again…",
+    "…and you get your route, built for your passport.",
+    "First, what your passport needs. Here, a visa for Slovakia, with the official EU list linked.",
+    "Then every step in order: the job offer, the Labour Office, the embassy, and what to do after you arrive.",
+    "And every rule links to its official source, with the date it was checked.",
+    "Try the button yourself. It's free to start."
+  ],
+  "say": { "DocRoute": "Doc Root" },
+  "titles": ["What happens when you press it?", "1 · Choose", "2 · Press", "3 · Six questions", "4 · Press again", "Your route", "Your passport first", "Every step, in order", "Official sources", ""],
+  "cta": "Try the button",
+  "small": "Free to start · A preparation tool, not legal advice."
+}
