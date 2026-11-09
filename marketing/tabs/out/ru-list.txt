@@ -1,0 +1,6 @@
+file '/home/claude/docroute-student/marketing/tabs/out/ru-s0.mp4'
+file '/home/claude/docroute-student/marketing/tabs/out/ru-s1.mp4'
+file '/home/claude/docroute-student/marketing/tabs/out/ru-s2.mp4'
+file '/home/claude/docroute-student/marketing/tabs/out/ru-s3.mp4'
+file '/home/claude/docroute-student/marketing/tabs/out/ru-s4.mp4'
+file '/home/claude/docroute-student/marketing/tabs/out/ru-s5.mp4'
