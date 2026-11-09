@@ -254,18 +254,21 @@ test("account deletion: the renewal is cancelled first, only for the account's o
     "/memberships/mem_X9": { id: "mem_X9", status: "active", metadata: { docroute_user_id: "11111111-2222-3333-4444-555555555555" } },
   });
   const { applied, apply } = recorder();
-  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1", status: "active" }, apply, { fetcher, now: NOW }), "cancelled");
+  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1" }, apply, { fetcher, now: NOW }), "cancelled");
   const cancel = calls.find((call) => call.url.endsWith("/memberships/mem_A1/cancel"));
   assert.equal(cancel?.init?.method, "POST");
   assert.equal(JSON.parse(String(cancel?.init?.body)).cancel_at_period_end, true);
   assert.equal(applied[0].p_status, "canceling");
   assert.equal(applied[0].p_plus_until, end);
 
-  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: null, status: null }, apply), "nothing-to-cancel");
-  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1", status: "canceling" }, apply), "nothing-to-cancel");
-  await assert.rejects(cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_X9", status: "active" }, apply, { fetcher }));
+  assert.equal(await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: null }, apply), "nothing-to-cancel");
+  // Stored as cancelling but resumed on Whop: Whop is asked, the renewal is stopped.
+  const before = calls.length;
+  await cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1" }, apply, { fetcher, now: NOW });
+  assert.ok(calls.slice(before).some((call) => call.url.endsWith("/memberships/mem_A1/cancel")));
+  await assert.rejects(cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_X9" }, apply, { fetcher }));
   const down = fakeWhop({});
-  await assert.rejects(cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1", status: "active" }, apply, { fetcher: down.fetcher }));
+  await assert.rejects(cancelRenewalBeforeDeletion(config, { userId: USER, membershipId: "mem_A1" }, apply, { fetcher: down.fetcher }));
 });
 
 test("account deletion is refused in the database while a subscription still renews", () => {

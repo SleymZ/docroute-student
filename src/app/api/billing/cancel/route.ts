@@ -26,18 +26,17 @@ export async function POST(request: Request) {
 
   const { data: plan } = await supabase
     .from("account_plans")
-    .select("whop_membership_id, whop_status")
+    .select("whop_membership_id")
     .eq("user_id", user.id)
     .maybeSingle();
   const membershipId = plan?.whop_membership_id ?? null;
-  const status = plan?.whop_status ?? null;
   if (!membershipId) return NextResponse.json({ result: "nothing-to-cancel" });
 
   const config = whopConfig();
   const admin = createSupabaseAdminClient();
   try {
     if (!config.apiKey || !admin) throw new Error("Whop or Supabase secret key not set");
-    const result = await cancelRenewalBeforeDeletion(config, { userId: user.id, membershipId, status }, async (args) => {
+    const result = await cancelRenewalBeforeDeletion(config, { userId: user.id, membershipId }, async (args) => {
       const { data: applied, error } = await admin.rpc("apply_whop_membership", args);
       return { data: (applied as string | null) ?? null, error: error ? { message: error.message } : null };
     });

@@ -75,11 +75,13 @@ export async function syncWhopEvent(
  *  Throws when Whop or the database fails (the deletion is then not made). */
 export async function cancelRenewalBeforeDeletion(
   config: WhopConfig,
-  plan: { userId: string; membershipId: string | null; status: string | null },
+  plan: { userId: string; membershipId: string | null },
   apply: ApplyPlan,
   options: { fetcher?: FetchLike; now?: number } = {},
 ): Promise<"nothing-to-cancel" | "cancelled"> {
-  if (!plan.membershipId || !plan.status || !RENEWING_STATUSES.has(plan.status)) return "nothing-to-cancel";
+  if (!plan.membershipId) return "nothing-to-cancel";
+  // The stored status can be behind Whop (renewal resumed, webhook not yet
+  // here), so the current state is always read from Whop.
   const current = await getMembership(config, plan.membershipId, options.fetcher);
   // Only the account's own membership, never one named by someone else.
   if (userIdFromMetadata(current.metadata) !== plan.userId) throw new Error("Membership belongs to another account");
