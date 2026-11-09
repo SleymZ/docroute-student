@@ -57,8 +57,9 @@ create unique index if not exists account_plans_whop_membership_key
 --    back if the payment ends first;
 --  * a snapshot older than the one already applied (p_updated_at) is refused,
 --    so overlapping webhooks cannot bring back an old state;
---  * an inactive old membership never switches off a different membership
---    that is still active on the same account.
+--  * an inactive old membership never switches off or replaces a different
+--    membership that is still active on the same account (also under an
+--    owner grant).
 -- Returns what happened, for the webhook log.
 drop function if exists public.apply_whop_membership(uuid, text, text, boolean, timestamptz, text);
 
@@ -115,12 +116,12 @@ begin
       grant_until := existing.owner_grant_until;
     end if;
 
+    -- An ended membership never replaces a different one that still gives
+    -- access or renews, whoever granted the current plan.
     if not p_active
-       and existing.source = 'payment'
        and existing.whop_membership_id is not null
        and existing.whop_membership_id <> p_membership_id
-       and existing.plan = 'plus'
-       and (existing.plus_until is null or existing.plus_until > now()) then
+       and existing.whop_status in ('active', 'trialing', 'past_due', 'canceling', 'completed') then
       return 'kept-other-membership';
     end if;
 
