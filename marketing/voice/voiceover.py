@@ -12,7 +12,7 @@ here = os.path.dirname(os.path.abspath(__file__))
 video, models, langs = sys.argv[1], sys.argv[2], sys.argv[3:]
 base = os.path.join(here, "..", video)
 cfg = json.load(open(os.path.join(base, "voice.json")))
-name = {"promo": "promo", "teen": "unis", "tabs": "tabs"}[video]
+name = {"promo": "promo", "teen": "unis", "tabs": "tabs", "deadline": "deadline"}[video]
 KOKORO = {"en": ("am_michael", "en-us"), "es": ("em_alex", "es"), "hi": ("hm_omega", "hi"), "zh": ("zm_yunxi", "cmn")}
 # how the engines should read the brand and abbreviations
 SAY = {
@@ -53,7 +53,11 @@ for lang in langs:
     src = os.path.join(out, f"DocRoute-{name}-{lang}.mp4")
     total = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", src], capture_output=True, text=True).stdout)
     inputs = ["-i", src]
-    if video in ("promo", "tabs"):  # the promo has a silent track: a quiet pad goes under the voice
+    if video == "deadline":  # its own bed: opening hits + soft pad (NOBED: the hits only)
+        bedf = os.path.join(out, "sfx-only.wav" if os.environ.get("NOBED") else "bed.wav")
+        if not os.path.exists(bedf): run("python3", os.path.join(base, "sfx.py"), str(total), os.path.join(out, "bed.wav"), os.path.join(out, "sfx-only.wav"))
+        inputs += ["-i", bedf]; bed = "[1:a]volume=0.9[bed]"
+    elif video in ("promo", "tabs"):  # the promo has a silent track: a quiet pad goes under the voice
         pad = os.path.join(tmp, "pad.wav")
         if not os.path.exists(pad): run("python3", os.path.join(here, "..", "story", "pad.py"), str(total), pad)
         inputs += ["-i", pad]; bed = f"[1:a]volume={0 if os.environ.get('NOBED') else 0.16}[bed]"
