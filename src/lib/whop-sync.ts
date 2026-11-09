@@ -20,6 +20,7 @@ export type ApplyPlan = (args: {
   p_active: boolean;
   p_plus_until: string | null;
   p_manage_url: string | null;
+  p_updated_at: string | null;
 }) => Promise<{ data: string | null; error: { message: string } | null }>;
 
 export type SyncResult =
@@ -61,6 +62,7 @@ export async function syncWhopEvent(
     p_active: state.active,
     p_plus_until: state.plusUntil,
     p_manage_url: state.manageUrl,
+    p_updated_at: state.updatedAt,
   });
   if (error) throw new Error(`apply_whop_membership failed: ${error.message}`);
   return { outcome: "applied", result: data ?? "", userId, membershipId: membership.id, active: state.active };

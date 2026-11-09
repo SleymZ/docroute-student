@@ -96,6 +96,13 @@ test("membership → Plus: renewing gets grace, canceling ends on time, ended on
 
   const canceling = plusFromMembership({ id: "mem_1", status: "active", cancel_at_period_end: true, current_period_end: end }, NOW);
   assert.equal(canceling.plusUntil, end);
+  // Stored as "canceling", so the account page shows the end date, not "renews".
+  assert.equal(canceling.status, "canceling");
+  assert.equal(active.status, "active");
+  assert.equal(
+    plusFromMembership({ id: "mem_1", status: "active", updated_at: "2026-11-09T10:00:00Z" }, NOW).updatedAt,
+    "2026-11-09T10:00:00.000Z",
+  );
   assert.equal(plusFromMembership({ id: "mem_1", status: "canceling", current_period_end: end }, NOW).plusUntil, end);
 
   for (const status of ["canceled", "expired", "unresolved", "drafted", ""]) {
@@ -188,6 +195,7 @@ test("sync: the membership is always read again from Whop, then written", async 
   assert.equal(calls.length, 1);
   assert.equal(applied[0].p_user_id, USER);
   assert.equal(applied[0].p_active, true);
+  assert.ok("p_updated_at" in applied[0]);
 });
 
 test("sync: refunds go payment → membership; memberships without a DocRoute account are ignored", async () => {
@@ -223,6 +231,8 @@ test("migration: only the server's secret key may write a plan from Whop", () =>
   assert.match(sql, /to service_role;/);
   assert.doesNotMatch(sql, /to authenticated/);
   assert.match(sql, /kept-owner-grant/);
+  assert.match(sql, /return 'stale'/);
+  assert.match(sql, /owner_grant_until/);
 });
 
 test("secrets never get a public name and the webhook skips the session proxy", () => {

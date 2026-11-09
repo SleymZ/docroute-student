@@ -189,6 +189,7 @@ export type WhopMembership = {
   expires_at?: string | null;
   manage_url?: string | null;
   metadata?: Record<string, unknown> | null;
+  updated_at?: string | null;
 };
 
 /** Statuses that keep access (Whop: active/trialing grant access, past_due is
@@ -200,8 +201,12 @@ export type PlusState = {
   active: boolean;
   /** ISO time Plus ends; null = no end (a one-time purchase without expiry). */
   plusUntil: string | null;
+  /** Whop's status, with a renewing membership that will not renew stored
+   *  as "canceling" (Whop keeps it "active" with cancel_at_period_end). */
   status: string;
   manageUrl: string | null;
+  /** Whop's updated_at, so the database can refuse older snapshots. */
+  updatedAt: string | null;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -213,26 +218,30 @@ function parseTime(value: string | null | undefined): number | null {
 }
 
 export function plusFromMembership(membership: WhopMembership, now: number = Date.now()): PlusState {
-  const status = String(membership.status ?? "").slice(0, 32);
+  const rawStatus = String(membership.status ?? "").slice(0, 32);
   const manageUrl =
     typeof membership.manage_url === "string" && membership.manage_url.startsWith("https://") && membership.manage_url.length <= 500
       ? membership.manage_url
       : null;
   const end = parseTime(membership.current_period_end) ?? parseTime(membership.expires_at);
-  const renewing = (status === "active" || status === "trialing" || status === "past_due") && !membership.cancel_at_period_end;
+  const recurring = rawStatus === "active" || rawStatus === "trialing" || rawStatus === "past_due";
+  const renewing = recurring && !membership.cancel_at_period_end;
+  const status = recurring && membership.cancel_at_period_end ? "canceling" : rawStatus;
+  const updated = parseTime(membership.updated_at);
+  const updatedAt = updated === null ? null : new Date(updated).toISOString();
 
   if (!ACTIVE_STATUSES.has(status)) {
-    return { active: false, plusUntil: null, status, manageUrl };
+    return { active: false, plusUntil: null, status, manageUrl, updatedAt };
   }
   if (end === null) {
     // A one-time purchase with no end keeps Plus; anything else is checked
     // again by the next event or after UNKNOWN_END_DAYS at the latest.
-    if (status === "completed") return { active: true, plusUntil: null, status, manageUrl };
-    return { active: true, plusUntil: new Date(now + UNKNOWN_END_DAYS * DAY_MS).toISOString(), status, manageUrl };
+    if (status === "completed") return { active: true, plusUntil: null, status, manageUrl, updatedAt };
+    return { active: true, plusUntil: new Date(now + UNKNOWN_END_DAYS * DAY_MS).toISOString(), status, manageUrl, updatedAt };
   }
   const until = renewing ? end + RENEWAL_GRACE_DAYS * DAY_MS : end;
-  if (until <= now) return { active: false, plusUntil: null, status, manageUrl };
-  return { active: true, plusUntil: new Date(until).toISOString(), status, manageUrl };
+  if (until <= now) return { active: false, plusUntil: null, status, manageUrl, updatedAt };
+  return { active: true, plusUntil: new Date(until).toISOString(), status, manageUrl, updatedAt };
 }
 
 // ------------------------------------------------------------------ the API

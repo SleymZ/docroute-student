@@ -95,6 +95,9 @@ export type Database = {
           whop_status: string | null;
           whop_manage_url: string | null;
           whop_synced_at: string | null;
+          whop_updated_at: string | null;
+          owner_grant_source: "manual" | "beta" | null;
+          owner_grant_until: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -321,6 +324,7 @@ export type Database = {
           p_active: boolean;
           p_plus_until: string | null;
           p_manage_url: string | null;
+          p_updated_at: string | null;
         };
         Returns: string;
       };

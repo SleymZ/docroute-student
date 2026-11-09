@@ -77,7 +77,10 @@ environment variables and the pre-launch list: `docs/PAYMENTS.md`.
   `/account` with "Manage or cancel on Whop". No new npm packages.
 - Migration `20261109120000_whop_payments.sql`: `whop_*` columns on
   `account_plans` and `apply_whop_membership()` for `service_role` only.
-  Checked on local Postgres 16: authenticated/anon refused, active → plus,
+  Snapshots older than the last applied one (Whop `updated_at`) are refused;
+  a time-limited owner grant covered by a payment comes back if the payment
+  ends first (`owner_grant_*`). Checked on local Postgres 16:
+  authenticated/anon refused, active → plus, stale snapshot refused,
   other membership's cancel ignored, beta grant kept, unknown account
   `no-account`, bad id and duplicate membership refused, users still cannot
   update their row.
