@@ -1,0 +1,80 @@
+{
+  "lines": [
+    "You got into a European university?",
+    "That was the easy part.",
+    "Here's what comes next.",
+    "An apostille or legalization on your documents.",
+    "Certified translations, often by a sworn translator.",
+    "Proof that you can pay for your stay.",
+    "A residence permit — often filed at an embassy before you travel. It can take weeks or months.",
+    "And registration after you arrive — within days in many countries.",
+    "Miss one deadline, and it can cost you a whole year.",
+    "DocRoute puts it all in one route: in the right order, with deadlines, and an official source for every step.",
+    "Built for your passport.",
+    "Start free at DocRoute."
+  ],
+  "say": {
+    "DocRoute": "Doc Root"
+  },
+  "screen": {
+    "admitted": "ADMITTED",
+    "letterHead": "Admission decision",
+    "letterBody": "Dear applicant, we are pleased to offer you a place in our Bachelor's programme starting in autumn.",
+    "gotIn": "You got in.",
+    "easy": "That was the easy part.",
+    "next": "What comes next",
+    "items": [
+      [
+        "Apostille or legalization",
+        "on your documents"
+      ],
+      [
+        "Certified translations",
+        "often by a sworn translator"
+      ],
+      [
+        "Proof of funds",
+        "you can pay for your stay"
+      ],
+      [
+        "Residence permit",
+        "often at an embassy, before you travel"
+      ],
+      [
+        "Registration on arrival",
+        "within days in many countries"
+      ]
+    ],
+    "depends": "Exact steps depend on the country and your passport",
+    "missed": "Missed",
+    "deadline": "Deadline",
+    "year": "can cost a whole year",
+    "route": [
+      "Apostille & translations",
+      "Proof of funds",
+      "Residence permit",
+      "Travel",
+      "Register after arrival"
+    ],
+    "dates": [
+      "by 1 Apr",
+      "by 15 Apr",
+      "by 1 May",
+      "Sep",
+      "within days"
+    ],
+    "source": "Official source",
+    "example": "Example",
+    "badge": "Route for citizens of {0}",
+    "countries": [
+      "India",
+      "Nigeria",
+      "Brazil",
+      "Vietnam",
+      "Kazakhstan"
+    ],
+    "cta": "Start free",
+    "small": "A preparation tool, not legal advice.",
+    "passport": "Built for your passport"
+  }
+}
