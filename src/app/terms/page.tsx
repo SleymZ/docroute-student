@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { LegalPage } from "@/components/LegalPage";
 import { contact, legalInfo } from "@/data/legal";
+import { ordersUrl, whopConfig } from "@/lib/whop";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -13,6 +14,9 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   const { operatorDescription, minimumAccountAge } = legalInfo;
+  // Plus terms appear only while Plus is on sale (PAYMENTS_ENABLED).
+  const whop = whopConfig();
+  const paid = whop.checkoutEnabled;
 
   return (
     <LegalPage
@@ -26,7 +30,14 @@ export default function TermsPage() {
             information and planning tool, not legal advice.
           </p>
           <ul>
-            <li>It costs nothing, and we never ask for payment details.</li>
+            {paid ? (
+              <li>
+                The core service is free. Plus is an optional paid plan, billed through Whop; DocRoute never sees
+                your card details.
+              </li>
+            ) : (
+              <li>It costs nothing, and we never ask for payment details.</li>
+            )}
             <li>
               It organises official rules into a checklist with sources and
               dates. Universities, the police and ministries make every
@@ -47,7 +58,7 @@ export default function TermsPage() {
       <h2>1. Who runs DocRoute</h2>
       <p>
         DocRoute (&ldquo;DocRoute&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;)
-        is a personal, non-commercial project run by {operatorDescription}{" "}
+        is a personal{paid ? "" : ", non-commercial"} project run by {operatorDescription}{" "}
         (the &ldquo;operator&rdquo;). It is not a company, an
         immigration agency, a law firm or an education agent, and it is not
         connected to any university, government authority or police force.
@@ -60,21 +71,71 @@ export default function TermsPage() {
         do not use the service.
       </p>
 
-      <h2>2. Beta version and free of charge</h2>
+      <h2>{paid ? "2. Beta version, free service and Plus" : "2. Beta version and free of charge"}</h2>
       <p>
         DocRoute is in public beta. Features, coverage and the layout can
         change, some parts may not work, and the service may be paused or
         stopped. We will try to warn you on the site before removing a
         feature you rely on.
       </p>
-      <p>
-        The service is free. We do not take payments, do not sell
-        subscriptions, do not show advertising and do not receive commissions
-        from universities, employers or agencies. If we ever offer paid
-        features, they will be described in separate terms that you will see
-        and accept before paying; nothing will be charged automatically and
-        everything available for free today stays governed by these terms.
-      </p>
+      {paid ? (
+        <>
+          <p>
+            Browsing and building routes with a free account cost nothing. We do not show advertising and do not
+            receive commissions from universities, employers or agencies. The only paid part is Plus, described
+            below.
+          </p>
+          <h3 id="plus">Plus (paid plan)</h3>
+          <ul>
+            <li>
+              <strong>What you get.</strong> The Plus features listed on the{" "}
+              <Link href="/plus">Plans page</Link> at the time you pay. Features marked &ldquo;coming soon&rdquo; are
+              not part of what you pay for until they are released.
+            </li>
+            <li>
+              <strong>Price and payment.</strong> The price, the billing period and VAT are shown on the Plans page
+              and on the Whop checkout before you pay. Payment is made to Whop, Inc. (whop.com), which acts as
+              merchant of record: it charges your payment method, collects and pays VAT and sends the receipt. Whop
+              processes the payment under its own terms and privacy policy. DocRoute provides Plus itself and never
+              sees your card details.
+            </li>
+            <li>
+              <strong>Renewal and cancelling.</strong> Plus renews automatically each period until you cancel. You
+              can cancel at any time in your{" "}
+              <a href={ordersUrl(whop)} target="_blank" rel="noreferrer">
+                Whop orders
+              </a>{" "}
+              (also linked from your Account page). Plus then stays open until the end of the period you have paid
+              for and is not renewed again. Deleting your DocRoute account also cancels the renewal.
+            </li>
+            <li>
+              <strong>Right of withdrawal.</strong> Consumers in the EU normally have 14 days to withdraw from an
+              online purchase. Plus opens immediately after payment. Before you pay, you ask us expressly to start
+              at once and confirm that you know you lose the right of withdrawal once Plus has started. If Plus does
+              not work as described, your rights under consumer law to have it fixed or to a price reduction or
+              refund are not affected; write to <a href={contact.href}>{contact.label}</a>.
+            </li>
+            <li>
+              <strong>Failed payments.</strong> If a renewal cannot be charged, Whop may try again for a short
+              time. Plus stays open during that time and then switches back to Free. Your account, ticked steps and
+              saved route stay; only Plus features close.
+            </li>
+            <li>
+              <strong>If we stop Plus.</strong> If we stop offering Plus or close DocRoute, we will cancel the
+              renewals and refund the unused part of the period you paid for.
+            </li>
+          </ul>
+        </>
+      ) : (
+        <p>
+          The service is free. We do not take payments, do not sell
+          subscriptions, do not show advertising and do not receive commissions
+          from universities, employers or agencies. If we ever offer paid
+          features, they will be described in separate terms that you will see
+          and accept before paying; nothing will be charged automatically and
+          everything available for free today stays governed by these terms.
+        </p>
+      )}
 
       <h2>3. What DocRoute is — and what it is not</h2>
       <p>
@@ -213,7 +274,9 @@ export default function TermsPage() {
 
       <h2>9. Liability</h2>
       <p>
-        The service is provided free of charge, as it is, during a beta. To
+        {paid
+          ? "The free service is provided as it is, during a beta; Plus is provided as described in section 2. To"
+          : "The service is provided free of charge, as it is, during a beta. To"}
         the extent permitted by law, we are not liable for losses that result
         from relying on DocRoute instead of the official source, from missed
         deadlines, from decisions made by universities or authorities, or

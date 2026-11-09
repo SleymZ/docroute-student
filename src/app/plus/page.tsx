@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Check, Minus, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/Header";
+import { PlusCheckout } from "@/components/PlusCheckout";
+import { getPlusPrice, ordersUrl, whopConfig } from "@/lib/whop";
 import storyStyles from "@/components/Stories.module.css";
 
 import styles from "./Plus.module.css";
@@ -26,7 +28,7 @@ const rows: { label: string; guest: Cell; free: Cell; plus: Cell }[] = [
     plus: "All open",
   },
   { label: "Your own move date and a date for every step", guest: false, free: false, plus: true },
-  { label: "Email reminders before deadlines", guest: false, free: false, plus: "At launch" },
+  { label: "Email reminders before deadlines", guest: false, free: false, plus: "Coming soon" },
   { label: "Route saved in My route", guest: false, free: false, plus: true },
   { label: "PDF and PNG of your route", guest: false, free: false, plus: true },
 ];
@@ -37,7 +39,12 @@ function Value({ value }: { value: Cell }) {
   return <span>{value}</span>;
 }
 
-export default function PlansPage() {
+// The price comes from Whop and is looked up again at most once an hour.
+export const revalidate = 3600;
+
+export default async function PlansPage() {
+  const config = whopConfig();
+  const price = await getPlusPrice(config);
   return (
     <main>
       <Header />
@@ -49,8 +56,8 @@ export default function PlansPage() {
               Start free. Go further with <span>Plus.</span>
             </h1>
             <p className={storyStyles.lead}>
-              Browsing is open to everyone. Building a route needs a free account; Plus adds your dates, reminders,
-              the full checklist and saving.
+              Browsing is open to everyone. Building a route needs a free account; Plus adds your dates, the full
+              checklist, PDF and PNG, and saving.
             </p>
           </div>
         </header>
@@ -80,21 +87,33 @@ export default function PlansPage() {
           </table>
         </div>
 
-        <section className={styles.note}>
+        <section className={styles.note} id="get-plus">
           <h2>How to get Plus</h2>
-          <p>
-            Plus is not on sale yet: DocRoute is a free, non-commercial beta. During the beta, Plus is given to beta
-            testers. Tell us what you would want from it in the{" "}
-            <Link href="/feedback">feedback form</Link>.
-          </p>
-          <div className={styles.actions}>
-            <Link href="/auth?mode=signup&next=/home" className={storyStyles.primary}>
-              Create a free account
-            </Link>
-            <Link href="/explore" className={storyStyles.secondary}>
-              Browse universities
-            </Link>
-          </div>
+          {config.checkoutEnabled ? (
+            <>
+              <p>
+                Pay once a period through Whop and Plus opens on your account within a minute. Cancel any time; you
+                keep Plus until the end of the period you paid for.
+              </p>
+              <PlusCheckout price={price} ordersUrl={ordersUrl(config)} />
+            </>
+          ) : (
+            <>
+              <p>
+                Plus is not on sale yet: DocRoute is a free, non-commercial beta. During the beta, Plus is given to
+                beta testers. Tell us what you would want from it in the{" "}
+                <Link href="/feedback">feedback form</Link>.
+              </p>
+              <div className={styles.actions}>
+                <Link href="/auth?mode=signup&next=/home" className={storyStyles.primary}>
+                  Create a free account
+                </Link>
+                <Link href="/explore" className={storyStyles.secondary}>
+                  Browse universities
+                </Link>
+              </div>
+            </>
+          )}
         </section>
       </div>
     </main>

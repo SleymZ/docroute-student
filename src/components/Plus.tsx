@@ -55,7 +55,7 @@ const featureText = {
   dates: {
     icon: CalendarClock,
     title: "Your dates are part of Plus",
-    text: "Set your move or start date and get a date for every step, plus email reminders before each one.",
+    text: "Set your move or start date and get a date for every step. Email reminders are coming soon.",
   },
   export: {
     icon: FileImage,
@@ -95,7 +95,7 @@ export function RemindersNote() {
   return (
     <p className={styles.reminders} data-print-hide="">
       <BellRing size={14} aria-hidden="true" />
-      Email reminders for these dates arrive with the Plus launch.
+      Email reminders for these dates are coming soon.
     </p>
   );
 }
@@ -103,7 +103,7 @@ export function RemindersNote() {
 export const plusPerks = [
   { icon: ListChecks, text: "Every step of every stage, not only the key ones" },
   { icon: CalendarClock, text: "Your own move date and a date for every step" },
-  { icon: BellRing, text: "Email reminders before each deadline" },
+  { icon: BellRing, text: "Email reminders before each deadline (coming soon)" },
   { icon: MapPinned, text: "Your route saved in My route" },
   { icon: FileImage, text: "PDF and PNG of your route" },
 ] as const;

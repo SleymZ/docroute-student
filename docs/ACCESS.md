@@ -12,7 +12,7 @@ page `/plus` (the comparison shown to visitors).
 | Build a route (every `/route/*` page, `/explore/profile`) | no — sent to sign-up at once | yes | yes |
 | Steps per stage | — | only the key steps are open: the first step of each stage and every "Needs attention" step (`stepAccess`). The others stay in place as locked cards with no text (`LockedStep`), plus "N steps in this stage locked" | all open |
 | Own move/start date, deadline planner, dated steps | — | no (a `move=` date in the address is ignored) | yes |
-| Email reminders | — | no | yes, **not built yet** (shown as "arrive with the Plus launch") |
+| Email reminders | — | no | yes, **not built yet** (shown as "coming soon"; not part of what is sold) |
 | Save to My route (`confirmed_routes`) | — | no (enforced by RLS too) | yes, one per account |
 | PDF (print) and PNG of the route | — | no | yes |
 | Ticking steps off | — | yes | yes |
@@ -24,8 +24,10 @@ page `/plus` (the comparison shown to visitors).
   per account; no row means Free. `plan` is `free` or `plus`, `plus_until` is an
   optional end date, `source` is `manual`, `beta` or `payment`.
 - People can only read their own row. Nobody can write through the API: the
-  owner grants Plus in the Supabase SQL editor. Payment (after the decision on
-  16 November and an IČO) will write rows with `source = 'payment'`.
+  owner grants Plus in the Supabase SQL editor, and Whop payments write rows
+  with `source = 'payment'` through `apply_whop_membership()` (server secret
+  key only; see docs/PAYMENTS.md). Owner grants are never shortened by a
+  payment event.
 - `public.has_plus()` is used by RLS: inserting or changing a confirmed route
   needs Plus. Routes confirmed before 2026-11-05 can still be opened and removed.
 

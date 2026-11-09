@@ -58,6 +58,15 @@ function loadTier(): Promise<AccessTier> {
   return cached;
 }
 
+/** Looks the plan up again and updates every mounted hook (used after a
+ *  payment, while Whop's webhook switches the account to Plus). */
+export async function refreshAccess(): Promise<AccessTier> {
+  cached = null;
+  const tier = await loadTier();
+  for (const notify of subscribers) notify(tier);
+  return tier;
+}
+
 /** The visitor's plan: guest, free or plus (see src/lib/access.ts). While it
  *  loads, the Free plan is shown so nothing Plus-only flashes up. */
 export function useAccess(): AccessState {
