@@ -14,3 +14,11 @@ The invented website screen and the cap-and-gown logo are left out.
   rebuild → riser → hit on the end card at 40.1 s. Ducked under the voice.
 - `film.html` + `render.mjs` — two versions: with subtitles and clean.
 The panels and rendered files stay out of the repository.
+
+## Hindi version (2026-11-09)
+
+`hi/voice-hi.json` — the voiceover translated to Hindi (Kokoro hm_omega,
+"DocRoute" read as "डॉक रूट"), 63.1 s. Shots start where their lines start
+(`hi/bounds.json`), the score follows the same timeline (`music.py` third
+argument), subtitles in Noto Sans Devanagari.
+`LANG_DIR=hi node render.mjs` → `hi/DocRoute-film-hi-subs.mp4` and `-clean.mp4`.

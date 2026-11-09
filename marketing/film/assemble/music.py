@@ -9,8 +9,13 @@ import numpy as np, soundfile as sf
 from scipy.signal import butter, sosfilt, fftconvolve
 
 dur, out = float(sys.argv[1]), sys.argv[2]
+# optional third argument: JSON {"end": hit time, "b": .., "c": .., "d": .., "e": ..} section starts (another language)
+import json as _json
+P = _json.loads(sys.argv[3]) if len(sys.argv) > 3 else {"end": 40.1, "b": 10.1, "c": 15.1, "d": 25.1, "e": 30.1}
 SR = 44100; N = int(dur * SR); rng = np.random.default_rng(11)
-BEAT = 60 / 96; BAR = 4 * BEAT; T0 = 40.1 - 16 * BAR          # = 0.1 s: bars land on 40.1
+BEAT = 60 / 96; BAR = 4 * BEAT; END = P["end"]; T0 = END - np.floor(END / BAR) * BAR   # bars land on the end card
+snap = lambda x: T0 + round((x - T0) / BAR) * BAR
+SB, SC, SD, SE = snap(P["b"]), snap(P["c"]), snap(P["d"]), snap(P["e"]); SR_, SG, SZ = END - BAR, END, END + 2 * BAR
 L = np.zeros((N, 2)); DRY = np.zeros((N, 2))                  # L goes to the reverb, DRY does not
 
 def put(buf, sig, at, gain=1.0, pan=0.0):
@@ -71,8 +76,8 @@ nbars = int(np.ceil((dur - T0) / BAR)) + 1
 for b in range(-1, nbars):
     t = T0 + b * BAR; ch = CH[b % 4]; root = ROOT[b % 4]
     if t + BAR < 0 or t >= dur - .3: continue
-    sec = "A" if t < 10.1 else "B" if t < 15.1 else "C" if t < 25.1 else "D" if t < 30.1 else "E" if t < 37.6 else "R" if t < 40.1 else "G"
-    if t >= 45.1: sec = "Z"
+    sec = "A" if t < SB else "B" if t < SC else "C" if t < SD else "D" if t < SE else "E" if t < SR_ else "R" if t < SG else "G"
+    if t >= SZ: sec = "Z"
     # piano
     if sec in "AD":
         q = .45 if sec == "A" else .6
@@ -113,12 +118,12 @@ for b in range(-1, nbars):
 # riser into the end card and the hit on 40.1
 r = np.arange(int(2.5 * SR)) / SR; noise = rng.standard_normal(len(r))
 sweep = np.concatenate([bp(noise[i:i + 2205], 300 + 6000 * (i / len(r)) ** 2, 800 + 9000 * (i / len(r)) ** 2) for i in range(0, len(r), 2205)])[: len(r)]
-put(L, sweep * (r / 2.5) ** 2.5, 37.6, 1.1)
-for i in range(8): put(DRY, kick(), 37.6 + i * BEAT / 2 * (1 - i / 16), .12 + .05 * i)   # a building pulse into the hit
+put(L, sweep * (r / 2.5) ** 2.5, END - BAR, 1.1)
+for i in range(8): put(DRY, kick(), END - BAR + i * BEAT / 2 * (1 - i / 16), .12 + .05 * i)   # a building pulse into the hit
 boom = np.sin(2 * np.pi * np.cumsum(38 + 40 * np.exp(-np.arange(int(2 * SR)) / SR * 6)) / SR) * np.exp(-np.arange(int(2 * SR)) / SR * 1.8)
-put(DRY, boom, 40.1, .6)
-for k, m in enumerate([57, 60, 64, 69, 72]): put(L, piano(m, 9, .55), 45.1, .55, -.4 + .2 * k)     # the last chord rings out
-put(L, pad([57, 60, 64, 69], 7, 1500, 1.0), 45.1, .16)
+put(DRY, boom, END, .6)
+for k, m in enumerate([57, 60, 64, 69, 72]): put(L, piano(m, 9, .55), SZ, .55, -.4 + .2 * k)     # the last chord rings out
+put(L, pad([57, 60, 64, 69], 7, 1500, 1.0), SZ, .16)
 
 # reverb: a 3 s decaying noise tail, wider on the right
 ir_t = np.arange(int(3.0 * SR)) / SR

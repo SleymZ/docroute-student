@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("/home/claude/docroute-student/marketing/promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("/home/claude/docroute-student/marketing/promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070a; font-family: "Inter", sans-serif; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070a; font-family: "Inter", "Noto Sans Devanagari", sans-serif; }
   .shot { position: absolute; inset: 0; overflow: hidden; }
   .bg { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; object-fit: cover; filter: blur(46px) brightness(.42) saturate(1.1); }
   .frame { position: absolute; left: 0; width: 1080px; height: 722px; top: 500px; overflow: hidden; box-shadow: 0 40px 120px rgba(0,0,0,.7); }
@@ -44,7 +46,9 @@ const SHOTS = [
 const XF = .45;   // crossfade between shots
 let els = [], capLines, TL;
 function build() {
-  TL = window.TL; const root = document.getElementById("shots");
+  TL = window.TL;
+  // another language: shots start where their lines start (BOUNDS = shot start times + end)
+  if (window.BOUNDS) SHOTS.forEach((s, i) => { s.a = window.BOUNDS[i]; s.b = window.BOUNDS[i + 1]; }); const root = document.getElementById("shots");
   els = SHOTS.map(s => { const d = document.createElement("div"); d.className = "shot"; d.innerHTML = `<img class="bg" src="panels/${s.img}.png"><div class="frame"><img src="panels/${s.img}.png"></div>`; root.append(d); return { d, im: d.querySelector(".frame img"), bg: d.querySelector(".bg") }; });
   capLines = TL.map(l => l.line.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${esc(p)}</span>`).join(""));
 }
@@ -60,7 +64,7 @@ function setTime(t) {
     e.im.style.transform = `translate(${ox}px, ${oy}px) scale(${z})`; e.im.style.filter = s.f; e.bg.style.filter = `blur(46px) brightness(.42) ${s.f}`;
   });
   // the laptop glow turns into the orange of the end card
-  document.getElementById("orange").style.opacity = Math.pow(prog(t, 38.6, 40.1), 1.6);
+  const END = SHOTS[SHOTS.length - 1].b; document.getElementById("orange").style.opacity = Math.pow(prog(t, END - 1.5, END), 1.6);
   // film grain
   const g = document.getElementById("grain").getContext("2d"), img = g.createImageData(540, 960); let seed = Math.floor(t * 30) * 9301 + 49297;
   for (let i = 0; i < img.data.length; i += 4) { seed = (seed * 9301 + 49297) % 233280; const v = seed / 233280 * 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }

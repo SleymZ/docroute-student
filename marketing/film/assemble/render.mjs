@@ -1,7 +1,7 @@
 import { createRequire } from "node:module"; import { spawn } from "node:child_process"; import fs from "node:fs"; import path from "node:path";
 const require = createRequire(import.meta.url); const p = require("/opt/npm-tools/node_modules/puppeteer");
-const here = "/home/claude/edit", FPS = 30;
-const VT = JSON.parse(fs.readFileSync(here + "/vt.json")); const END = 40.1, TOTAL = VT.total;
+const here = "/home/claude/edit", FPS = 30, LANG = process.env.LANG_DIR || "", D = LANG ? here + "/" + LANG : here;
+const VT = JSON.parse(fs.readFileSync(D + "/vt.json")); const BOUNDS = LANG ? JSON.parse(fs.readFileSync(D + "/bounds.json")).bounds : null; const END = BOUNDS ? BOUNDS[BOUNDS.length - 1] : 40.1, TOTAL = VT.total;
 const MAP = JSON.parse(fs.readFileSync(here + "/endmap.json"));
 const s = fs.readFileSync("/home/claude/docroute-student/src/components/Logo.tsx", "utf8"); const g = n => s.match(new RegExp(n + '\\s*=\\s*"([^"]+)"'))[1];
 const LOGO = { ring: g("logoRingPath"), europe: g("logoEuropePath"), swoosh: g("logoSwooshPath"), plane: g("logoPlanePath"), planeT: g("logoPlaneTransform") };
@@ -17,19 +17,19 @@ const stills = process.argv[2] === "--frames" ? process.argv[3].split(",").map(N
 async function version(subs) {
   const b = await p.launch({ executablePath: "/usr/bin/google-chrome", headless: true, args: ["--no-sandbox", "--allow-file-access-from-files"] });
   const film = await b.newPage(); await film.setViewport({ width: 1080, height: 1920 });
-  await film.evaluateOnNewDocument(d => Object.assign(window, d), { TL: VT.lines, SUBS: subs });
-  await film.goto("file://" + here + "/film.html"); await film.evaluate(async () => { await document.fonts.load("700 40px Inter", "A"); build(); await Promise.all([...document.images].map(i => i.decode())); });
+  await film.evaluateOnNewDocument(d => Object.assign(window, d), { TL: VT.lines, SUBS: subs, BOUNDS });
+  await film.goto("file://" + here + "/film.html"); await film.evaluate(async () => { await document.fonts.load("700 40px Inter", "A"); await document.fonts.load('700 40px "Noto Sans Devanagari"', "अ"); build(); await Promise.all([...document.images].map(i => i.decode())); });
   const b2 = await p.launch({ executablePath: "/usr/bin/google-chrome", headless: true, args: ["--no-sandbox", "--allow-file-access-from-files"] });
   const end = await b2.newPage(); await end.setViewport({ width: 1080, height: 1920 });
   const caps = subs ? VT.lines.filter(l => l.a >= END).map(l => ({ ...l, a: l.a - END, b: l.b - END })) : [];
   await end.evaluateOnNewDocument(d => Object.assign(window, d), { MAP, LOGO, MODE: "endlogo", CAPS: caps });
-  await end.goto("file://" + here + "/endcard.html"); await end.evaluate(async () => { await document.fonts.load("800 40px Inter", "A"); build(); });
+  await end.goto("file://" + here + "/endcard.html"); await end.evaluate(async () => { await document.fonts.load("800 40px Inter", "A"); await document.fonts.load('700 40px "Noto Sans Devanagari"', "अ"); build(); });
   const tag = subs ? "subs" : "clean";
-  if (stills) { for (const t of stills) { const pg = t < END ? film : end; await pg.evaluate(t => setTime(t), t < END ? t : t - END); await pg.screenshot({ path: `${here}/still-${tag}-${t}.jpg`, type: "jpeg", quality: 85 }); } await b.close(); await b2.close(); return; }
-  await rec(film, 0, END, `${here}/part1-${tag}.mp4`); await rec(end, 0, +(TOTAL - END).toFixed(3), `${here}/part2-${tag}.mp4`);
+  if (stills) { for (const t of stills) { const pg = t < END ? film : end; await pg.evaluate(t => setTime(t), t < END ? t : t - END); await pg.screenshot({ path: `${D}/still-${tag}-${t}.jpg`, type: "jpeg", quality: 85 }); } await b.close(); await b2.close(); return; }
+  await rec(film, 0, END, `${D}/part1-${tag}.mp4`); await rec(end, 0, +(TOTAL - END).toFixed(3), `${D}/part2-${tag}.mp4`);
   await b.close(); await b2.close();
-  fs.writeFileSync(`${here}/list-${tag}.txt`, `file '${here}/part1-${tag}.mp4'\nfile '${here}/part2-${tag}.mp4'\n`);
-  await run("ffmpeg", ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", `${here}/list-${tag}.txt`, "-i", `${here}/mix.wav`, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", `${here}/DocRoute-film-${tag}.mp4`]);
+  fs.writeFileSync(`${D}/list-${tag}.txt`, `file '${D}/part1-${tag}.mp4'\nfile '${D}/part2-${tag}.mp4'\n`);
+  await run("ffmpeg", ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", `${D}/list-${tag}.txt`, "-i", `${D}/mix.wav`, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", `${D}/DocRoute-film${LANG ? "-" + LANG : ""}-${tag}.mp4`]);
 }
 await Promise.all([version(true), version(false)]);
 console.log("ok");
