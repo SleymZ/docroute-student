@@ -91,6 +91,10 @@ export type Database = {
           plus_until: string | null;
           source: "manual" | "beta" | "payment";
           note: string | null;
+          whop_membership_id: string | null;
+          whop_status: string | null;
+          whop_manage_url: string | null;
+          whop_synced_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -307,6 +311,18 @@ export type Database = {
       has_plus: {
         Args: never;
         Returns: boolean;
+      };
+      // Only the server's secret key may call it (Whop webhook).
+      apply_whop_membership: {
+        Args: {
+          p_user_id: string;
+          p_membership_id: string;
+          p_status: string;
+          p_active: boolean;
+          p_plus_until: string | null;
+          p_manage_url: string | null;
+        };
+        Returns: string;
       };
       delete_my_account: {
         Args: never;

@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-08 (launch review, welcome email, videos). Keep this file factual: describe what exists and
+Last updated: 2026-11-09 (Plus payments through Whop). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -63,6 +63,34 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Plus payments through Whop (2026-11-09)
+
+Owner decision 2026-11-09: make payment fully working through Whop. Details,
+environment variables and the pre-launch list: `docs/PAYMENTS.md`.
+
+- Code: `src/lib/whop.ts` (config, signature, membership → plan, API),
+  `src/lib/whop-sync.ts`, `POST /api/billing/checkout`,
+  `POST /api/webhooks/whop` (skips the session proxy),
+  `src/lib/supabase/admin.ts` (`SUPABASE_SECRET_KEY`), `PlusCheckout` on
+  `/plus`, `/plus/thanks` (polls until Plus arrives), plan line on
+  `/account` with "Manage or cancel on Whop". No new npm packages.
+- Migration `20261109120000_whop_payments.sql`: `whop_*` columns on
+  `account_plans` and `apply_whop_membership()` for `service_role` only.
+  Checked on local Postgres 16: authenticated/anon refused, active → plus,
+  other membership's cancel ignored, beta grant kept, unknown account
+  `no-account`, bad id and duplicate membership refused, users still cannot
+  update their row.
+- Webhook signature checked against the official `@whop/sdk` 2.7
+  `unwrapWebhook` (it accepted our signature). Local server: forged
+  signature → 401, valid → passes to the database step.
+- Everything is off until `PAYMENTS_ENABLED=true` and the Whop keys are set;
+  `WHOP_ENVIRONMENT` defaults to sandbox. Terms show a "Plus (paid plan)"
+  section (`/terms#plus`) and drop "non-commercial" only while payments are
+  on; Privacy lists Whop. Email-reminder promises now say "coming soon".
+- Not done (owner/lawyer): IČO, seller identity, `isCommercial`, lawyer
+  review, Vercel Pro, server-built routes (locked steps still in JS).
+- Tests: `tests/whop.test.ts` (13).
 
 ## Launch review 2026-11 (2026-11-08, before the 9 November beta)
 

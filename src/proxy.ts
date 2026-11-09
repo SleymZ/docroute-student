@@ -66,8 +66,8 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Image lookup APIs are public and cached; they never need a session
-    // refresh, so they skip the Supabase round trip.
-    "/((?!_next/static|_next/image|favicon.ico|api/university-image|api/country-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Image lookup APIs are public and cached, and the Whop webhook has no
+    // visitor session; they skip the Supabase round trip.
+    "/((?!_next/static|_next/image|favicon.ico|api/university-image|api/country-image|api/webhooks|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

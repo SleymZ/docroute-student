@@ -35,7 +35,7 @@ const dataRows = [
     kept: "Until you remove them or delete your account.",
   },
   {
-    what: "Your plan (Free or Plus): whether your account has Plus, until when, and how it was given (by the DocRoute team during the beta; payment details are never stored by DocRoute).",
+    what: "Your plan (Free or Plus): whether your account has Plus, until when, and how it was given (by the DocRoute team, or bought through Whop). If you buy Plus: the Whop membership ID, its status and a link to manage it. Card and payment details are never stored by DocRoute.",
     why: "To show the features of your plan, such as dates, PDF/PNG and My route.",
     basis: "Contract (Art. 6(1)(b)).",
     kept: "Until your plan changes or you delete your account.",
@@ -99,6 +99,11 @@ const processors = [
     name: "Google LLC / Google Ireland Ltd",
     role: "Only if you choose “Continue with Google”: confirms your identity to us. Gmail also delivers DocRoute's emails from docroutestu@gmail.com (it receives your email address and the message).",
     link: "https://policies.google.com/privacy",
+  },
+  {
+    name: "Whop, Inc.",
+    role: "Only if you buy Plus: Whop sells and bills Plus as merchant of record. It receives your email address, payment details and your DocRoute account ID (attached to the checkout so the payment reaches your account), and tells us when Plus starts, renews or ends. Whop is responsible for the payment data under its own privacy policy and keeps records as tax law requires.",
+    link: "https://whop.com/privacy/",
   },
   {
     name: "Wikimedia Foundation",

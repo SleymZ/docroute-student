@@ -29,7 +29,9 @@ import { PublicProfileEditor } from "@/components/PublicProfileEditor";
 import { Header } from "@/components/Header";
 import catalog from "@/data/universities.json";
 import { verifiedPrograms } from "@/data/verified-programs";
+import { getLocale } from "@/i18n/server";
 import { getAdmissionDate } from "@/lib/admission-date";
+import { ordersUrl, whopConfig } from "@/lib/whop";
 import { matchPrograms, matchStatusLabels } from "@/lib/match-programs";
 import {
   formatDegreeLevel,
@@ -130,6 +132,59 @@ async function loadWorkspaceMemory(
   }
 }
 
+type PlanRow = {
+  plan: "free" | "plus";
+  plus_until: string | null;
+  source: "manual" | "beta" | "payment";
+  whop_status: string | null;
+  whop_manage_url: string | null;
+};
+
+async function loadPlan(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  userId: string,
+): Promise<PlanRow | null> {
+  try {
+    const { data } = await supabase
+      .from("account_plans")
+      .select("plan, plus_until, source, whop_status, whop_manage_url")
+      .eq("user_id", userId)
+      .maybeSingle();
+    return (data as PlanRow | null) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** "Plan: Free · See Plus" or "Plan: Plus until … · Manage on Whop". */
+function renderPlanLine(plan: PlanRow | null, locale: string) {
+  const active = plan?.plan === "plus" && (!plan.plus_until || Date.parse(plan.plus_until) > Date.now());
+  if (!active) {
+    return (
+      <p className={styles.planLine}>
+        Plan: Free · <Link href="/plus">See Plus</Link>
+      </p>
+    );
+  }
+  const until = plan.plus_until
+    ? new Date(plan.plus_until).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" })
+    : null;
+  if (plan.source !== "payment") {
+    return <p className={styles.planLine}>{until ? <>Plan: Plus (beta) until {until}</> : <>Plan: Plus (beta)</>}</p>;
+  }
+  const manage = plan.whop_manage_url ?? ordersUrl(whopConfig());
+  const ending = plan.whop_status === "canceling" || plan.whop_status === "canceled" || plan.whop_status === "completed";
+  return (
+    <p className={styles.planLine}>
+      {ending ? until ? <>Plan: Plus until {until}</> : <>Plan: Plus</> : <>Plan: Plus · renews automatically</>}
+      {" · "}
+      <a href={manage} target="_blank" rel="noreferrer">
+        Manage or cancel on Whop
+      </a>
+    </p>
+  );
+}
+
 export default async function AccountPage() {
   if (!isSupabaseConfigured()) {
     return (
@@ -165,6 +220,9 @@ export default async function AccountPage() {
   }
 
   const memory = await loadWorkspaceMemory(supabase, user.id);
+  const plan = await loadPlan(supabase, user.id);
+  const locale = await getLocale();
+  const planLine = renderPlanLine(plan, locale);
   const publicProfile = await loadPublicProfile(supabase, user.id).catch(
     () => null,
   );
@@ -192,6 +250,7 @@ export default async function AccountPage() {
         <small>SIGNED IN AS</small>
         <strong>{user.email}</strong>
         <p>Private workspace · synced to your account</p>
+        {planLine}
       </div>
       <AccountSignOut />
     </aside>
