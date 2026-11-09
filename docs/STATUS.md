@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-09 (Plus payments through Whop). Keep this file factual: describe what exists and
+Last updated: 2026-11-09 (Plus payments through Whop, delete own story). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
