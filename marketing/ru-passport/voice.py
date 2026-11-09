@@ -28,7 +28,7 @@ for i, (line, gap) in enumerate(LINES):
     raw, w = os.path.join(vd, f"{i}-raw.wav"), os.path.join(vd, f"{i}.wav")
     say = line.replace("DocRoute", "Док Рут")
     if len(sys.argv) > 1:
-        subprocess.run([sys.executable, "-m", "piper", "-m", sys.argv[1], "-f", raw, "--length-scale", "0.95"], input=say.encode(), check=True, stderr=subprocess.DEVNULL)
+        subprocess.run([sys.executable, "-m", "piper", "-m", sys.argv[1], "-f", raw, "--length-scale", "1.0", "--noise-scale", "0.6", "--noise-w-scale", "0.8"], input=say.encode(), check=True, stderr=subprocess.DEVNULL)
     else:
         subprocess.run(["RHVoice-test", "-p", "aleksandr-hq", "-r", "112", "-o", raw], input=say.encode(), check=True)
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", raw, "-af", trim, "-ar", str(SR), "-ac", "1", w], check=True)
