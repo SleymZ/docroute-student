@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 500; src: url("../promo/fonts/noto-sans-devanagari-devanagari-500-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("../promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("../promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  :root { --bg: #0f1115; --ink: #f5f2ee; --muted: #a9a5a1; --coral: #ff795f; --card: #191c22; --line: #2b2f37; --ok: #5ad48a; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", "Noto Sans Devanagari", "Noto Sans CJK SC", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  body.zh { font-family: "Inter", "Noto Sans CJK SC", sans-serif; }
+  #glow { position: absolute; inset: -200px; }
+  .layer { position: absolute; inset: 0; }
+  .center { position: absolute; left: 80px; right: 80px; text-align: center; }
+  .h1 { font-weight: 800; font-size: 104px; line-height: 1.08; letter-spacing: -0.03em; }
+  .h2 { font-weight: 800; font-size: 80px; line-height: 1.12; letter-spacing: -0.025em; }
+  .lead { font-weight: 600; font-size: 46px; line-height: 1.3; color: var(--muted); }
+  body.hi .h1, body.hi .h2 { letter-spacing: 0; line-height: 1.3; }
+  body.zh .h1, body.zh .h2 { letter-spacing: 0.01em; }
+  .coral { color: var(--coral); }
+  .pill { display: inline-flex; align-items: center; gap: 16px; font-size: 42px; font-weight: 700; background: var(--card); border: 2px solid var(--line); border-radius: 999px; padding: 16px 36px; font-variant-numeric: tabular-nums; }
+  .pill i { width: 30px; height: 22px; border: 4px solid var(--coral); border-radius: 6px; display: block; }
+  .chip { position: absolute; left: 0; top: 0; white-space: nowrap; background: var(--card); border: 2px solid var(--line); border-radius: 22px; padding: 22px 30px 22px 26px; font-size: 40px; font-weight: 600; box-shadow: 0 18px 40px rgba(0,0,0,.45); display: flex; align-items: center; gap: 18px; }
+  .dots { display: flex; gap: 8px; } .dots i { width: 14px; height: 14px; border-radius: 50%; background: #3a3f49; display: block; }
+  .chip .x { color: #6b7079; font-weight: 500; margin-left: 8px; }
+  .btn { display: inline-block; background: var(--coral); color: #1a0d09; font-weight: 800; font-size: 56px; border-radius: 999px; padding: 30px 64px; box-shadow: 0 20px 60px rgba(255,121,95,.35); }
+  #cur { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(255,255,255,.92); border: 5px solid #0f1115; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+  #rip { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; border: 6px solid #fff; }
+  .word { font-weight: 800; font-size: 120px; letter-spacing: -0.035em; }
+  .card { position: absolute; left: 70px; right: 70px; background: var(--card); border: 2px solid var(--line); border-radius: 40px; padding: 40px 40px 24px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  .cardhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .cardhead .t { display: flex; align-items: center; gap: 18px; font-size: 40px; font-weight: 800; }
+  .tag { font-size: 28px; font-weight: 700; color: var(--muted); border: 2px solid var(--line); border-radius: 999px; padding: 8px 22px; }
+  .step { display: flex; gap: 26px; align-items: center; padding: 22px 0; border-top: 2px solid var(--line); }
+  .num { flex: 0 0 70px; height: 70px; border-radius: 50%; border: 4px solid #3a3f49; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: var(--muted); }
+  .faces { flex: 1; min-width: 0; display: grid; }
+  .faces > div { grid-area: 1 / 1; align-self: center; transform-origin: center; }
+  .front { display: flex; align-items: center; gap: 16px; background: #23262e; border-radius: 18px; padding: 18px 22px; font-size: 36px; font-weight: 600; color: #c9c5c1; }
+  .front .ft { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .front .q { color: #ff6b6b; font-weight: 800; }
+  .back b { display: block; font-size: 40px; font-weight: 700; line-height: 1.22; }
+  .meta { display: flex; gap: 16px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+  .date { font-size: 30px; font-weight: 700; color: var(--coral); }
+  .src { font-size: 27px; font-weight: 600; color: var(--ok); background: rgba(90,212,138,.12); border-radius: 999px; padding: 6px 18px; }
+  .badge { position: absolute; left: 80px; right: 80px; display: flex; align-items: center; gap: 30px; background: var(--card); border: 3px solid var(--coral); border-radius: 32px; padding: 34px 40px; }
+  .badge img { width: 132px; height: 99px; border-radius: 12px; object-fit: cover; box-shadow: 0 0 0 2px rgba(255,255,255,.12); }
+  .badge .bt { font-size: 50px; font-weight: 700; line-height: 1.25; }
+  .url { font-size: 44px; font-weight: 700; }
+  .small { font-size: 32px; font-weight: 500; color: var(--muted); }
+</style>
+</head>
+<body>
+<canvas id="glow" width="1480" height="2320"></canvas>
+<div id="root" class="layer"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const phrases = s => esc(s).split(/(?<=[.。，、！？।]\s?)/).filter(x => x.trim()).map(x => `<span style="display:inline-block;white-space:nowrap;max-width:100%">${x.trim()}&nbsp;</span>`).join("");
+function io(t, a, b, inDur = .4, outDur = .28) { const i = easeOut(prog(t, a, a + inDur)), o = easeInOut(prog(t, b - outDur, b)); return { op: i * (1 - o), dy: (1 - i) * 60 - o * 60 }; }
+function setIO(e, s, extra = "") { e.style.opacity = s.op; e.style.transform = `translateY(${s.dy}px) ${extra}`; e.style.visibility = s.op <= .001 ? "hidden" : "visible"; }
+function fit(e, maxLines) { let fs = parseFloat(getComputedStyle(e).fontSize); const lh = () => parseFloat(getComputedStyle(e).lineHeight); const wide = () => [...e.querySelectorAll("span")].some(x => x.scrollWidth > e.clientWidth + 1); while ((e.offsetHeight > lh() * maxLines + 2 || wide()) && fs > 40) { fs -= 4; e.style.fontSize = fs + "px"; } }
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span class="coral">Route</span></span>`;
+// which tab becomes which step of the route
+const TAB_FOR_STEP = [0, 2, 1, 7];
+let S = {};
+function build() {
+  const T = window.T, root = document.getElementById("root"); document.body.classList.add(window.LANG);
+  // hook
+  S.h1 = el("div", "center h1", esc(T.hook)); S.h1.style.top = "190px"; root.append(S.h1); fit(S.h1, 2);
+  S.h1b = el("div", "center h1 coral", esc(T.close)); root.append(S.h1b); fit(S.h1b, 2); S.h1b.style.top = (S.h1.offsetTop + S.h1.offsetHeight + 6) + "px";
+  S.count = el("div", "center", `<span class="pill"><i></i><span class="n"></span></span>`); root.append(S.count); S.count.style.top = (S.h1b.offsetTop + S.h1b.offsetHeight + 40) + "px"; S.n = S.count.querySelector(".n");
+  const shift = Math.max(0, S.count.offsetTop + S.count.offsetHeight + 40 - 660);
+  // the problem
+  S.p1 = el("div", "center h2", phrases(T.p1)); S.p1.style.top = "220px"; root.append(S.p1); fit(S.p1, 3);
+  S.p2 = el("div", "center h2 coral", esc(T.p2)); S.p2.style.top = "1330px"; root.append(S.p2); fit(S.p2, 3);
+  const spots = [[110, 660, -6], [540, 700, 5], [160, 820, 4], [500, 880, -4], [90, 990, -3], [540, 1050, 6], [170, 1150, 5], [470, 1200, -5]];
+  S.chips = T.chips.map((c, i) => { const e = el("div", "chip", `<span class="dots"><i></i><i></i><i></i></span>${esc(c)}<span class="x">×</span>`); root.append(e); const sp = [...spots[i]]; sp[1] += shift; return { e, spot: sp }; });
+  S.chips.forEach(c => { const w = c.e.offsetWidth; if (c.spot[0] + w > 1000) c.spot[0] = Math.max(60, 1000 - w); });
+  const chipsBottom = Math.max(...S.chips.map(c => c.spot[1] + c.e.offsetHeight)); S.p2.style.top = Math.max(1330, chipsBottom + 60) + "px"; fit(S.p2, 2);
+  // close all
+  S.close = el("div", "center", `<span class="btn">${esc(T.closeAll)}</span>`); S.close.style.top = "1560px"; root.append(S.close);
+  const br = S.close.querySelector(".btn").getBoundingClientRect(); S.tap = [br.left + br.width * .66, br.top + br.height * .55];
+  S.cur = el("div"); S.cur.id = "cur"; S.rip = el("div"); S.rip.id = "rip";
+  // DocRoute
+  S.logo = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:600px;display:flex;justify-content:center">${logoSVG(360)}</div>
+    <div class="center word" style="top:1000px">${wordmark()}</div>
+    <div class="center lead tg" style="top:1170px;color:var(--ink)">${esc(T.tagline)}</div>`); root.append(S.logo);
+  S.logoSvg = S.logo.querySelector("svg"); S.logoWord = S.logo.querySelector(".word"); S.logoTag = S.logo.querySelector(".tg");
+  // tabs become steps
+  S.rt = el("div", "center h2", phrases(T.routeTitle)); S.rt.style.top = "200px"; root.append(S.rt); fit(S.rt, 3);
+  S.card = el("div", "card", `<div class="cardhead"><div class="t">${logoSVG(56)}${wordmark()}</div><div class="tag">${esc(T.example)}</div></div>` +
+    T.steps.map((s, i) => `<div class="step"><div class="num">${i + 1}</div><div class="faces">
+      <div class="front"><span class="dots"><i></i><i></i><i></i></span><span class="ft">${esc(T.chips[TAB_FOR_STEP[i]])}</span><span class="q">?</span></div>
+      <div class="back"><b>${esc(s)}</b><div class="meta"><span class="date">${esc(T.dates[i])}</span><span class="src">✓ ${esc(T.source)}</span></div></div></div></div>`).join(""));
+  root.append(S.card); S.card.style.top = (S.rt.offsetTop + S.rt.offsetHeight + 60) + "px";
+  S.steps = [...S.card.querySelectorAll(".step")];
+  // passport
+  S.pt = el("div", "center h2", esc(T.passportTitle)); root.append(S.pt);
+  S.badge = el("div", "badge", `<img><div class="bt"></div>`); root.append(S.badge);
+  S.pt.style.top = Math.round(860 - (S.pt.offsetHeight + 80 + S.badge.offsetHeight) / 2) + "px";
+  S.badge.style.top = (S.pt.offsetTop + S.pt.offsetHeight + 80) + "px";
+  // call to action
+  S.end = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:330px;display:flex;justify-content:center">${logoSVG(250)}</div>
+    <div class="center word" style="top:620px;font-size:104px">${wordmark()}</div>
+    <div class="center lead" style="top:780px;color:var(--ink)">${esc(T.tagline)}</div>
+    <div class="center" style="top:930px"><span class="btn" style="font-size:60px">${esc(T.cta)}</span></div>
+    <div class="center lead" style="top:1130px">${esc(T.stats)}<br>${esc(T.sub)}</div>
+    <div class="center url" style="top:1310px">docroute-student.vercel.app</div>
+    <div class="center small" style="top:1400px">${esc(T.disclaimer)}</div>`); root.append(S.end);
+  S.endParts = [...S.end.children];
+  root.append(S.rip, S.cur);
+  setBadge(0);
+}
+let badgeIdx = -1;
+function setBadge(i) { if (i === badgeIdx) return; badgeIdx = i; const T = window.T, codes = ["in", "ng", "br", "vn", "kz"]; S.badge.querySelector("img").src = `flags/${codes[i]}.svg`; S.badge.querySelector(".bt").textContent = T.badge.replace("{0}", T.countries[i]); }
+function glow(t) {
+  const c = document.getElementById("glow"), g = c.getContext("2d"); g.clearRect(0, 0, c.width, c.height);
+  const x = 740 + Math.sin(t * .5) * 260, y = 700 + Math.cos(t * .37) * 300;
+  let r = g.createRadialGradient(x, y, 0, x, y, 900); r.addColorStop(0, "rgba(255,121,95,0.20)"); r.addColorStop(1, "rgba(255,121,95,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+  const x2 = 500 - Math.sin(t * .41) * 240, y2 = 1800 + Math.sin(t * .3) * 200;
+  r = g.createRadialGradient(x2, y2, 0, x2, y2, 800); r.addColorStop(0, "rgba(90,120,255,0.10)"); r.addColorStop(1, "rgba(90,120,255,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+}
+function setTime(t) {
+  glow(t); const T = window.T;
+  // 0–3 hook: tabs pile up fast while the counter runs
+  setIO(S.h1, io(t, .05, 3.0, .35), `scale(${.94 + .06 * easeOut(prog(t, .05, .5))})`);
+  setIO(S.h1b, io(t, 1.25, 3.0, .35));
+  setIO(S.count, io(t, .25, 3.0, .3));
+  S.n.textContent = T.tabsOpen.replace("{0}", String(Math.max(1, Math.round(27 * easeOut(prog(t, .2, 2.6))))));
+  // 3–7.7 the problem
+  setIO(S.p1, io(t, 3.05, 7.6, .4)); setIO(S.p2, io(t, 4.9, 7.6, .4));
+  const conv = easeInOut(prog(t, 8.15, 8.85));
+  S.chips.forEach((c, i) => {
+    const a = .2 + i * .27, p = back(prog(t, a, a + .4)), vis = prog(t, a, a + .1);
+    const [sx, sy, rot] = c.spot, w = c.e.offsetWidth, h = c.e.offsetHeight;
+    const fromX = i % 2 ? 1300 : -900, fromY = sy + (i % 3 - 1) * 200;
+    let x = fromX + (sx - fromX) * p, y = fromY + (sy - fromY) * p;
+    const shake = t > 3 && t < 8.15 ? Math.sin(t * 22 + i * 1.7) * (2 + 3 * prog(t, 4.9, 6)) : 0;
+    x += shake; let r = rot + shake * .6, s = 1;
+    if (conv > 0) { x += (540 - w / 2 - x) * conv; y += (900 - h / 2 - y) * conv; s = 1 - .9 * conv; r *= 1 - conv; }
+    const op = vis * (1 - prog(t, 8.6, 8.9)); c.e.style.opacity = op; c.e.style.visibility = op > .001 ? "visible" : "hidden";
+    c.e.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg) scale(${s})`;
+  });
+  // 7.4–8.6 "close all tabs", tapped at 8.1
+  setIO(S.close, io(t, 7.35, 8.6, .3, .3), `scale(${t > 8.02 && t < 8.22 ? .94 : 1})`);
+  const tapT = 8.1, cp = easeInOut(prog(t, 7.5, tapT - .05)); const on = t > 7.5 && t < 8.6;
+  S.cur.style.display = on ? "block" : "none"; S.cur.style.left = (S.tap[0] + (1 - cp) * 200) + "px"; S.cur.style.top = (S.tap[1] + (1 - cp) * 240) + "px"; S.cur.style.transform = `scale(${t > tapT - .08 && t < tapT + .12 ? .78 : 1})`;
+  const rp = prog(t, tapT, tapT + .5); S.rip.style.display = t >= tapT && rp < 1 ? "block" : "none"; S.rip.style.left = S.tap[0] + "px"; S.rip.style.top = S.tap[1] + "px"; S.rip.style.transform = `scale(${1 + rp * 5})`; S.rip.style.opacity = 1 - rp;
+  // 8.6–10.5 DocRoute
+  const lg = io(t, 8.6, 10.5, .5); S.logo.style.visibility = t > 8.6 && t < 10.5 ? "visible" : "hidden";
+  S.logoSvg.style.opacity = lg.op; S.logoSvg.style.transform = `scale(${.4 + .6 * back(prog(t, 8.6, 9.15))})`;
+  setIO(S.logoWord, io(t, 9.0, 10.5, .4)); setIO(S.logoTag, io(t, 9.3, 10.5, .4));
+  // 10.5–17 the tabs turn into steps
+  setIO(S.rt, io(t, 10.55, 17, .4)); setIO(S.card, io(t, 10.7, 17, .45));
+  S.steps.forEach((s, i) => {
+    const f = 11.7 + i * 1.15, p = prog(t, f, f + .45), front = s.querySelector(".front"), bk = s.querySelector(".back"), n = s.querySelector(".num");
+    front.style.visibility = p < .5 ? "visible" : "hidden"; front.style.transform = `scaleY(${Math.max(0, 1 - 2 * p)})`;
+    bk.style.visibility = p >= .5 ? "visible" : "hidden"; bk.style.transform = `scaleY(${Math.max(0, 2 * p - 1)})`;
+    const d = p >= .5; n.style.borderColor = d ? "var(--ok)" : "#3a3f49"; n.style.background = d ? "rgba(90,212,138,.9)" : "transparent"; n.style.color = d ? "#0f1115" : "var(--muted)"; n.textContent = d ? "✓" : String(i + 1);
+  });
+  // 17–20 passport
+  setIO(S.pt, io(t, 17.05, 20, .4)); setIO(S.badge, io(t, 17.25, 20, .4));
+  setBadge(Math.min(4, Math.floor(clamp(t - 17.45, 0, 99) / .55)));
+  // 20–24 call to action
+  S.end.style.visibility = t >= 20 ? "visible" : "hidden";
+  S.endParts.forEach((e, i) => { const s = io(t, 20.05 + i * .16, 99, .4); let extra = ""; if (i === 0) extra = `scale(${.6 + .4 * back(prog(t, 20.05, 20.6))})`; if (i === 3) extra = `scale(${1 + .04 * Math.max(0, Math.sin((t - 21.2) * 4.2))})`; setIO(e, s, extra); });
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>

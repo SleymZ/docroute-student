@@ -12,7 +12,7 @@ here = os.path.dirname(os.path.abspath(__file__))
 video, models, langs = sys.argv[1], sys.argv[2], sys.argv[3:]
 base = os.path.join(here, "..", video)
 cfg = json.load(open(os.path.join(base, "voice.json")))
-name = {"promo": "promo", "teen": "unis"}[video]
+name = {"promo": "promo", "teen": "unis", "tabs": "tabs"}[video]
 KOKORO = {"en": ("am_michael", "en-us"), "es": ("em_alex", "es"), "hi": ("hm_omega", "hi"), "zh": ("zm_yunxi", "cmn")}
 # how the engines should read the brand and abbreviations
 SAY = {
@@ -53,17 +53,17 @@ for lang in langs:
     src = os.path.join(out, f"DocRoute-{name}-{lang}.mp4")
     total = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", src], capture_output=True, text=True).stdout)
     inputs = ["-i", src]
-    if video == "promo":  # the promo has a silent track: a quiet pad goes under the voice
+    if video in ("promo", "tabs"):  # the promo has a silent track: a quiet pad goes under the voice
         pad = os.path.join(tmp, "pad.wav")
         if not os.path.exists(pad): run("python3", os.path.join(here, "..", "story", "pad.py"), str(total), pad)
-        inputs += ["-i", pad]; bed = "[1:a]volume=0.16[bed]"
+        inputs += ["-i", pad]; bed = f"[1:a]volume={0 if os.environ.get('NOBED') else 0.16}[bed]"
     else:                 # the teen video keeps its beat, lowered under the voice
         bed = "[0:a]volume=0.42[bed]"
         inputs += ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
     for w, _ in wavs: inputs += ["-i", w]
     fc = bed + ";" + ";".join(f"[{i + 2}:a]aformat=channel_layouts=stereo,adelay={int(a * 1000)}|{int(a * 1000)}[v{i}]" for i, (_, a) in enumerate(wavs))
     fc += ";" + "".join(f"[v{i}]" for i in range(len(wavs))) + f"amix=inputs={len(wavs)}:normalize=0[vo];[bed][vo]amix=inputs=2:normalize=0:duration=first,atrim=0:{total},loudnorm=I=-14:TP=-1.5:LRA=11[a]"
-    dst = os.path.join(out, f"DocRoute-{name}-voice-{lang}.mp4"); part = dst[:-4] + ".tmp.mp4"
+    dst = os.path.join(out, f"DocRoute-{name}-voice{'-nomusic' if os.environ.get('NOBED') else ''}-{lang}.mp4"); part = dst[:-4] + ".tmp.mp4"
     run("ffmpeg", "-y", *inputs, "-filter_complex", fc, "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", part)
     os.replace(part, dst)
     print("done", video, lang)
