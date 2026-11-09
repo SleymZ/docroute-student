@@ -230,3 +230,9 @@ test("story comments are paged, and own unpublished comments always show", () =>
   assert.match(page, /loadOwnUnpublishedComments\(supabase, story\.id, user\.id\)/);
   assert.match(page, /\?comments=\$\{commentPage \+ 1\}/);
 });
+
+test("authors can delete their own story from the story page", () => {
+  const page = readFileSync(join(process.env.REPO_ROOT ?? process.cwd(), "src/app/stories/[id]/page.tsx"), "utf8");
+  assert.match(page, /user\?\.id === story\.user_id && \(/);
+  assert.match(page, /<DeleteStoryButton storyId=\{story\.id\} userId=\{story\.user_id\} redirectTo="\/stories" \/>/);
+});

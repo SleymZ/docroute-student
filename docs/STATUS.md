@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-09 (Plus payments through Whop). Keep this file factual: describe what exists and
+Last updated: 2026-11-09 (Plus payments through Whop, delete own story). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -64,6 +64,13 @@ page `/route/guide`, 2026-10-30).
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
 
+## Delete your own story from its page (2026-11-09)
+
+The author now sees "This is your story" under their story on `/stories/[id]`
+with **Edit story** (→ `/stories/new#your-stories`) and **Delete story**
+(confirmation; photos removed first, then the row; comments and likes go by
+cascade; then back to `/stories`). Before this, deleting was only possible in
+the list on `/stories/new`. Translated into ru/es/zh/hi.
 ## Plus payments through Whop (2026-11-09)
 
 Owner decision 2026-11-09: make payment fully working through Whop. Details,

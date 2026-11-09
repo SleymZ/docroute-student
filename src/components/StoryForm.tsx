@@ -458,7 +458,16 @@ export function StoryForm({
   );
 }
 
-export function DeleteStoryButton({ storyId, userId }: { storyId: string; userId: string }) {
+export function DeleteStoryButton({
+  storyId,
+  userId,
+  redirectTo,
+}: {
+  storyId: string;
+  userId: string;
+  /** Where to go after deleting (the story's own page no longer exists then). */
+  redirectTo?: string;
+}) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -480,6 +489,10 @@ export function DeleteStoryButton({ storyId, userId }: { storyId: string; userId
     setBusy(false);
     if (error) {
       setFailed(true);
+      return;
+    }
+    if (redirectTo) {
+      router.replace(redirectTo);
       return;
     }
     router.refresh();
