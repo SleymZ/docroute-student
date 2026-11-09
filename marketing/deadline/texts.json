@@ -1,0 +1,342 @@
+{
+ "en": {
+  "hook": "Moving to Europe?",
+  "purposes": "Study · Work · Family · Business",
+  "chips": [
+   "Faculty rules 2027/28",
+   "Residence permit",
+   "Apostille",
+   "Embassy appointment",
+   "Health insurance",
+   "Proof of funds",
+   "Sworn translation",
+   "Registration on arrival"
+  ],
+  "p1": "Dozens of tabs. Different offices.",
+  "p2": "One missed deadline can cost a whole year.",
+  "tagline": "Official steps. Real deadlines.",
+  "routeTitle": "One route. Every step. Every deadline.",
+  "example": "Example",
+  "steps": [
+   "Apply to the university",
+   "Apostille your documents",
+   "File the residence permit",
+   "Register after arrival"
+  ],
+  "dates": [
+   "15 Mar",
+   "10 Apr",
+   "1 Jun",
+   "On arrival"
+  ],
+  "source": "Official source",
+  "passportTitle": "Built for your passport",
+  "badge": "Route for citizens of {0}",
+  "countries": [
+   "India",
+   "Nigeria",
+   "Brazil",
+   "Vietnam",
+   "Kazakhstan"
+  ],
+  "warning": "Special rules for your passport — from official sources only",
+  "cta": "Start your journey",
+  "stats": "2,598 universities · 46 countries",
+  "sub": "Free to start · 5 languages",
+  "disclaimer": "A preparation tool, not legal advice.",
+  "deadlineLabel": "Application deadline",
+  "daysMany": "DAYS LEFT",
+  "dayOne": "DAY LEFT",
+  "missed": "MISSED",
+  "lose": "That's how easy it is to lose a whole year.",
+  "shows": "DocRoute shows the deadline before it's too late.",
+  "topTitle": "Top 100: the last day to apply — and the days left",
+  "uni": "University",
+  "applyBy": "Apply by",
+  "left": "{0} days left",
+  "udates": [
+   "15 Jan 2027",
+   "1 Mar 2027",
+   "30 Apr 2027"
+  ],
+  "afterTitle": "After admission, every step has a deadline too",
+  "check": "Check your deadline today.",
+  "udays": [
+   67,
+   112,
+   172
+  ]
+ },
+ "ru": {
+  "hook": "Переезд в Европу?",
+  "purposes": "Учёба · Работа · Семья · Бизнес",
+  "chips": [
+   "Правила факультета 2027/28",
+   "ВНЖ",
+   "Апостиль",
+   "Запись в посольство",
+   "Медстраховка",
+   "Подтверждение средств",
+   "Присяжный перевод",
+   "Регистрация по приезде"
+  ],
+  "p1": "Десятки вкладок. Разные ведомства.",
+  "p2": "Один пропущенный срок может стоить целого года.",
+  "tagline": "Официальные шаги. Реальные сроки.",
+  "routeTitle": "Один маршрут. Каждый шаг. Каждый срок.",
+  "example": "Пример",
+  "steps": [
+   "Подать документы в вуз",
+   "Поставить апостиль",
+   "Подать на ВНЖ",
+   "Регистрация после приезда"
+  ],
+  "dates": [
+   "15 мар",
+   "10 апр",
+   "1 июн",
+   "По приезде"
+  ],
+  "source": "Официальный источник",
+  "passportTitle": "Под ваш паспорт",
+  "badge": "Маршрут для граждан страны «{0}»",
+  "countries": [
+   "Индия",
+   "Нигерия",
+   "Бразилия",
+   "Вьетнам",
+   "Казахстан"
+  ],
+  "warning": "Особые правила для вашего паспорта — только из официальных источников",
+  "cta": "Начать путь",
+  "stats": "2 598 вузов · 46 стран",
+  "sub": "Начать можно бесплатно · 5 языков",
+  "disclaimer": "Инструмент подготовки, а не юридическая консультация.",
+  "deadlineLabel": "Срок подачи",
+  "daysMany": "ДНЯ ОСТАЛОСЬ",
+  "dayOne": "ДЕНЬ ОСТАЛСЯ",
+  "missed": "СРОК ПРОПУЩЕН",
+  "lose": "Вот так легко потерять целый год.",
+  "shows": "DocRoute показывает срок, пока ещё не поздно.",
+  "topTitle": "Топ-100: последний день подачи и сколько дней осталось",
+  "uni": "Университет",
+  "applyBy": "Подать до",
+  "left": "осталось {0}",
+  "udates": [
+   "15 янв 2027",
+   "1 мар 2027",
+   "30 апр 2027"
+  ],
+  "afterTitle": "После поступления у каждого шага тоже есть срок",
+  "check": "Проверьте свой срок сегодня.",
+  "udays": [
+   67,
+   112,
+   172
+  ]
+ },
+ "es": {
+  "hook": "¿Te mudas a Europa?",
+  "purposes": "Estudios · Trabajo · Familia · Negocios",
+  "chips": [
+   "Normas de la facultad 2027/28",
+   "Permiso de residencia",
+   "Apostilla",
+   "Cita en la embajada",
+   "Seguro médico",
+   "Prueba de fondos",
+   "Traducción jurada",
+   "Registro al llegar"
+  ],
+  "p1": "Decenas de pestañas. Distintas oficinas.",
+  "p2": "Un plazo perdido puede costarte un año entero.",
+  "tagline": "Pasos oficiales. Plazos reales.",
+  "routeTitle": "Una ruta. Cada paso. Cada plazo.",
+  "example": "Ejemplo",
+  "steps": [
+   "Solicita plaza en la universidad",
+   "Apostilla tus documentos",
+   "Pide el permiso de residencia",
+   "Regístrate al llegar"
+  ],
+  "dates": [
+   "15 mar",
+   "10 abr",
+   "1 jun",
+   "Al llegar"
+  ],
+  "source": "Fuente oficial",
+  "passportTitle": "Hecho para tu pasaporte",
+  "badge": "Ruta para ciudadanos de {0}",
+  "countries": [
+   "India",
+   "Nigeria",
+   "Brasil",
+   "Vietnam",
+   "Kazajistán"
+  ],
+  "warning": "Reglas especiales para tu pasaporte, solo de fuentes oficiales",
+  "cta": "Empieza tu camino",
+  "stats": "2598 universidades · 46 países",
+  "sub": "Empieza gratis · 5 idiomas",
+  "disclaimer": "Una herramienta de preparación, no asesoría legal.",
+  "deadlineLabel": "Plazo de solicitud",
+  "daysMany": "DÍAS RESTANTES",
+  "dayOne": "DÍA RESTANTE",
+  "missed": "PLAZO PERDIDO",
+  "lose": "Así de fácil se pierde un año entero.",
+  "shows": "DocRoute te muestra el plazo antes de que sea tarde.",
+  "topTitle": "Top 100: el último día para solicitar y los días que quedan",
+  "uni": "Universidad",
+  "applyBy": "Solicita antes del",
+  "left": "quedan {0} días",
+  "udates": [
+   "15 ene 2027",
+   "1 mar 2027",
+   "30 abr 2027"
+  ],
+  "afterTitle": "Tras la admisión, cada paso también tiene su plazo",
+  "check": "Revisa tu plazo hoy.",
+  "udays": [
+   67,
+   112,
+   172
+  ]
+ },
+ "zh": {
+  "hook": "想搬去欧洲？",
+  "purposes": "留学 · 工作 · 家庭 · 创业",
+  "chips": [
+   "院系招生规定 2027/28",
+   "居留许可",
+   "海牙认证",
+   "使馆预约",
+   "医疗保险",
+   "资金证明",
+   "宣誓翻译",
+   "抵达后登记"
+  ],
+  "p1": "几十个网页，好几个部门。",
+  "p2": "错过一个期限，可能耽误整整一年。",
+  "tagline": "官方步骤，真实期限。",
+  "routeTitle": "一条路线，每一步，每个期限。",
+  "example": "示例",
+  "steps": [
+   "申请大学",
+   "办理文件海牙认证",
+   "递交居留许可申请",
+   "抵达后登记"
+  ],
+  "dates": [
+   "3月15日",
+   "4月10日",
+   "6月1日",
+   "抵达时"
+  ],
+  "source": "官方来源",
+  "passportTitle": "按你的护照定制",
+  "badge": "适用于{0}公民的路线",
+  "countries": [
+   "印度",
+   "尼日利亚",
+   "巴西",
+   "越南",
+   "哈萨克斯坦"
+  ],
+  "warning": "针对你护照的特别规定，只来自官方来源",
+  "cta": "开始你的旅程",
+  "stats": "2598 所院校 · 46 个国家",
+  "sub": "免费开始 · 5 种语言",
+  "disclaimer": "这是准备工具，不是法律意见。",
+  "deadlineLabel": "申请截止",
+  "daysMany": "天后截止",
+  "dayOne": "天后截止",
+  "missed": "已错过截止日",
+  "lose": "一年就这样轻易丢掉了。",
+  "shows": "DocRoute 在来得及之前告诉你期限。",
+  "topTitle": "前 100 名：申请截止日，还剩几天",
+  "uni": "大学",
+  "applyBy": "申请截止",
+  "left": "还剩 {0} 天",
+  "udates": [
+   "2027年1月15日",
+   "2027年3月1日",
+   "2027年4月30日"
+  ],
+  "afterTitle": "录取之后，每一步也都有期限",
+  "check": "今天就查查你的期限。",
+  "udays": [
+   67,
+   112,
+   172
+  ]
+ },
+ "hi": {
+  "hook": "यूरोप जाने की सोच रहे हैं?",
+  "purposes": "पढ़ाई · नौकरी · परिवार · बिज़नेस",
+  "chips": [
+   "फ़ैकल्टी के नियम 2027/28",
+   "निवास परमिट",
+   "एपोस्टिल",
+   "दूतावास अपॉइंटमेंट",
+   "स्वास्थ्य बीमा",
+   "धनराशि का प्रमाण",
+   "प्रमाणित अनुवाद",
+   "पहुँचने पर पंजीकरण"
+  ],
+  "p1": "दर्जनों टैब। अलग-अलग दफ़्तर।",
+  "p2": "एक छूटी समय-सीमा पूरा साल बर्बाद कर सकती है।",
+  "tagline": "आधिकारिक चरण। असली समय-सीमाएँ।",
+  "routeTitle": "एक मार्ग। हर कदम। हर समय-सीमा।",
+  "example": "उदाहरण",
+  "steps": [
+   "यूनिवर्सिटी में आवेदन करें",
+   "दस्तावेज़ों पर एपोस्टिल लगवाएँ",
+   "निवास परमिट का आवेदन करें",
+   "पहुँचने के बाद पंजीकरण करें"
+  ],
+  "dates": [
+   "15 मार्च",
+   "10 अप्रैल",
+   "1 जून",
+   "पहुँचने पर"
+  ],
+  "source": "आधिकारिक स्रोत",
+  "passportTitle": "आपके पासपोर्ट के हिसाब से",
+  "badge": "{0} के नागरिकों के लिए मार्ग",
+  "countries": [
+   "भारत",
+   "नाइजीरिया",
+   "ब्राज़ील",
+   "वियतनाम",
+   "कज़ाख़स्तान"
+  ],
+  "warning": "आपके पासपोर्ट के लिए खास नियम — सिर्फ़ आधिकारिक स्रोतों से",
+  "cta": "अपनी यात्रा शुरू करें",
+  "stats": "2,598 यूनिवर्सिटी · 46 देश",
+  "sub": "मुफ़्त में शुरू करें · 5 भाषाएँ",
+  "disclaimer": "यह तैयारी का टूल है, कानूनी सलाह नहीं।",
+  "deadlineLabel": "आवेदन की आख़िरी तारीख़",
+  "daysMany": "दिन बचे",
+  "dayOne": "दिन बचा",
+  "missed": "डेडलाइन निकल गई",
+  "lose": "इतनी आसानी से पूरा साल चला जाता है।",
+  "shows": "DocRoute आपको समय रहते डेडलाइन दिखाता है।",
+  "topTitle": "टॉप 100: आवेदन की आख़िरी तारीख़ और बचे दिन",
+  "uni": "यूनिवर्सिटी",
+  "applyBy": "आवेदन की आख़िरी तारीख़",
+  "left": "{0} दिन बचे",
+  "udates": [
+   "15 जन॰ 2027",
+   "1 मार्च 2027",
+   "30 अप्रैल 2027"
+  ],
+  "afterTitle": "दाख़िले के बाद भी हर कदम की समय-सीमा है",
+  "check": "आज ही अपनी डेडलाइन देखें।",
+  "udays": [
+   67,
+   112,
+   172
+  ]
+ }
+}
