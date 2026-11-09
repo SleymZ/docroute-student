@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --bg: #0e1014; --ink: #f5f2ee; --muted: #a3a0a6; --coral: #ff795f; --line: #2a2e36; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #glow { position: absolute; inset: 0; }
+  #title { position: absolute; left: 50px; right: 50px; top: 66px; height: 150px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 64px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.08; text-wrap: balance; }
+  #win { position: absolute; left: 90px; top: 236px; width: 900px; height: 1600px; border-radius: 52px; overflow: hidden; border: 3px solid #2f333c; box-shadow: 0 40px 100px rgba(0,0,0,.6), 0 0 0 10px rgba(255,255,255,.03); background: #0d1117; }
+  #win img { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: none; }
+  #hl { position: absolute; border: 6px solid var(--coral); border-radius: 22px; box-shadow: 0 0 0 9999px rgba(8,10,14,.45), 0 0 40px rgba(255,121,95,.45); pointer-events: none; }
+  #cur { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(255,255,255,.92); box-shadow: 0 6px 20px rgba(0,0,0,.5); border: 5px solid #0e1014; }
+  #rip { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; border: 6px solid #fff; }
+  #cap { position: absolute; left: 70px; right: 70px; top: 1440px; text-align: center; font-size: 48px; font-weight: 700; line-height: 1.28; background: rgba(12,14,18,.88); border: 2px solid #2a2e36; border-radius: 30px; padding: 22px 30px; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+  #cap:empty { display: none; }
+  #cap .w { opacity: .35; } #cap .w.on { opacity: 1; }
+  #end { position: absolute; inset: 0; }
+  .center { position: absolute; left: 80px; right: 80px; text-align: center; }
+</style>
+</head>
+<body>
+<canvas id="glow" width="1080" height="1920"></canvas>
+<div id="title"></div>
+<div id="win"><img id="i-form" src="shots/form.png"><img id="i-q" src="shots/questions.png"><img id="i-route" src="shots/route.png"><div id="hl"></div><div id="rip"></div><div id="cur"></div></div>
+<div id="cap"></div>
+<div id="end"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const easeOut = x => 1 - Math.pow(1 - x, 4);
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const WW = 900, WH = 1600, BASE = WW / 1080, FOCUS = .4;
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+let TL, R, K = [], H = [], C = [], S = {};
+// camera key: { t, img, cx, cy, z } – centre of the view in screenshot pixels and zoom
+function build() {
+  TL = window.TL; R = window.R; const A = i => TL[i].a, B = i => TL[i].b, E = i => (TL[i + 1] ? TL[i + 1].a : TL[i].b + 3);
+  const f = R.form, q = R.q, r = R.route, mid = (x) => x[1] + x[3] / 2;
+  const badge = r.badge;
+  K = [
+    { t: 0, img: "form", cx: 540, cy: mid(f.button), z: 2.3 }, { t: E(0) - .3, img: "form", cx: 540, cy: mid(f.button), z: 2.05 },
+    { t: A(1), img: "form", cx: 540, cy: 640, z: 1.05 }, { t: E(1) - .3, img: "form", cx: 540, cy: 700, z: 1.05 },
+    { t: A(2), img: "form", cx: 540, cy: mid(f.button), z: 1.6 }, { t: E(2) - .2, img: "form", cx: 540, cy: mid(f.button), z: 1.7 },
+    { t: A(3), img: "q", cx: 540, cy: mid(q.offer), z: 1.1 }, { t: E(3) - .3, img: "q", cx: 540, cy: mid(q.offer) + 60, z: 1.1 },
+    { t: A(4), img: "q", cx: 540, cy: mid(q.submit) - 200, z: 1.1 }, { t: E(4) - .2, img: "q", cx: 540, cy: mid(q.submit) - 200, z: 1.15 },
+    { t: A(5), img: "route", cx: 540, cy: 900, z: 1 }, { t: E(5) - .3, img: "route", cx: 540, cy: 1310, z: 1.05 },
+    { t: A(6), img: "route", cx: 540, cy: r.visa[1] + 80, z: 1.05 }, { t: E(6) - .3, img: "route", cx: 540, cy: r.visaLink[1] + 40, z: 1.05 },
+  ];
+  // the stages one after another during line 7
+  const stops = [r.job, r.labour, r.embassy, r.arrive], d7 = (E(7) - A(7)) / 4;
+  stops.forEach((s, i) => { K.push({ t: A(7) + d7 * i + (i ? .35 : 0), img: "route", cx: 540, cy: s[1] + 420, z: 1.05 }); K.push({ t: A(7) + d7 * (i + 1) - .05, img: "route", cx: 540, cy: s[1] + 480, z: 1.05 }); });
+  K.push({ t: A(8), img: "route", cx: 540, cy: r.sources[1] + 520, z: 1.05 }, { t: E(8), img: "route", cx: 540, cy: r.sources[1] + 1500, z: 1.05 });
+  // highlights [start, end, rect, image]
+  const job = 0;
+  H = [
+    [A(0) + .2, E(0), f.button, "form"],
+    [A(1) + .15, A(1) + (B(1) - A(1)) * .38, f.purpose, "form"], [A(1) + (B(1) - A(1)) * .38, A(1) + (B(1) - A(1)) * .68, f.docs, "form"], [A(1) + (B(1) - A(1)) * .68, E(1), f.dest, "form"],
+    [A(2), E(2), f.button, "form"],
+    [A(3) + .3, E(3), q.offer, "q"], [A(4), E(4), q.submit, "q"],
+    [A(5) + .7, E(5), badge, "route"],
+    [A(6) + .3, A(6) + (B(6) - A(6)) * .62, r.visa, "route"], [A(6) + (B(6) - A(6)) * .62, E(6), r.visaLink, "route"],
+    ...stops.map((s, i) => [A(7) + d7 * i + .4, A(7) + d7 * (i + 1), [s[0] - 30, s[1] - 20, s[2] + 40, s[3] + 40], "route"]),
+    [A(8) + .2, A(8) + 1.4, r.sources, "route"],
+  ];
+  // taps of the cursor [time, rect]
+  C = [[A(2) + .45, f.button], [A(4) + .55, q.submit]];
+  S.capLines = window.T.lines.map(l => l.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${esc(p)}</span>`).join(""));
+  const end = document.getElementById("end"), T = window.T;
+  end.innerHTML = `<div style="position:absolute;left:0;right:0;top:300px;display:flex;justify-content:center">${logoSVG(220)}</div>
+    <div class="center" style="top:570px;font-size:110px;font-weight:800;letter-spacing:-0.035em"><span translate="no">Doc<span style="color:var(--coral)">Route</span></span></div>
+    <div class="center" style="top:760px;font-size:62px;font-weight:800">${esc(T.cta)}</div>
+    <div class="center btnshot" style="top:880px;display:flex;justify-content:center"><div style="width:820px;height:120px;border-radius:26px;overflow:hidden;box-shadow:0 20px 60px rgba(255,121,95,.35)"><img src="shots/form.png" style="width:976px;margin:${-f.button[1] * 976 / 1080 + 0}px 0 0 ${-f.button[0] * 976 / 1080 - 4}px"></div></div>
+    <div class="center" style="top:1060px;font-size:46px;font-weight:700">docroute-student.vercel.app</div>
+    <div class="center" style="top:1140px;font-size:32px;font-weight:500;color:var(--muted)">${esc(T.small)}</div>`;
+  S.endParts = [...end.children];
+}
+function camAt(t) {
+  let i = 0; while (i < K.length - 1 && K[i + 1].t <= t) i++;
+  const a = K[i], b = K[i + 1];
+  if (!b || b.img !== a.img) return a;               // hold, or cut to the next image at b.t
+  const p = ease(prog(t, a.t, b.t));
+  return { img: a.img, cx: a.cx + (b.cx - a.cx) * p, cy: a.cy + (b.cy - a.cy) * p, z: a.z + (b.z - a.z) * p };
+}
+function smoothCam(t) {
+  // short glide when the view jumps between keys of the same image
+  const c = camAt(t), prev = camAt(t - .35);
+  if (prev.img !== c.img) return c;
+  return c;
+}
+let capIdx = -2, curImg = "";
+function setTime(t) {
+  const A = i => TL[i].a;
+  // glow
+  const g = document.getElementById("glow").getContext("2d"); g.clearRect(0, 0, 1080, 1920);
+  const blob = (x, y, r, col) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1920); };
+  blob(800 + Math.sin(t * .6) * 200, 400 + Math.cos(t * .45) * 200, 800, "rgba(255,121,95,.16)"); blob(240, 1500 + Math.sin(t * .4) * 160, 760, "rgba(110,120,255,.11)");
+  const endOn = t >= A(9) - .1;
+  // camera with a short glide between consecutive keys
+  let c = camAt(t);
+  const scale = BASE * c.z, ox = WW / 2 - c.cx * scale, oy = WH * FOCUS - c.cy * scale;
+  for (const name of ["form", "q", "route"]) { const im = document.getElementById("i-" + name); im.style.display = name === c.img ? "block" : "none"; if (name === c.img) im.style.transform = `translate(${ox}px, ${oy}px) scale(${scale})`; }
+  const toWin = ([x, y, w, h]) => [ox + x * scale, oy + y * scale, w * scale, h * scale];
+  // window entrance and exit
+  const win = document.getElementById("win"), wi = easeOut(prog(t, 0, .35)), wo = ease(prog(t, A(9) - .4, A(9) + .1));
+  win.style.opacity = wi * (1 - wo); win.style.transform = `translateY(${(1 - wi) * 60 + wo * 80}px) scale(${1 - wo * .06})`;
+  // highlight
+  const hl = document.getElementById("hl"), h = H.find(([a, b, , img]) => t >= a && t < b && img === c.img);
+  if (h) { const [x, y, w, hh] = toWin(h[2]); const p = easeOut(prog(t, h[0], h[0] + .3)); hl.style.display = "block"; hl.style.opacity = p; hl.style.left = (x - 10) + "px"; hl.style.top = (y - 10) + "px"; hl.style.width = (w + 20) + "px"; hl.style.height = (hh + 20) + "px"; }
+  else hl.style.display = "none";
+  // cursor: glides to the button, taps
+  const cur = document.getElementById("cur"), rip = document.getElementById("rip");
+  const tap = C.find(([tt]) => t > tt - 1.0 && t < tt + .6); cur.style.display = "none"; rip.style.display = "none";
+  if (tap && !endOn) { const [x, y, w, hh] = toWin(tap[1]); const tx = x + w * .62, ty = y + hh * .55, p = ease(prog(t, tap[0] - 1.0, tap[0] - .15));
+    cur.style.display = "block"; cur.style.left = (tx + (1 - p) * 180) + "px"; cur.style.top = (ty + (1 - p) * 260) + "px";
+    const press = t > tap[0] - .08 && t < tap[0] + .12; cur.style.transform = `scale(${press ? .78 : 1})`;
+    if (t >= tap[0]) { const rp = prog(t, tap[0], tap[0] + .5); rip.style.display = "block"; rip.style.left = tx + "px"; rip.style.top = ty + "px"; rip.style.transform = `scale(${1 + rp * 5})`; rip.style.opacity = 1 - rp; } }
+  // title per line
+  let k = -1; TL.forEach((l, i) => { if (t >= l.a - .1) k = i; });
+  const title = document.getElementById("title"), T = window.T;
+  const tk = k < 0 ? 0 : k; if (title.dataset.k != tk) { title.dataset.k = tk; title.innerHTML = tk === 0 ? `<span>${esc(T.titles[0])}</span>` : esc(T.titles[tk]); }
+  const tp = easeOut(prog(t, Math.max(0, TL[tk].a - .1), TL[tk].a + .25)); title.style.opacity = endOn ? 0 : tp; title.style.transform = `translateY(${(1 - tp) * 30}px)`; title.style.color = tk === 0 ? "var(--ink)" : "var(--ink)";
+  // captions
+  const cap = document.getElementById("cap");
+  let ci = -1; TL.forEach((l, i) => { if (t >= l.a - .1 && t < (TL[i + 1] ? TL[i + 1].a - .1 : l.b + 3)) ci = i; });
+  if (ci !== capIdx) { capIdx = ci; cap.innerHTML = ci >= 0 ? S.capLines[ci] : ""; let fs = 50; cap.style.fontSize = fs + "px"; while (cap.offsetHeight > 230 && fs > 34) { fs -= 2; cap.style.fontSize = fs + "px"; } S.ws = [...cap.querySelectorAll(".w")]; S.wl = S.ws.map(w => w.textContent.length); }
+  if (ci >= 0) { const l = TL[ci], p = prog(t, l.a, l.b), tot = S.wl.reduce((a, b) => a + b, 0) || 1; let acc = 0; S.ws.forEach((w, i) => { w.classList.toggle("on", acc / tot <= p + .02); acc += S.wl[i]; }); }
+  cap.style.top = endOn ? "1300px" : "1440px";
+  // end card
+  document.getElementById("end").style.visibility = endOn ? "visible" : "hidden";
+  S.endParts.forEach((e, i) => { const a = A(9) + i * .15, p = easeOut(prog(t, a, a + .4)); e.style.opacity = p; e.style.transform = `translateY(${(1 - p) * 50}px)` + (i === 3 ? ` scale(${1 + .03 * Math.max(0, Math.sin((t - A(9) - 1) * 5))})` : ""); });
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
