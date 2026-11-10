@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 600; src: url("../promo/fonts/noto-sans-devanagari-devanagari-500-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("../promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("../promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  :root { --bg: #0f1115; --ink: #f5f2ee; --muted: #a9a5a1; --coral: #ff795f; --card: #191c22; --line: #2b2f37; --ok: #5ad48a; --amber: #f2b84b; --red: #ff6b6b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", "Noto Sans Devanagari", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #glow { position: absolute; inset: -200px; }
+  .layer { position: absolute; inset: 0; }
+  .center { position: absolute; left: 70px; right: 70px; text-align: center; }
+  .h1 { font-size: 96px; font-weight: 900; line-height: 1.05; letter-spacing: -0.035em; }
+  .h2 { font-size: 64px; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+  body.hi .h1, body.hi .h2 { letter-spacing: 0; line-height: 1.28; }
+  .coral { color: var(--coral); }
+  .muted { color: var(--muted); }
+  #open { position: absolute; inset: 0; background: #ff795f; }
+  #open .flag { position: absolute; left: 190px; top: 560px; width: 700px; height: 525px; border-radius: 34px; overflow: hidden; box-shadow: 0 40px 90px rgba(26,13,9,.45); background: #1f3a93; }
+  #open .flag img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #open .t1, #open .t2 { position: absolute; left: 60px; right: 60px; text-align: center; color: #1a0d09; font-weight: 900; letter-spacing: -0.035em; line-height: 1.05; }
+  #open .t1 { top: 250px; font-size: 110px; } #open .t2 { top: 1200px; font-size: 96px; }
+  body.hi #open .t1, body.hi #open .t2 { letter-spacing: 0; line-height: 1.25; }
+  .cols { position: absolute; left: 40px; right: 40px; display: flex; gap: 22px; }
+  .col { flex: 1; background: var(--card); border: 3px solid var(--line); border-radius: 30px; padding: 26px 20px 28px; text-align: center; }
+  .col .fl { width: 100%; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; background: #1f3a93; display: flex; align-items: center; justify-content: center; }
+  .col .fl img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .col .nm { margin-top: 18px; font-size: 42px; font-weight: 800; }
+  .col .uni { margin-top: 18px; font-size: 26px; font-weight: 700; color: var(--muted); }
+  .col .res { margin-top: 18px; font-size: 31px; font-weight: 800; line-height: 1.25; border-radius: 18px; padding: 16px 12px; }
+  .res.red { color: #ffd6d6; background: #3a1618; } .res.amber { color: #ffeccc; background: #3a2e14; } .res.green { color: #d4ffe4; background: #143a24; }
+  .col .ic { font-size: 54px; font-weight: 900; margin-top: 14px; }
+  .list { position: absolute; left: 110px; right: 110px; background: var(--card); border: 2px solid var(--line); border-radius: 30px; padding: 30px 36px; }
+  .list .ln { height: 22px; border-radius: 11px; background: #2f343d; margin: 22px 0; }
+  .badge { position: absolute; left: 70px; right: 70px; display: flex; align-items: center; gap: 28px; background: var(--card); border: 3px solid var(--coral); border-radius: 32px; padding: 32px 36px; }
+  .badge img { width: 132px; height: 99px; border-radius: 12px; object-fit: cover; box-shadow: 0 0 0 2px rgba(255,255,255,.12); }
+  .badge .bt { font-size: 48px; font-weight: 700; line-height: 1.22; }
+  .pill { display: inline-flex; align-items: center; gap: 14px; font-size: 38px; font-weight: 700; color: var(--ok); background: rgba(90,212,138,.13); border-radius: 999px; padding: 16px 32px; }
+  .bubble { display: inline-block; font-size: 52px; font-weight: 800; background: var(--card); border: 3px solid var(--coral); border-radius: 36px 36px 36px 8px; padding: 28px 40px; }
+  .btn { display: inline-block; background: var(--coral); color: #1a0d09; font-weight: 800; font-size: 56px; border-radius: 999px; padding: 30px 60px; box-shadow: 0 20px 60px rgba(255,121,95,.35); }
+  #cap { position: absolute; left: 60px; right: 60px; top: 1650px; text-align: center; font-size: 46px; font-weight: 700; line-height: 1.3; text-shadow: 0 3px 18px rgba(0,0,0,.95); }
+  #cap .w { opacity: .35; } #cap .w.on { opacity: 1; }
+</style>
+</head>
+<body>
+<canvas id="glow" width="1480" height="2320"></canvas>
+<div id="root" class="layer"></div>
+<div id="open"><div class="t1"></div><div class="flag"><img></div><div class="t2"></div></div>
+<div id="cap"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function io(t, a, b, inD = .4, outD = .3) { const i = easeOut(prog(t, a, a + inD)), o = easeInOut(prog(t, b - outD, b)); return { op: i * (1 - o), dy: (1 - i) * 50 - o * 50 }; }
+function setIO(e, s, extra = "") { e.style.opacity = s.op; e.style.transform = `translateY(${s.dy}px) ${extra}`; e.style.visibility = s.op <= .001 ? "hidden" : "visible"; }
+function fit(e, maxLines) { let fs = parseFloat(getComputedStyle(e).fontSize); const lh = () => parseFloat(getComputedStyle(e).lineHeight); while (e.offsetHeight > lh() * maxLines + 2 && fs > 36) { fs -= 4; e.style.fontSize = fs + "px"; } }
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span class="coral">Route</span></span>`;
+// the EU flag, drawn: 12 gold stars on blue
+const EU = `<svg viewBox="0 0 120 90" width="100%" height="100%"><rect width="120" height="90" fill="#1f3a93"/>${[...Array(12)].map((_, i) => { const a = i / 12 * Math.PI * 2, x = 60 + 28 * Math.sin(a), y = 45 - 28 * Math.cos(a); return `<text x="${x}" y="${y + 4}" font-size="12" text-anchor="middle" fill="#ffd43b">★</text>`; }).join("")}</svg>`;
+const flag = c => c === "eu" ? EU : `<img src="flags/${c}.svg">`;
+const OPEN_FLAGS = ["in", "ng", "br", "vn", "kz", "pk", "eg", "ph", "bd", "ma", "tr", "ge"];
+let S = {}, TL, A, E;
+function build() {
+  const X = window.T.s, root = document.getElementById("root"); TL = window.TL; document.body.classList.add(window.LANG);
+  A = i => TL[i].a; E = i => (TL[i + 1] ? TL[i + 1].a : TL[i].b + 3.2);
+  S.open = document.getElementById("open"); S.ot1 = S.open.querySelector(".t1"); S.ot2 = S.open.querySelector(".t2"); S.of = S.open.querySelector(".flag img");
+  S.ot1.textContent = X.hook1; S.ot2.textContent = X.hook2; fit(S.ot2, 3);
+  // three passports, same university
+  S.same = el("div", "center h2", esc(X.same)); S.same.style.top = "170px"; root.append(S.same); fit(S.same, 2);
+  S.three = el("div", "center h2 coral", esc(X.three)); S.three.style.top = (S.same.offsetTop + S.same.offsetHeight + 6) + "px"; root.append(S.three);
+  S.cols = el("div", "cols", X.cols.map(([c, nm, res, k]) => `<div class="col"><div class="fl">${flag(c)}</div><div class="nm">${esc(nm)}</div><div class="res ${k}">${esc(res)}</div><div class="ic" style="color:var(--${k === "green" ? "ok" : k})">${k === "red" ? "✕" : k === "amber" ? "!" : "✓"}</div></div>`).join(""));
+  S.cols.style.top = (S.three.offsetTop + S.three.offsetHeight + 60) + "px"; root.append(S.cols); S.colEls = [...S.cols.children];
+  // generic guides
+  S.gen = el("div", "layer", `<div class="center h2 g">${esc(X.generic)}</div><div class="list">${[90, 70, 85, 60, 80, 55].map(w => `<div class="ln" style="width:${w}%"></div>`).join("")}</div>`); root.append(S.gen);
+  const g = S.gen.querySelector(".g"), li = S.gen.querySelector(".list"); g.style.top = "330px"; fit(g, 3); li.style.top = (330 + g.offsetHeight + 70) + "px";
+  // built for your passport
+  S.built = el("div", "layer", `<div style="position:absolute;left:0;right:0;top:230px;display:flex;justify-content:center;align-items:center;gap:24px">${logoSVG(120)}<span style="font-size:92px;font-weight:800;letter-spacing:-0.03em">${wordmark()}</span></div>
+    <div class="center h2" style="top:440px">${esc(X.built)}</div>
+    <div class="badge" style="top:640px"><img><div class="bt"></div></div>
+    <div class="center" style="top:900px"><span class="pill">✓ ${esc(X.src)}</span></div>`); root.append(S.built);
+  S.bparts = [...S.built.children]; S.bimg = S.built.querySelector(".badge img"); S.btxt = S.built.querySelector(".badge .bt");
+  // call to action: comment + link
+  S.end = el("div", "layer", `<div class="center" style="top:250px"><span class="bubble">${esc(X.comment)}</span></div>
+    <div class="center" style="top:520px;display:flex;justify-content:center;gap:16px">${X.codes.map(c => `<div style="width:110px;height:82px;border-radius:12px;overflow:hidden">${flag(c)}</div>`).join("")}</div>
+    <div class="center" style="top:740px"><svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="#ff795f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V4"/><path d="M5 11l7-7 7 7"/></svg></div>
+    <div class="center" style="top:970px"><span class="btn">${esc(X.cta)}</span></div>
+    <div class="center h2" style="top:1150px;font-size:56px">${esc(X.link)}</div>
+    <div class="center" style="top:1250px;font-size:42px;font-weight:700">docroute-student.vercel.app</div>
+    <div class="center muted" style="top:1330px;font-size:30px;font-weight:500">${esc(X.small)}</div>`); root.append(S.end); S.endParts = [...S.end.children];
+  S.capLines = TL.map(l => l.line.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${esc(p)}</span>`).join(""));
+  setBadge(0);
+}
+let bi = -1;
+function setBadge(i) { if (i === bi) return; bi = i; const X = window.T.s; S.bimg.src = `flags/${X.codes[i]}.svg`; S.btxt.textContent = X.badge.replace("{0}", X.countries[i]); }
+function glow(t) {
+  const c = document.getElementById("glow"), g = c.getContext("2d"); g.clearRect(0, 0, c.width, c.height);
+  const x = 740 + Math.sin(t * .5) * 260, y = 700 + Math.cos(t * .37) * 300;
+  let r = g.createRadialGradient(x, y, 0, x, y, 900); r.addColorStop(0, "rgba(255,121,95,.17)"); r.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+  r = g.createRadialGradient(500, 1800, 0, 500, 1800, 800); r.addColorStop(0, "rgba(90,120,255,.1)"); r.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+}
+let capIdx = -2;
+function setTime(t) {
+  glow(t);
+  // bright opening: coral, a flag slams in every 0.45 s
+  const openEnd = A(1) - .05, on = t < openEnd;
+  S.open.style.display = on ? "block" : "none";
+  if (on) {
+    const k = Math.floor(t / .45), h = k * .45, amp = 16 * Math.exp(-(t - h) * 10);
+    S.of.src = `flags/${OPEN_FLAGS[k % OPEN_FLAGS.length]}.svg`;
+    S.open.querySelector(".flag").style.transform = `translate(${Math.sin(t * 90) * amp}px, 0) scale(${1 + .18 * (1 - easeOut(prog(t, h, h + .16)))}) rotate(${(k % 2 ? 2 : -2)}deg)`;
+    S.ot2.style.opacity = prog(t, .5, .8);
+  }
+  // three passports
+  setIO(S.same, io(t, A(1), E(4), .35)); setIO(S.three, io(t, A(1) + .4, E(4), .35)); setIO(S.cols, io(t, A(1) + .2, E(4), .45));
+  S.colEls.forEach((c, i) => { const cur = [2, 3, 4].findIndex(k => t >= A(k) - .1 && t < E(k) - .1); const lit = cur === -1 ? 1 : cur === i ? 1 : .35;
+    c.style.opacity = lit; c.style.transform = `scale(${cur === i ? 1.04 : 1})`; c.style.borderColor = cur === i ? (i === 0 ? "var(--red)" : i === 1 ? "var(--amber)" : "var(--ok)") : "var(--line)";
+    const p = prog(t, A(1) + .5 + i * .2, A(1) + .9 + i * .2); c.style.translate = `0 ${(1 - easeOut(p)) * 80}px`; });
+  // generic guides: the same grey list for everyone
+  setIO(S.gen, io(t, A(5), E(5), .4));
+  // built for your passport
+  S.bparts.forEach((e, i) => setIO(e, io(t, A(6) + i * .2, E(6), .4)));
+  setBadge(Math.min(5, Math.floor(clamp(t - A(6) - .8, 0, 99) / ((E(6) - A(6) - .8) / 6))));
+  // call to action
+  S.end.style.visibility = t >= A(7) - .1 ? "visible" : "hidden";
+  S.endParts.forEach((e, i) => setIO(e, io(t, A(7) - .1 + i * .13, 99, .4), i === 2 ? `translateY(${-22 * Math.abs(Math.sin((t - A(7)) * 4))}px)` : ""));
+  // captions
+  const cap = document.getElementById("cap");
+  let k = -1; TL.forEach((l, i) => { if (t >= l.a - .1 && t < l.b + .35) k = i; });
+  if (k !== capIdx) { capIdx = k; cap.innerHTML = k >= 0 ? S.capLines[k] : ""; S.ws = [...cap.querySelectorAll(".w")]; S.wl = S.ws.map(w => w.textContent.length); let fs = 46; cap.style.fontSize = fs + "px"; while (cap.offsetHeight > 190 && fs > 34) { fs -= 2; cap.style.fontSize = fs + "px"; } }
+  if (k >= 0) { const l = TL[k], p = prog(t, l.a, l.b), tot = S.wl.reduce((a, b) => a + b, 0) || 1; let acc = 0; S.ws.forEach((w, i) => { w.classList.toggle("on", acc / tot <= p + .02); acc += S.wl[i]; }); }
+  cap.style.display = k <= 0 || k === 7 ? "none" : "block";
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>

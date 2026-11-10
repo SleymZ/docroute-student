@@ -1,0 +1,56 @@
+{
+ "en": {
+  "voice": ["kokoro", "am_michael", "en-us"], "say": {"DocRoute": "Doc Root"},
+  "lines": [
+   ["Your passport decides how you move to Europe.", 0.4],
+   ["Same university in Slovakia. Three passports. Three different routes.", 0.35],
+   ["With an Indian passport, you need a visa just to enter.", 0.3],
+   ["With a Brazilian one, you can enter without a visa — but you still need a residence permit to study.", 0.3],
+   ["With an EU passport, you just register after you arrive.", 0.5],
+   ["Most guides give everyone the same list.", 0.4],
+   ["DocRoute builds the route for your passport, with the official source for every rule.", 0.5],
+   ["Comment your passport — and check your route. Link in our profile.", 0]
+  ],
+  "s": {"hook1": "Your passport", "hook2": "decides your route", "same": "Same university in Slovakia", "three": "3 passports · 3 routes",
+   "cols": [["in", "India", "Visa needed to enter", "red"], ["br", "Brazil", "No entry visa · residence permit to study", "amber"], ["eu", "EU", "No permit · register on arrival", "green"]],
+   "generic": "Most guides give everyone the same list", "built": "Built for your passport", "src": "Official source for every rule",
+   "badge": "Route for citizens of {0}", "countries": ["India", "Nigeria", "Brazil", "Vietnam", "Kazakhstan", "Pakistan"], "codes": ["in", "ng", "br", "vn", "kz", "pk"],
+   "comment": "Comment your passport", "cta": "Check your route", "link": "Link in profile", "small": "Free to start · A preparation tool, not legal advice."}
+ },
+ "ru": {
+  "voice": ["piper", "/tmp/ruv/vits-piper-ru_RU-dmitri-medium/ru_RU-dmitri-medium.onnx"], "say": {"DocRoute": "Док Рут"},
+  "lines": [
+   ["Ваш паспорт решает, как вы переедете в Европу.", 0.4],
+   ["Один и тот же вуз в Словакии. Три паспорта. Три разных маршрута.", 0.35],
+   ["С паспортом Казахстана нужна виза, просто чтобы въехать.", 0.3],
+   ["С грузинским можно въехать без визы, но для учёбы всё равно нужен вид на жительство.", 0.3],
+   ["С паспортом ЕС достаточно зарегистрироваться после приезда.", 0.5],
+   ["А большинство инструкций дают всем один и тот же список.", 0.4],
+   ["DocRoute строит маршрут под ваш паспорт, с официальным источником для каждого правила.", 0.5],
+   ["Напишите в комментариях свой паспорт и проверьте маршрут. Ссылка в профиле.", 0]
+  ],
+  "s": {"hook1": "Ваш паспорт", "hook2": "решает ваш маршрут", "same": "Один вуз в Словакии", "three": "3 паспорта · 3 маршрута",
+   "cols": [["kz", "Казахстан", "Нужна виза для въезда", "red"], ["ge", "Грузия", "Въезд без визы · ВНЖ для учёбы", "amber"], ["eu", "ЕС", "Без ВНЖ · регистрация по приезде", "green"]],
+   "generic": "Большинство инструкций — один список для всех", "built": "Под ваш паспорт", "src": "Официальный источник для каждого правила",
+   "badge": "Маршрут для граждан страны «{0}»", "countries": ["Казахстан", "Узбекистан", "Грузия", "Армения", "Киргизия", "Азербайджан"], "codes": ["kz", "uz", "ge", "am", "kg", "az"],
+   "comment": "Напишите свой паспорт в комментариях", "cta": "Проверьте свой маршрут", "link": "Ссылка в профиле", "small": "Начать можно бесплатно · Инструмент подготовки, а не юридическая консультация."}
+ },
+ "hi": {
+  "voice": ["kokoro", "hm_omega", "hi"], "say": {"DocRoute": "डॉक रूट"},
+  "lines": [
+   ["आपका पासपोर्ट तय करता है कि आप यूरोप कैसे जाएँगे।", 0.4],
+   ["स्लोवाकिया की एक ही यूनिवर्सिटी। तीन पासपोर्ट। तीन अलग मार्ग।", 0.35],
+   ["भारतीय पासपोर्ट के साथ, सिर्फ़ प्रवेश के लिए भी वीज़ा चाहिए।", 0.3],
+   ["ब्राज़ील के पासपोर्ट से बिना वीज़ा प्रवेश हो सकता है, लेकिन पढ़ाई के लिए निवास परमिट फिर भी चाहिए।", 0.3],
+   ["EU पासपोर्ट के साथ, बस पहुँचने के बाद पंजीकरण करना होता है।", 0.5],
+   ["ज़्यादातर गाइड सबको एक ही सूची देते हैं।", 0.4],
+   ["DocRoute आपके पासपोर्ट के हिसाब से मार्ग बनाता है, हर नियम के आधिकारिक स्रोत के साथ।", 0.5],
+   ["कमेंट में अपना पासपोर्ट लिखिए, और अपना मार्ग देखिए। लिंक प्रोफ़ाइल में।", 0]
+  ],
+  "s": {"hook1": "आपका पासपोर्ट", "hook2": "आपका मार्ग तय करता है", "same": "स्लोवाकिया की एक ही यूनिवर्सिटी", "three": "3 पासपोर्ट · 3 मार्ग",
+   "cols": [["in", "भारत", "प्रवेश के लिए वीज़ा चाहिए", "red"], ["br", "ब्राज़ील", "बिना वीज़ा प्रवेश · पढ़ाई के लिए निवास परमिट", "amber"], ["eu", "EU", "परमिट नहीं · पहुँचने पर पंजीकरण", "green"]],
+   "generic": "ज़्यादातर गाइड सबको एक ही सूची देते हैं", "built": "आपके पासपोर्ट के हिसाब से", "src": "हर नियम का आधिकारिक स्रोत",
+   "badge": "{0} के नागरिकों के लिए मार्ग", "countries": ["भारत", "नाइजीरिया", "ब्राज़ील", "वियतनाम", "पाकिस्तान", "बांग्लादेश"], "codes": ["in", "ng", "br", "vn", "pk", "bd"],
+   "comment": "कमेंट में अपना पासपोर्ट लिखिए", "cta": "अपना मार्ग देखिए", "link": "लिंक प्रोफ़ाइल में", "small": "मुफ़्त में शुरू करें · यह तैयारी का टूल है, कानूनी सलाह नहीं।"}
+ }
+}
