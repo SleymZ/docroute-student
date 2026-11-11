@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("../promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("../promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0d1117; }
+  body { font-family: "Inter", "Noto Sans Devanagari", sans-serif; -webkit-font-smoothing: antialiased; position: relative; }
+  #scr { position: absolute; inset: 0; overflow: hidden; }
+  #scr img { position: absolute; left: 0; top: 0; width: 1080px; transform-origin: 0 0; display: none; }
+  #hl { position: absolute; border: 7px solid #ff795f; border-radius: 26px; box-shadow: 0 0 0 9999px rgba(8,10,14,.42), 0 0 40px rgba(255,121,95,.5); display: none; }
+  #cur { position: absolute; width: 78px; height: 78px; margin: -39px 0 0 -39px; border-radius: 50%; background: rgba(255,255,255,.9); border: 6px solid #0e1014; box-shadow: 0 8px 24px rgba(0,0,0,.5); display: none; }
+  #rip { position: absolute; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; border: 7px solid #fff; display: none; }
+  #ov { position: absolute; left: 50px; right: 50px; top: 120px; display: flex; justify-content: center; }
+  #ov span { background: #fff; color: #1c1b1f; font-size: 58px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; padding: 22px 34px; border-radius: 26px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  body.hi #ov span { letter-spacing: 0; line-height: 1.35; }
+  #cap { position: absolute; left: 60px; right: 60px; top: 1540px; text-align: center; font-size: 46px; font-weight: 700; line-height: 1.3; color: #fff; background: rgba(10,12,16,.86); border-radius: 26px; padding: 20px 28px; }
+  #cap .w { opacity: .4; } #cap .w.on { opacity: 1; }
+  #end { position: absolute; inset: 0; display: none; background: linear-gradient(180deg, rgba(13,17,23,0) 0%, rgba(13,17,23,.55) 45%, rgba(13,17,23,.92) 70%); }
+  #end .bt { position: absolute; left: 0; right: 0; top: 1160px; display: flex; justify-content: center; }
+  #end .bt span { background: #ff795f; color: #1a0d09; font-size: 66px; font-weight: 800; border-radius: 999px; padding: 34px 70px; box-shadow: 0 20px 60px rgba(255,121,95,.4); }
+  #end .u { position: absolute; left: 0; right: 0; top: 1360px; text-align: center; color: #f5f2ee; font-size: 46px; font-weight: 700; }
+  #end .ar { position: absolute; left: 0; right: 0; top: 880px; display: flex; justify-content: center; }
+</style>
+</head>
+<body>
+<div id="scr"></div>
+<div id="hl"></div><div id="rip"></div><div id="cur"></div>
+<div id="ov"><span></span></div>
+<div id="cap"></div>
+<div id="end"><div class="ar"><svg width="240" height="240" viewBox="0 0 24 24" fill="none" stroke="#ff795f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V4"/><path d="M5 11l7-7 7 7"/></svg></div><div class="bt"><span></span></div><div class="u">docroute-student.vercel.app</div></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+let TL, R, K = [], H = [], C = [], S = {}, A, E;
+const mid = r => r[1] + r[3] / 2;
+function build() {
+  TL = window.TL; R = window.R; A = i => TL[i].a; E = i => (TL[i + 1] ? TL[i + 1].a : TL[i].b + 3);
+  document.body.classList.add(window.LANG);
+  const scr = document.getElementById("scr");
+  for (const n of ["top", "university", "form", "after-button", "route", "home"]) { const im = document.createElement("img"); im.src = `${window.SHOTS}/${n}.png`; im.id = "i-" + n; scr.append(im); }
+  const T = R.topRects, rows = T.rows, U = R.uniRects, F0 = R.form, sh = r => [r[0], r[1] - F0.scroll, r[2], r[3]], F = { purpose: sh(F0.purpose), button: sh(F0.button) }, P = R.profRects, RR = R.routeRects;
+  const badge = RR.badge[1] < 300 ? [39, 1206, 1003, 214] : RR.badge;
+  K = [
+    { t: 0, img: "top", cy: mid(T.h1) + 60, z: 1.04 }, { t: E(0) - .3, img: "top", cy: mid(T.h1) + 260, z: 1.0 },
+    { t: A(1), img: "top", cy: rows.ucl[1] - 250, z: 1.0 }, { t: E(1) - .9, img: "top", cy: rows.cambridge[1] + 200, z: 1.05 }, { t: E(1) - .1, img: "top", cy: rows.cambridge[1] + 200, z: 1.05 },
+    { t: A(2), img: "university", cy: mid(U.h1) + 50, z: 1.04 }, { t: E(2) - .2, img: "university", cy: mid(U.h1) + 520, z: 1.0 },
+    { t: A(3), img: "form", cy: 960, z: 1.0 }, { t: E(3) - .2, img: "form", cy: 1000, z: 1.04 },
+    { t: A(4), img: "after-button", cy: mid(P.h1) + 300, z: 1.08 }, { t: E(4) - .2, img: "after-button", cy: mid(P.h1) + 1500, z: 1.0 },
+    { t: A(5), img: "route", cy: mid(badge) + 120, z: 1.04 }, { t: A(5) + (E(5) - A(5)) * .4, img: "route", cy: mid(badge) + 120, z: 1.04 }, { t: E(5) - .2, img: "route", cy: mid(RR.stages) + 100, z: 1.0 },
+    { t: A(6), img: "home", cy: 960, z: 1.0 }, { t: TL[6].b + 3, img: "home", cy: 960, z: 1.06 },
+  ];
+  const third = (i, k) => A(i) + (TL[i].b - A(i)) * k;
+  H = [
+    [A(0) + .4, E(0), T.h1, "top"],
+    [third(1, .1), third(1, .45), rows.ucl, "top"], [third(1, .45), third(1, .75), rows.oxford, "top"], [third(1, .75), E(1), rows.cambridge, "top"],
+    [A(2) + .3, E(2), U.h1, "university"],
+    [third(3, .05), third(3, .5), F.purpose, "form"], [third(3, .5), E(3), F.button, "form"],
+    [A(4) + .3, A(4) + 1.6, P.h1, "after-button"],
+    [A(5) + .2, A(5) + (E(5) - A(5)) * .45, badge, "route"], [A(5) + (E(5) - A(5)) * .5, E(5), RR.stages, "route"],
+  ];
+  C = [[E(1) - .45, rows.ucl, "top"], [E(3) - .45, F.button, "form"]];
+  S.capLines = TL.map(l => l.line.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${esc(p)}</span>`).join(""));
+  document.querySelector("#end .bt span").textContent = window.T.cta + " ↑";
+}
+function cam(t) {
+  let i = 0; while (i < K.length - 1 && K[i + 1].t <= t) i++;
+  const a = K[i], b = K[i + 1]; if (!b || b.img !== a.img) return a;
+  const p = ease(prog(t, a.t, b.t)); return { img: a.img, cy: a.cy + (b.cy - a.cy) * p, z: a.z + (b.z - a.z) * p };
+}
+let capIdx = -2;
+function setTime(t) {
+  const c = cam(t), z = c.z, img = document.getElementById("i-" + c.img), H0 = img.naturalHeight || 5000;
+  let oy = 960 - c.cy * z; oy = Math.min(0, Math.max(1920 - H0 * z, oy)); const ox = 540 - 540 * z;
+  document.querySelectorAll("#scr img").forEach(im => im.style.display = im === img ? "block" : "none");
+  img.style.transform = `translate(${ox}px, ${oy}px) scale(${z})`;
+  const map = r => [ox + r[0] * z, oy + r[1] * z, r[2] * z, r[3] * z];
+  // a quick white flash on every cut (screen-recording feel)
+  const cut = K.some((k, i) => i && K[i - 1].img !== k.img && t >= k.t && t < k.t + .12); document.getElementById("scr").style.filter = cut ? "brightness(1.35)" : "none";
+  const hl = document.getElementById("hl"), h = H.find(([a, b, , im]) => t >= a && t < b && im === c.img);
+  if (h) { const [x, y, w, hh] = map(h[2]), p = easeOut(prog(t, h[0], h[0] + .25)); Object.assign(hl.style, { display: "block", opacity: p, left: x - 12 + "px", top: y - 12 + "px", width: w + 24 + "px", height: hh + 24 + "px" }); } else hl.style.display = "none";
+  const cur = document.getElementById("cur"), rip = document.getElementById("rip"); cur.style.display = rip.style.display = "none";
+  const tap = C.find(([tt, , im]) => t > tt - .8 && t < tt + .5 && im === c.img);
+  if (tap) { const [x, y, w, hh] = map(tap[1]), tx = x + w * .62, ty = y + hh * .55, p = ease(prog(t, tap[0] - .8, tap[0] - .1));
+    Object.assign(cur.style, { display: "block", left: tx + (1 - p) * 160 + "px", top: ty + (1 - p) * 240 + "px", transform: `scale(${t > tap[0] - .06 && t < tap[0] + .1 ? .78 : 1})` });
+    if (t >= tap[0]) { const rp = prog(t, tap[0], tap[0] + .45); Object.assign(rip.style, { display: "block", left: tx + "px", top: ty + "px", transform: `scale(${1 + rp * 5})`, opacity: 1 - rp }); } }
+  // headline box per spoken line
+  let k = -1; TL.forEach((l, i) => { if (t >= l.a - .1) k = i; }); k = Math.max(0, k);
+  const ov = document.querySelector("#ov span"); if (ov.dataset.k != k) { ov.dataset.k = k; ov.textContent = window.T.o[k]; }
+  const op = easeOut(prog(t, Math.max(0, TL[k].a - .1), TL[k].a + .2)); ov.parentElement.style.opacity = k === 6 ? 0 : op; ov.style.transform = `scale(${.92 + .08 * op}) rotate(${k % 2 ? 1 : -1}deg)`;
+  // end card over the home page
+  const end = document.getElementById("end"), e0 = A(6); end.style.display = t >= e0 ? "block" : "none";
+  if (t >= e0) { const p = easeOut(prog(t, e0, e0 + .5)); end.style.opacity = p; end.querySelector(".ar").style.transform = `translateY(${-24 * Math.abs(Math.sin((t - e0) * 4))}px)`; end.querySelector(".bt").style.transform = `scale(${.8 + .2 * p})`; }
+  // captions
+  const cap = document.getElementById("cap");
+  let ci = -1; TL.forEach((l, i) => { if (t >= l.a - .1 && t < l.b + .3) ci = i; });
+  if (ci !== capIdx) { capIdx = ci; cap.innerHTML = ci >= 0 ? S.capLines[ci] : ""; S.ws = [...cap.querySelectorAll(".w")]; S.wl = S.ws.map(w => w.textContent.length); let fs = 46; cap.style.fontSize = fs + "px"; while (cap.offsetHeight > 190 && fs > 34) { fs -= 2; cap.style.fontSize = fs + "px"; } }
+  if (ci >= 0) { const l = TL[ci], p = prog(t, l.a, l.b), tot = S.wl.reduce((a, b) => a + b, 0) || 1; let acc = 0; S.ws.forEach((w, i) => { w.classList.toggle("on", acc / tot <= p + .02); acc += S.wl[i]; }); }
+  cap.style.display = ci === 6 || ci < 0 ? "none" : "block";
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
