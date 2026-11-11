@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 500; src: url("../promo/fonts/noto-sans-devanagari-devanagari-500-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("../promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("../promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  :root { --paper: #f3efe8; --ink: #1c1b1f; --muted: #7d7884; --coral: #d4502f; --line: #e3ddd2; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); }
+  body { font-family: "Inter", "Noto Sans Devanagari", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #bg { position: absolute; inset: 0; background: radial-gradient(1200px 900px at 80% 10%, #fbe9e3 0%, rgba(251,233,227,0) 60%), radial-gradient(1000px 800px at 10% 90%, #e9eef8 0%, rgba(233,238,248,0) 60%), var(--paper); }
+  #hook { position: absolute; left: 50px; right: 50px; top: 70px; z-index: 5; background: #1c1b1f; color: #fff; border-radius: 28px; padding: 26px 34px; font-size: 44px; font-weight: 800; line-height: 1.22; text-align: center; box-shadow: 0 18px 40px rgba(28,27,31,.25); }
+  body.hi #hook { line-height: 1.35; }
+  #head { position: absolute; left: 50px; right: 50px; height: 150px; display: flex; align-items: center; gap: 26px; background: #fff; border: 2px solid var(--line); border-radius: 36px 36px 0 0; padding: 0 34px; z-index: 4; }
+  #head .av { width: 96px; height: 96px; border-radius: 50%; background: #e8a48f; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 46px; font-weight: 800; }
+  #head .nm { font-size: 46px; font-weight: 800; }
+  #head .st { font-size: 30px; font-weight: 600; color: #2e9e5b; margin-top: 2px; }
+  #win { position: absolute; left: 50px; right: 50px; bottom: 120px; background: rgba(255,255,255,.55); border: 2px solid var(--line); border-top: 0; border-radius: 0 0 36px 36px; overflow: hidden; }
+  #list { position: absolute; left: 0; right: 0; top: 0; padding: 30px 30px 40px; display: flex; flex-direction: column; gap: 18px; }
+  .b { max-width: 78%; font-size: 46px; font-weight: 500; line-height: 1.28; padding: 24px 32px; border-radius: 40px; box-shadow: 0 6px 16px rgba(28,27,31,.06); }
+  body.hi .b { line-height: 1.42; }
+  .f { align-self: flex-start; background: #fff; border-bottom-left-radius: 12px; transform-origin: 0 100%; }
+  .m { align-self: flex-end; background: var(--coral); color: #fff; border-bottom-right-radius: 12px; transform-origin: 100% 100%; }
+  .b.big { font-size: 64px; font-weight: 900; letter-spacing: -0.02em; }
+  .typing { align-self: flex-start; background: #fff; border-radius: 40px; border-bottom-left-radius: 12px; padding: 30px 34px; display: flex; gap: 12px; }
+  .typing i { width: 18px; height: 18px; border-radius: 50%; background: #b9b3bf; display: block; }
+  .brand { font-weight: 800; }
+  #end { position: absolute; inset: 0; z-index: 10; background: var(--paper); display: none; }
+  .center { position: absolute; left: 70px; right: 70px; text-align: center; }
+  .btn { display: inline-block; background: var(--coral); color: #fff; font-weight: 800; font-size: 58px; border-radius: 999px; padding: 30px 62px; box-shadow: 0 20px 50px rgba(212,80,47,.3); }
+  #story { position: absolute; right: 60px; bottom: 60px; font-size: 24px; color: var(--muted); z-index: 6; }
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="hook"></div>
+<div id="head"><div class="av"></div><div><div class="nm"></div><div class="st"></div></div></div>
+<div id="win"><div id="list"></div></div>
+<div id="story"></div>
+<div id="end"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const back = x => { const c = 1.8; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#1c1b1f" stroke-width="5.5" stroke-linecap="round"/><path fill="#d4502f" d="${L.europe}"/><path fill="#d4502f" d="${L.swoosh}"/><path fill="#1c1b1f" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span style="color:#d4502f">Route</span></span>`;
+let S = {}, SCH;
+function build() {
+  const T = window.T; SCH = window.SCH; document.body.classList.add(window.LANG);
+  const hook = document.getElementById("hook"); hook.textContent = T.hook;
+  const head = document.getElementById("head"); head.style.top = (70 + hook.offsetHeight + 30) + "px";
+  head.querySelector(".av").textContent = T.name[0]; head.querySelector(".nm").textContent = T.name; head.querySelector(".st").textContent = T.status;
+  const win = document.getElementById("win"); win.style.top = (head.offsetTop + 150) + "px"; S.winH = win.offsetHeight;
+  document.getElementById("story").textContent = T.story;
+  const list = document.getElementById("list"); S.list = list;
+  S.items = T.msgs.map(([who, text], i) => {
+    const html = esc(text).replace(/DocRoute/g, `<span class="brand">Doc<span style="color:${who === "m" ? "#ffd9cc" : "#d4502f"}">Route</span></span>`);
+    const typing = document.createElement("div"); typing.className = "typing"; typing.innerHTML = "<i></i><i></i><i></i>";
+    const b = document.createElement("div"); b.className = "b " + who + (i === 0 ? " big" : ""); b.innerHTML = html;
+    list.append(typing, b); return { b, typing, who };
+  });
+  const end = document.getElementById("end"); S.end = end;
+  end.innerHTML = `<div style="position:absolute;left:0;right:0;top:420px;display:flex;justify-content:center">${logoSVG(260)}</div>
+    <div class="center" style="top:730px;font-size:112px;font-weight:800;letter-spacing:-0.035em">${wordmark()}</div>
+    <div class="center" style="top:900px;font-size:60px;font-weight:800;line-height:1.2">${esc(T.end1)}</div>
+    <div class="center" style="top:1120px"><span class="btn">${esc(T.end2)} ↑</span></div>
+    <div class="center" style="top:1320px;font-size:42px;font-weight:700">docroute-student.vercel.app</div>
+    <div class="center" style="top:1400px;font-size:30px;font-weight:500;color:#7d7884">${esc(T.small)}</div>`;
+  S.endParts = [...end.children];
+}
+function setTime(t) {
+  // which items are on screen
+  S.items.forEach((it, i) => {
+    const s = SCH.msgs[i], typingOn = it.who === "f" && t >= s.typing && t < s.at;
+    it.typing.style.display = typingOn ? "flex" : "none";
+    if (typingOn) [...it.typing.children].forEach((d, k) => { d.style.transform = `translateY(${-8 * Math.max(0, Math.sin((t - s.typing) * 9 - k * .9))}px)`; });
+    const on = t >= s.at; it.b.style.display = on ? "block" : "none";
+    if (on) { const p = prog(t, s.at, s.at + .22); it.b.style.opacity = prog(t, s.at, s.at + .08); it.b.style.transform = `scale(${.6 + .4 * back(p)})`; }
+  });
+  // keep the newest message in view (smooth scroll)
+  let target = 0; const lastVisible = [...S.list.children].filter(e => e.style.display !== "none").pop();
+  if (lastVisible) target = Math.max(0, lastVisible.offsetTop + lastVisible.offsetHeight + 40 - S.winH);
+  S.scroll = S.scroll == null ? target : S.scroll + (target - S.scroll) * .25;
+  S.list.style.transform = `translateY(${-S.scroll}px)`;
+  // the end card slides in
+  const e = SCH.end; S.end.style.display = t >= e ? "block" : "none";
+  if (t >= e) { const p = easeOut(prog(t, e, e + .45)); S.end.style.transform = `translateY(${(1 - p) * 1920}px)`;
+    S.endParts.forEach((x, i) => { const q = easeOut(prog(t, e + .3 + i * .12, e + .7 + i * .12)); x.style.opacity = q; x.style.transform = `translateY(${(1 - q) * 40}px)` + (i === 3 ? ` scale(${1 + .04 * Math.max(0, Math.sin((t - e - 1.2) * 4.5))})` : ""); }); }
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
