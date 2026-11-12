@@ -1,0 +1,32 @@
+// Real screens for the "computer science in English" video. node cap2.mjs <lang>  (local site on :3123)
+import { createRequire } from "node:module"; const require = createRequire(import.meta.url); import fs from "node:fs";
+const p = require("/opt/npm-tools/node_modules/puppeteer");
+const lang = process.argv[2], out = new URL(`./shots/${lang}`, import.meta.url).pathname; fs.mkdirSync(out, { recursive: true });
+const D = 2.77, w = ms => new Promise(r => setTimeout(r, ms));
+const b = await p.launch({ executablePath: "/usr/bin/google-chrome", headless: true, args: ["--no-sandbox"] });
+const pg = await b.newPage(); await pg.setViewport({ width: 390, height: 693, deviceScaleFactor: D });
+for (const [n, v] of [["docroute-visited", "1"], ["docroute-lang", lang]]) await pg.setCookie({ name: n, value: v, domain: "localhost", path: "/" });
+const R = {}, rect = js => pg.evaluate((js, D) => { const e = eval(js); if (!e) return null; const r = e.getBoundingClientRect(); return [r.x * D, (r.y + scrollY) * D, r.width * D, r.height * D].map(Math.round); }, js, D);
+const shot = async n => { await w(450); await pg.evaluate(() => scrollTo(0, 0)); await w(150); await pg.screenshot({ path: `${out}/${n}.png`, fullPage: true }); };
+await pg.goto("http://localhost:3123/home", { waitUntil: "networkidle0" });
+await pg.evaluate(() => [...document.querySelectorAll("button")].find(x => /^(Necessary only|Только необходимые|केवल ज़रूरी|सिर्फ़ ज़रूरी)/.test(x.textContent.trim()))?.click());
+await pg.evaluate(() => document.querySelector('button[aria-label*="dark" i], button[aria-label*="тём" i], button[aria-label*="डार्क" i]')?.click()); await w(500);
+await shot("home");
+await pg.goto("http://localhost:3123/explore/top", { waitUntil: "networkidle0" }); await w(400); await shot("top");
+const cb = `document.querySelector("input[type=checkbox]")`, cbRow = `(() => { let e = ${cb}; while (e && e.getBoundingClientRect().width < 600 / 2.77) e = e.parentElement; return e; })()`;
+R.top = { h1: await rect(`document.querySelector("h1")`), filter: await rect(cbRow) };
+await pg.evaluate(js => eval(js).click(), cb); await w(700); await shot("top-filter");
+const row1 = `[...document.querySelectorAll("li, article, details, div")].filter(e => e.querySelector("a[href*='/universities/'], button") && /University College London/.test(e.textContent) && e.getBoundingClientRect().height < 80).pop()`;
+R.filtered = { line: await rect(`(() => { let e = ${cb}; while (e && e.getBoundingClientRect().width < 250) e = e.parentElement; return e; })()`), row1: await rect(row1) };
+// open the first row
+await pg.evaluate(() => { const name = [...document.querySelectorAll("*")].find(x => x.children.length === 0 && x.textContent.trim() === "University College London"); let e = name; while (e && !(e.matches("button, summary, [aria-expanded]"))) e = e.parentElement; (e || name).click(); }); await w(800);
+await shot("top-open");
+const blk = (txt, minH) => `(() => { let e = [...document.querySelectorAll("*")].find(x => x.children.length === 0 && x.textContent.includes(${JSON.stringify(txt)})); while (e && e.getBoundingClientRect().height < ${minH}) e = e.parentElement; return e; })()`;
+R.blocks = { deadline: await rect(blk("UCAS deadline for equal", 150)), language: await rect(blk("IELTS Academic 6.5", 60)), tuition: await rect(blk("Overseas fees are set per course", 60)) };
+R.open = { row1: await rect(`(() => { let e = [...document.querySelectorAll("*")].find(x => x.children.length === 0 && x.textContent.trim() === "University College London"); while (e && e.getBoundingClientRect().height < 300) e = e.parentElement; return e; })()`) };
+await pg.goto("http://localhost:3123/countries", { waitUntil: "networkidle0" }); await shot("countries");
+R.countries = { h1: await rect(`document.querySelector("h1")`), at: await rect(`document.querySelector("a[href='/countries/at']")`), cz: await rect(`document.querySelector("a[href='/countries/cz']")`) };
+await pg.goto("http://localhost:3123/countries/at", { waitUntil: "networkidle0" }); await shot("austria");
+R.austria = { h1: await rect(`document.querySelector("h1")`), study: await rect(`(() => { const top = document.querySelector("h1").getBoundingClientRect().bottom; return [...document.querySelectorAll("section, article, div")].filter(e => { const r = e.getBoundingClientRect(); return r.top > top && r.height > 330 && r.height < 520 && r.width > 320; }).sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0]; })()`), h: await pg.evaluate(() => document.documentElement.scrollHeight * 2.77) };
+fs.writeFileSync(`${out}/rects.json`, JSON.stringify(R, null, 1)); console.log(lang, JSON.stringify(R));
+await b.close();
