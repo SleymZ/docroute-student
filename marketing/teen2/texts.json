@@ -1,0 +1,116 @@
+{
+ "en": {
+  "hook": "Applying to a top uni in Europe?",
+  "pains": [
+   "Is my school certificate even accepted?",
+   "Which language test? What score?",
+   "Deadline at 18:00… in which time zone?",
+   "Tuition for non-EU: buried somewhere"
+  ],
+  "stop": "Stop.",
+  "easier": "There's an easier way",
+  "count": "2,598",
+  "countLabel": "universities",
+  "countSub": "in 46 countries",
+  "topTitle": "Top 100: what it takes, on one card",
+  "uni": "University College London",
+  "applyBy": "Apply by",
+  "date": "13 Jan 2027",
+  "left": "61 days left",
+  "example": "Top 100 · #1",
+  "profileTitle": "Check your profile against the rules",
+  "rows": [
+   "Teaching language",
+   "School certificate",
+   "Language test",
+   "Entrance exam"
+  ],
+  "status": [
+   "Met",
+   "Met",
+   "Still to do",
+   "Missing"
+  ],
+  "sourceTitle": "Every rule links to the official source",
+  "sourceSub": "No made-up “chances”. Just facts.",
+  "cta": "Find your uni",
+  "small": "Browse universities without signing up · 5 languages",
+  "hookSub": "Here's how it usually goes."
+ },
+ "ru": {
+  "hook": "Поступаете в топ-вуз Европы?",
+  "pains": [
+   "А мой аттестат вообще примут?",
+   "Какой языковой тест? Какой балл?",
+   "Дедлайн в 18:00… по какому времени?",
+   "Стоимость для не-ЕС: где-то спрятана"
+  ],
+  "stop": "Стоп.",
+  "easier": "Есть способ проще",
+  "count": "2 598",
+  "countLabel": "вузов",
+  "countSub": "в 46 странах",
+  "topTitle": "Топ-100: всё нужное — в одной карточке",
+  "uni": "University College London",
+  "applyBy": "Подать до",
+  "date": "13 янв 2027",
+  "left": "Осталось 61 день",
+  "example": "Топ-100 · №1",
+  "profileTitle": "Сравни свой профиль с правилами",
+  "rows": [
+   "Язык обучения",
+   "Аттестат",
+   "Языковой тест",
+   "Вступительный экзамен"
+  ],
+  "status": [
+   "Выполнено",
+   "Выполнено",
+   "Ещё сделать",
+   "Не хватает"
+  ],
+  "sourceTitle": "У каждого правила — официальный источник",
+  "sourceSub": "Без выдуманных «шансов». Только факты.",
+  "cta": "Найди свой вуз",
+  "small": "Вузы можно смотреть без регистрации · 5 языков",
+  "hookSub": "Обычно это выглядит так."
+ },
+ "hi": {
+  "hook": "यूरोप की टॉप यूनिवर्सिटी में आवेदन कर रहे हो?",
+  "pains": [
+   "क्या मेरा स्कूल सर्टिफ़िकेट मान्य होगा?",
+   "कौन सा भाषा टेस्ट? कितना स्कोर?",
+   "डेडलाइन 18:00 बजे… किस टाइम ज़ोन में?",
+   "non-EU के लिए फ़ीस: कहीं छिपी हुई"
+  ],
+  "stop": "रुको।",
+  "easier": "इसका आसान तरीका है",
+  "count": "2,598",
+  "countLabel": "यूनिवर्सिटी",
+  "countSub": "46 देशों में",
+  "topTitle": "टॉप 100: जो चाहिए, सब एक कार्ड में",
+  "uni": "University College London",
+  "applyBy": "आवेदन की आख़िरी तारीख़",
+  "date": "13 जन॰ 2027",
+  "left": "61 दिन बचे",
+  "example": "टॉप 100 · #1",
+  "profileTitle": "अपनी प्रोफ़ाइल को नियमों से मिलाओ",
+  "rows": [
+   "पढ़ाई की भाषा",
+   "स्कूल सर्टिफ़िकेट",
+   "भाषा टेस्ट",
+   "प्रवेश परीक्षा"
+  ],
+  "status": [
+   "पूरा",
+   "पूरा",
+   "अभी करना है",
+   "कमी है"
+  ],
+  "sourceTitle": "हर नियम के साथ आधिकारिक स्रोत",
+  "sourceSub": "कोई मनगढ़ंत “चांस” नहीं। सिर्फ़ तथ्य।",
+  "cta": "अपनी यूनिवर्सिटी ढूँढो",
+  "small": "बिना साइन-अप के यूनिवर्सिटी देखो · 5 भाषाएँ",
+  "hookSub": "आमतौर पर ऐसा होता है।"
+ }
+}
