@@ -64,7 +64,7 @@ for lang in langs:
         if not os.path.exists(pad): run("python3", os.path.join(here, "..", "story", "pad.py"), str(total), pad)
         inputs += ["-i", pad]; bed = f"[1:a]volume={0 if os.environ.get('NOBED') else 0.16}[bed]"
     else:                 # the teen video keeps its beat, lowered under the voice
-        bed = "[0:a]volume=0.42[bed]"
+        bed = f"[0:a]volume={0 if os.environ.get('NOBED') else 0.42}[bed]"
         inputs += ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
     for w, _ in wavs: inputs += ["-i", w]
     fc = bed + ";" + ";".join(f"[{i + 2}:a]aformat=channel_layouts=stereo,adelay={int(a * 1000)}|{int(a * 1000)}[v{i}]" for i, (_, a) in enumerate(wavs))
