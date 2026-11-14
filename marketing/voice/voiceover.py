@@ -12,7 +12,7 @@ here = os.path.dirname(os.path.abspath(__file__))
 video, models, langs = sys.argv[1], sys.argv[2], sys.argv[3:]
 base = os.path.join(here, "..", video)
 cfg = json.load(open(os.path.join(base, "voice.json")))
-name = {"promo": "promo", "teen": "unis", "tabs": "tabs", "deadline": "deadline", "teen2": "unis2"}[video]
+name = {"promo": "promo", "teen": "unis", "tabs": "tabs", "deadline": "deadline", "teen2": "unis2", "meme": "meme"}[video]
 KOKORO = {"en": ("am_michael", "en-us"), "es": ("em_alex", "es"), "hi": ("hm_omega", "hi"), "zh": ("zm_yunxi", "cmn")}
 # how the engines should read the brand and abbreviations
 SAY = {
