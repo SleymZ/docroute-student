@@ -107,6 +107,7 @@ export default async function DeadlinesPage({ searchParams }: PageProps) {
   const all = upcomingFacultyDeadlines(verifiedPrograms, today);
   const rows = filterDeadlines(all, country, field ? FIELD_SLUGS[field] : null);
   const programmeCount = all.reduce((sum, row) => sum + row.programmes.length, 0);
+  const facultyCount = new Set(all.map((row) => `${row.universityId}|${row.faculty}`)).size;
 
   const dateOf = (iso: string, options: Intl.DateTimeFormatOptions) =>
     new Intl.DateTimeFormat(tag, { timeZone: "UTC", ...options }).format(new Date(`${iso}T00:00:00Z`));
@@ -140,7 +141,7 @@ export default async function DeadlinesPage({ searchParams }: PageProps) {
               </div>
               <div>
                 <dt>faculties</dt>
-                <dd>{all.length}</dd>
+                <dd>{facultyCount}</dd>
               </div>
               <div>
                 <dt>first deadline</dt>
