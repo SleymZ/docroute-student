@@ -73,3 +73,13 @@ test("guests can open the deadlines page, it is indexable and linked", () => {
   assert.match(read("src/components/SiteFooter.tsx"), /href="\/deadlines"/);
   assert.match(read("src/lib/short-links.ts"), /SHORT_LINK_TARGET = "\/deadlines"/);
 });
+
+test("a faculty with programmes in two fields keeps each under its own field filter", () => {
+  const rows = upcomingFacultyDeadlines(verifiedPrograms, "2026-11-16");
+  for (const field of ["Computer Science", "Medicine", "Law", "Economics & Business"]) {
+    const listed = filterDeadlines(rows, null, field).flatMap((row) => row.programmes).length;
+    assert.equal(listed, verifiedPrograms.filter((p) => p.category === field).length, field);
+  }
+  const cs = filterDeadlines(rows, null, "Computer Science").flatMap((row) => row.programmes);
+  assert.ok(cs.includes("Management Informatics"));
+});

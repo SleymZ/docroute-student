@@ -48,7 +48,10 @@ export function upcomingFacultyDeadlines(programs: readonly AdmissionProgram[], 
     const open = openDeadline(program, today);
     if (!open) continue;
     const fee = feeText(program);
-    const key = [program.universityId, program.faculty, open.deadline, fee ?? ""].join("|");
+    // The field is part of the key: a faculty can teach programmes of two
+    // fields (FP VUT: Economics and Management Informatics), and each field
+    // filter must keep its own programmes.
+    const key = [program.universityId, program.faculty, program.category, open.deadline, fee ?? ""].join("|");
     const group = groups.get(key);
     const languages = program.instructionLanguages.map((language) => language.name);
     if (group) {
