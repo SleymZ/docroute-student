@@ -124,3 +124,12 @@ test("the 'building a route needs an account' hint is readable on the light sign
   assert.match(hint, /color: var\(--ink\);/);
   assert.doesNotMatch(hint, /#f5f3ee/);
 });
+
+test("the short phone cookie text is translated in every site language", async () => {
+  const key = "Necessary cookies only; “Accept all” adds anonymous statistics without cookies. No ads. <0/>";
+  for (const lang of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(readFileSync(join(root, `src/i18n/catalogs/${lang}.json`), "utf8"));
+    assert.ok(catalog[key], lang);
+    assert.ok(catalog["Details"], lang);
+  }
+});
