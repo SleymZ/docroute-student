@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
@@ -38,10 +39,12 @@ const workRouteCountries = new Set(["SK", "CZ"]);
 // university programmes yet: "Build my route" opens the residence route.
 const studyResidenceRouteCountries = new Set(["CZ"]);
 
-export function RoutePlanner() {
+export function RoutePlanner({ initialDocumentCountry = "" }: { initialDocumentCountry?: string }) {
   const router = useRouter();
   const [purpose, setPurpose] = useState<MovePurpose>("study");
-  const [documentCountry, setDocumentCountry] = useState("IL");
+  // The visitor's country from the hosting's location header when known;
+  // otherwise empty, so the picker asks instead of guessing.
+  const [documentCountry, setDocumentCountry] = useState(initialDocumentCountry);
   const [destination, setDestination] = useState<string>("Slovakia");
   // The map keeps its five featured destinations: another country in the
   // form leaves the map on the last featured one.
@@ -199,9 +202,10 @@ export function RoutePlanner() {
         </h1>
 
         <p className="hero-description">
-          Find the right university, see which documents you need
-          and get the deadlines for each one — from application to
-          residence permit.
+          Applying to a university in Slovakia or Czechia from outside
+          the EU? See which documents you need and the deadline for each
+          one, from the application to the residence permit. Every rule
+          links to its official source. Free.
         </p>
 
         <RouteForm
@@ -217,6 +221,10 @@ export function RoutePlanner() {
           onProgramChange={handleProgramChange}
           onSubmit={handleSubmit}
         />
+
+        <Link href="/deadlines" className="hero-deadlines-link">
+          See every verified 2027/28 application deadline, no account needed →
+        </Link>
       </div>
 
       <EuropeMap
