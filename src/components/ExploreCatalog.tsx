@@ -8,11 +8,12 @@ import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
+  CalendarClock,
   Check,
   Code2,
   Compass,
-  GraduationCap,
   Globe2,
+  GraduationCap,
   MapPin,
   Scale,
   Search,
@@ -281,6 +282,12 @@ export function ExploreCatalog() {
           <Link href="/explore/top" className={styles.atlasTopLink}>
             <Trophy size={15} aria-hidden="true" />
             See Europe&apos;s top 100 universities and their entry requirements
+            <ArrowRight size={15} aria-hidden="true" />
+          </Link>
+
+          <Link href="/deadlines" className={styles.atlasTopLink}>
+            <CalendarClock size={15} aria-hidden="true" />
+            Application deadlines 2027/28 in Slovakia and Czechia
             <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>

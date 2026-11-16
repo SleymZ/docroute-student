@@ -24,6 +24,7 @@ export function SiteFooter() {
               {page.label}
             </Link>
           ))}
+          <Link href="/deadlines">Deadlines 2027</Link>
           <Link href="/countries">Countries</Link>
           <Link href="/plus">Plans</Link>
           <Link href="/feedback">Feedback</Link>
