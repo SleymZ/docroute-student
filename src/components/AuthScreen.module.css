@@ -726,10 +726,12 @@
 .routeHint {
   margin: 0 0 14px;
   padding: 10px 12px;
-  border: 1px solid light-dark(rgba(212, 80, 47, 0.35), rgba(255, 121, 95, 0.35));
+  /* The sign-up panel is light paper in both themes, like the text around
+     it: dark-theme colours here made this hint invisible. */
+  border: 1px solid rgba(212, 80, 47, 0.35);
   border-radius: 10px;
-  background: light-dark(rgba(212, 80, 47, 0.06), rgba(255, 121, 95, 0.1));
-  color: light-dark(#22211d, #f5f3ee);
+  background: rgba(212, 80, 47, 0.07);
+  color: var(--ink);
   font-size: 13px;
   line-height: 1.45;
 }
@@ -806,9 +808,24 @@
 }
 
 @media (max-width: 900px) {
+  /* Phones and tablets: the sign-up form comes first, the story after it. */
   .page {
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow: visible;
+  }
+
+  .authPanel {
+    order: -1;
+  }
+
+  .mobileBrand {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .storyHeader {
+    display: none;
   }
 
   .storyPanel {
