@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- Growth series (2026-11-16): same brand dark style as marketing/teen,
+     one template driven by scripts.json. Scene types: hook, big, list,
+     card, text, source, cta. window.V = {scenes: [...]} for one language. -->
+<style>
+  :root { --bg: #0e1014; --ink: #f5f2ee; --muted: #a3a0a6; --coral: #ff795f; --card: #181b21; --line: #2a2e36; --ok: #5ad48a; --amber: #f2b84b; --red: #ff6b6b; --cyan: #67d9ed; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #glow { position: absolute; inset: 0; }
+  .layer { position: absolute; inset: 0; }
+  .center { position: absolute; left: 90px; right: 90px; text-align: center; }
+  .mega { font-size: 100px; font-weight: 800; line-height: 1.07; letter-spacing: -0.035em; }
+  .h2 { font-size: 72px; font-weight: 800; line-height: 1.12; letter-spacing: -0.028em; }
+  .sub { font-size: 44px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+  .kicker { font-size: 30px; font-weight: 800; letter-spacing: .16em; color: var(--cyan); text-transform: uppercase; }
+  .card { position: absolute; left: 70px; right: 70px; background: var(--card); border: 2px solid var(--line); border-radius: 36px; box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+  .item { position: absolute; left: 80px; right: 80px; display: flex; align-items: center; gap: 26px; padding: 28px 32px; font-size: 42px; font-weight: 700; line-height: 1.22; background: var(--card); border: 2px solid var(--line); border-radius: 28px; box-shadow: 0 24px 50px rgba(0,0,0,.5); }
+  .item .ic { flex: 0 0 64px; height: 64px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; }
+  .pain .ic { background: rgba(255,107,107,.14); color: var(--red); }
+  .step .ic { background: rgba(255,121,95,.16); color: var(--coral); }
+  .ok .ic { background: rgba(90,212,138,.14); color: var(--ok); }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 26px 0; border-top: 2px solid var(--line); font-size: 38px; font-weight: 700; line-height: 1.2; }
+  .row:first-child { border-top: 0; padding-top: 4px; }
+  .row .v { flex: 0 0 auto; font-size: 36px; font-weight: 800; padding: 10px 24px; border-radius: 999px; white-space: nowrap; background: rgba(255,121,95,.16); color: var(--coral); }
+  .row .v.ok { background: rgba(90,212,138,.14); color: var(--ok); }
+  .row .v.cyan { background: rgba(103,217,237,.12); color: var(--cyan); }
+  .row .k small { display: block; margin-top: 6px; font-size: 28px; font-weight: 600; color: var(--muted); }
+  .tag { font-size: 26px; font-weight: 700; color: var(--muted); border: 2px solid var(--line); border-radius: 999px; padding: 8px 22px; }
+  .pill { display: inline-block; font-size: 34px; font-weight: 700; padding: 14px 30px; border-radius: 999px; border: 2px solid var(--line); background: var(--card); color: var(--ink); }
+  .word { font-weight: 800; letter-spacing: -0.035em; }
+  .btn { display: inline-block; background: var(--coral); color: #1a0d09; font-weight: 800; border-radius: 999px; padding: 30px 46px; box-shadow: 0 20px 60px rgba(255,121,95,.3); }
+  .bigword { font-size: 250px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; color: var(--coral); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<canvas id="glow" width="1080" height="1920"></canvas>
+<div id="root" class="layer"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 4);
+const easeIn = x => x * x * x;
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+function show(e, t, a, b) {
+  const on = t >= a && t < b; e.style.visibility = on ? "visible" : "hidden"; if (!on) return;
+  const i = easeOut(prog(t, a, a + .4)), o = easeIn(prog(t, b - .18, b));
+  e.style.opacity = i * (1 - o); e.style.filter = `blur(${(1 - i) * 10 + o * 8}px)`;
+  e.style.transform = `translateY(${(1 - i) * 90 - o * 70}px)`;
+}
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f2ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f2ee" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span style="color:var(--coral)">Route</span></span>`;
+function fit(e, max) { let fs = parseFloat(getComputedStyle(e).fontSize); const lh = () => parseFloat(getComputedStyle(e).lineHeight); while (e.offsetHeight > lh() * max + 2 && fs > 34) { fs -= 4; e.style.fontSize = fs + "px"; } }
+// Each scene: {type, at, until, ...}; parts get their own staggered entry.
+const scenes = [];
+function build() {
+  const root = document.getElementById("root");
+  for (const s of window.V.scenes) {
+    const L = el("div", "layer"); root.append(L); const parts = []; let y;
+    if (s.type === "hook") {
+      const k = s.kicker ? el("div", "center kicker", esc(s.kicker)) : null; if (k) L.append(k);
+      const m = el("div", "center mega", esc(s.text)); L.append(m); fit(m, 5);
+      const sub = s.sub ? el("div", "center sub", esc(s.sub)) : null; if (sub) L.append(sub);
+      const h = (k ? k.offsetHeight + 40 : 0) + m.offsetHeight + (sub ? sub.offsetHeight + 44 : 0); y = 860 - h / 2;
+      if (k) { k.style.top = y + "px"; y += k.offsetHeight + 40; } m.style.top = y + "px"; y += m.offsetHeight + 44; if (sub) sub.style.top = y + "px";
+      parts.push(...[k, m, sub].filter(Boolean));
+    } else if (s.type === "big") {
+      const b = el("div", "center bigword", esc(s.word)); L.append(b); b.style.top = "640px"; fit(b, 1);
+      const sub = s.sub ? el("div", "center h2", esc(s.sub)) : null; if (sub) { L.append(sub); fit(sub, 3); sub.style.top = (640 + b.offsetHeight + 60) + "px"; }
+      parts.push(b, ...(sub ? [sub] : []));
+    } else if (s.type === "list") {
+      const ti = s.title ? el("div", "center h2", esc(s.title)) : null; y = 260;
+      if (ti) { L.append(ti); ti.style.fontSize = "62px"; fit(ti, 3); ti.style.top = y + "px"; y += ti.offsetHeight + 60; parts.push(ti); }
+      for (const [i, it] of s.items.entries()) {
+        const e = el("div", "item " + (s.tone || "step"), `<span class="ic">${esc(it.ic ?? String(i + 1))}</span><span>${esc(it.text)}</span>`);
+        L.append(e); e.style.top = y + "px"; y += e.offsetHeight + 36; parts.push(e);
+      }
+      // Centre the whole block a little above the middle (captions cover the bottom).
+      const shift = Math.max(0, 880 - (y - 36 + 260) / 2);
+      for (const e of parts) e.style.top = (parseFloat(e.style.top) + shift) + "px";
+    } else if (s.type === "card") {
+      const ti = el("div", "center h2", esc(s.title)); L.append(ti); ti.style.fontSize = "62px"; fit(ti, 3); ti.style.top = "230px"; parts.push(ti);
+      const head = s.tag ? `<div style="display:flex;justify-content:flex-end;margin-bottom:14px"><span class="tag">${esc(s.tag)}</span></div>` : "";
+      const c = el("div", "card", `<div style="padding:34px 42px">${head}` + s.rows.map(r => `<div class="row"><span class="k">${esc(r.k)}${r.small ? `<small>${esc(r.small)}</small>` : ""}</span><span class="v ${r.tone || ""}">${esc(r.v)}</span></div>`).join("") + `</div>`);
+      L.append(c); c.style.top = (230 + ti.offsetHeight + 60) + "px"; parts.push(c);
+      const bottom = 230 + ti.offsetHeight + 60 + c.offsetHeight, shift = Math.max(0, 880 - (230 + bottom) / 2);
+      ti.style.top = (230 + shift) + "px"; c.style.top = (230 + ti.offsetHeight + 60 + shift) + "px";
+      c._rows = [...c.querySelectorAll(".row")];
+    } else if (s.type === "text") {
+      const h = el("div", "center h2", esc(s.text)); L.append(h); fit(h, 5);
+      const sub = s.sub ? el("div", "center sub", esc(s.sub)) : null; if (sub) L.append(sub);
+      const hh = h.offsetHeight + (sub ? sub.offsetHeight + 44 : 0); y = 860 - hh / 2; h.style.top = y + "px"; if (sub) sub.style.top = (y + h.offsetHeight + 44) + "px";
+      parts.push(h, ...(sub ? [sub] : []));
+    } else if (s.type === "source") {
+      const ic = el("div", "", `<svg width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="#ff795f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>`);
+      ic.style.cssText = "position:absolute;left:0;right:0;top:500px;display:flex;justify-content:center"; L.append(ic);
+      const h = el("div", "center h2", esc(s.text)); L.append(h); h.style.top = "700px"; fit(h, 3);
+      const p = el("div", "center", s.pills.map(x => `<span class="pill" style="margin:10px">${esc(x)}</span>`).join("")); L.append(p); p.style.top = (700 + h.offsetHeight + 50) + "px";
+      parts.push(ic, h, p);
+    } else if (s.type === "cta") {
+      const lg = el("div", "", logoSVG(220)); lg.style.cssText = "position:absolute;left:0;right:0;top:300px;display:flex;justify-content:center"; L.append(lg);
+      const w = el("div", "center word", wordmark()); w.style.cssText += "top:570px;font-size:108px"; L.append(w);
+      const h = el("div", "center h2", esc(s.text)); h.style.top = "740px"; L.append(h); fit(h, 3);
+      const b = el("div", "center", `<span class="btn" style="font-size:38px">${esc(s.url)}</span>`); b.style.top = (740 + h.offsetHeight + 60) + "px"; L.append(b);
+      const sm = el("div", "center sub", esc(s.small)); sm.style.cssText += `top:${740 + h.offsetHeight + 60 + 170}px;font-size:36px`; L.append(sm);
+      parts.push(lg, w, h, b, sm);
+    }
+    scenes.push({ s, L, parts });
+  }
+}
+function glow(t) {
+  const c = document.getElementById("glow"), g = c.getContext("2d"); g.clearRect(0, 0, 1080, 1920);
+  const blob = (x, y, r, col) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1920); };
+  const k = Math.exp(-((t % .5) / .5) * 5);
+  blob(780 + Math.sin(t * .6) * 220, 520 + Math.cos(t * .45) * 220, 820, `rgba(255,121,95,${.17 + .05 * k})`);
+  blob(260 - Math.sin(t * .5) * 200, 1480 + Math.sin(t * .35) * 180, 800, `rgba(110,120,255,${.13 + .03 * k})`);
+}
+function setTime(t) {
+  glow(t);
+  const k = Math.exp(-((t % .5) / .5) * 6);
+  document.getElementById("root").style.transform = `scale(${1 + .005 * k})`;
+  for (const { s, L, parts } of scenes) {
+    const on = t >= s.at && t < s.until; L.style.display = on ? "" : "none"; if (!on) continue;
+    const last = s.type === "cta";
+    parts.forEach((p, i) => {
+      const a = s.at + i * (s.stagger ?? (s.type === "list" ? .6 : .25));
+      if (last) { const q = easeOut(prog(t, a, a + .45)); p.style.visibility = t >= a ? "visible" : "hidden"; p.style.opacity = q; p.style.filter = `blur(${(1 - q) * 10}px)`; p.style.transform = `translateY(${(1 - q) * 70}px)`; }
+      else show(p, t, a, s.until);
+    });
+    if (s.type === "card") {
+      const c = parts[1]; c._rows.forEach((r, i) => { const a = s.at + .5 + i * (s.rowStep ?? .45), q = easeOut(prog(t, a, a + .3)); r.style.opacity = q; r.style.transform = `translateX(${(1 - q) * 40}px)`; });
+    }
+    if (s.type === "big") parts[0].style.transform += ` scale(${1.2 - .2 * easeOut(prog(t, s.at, s.at + .35))})`;
+  }
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
