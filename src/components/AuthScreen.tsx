@@ -355,12 +355,25 @@ export function AuthScreen({
         <div className={styles.paperPattern} aria-hidden="true" />
 
         <div className={styles.authContainer}>
-          <Link href="/" className={styles.mobileBrand}>
-            <LogoMark size={38} className={styles.mobileBrandMark} />
-            <strong>
-              <LogoWord />
-            </strong>
-          </Link>
+          {/* Phones and tablets: the story panel (with its header) moves below
+              the form, so the logo, the way back and the theme switch sit here. */}
+          <div className={styles.mobileBar}>
+            <Link href="/" className={styles.mobileBrand}>
+              <LogoMark size={38} className={styles.mobileBrandMark} />
+              <strong>
+                <LogoWord />
+              </strong>
+            </Link>
+
+            <div className={styles.storyActions}>
+              <Link href="/home" className={styles.homeLink}>
+                <ArrowLeft size={16} aria-hidden="true" />
+                Back to homepage
+              </Link>
+
+              <ThemeToggle />
+            </div>
+          </div>
 
           <div className={styles.securityLabel}>
             <LockKeyhole size={15} aria-hidden="true" />

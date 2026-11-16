@@ -116,6 +116,10 @@ test("on phones the sign-up form comes before the story panel", () => {
   const css = readFileSync(join(root, "src/components/AuthScreen.module.css"), "utf8");
   assert.match(css, /@media \(max-width: 900px\) \{[\s\S]*?\.authPanel \{\s*order: -1;/);
   assert.match(css, /@media \(max-width: 900px\) \{[\s\S]*?\.mobileBrand \{\s*display: inline-flex;/);
+  // The hidden story header held the theme switch and the way back: on phones
+  // they move into the bar above the form.
+  const screen = readFileSync(join(root, "src/components/AuthScreen.tsx"), "utf8");
+  assert.match(screen, /className=\{styles\.mobileBar\}[\s\S]*?Back to homepage[\s\S]*?<ThemeToggle \/>/);
 });
 
 test("the 'building a route needs an account' hint is readable on the light sign-up paper in both themes", () => {

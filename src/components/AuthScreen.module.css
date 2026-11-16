@@ -401,10 +401,13 @@
   padding: 10px 0;
 }
 
+.mobileBar {
+  display: none;
+}
+
 .mobileBrand {
   display: none;
   gap: 10px;
-  margin-bottom: 32px;
   color: var(--ink);
 }
 
@@ -819,9 +822,23 @@
     order: -1;
   }
 
+  .mobileBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
   .mobileBrand {
     display: inline-flex;
     align-items: center;
+  }
+
+  /* Same light paper in both themes, like the form below it. */
+  .mobileBar .homeLink {
+    border-color: rgba(8, 27, 36, 0.18);
+    color: var(--ink);
   }
 
   .storyHeader {
