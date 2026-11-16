@@ -65,7 +65,7 @@ const dataRows = [
     kept: `At most ${FEEDBACK_KEEP_MONTHS} months.`,
   },
   {
-    what: "Visit statistics, only if you choose \u201cAccept all\u201d on the cookie banner: page address without the part after \u201c?\u201d, referring site, country or region, browser, operating system and device type. No cookies; a visit is recognised by a hash that is discarded after 24 hours. We see only totals.",
+    what: "Visit statistics, only if you choose \u201cAccept all\u201d on the cookie banner: page address without the part after \u201c?\u201d (except campaign tags such as utm_source that say which of our posts or channels a link came from), referring site, country or region, browser, operating system and device type. No cookies; a visit is recognised by a hash that is discarded after 24 hours. We see only totals.",
     why: "To see which pages are used and where people get stuck.",
     basis: "Your consent (Art. 6(1)(a)), which you can withdraw on the Cookies page at any time.",
     kept: "Aggregated by Vercel under its Web Analytics terms.",
