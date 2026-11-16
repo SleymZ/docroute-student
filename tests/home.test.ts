@@ -130,3 +130,14 @@ test("Documents issued in starts from the visitor's country, never a fixed one",
   // Only a code from the picker's own list is used.
   assert.match(home, /applicantCountryOptions\.some\(\(option\) => option\.code === code\)/);
 });
+
+test("the new home text is translated in every site language", () => {
+  const keys = [
+    "Applying to a university in Slovakia or Czechia from outside the EU? See which documents you need and the deadline for each one, from the application to the residence permit. Every rule links to its official source. Free.",
+    "See every verified 2027/28 application deadline, no account needed →",
+  ];
+  for (const lang of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(read(`src/i18n/catalogs/${lang}.json`));
+    for (const key of keys) assert.ok(catalog[key], `${lang}: ${key.slice(0, 30)}`);
+  }
+});
