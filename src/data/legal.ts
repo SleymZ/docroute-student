@@ -31,8 +31,8 @@ export const legalInfo = {
   minimumAccountAge: 16,
   /** Date the current versions of the documents take effect. */
   termsUpdated: "2026-11-09",
-  privacyUpdated: "2026-11-09",
-  cookiesUpdated: "2026-11-08",
+  privacyUpdated: "2026-11-16",
+  cookiesUpdated: "2026-11-16",
   /** Slovak data protection authority, where anyone can complain. */
   supervisoryAuthority: {
     name: "Office for Personal Data Protection of the Slovak Republic (Úrad na ochranu osobných údajov SR)",

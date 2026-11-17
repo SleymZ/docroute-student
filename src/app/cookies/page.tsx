@@ -76,7 +76,9 @@ export default function CookiesPage() {
         your device; Vercel recognises a visit by a hash of the request that
         is discarded after 24 hours. For each page view it receives the page
         address <em>without</em> the part after &ldquo;?&rdquo; (where your
-        route answers are), the referring site, country or region, browser,
+        route answers are; only campaign tags such as utm_source on links we
+        publish ourselves are kept, so we can see which post a visit came
+        from), the referring site, country or region, browser,
         operating system and device type, and shows us only totals. If you
         choose <strong>Necessary only</strong>, it is never loaded, and
         switching to Necessary only stops it from sending anything further.

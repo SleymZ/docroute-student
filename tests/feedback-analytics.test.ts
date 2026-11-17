@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 
-import { prepareAnalyticsEvent, stripQuery } from "../src/lib/analytics";
+import { keepCampaignTags, prepareAnalyticsEvent, stripQuery } from "../src/lib/analytics";
 import { buildFeedbackInsert, feedbackPage } from "../src/lib/feedback";
 
 const root = process.env.REPO_ROOT ?? process.cwd();
@@ -35,6 +35,21 @@ test("analytics events never carry route answers and stop without consent", () =
   assert.equal(stripQuery("https://x.app/route/work?citizenship=UA#a"), "https://x.app/route/work");
   assert.deepEqual(prepareAnalyticsEvent({ url: "/route/czechia?purpose=study" }, true), { url: "/route/czechia" });
   assert.equal(prepareAnalyticsEvent({ url: "/" }, false), null);
+});
+
+test("analytics keep only safe campaign tags, so a post's link can be counted", () => {
+  assert.deepEqual(
+    prepareAnalyticsEvent({ url: "https://x.app/home?utm_source=tiktok&utm_medium=social&utm_campaign=ru_deadlines&citizenship=UA#top" }, true),
+    { url: "https://x.app/home?utm_source=tiktok&utm_medium=social&utm_campaign=ru_deadlines" },
+  );
+  // Route answers next to a tag still go.
+  assert.equal(keepCampaignTags("/route/work?utm_source=ig&citizenship=UA&move=2027-08-01"), "/route/work?utm_source=ig");
+  // A tag that could hold personal data (spaces, @) is dropped.
+  assert.equal(keepCampaignTags("/home?utm_source=me@mail.com&utm_content=hello%20world"), "/home");
+  assert.equal(keepCampaignTags("/home?utm_term=" + "a".repeat(65)), "/home");
+  assert.equal(keepCampaignTags("/deadlines"), "/deadlines");
+  // Feedback keeps stripping everything after "?".
+  assert.equal(stripQuery("/home?utm_source=ig"), "/home");
 });
 
 test("statistics load only after Accept all, in production", () => {
