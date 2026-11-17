@@ -2127,5 +2127,18 @@
 "Why does a route need an account?": "Зачем для маршрута аккаунт?",
 "The route is built for your passport and programme and keeps your progress, so you can come back to it. Sign-up takes an email address or a Google account.": "Маршрут строится под ваш паспорт и программу и хранит ваш прогресс, чтобы к нему можно было вернуться. Для регистрации нужна почта или аккаунт Google.",
 "Start with the deadline you cannot miss": "Начните со срока, который нельзя пропустить",
-"See all deadlines": "Все сроки подачи"
+"See all deadlines": "Все сроки подачи",
+"Free · checked on official pages": "Бесплатно · проверено по официальным страницам",
+"<0/>Free · checked on official pages": "<0/>Бесплатно · проверено по официальным страницам",
+"Study in Slovakia or Czechia. <0/>": "Учёба в Словакии или Чехии. <0/>",
+"Study in Slovakia or Czechia.": "Учёба в Словакии или Чехии.",
+"Never miss a deadline.": "Без пропущенных сроков.",
+"Documents, application deadlines and the residence permit for applicants from outside the EU, in the order you need them. Every step links to its official source.": "Документы, сроки подачи и ВНЖ для абитуриентов из-за пределов ЕС — в том порядке, в котором они нужны. У каждого шага есть ссылка на официальный источник.",
+"Next application deadline": "Ближайший срок подачи",
+"{0} · {1} days left": "{0} · осталось дней: {1}",
+"All {0} deadlines": "Все сроки ({0})",
+"{0} verified programmes": "{0} проверенных программ",
+"<0/> verified programmes": "<0/> проверенных программ",
+"<0/> universities": "<0/> вузов",
+"<0/> countries": "<0/> стран"
 }

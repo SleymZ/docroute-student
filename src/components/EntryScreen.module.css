@@ -259,13 +259,28 @@
     transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
 }
 
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 18px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 80%, transparent);
+  color: var(--cyan);
+  font-size: 13px;
+  font-weight: 650;
+  backdrop-filter: blur(6px);
+}
+
 .title {
   margin: 0;
   color: var(--text);
-  font-size: clamp(44px, 5.6vw, 88px);
-  font-weight: 500;
-  line-height: 0.92;
-  letter-spacing: -0.06em;
+  font-size: clamp(38px, 4.4vw, 68px);
+  font-weight: 550;
+  line-height: 1;
+  letter-spacing: -0.05em;
 }
 
 .slogan {
@@ -290,7 +305,113 @@
 }
 
 .actions {
-  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+/* The next real deadline, counted down; opens /deadlines. */
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 520px;
+  margin-top: 24px;
+  padding: 14px 16px;
+  border: 1px solid light-dark(rgba(212, 80, 47, 0.32), rgba(255, 121, 95, 0.35));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--tile) 90%, transparent);
+  box-shadow: 0 12px 32px light-dark(rgba(17, 20, 24, 0.08), rgba(0, 0, 0, 0.3));
+  color: var(--text);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.countdown:hover {
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+
+.countdownIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--tile-icon);
+  color: var(--brand);
+}
+
+.countdownText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.countdownLabel {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.countdownText strong {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.countdownMeta {
+  color: var(--brand);
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+.countdownArrow {
+  flex: none;
+  margin-left: auto;
+  color: var(--muted);
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 58px;
+  padding: 0 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 86%, transparent);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  transition: border-color var(--transition);
+}
+
+.secondary:hover {
+  border-color: var(--cyan);
+}
+
+.proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 18px 0 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  list-style: none;
+}
+
+.proof strong {
+  color: var(--text);
+  font-weight: 700;
 }
 
 .enter {
@@ -328,7 +449,7 @@
 }
 
 /* Icon tiles, as in the style board: white rounded squares, coral line
-   icons. Information, not buttons, so no hover state. */
+   icons. Links to the route form with that purpose. */
 .purposes {
   display: flex;
   flex-wrap: wrap;
@@ -339,6 +460,10 @@
 }
 
 .purposes li {
+  display: flex;
+}
+
+.purposeLink {
   display: grid;
   justify-items: center;
   gap: 7px;
@@ -351,7 +476,14 @@
   color: var(--text);
   font-size: 12.5px;
   font-weight: 600;
+  text-decoration: none;
   backdrop-filter: blur(6px);
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.purposeLink:hover {
+  border-color: var(--brand);
+  transform: translateY(-1px);
 }
 
 .purposeIcon {
@@ -365,6 +497,9 @@
 }
 
 .enter:focus-visible,
+.secondary:focus-visible,
+.countdown:focus-visible,
+.purposeLink:focus-visible,
 .account:focus-visible,
 .brand:focus-visible {
   outline: 3px solid var(--cyan);
@@ -821,7 +956,20 @@
 
   .purposes li {
     flex: 1 1 0;
-    width: auto;
     min-width: 0;
+  }
+
+  .purposeLink {
+    width: 100%;
+  }
+
+  .secondary {
+    justify-content: center;
+    width: 100%;
+    min-height: 50px;
+  }
+
+  .countdown {
+    margin-top: 20px;
   }
 }

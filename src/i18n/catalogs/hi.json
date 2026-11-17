@@ -2101,5 +2101,18 @@
 "Why does a route need an account?": "रूट के लिए खाता क्यों चाहिए?",
 "The route is built for your passport and programme and keeps your progress, so you can come back to it. Sign-up takes an email address or a Google account.": "रूट आपके पासपोर्ट और प्रोग्राम के लिए बनता है और आपकी प्रगति सहेजता है, ताकि आप उस पर लौट सकें। साइन-अप के लिए ईमेल या Google खाता काफ़ी है।",
 "Start with the deadline you cannot miss": "उस समय-सीमा से शुरू करें जिसे आप चूक नहीं सकते",
-"See all deadlines": "सभी समय-सीमाएँ देखें"
+"See all deadlines": "सभी समय-सीमाएँ देखें",
+"Free · checked on official pages": "मुफ़्त · आधिकारिक पेजों पर जाँचा गया",
+"<0/>Free · checked on official pages": "<0/>मुफ़्त · आधिकारिक पेजों पर जाँचा गया",
+"Study in Slovakia or Czechia. <0/>": "स्लोवाकिया या चेकिया में पढ़ाई। <0/>",
+"Study in Slovakia or Czechia.": "स्लोवाकिया या चेकिया में पढ़ाई।",
+"Never miss a deadline.": "कोई समय-सीमा न चूकें।",
+"Documents, application deadlines and the residence permit for applicants from outside the EU, in the order you need them. Every step links to its official source.": "EU के बाहर के आवेदकों के लिए दस्तावेज़, आवेदन की समय-सीमाएँ और निवास परमिट, उसी क्रम में जिसमें आपको उनकी ज़रूरत है। हर कदम उसके आधिकारिक स्रोत से जुड़ा है।",
+"Next application deadline": "अगली आवेदन समय-सीमा",
+"{0} · {1} days left": "{0} · {1} दिन बाकी",
+"All {0} deadlines": "सभी {0} समय-सीमाएँ",
+"{0} verified programmes": "{0} सत्यापित प्रोग्राम",
+"<0/> verified programmes": "<0/> सत्यापित प्रोग्राम",
+"<0/> universities": "<0/> विश्वविद्यालय",
+"<0/> countries": "<0/> देश"
 }
