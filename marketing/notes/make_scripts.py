@@ -9,7 +9,7 @@ python3 marketing/notes/make_scripts.py"""
 import json, pathlib
 
 SK, CZ = "../../public/flags/sk.svg", "../../public/flags/cz.svg"
-URL = "docroute-student.vercel.app/deadlines"
+URL = "docroute.app/deadlines"
 END = {
     "ru": {"type": "end", "url": URL, "sub": "Ссылка в профиле · бесплатно · без регистрации",
            "say": "Все сроки — по ссылке в профиле. Это бесплатно.", "cap": "Все сроки — по ссылке в профиле. Бесплатно."},
