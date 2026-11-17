@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-09 (Plus payments through Whop, delete own story). Keep this file factual: describe what exists and
+Last updated: 2026-11-17 (growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -63,6 +63,42 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Growth series (2026-11-17, PR #98–#103, #105)
+
+Context: in 30 days Vercel counted about 9 real visitors (owner's own Slovak
+visits excluded); 8 came from l.instagram.com, none from TikTok (no bio link).
+Nobody had registered by 2026-11-17. The plan, channels and goals live in the
+Claude Doc "DocRoute: план роста".
+
+- **#98 Link previews and sitemap.** `src/app/opengraph-image.png`,
+  `twitter-image.png` (1200×630) with alt texts, `favicon.ico`,
+  `summary_large_image`. `src/app/sitemap.ts` adds `/explore/top` and every
+  catalog university with a verified, pending or Top 100 listing
+  (`src/lib/indexable-universities.ts`, ~201 URLs).
+- **#99 Campaign tags.** `keepCampaignTags()` in `src/lib/analytics.ts`
+  keeps `utm_*` (only `[A-Za-z0-9._-]{1,64}`) in analytics URLs. Privacy and
+  cookies texts updated (2026-11-16). Note: the UTM panel in Vercel needs Pro
+  + Web Analytics Plus; on Hobby use the short-link counter below.
+- **#100 Short links `/go/<channel>-<lang>[-NN]`** (channels tt, ig, yt, tg,
+  rd, fb, th, wa, x, li, qr, mail). Redirect 307 to `/deadlines` with
+  `utm_*`, sets the language cookie if none. Clicks are counted per day in
+  `link_clicks` through RPC `count_link_click` (migration
+  `20261116120000_link_clicks.sql`). **Until the owner runs that SQL the
+  links work but clicks are not counted.** Link previews (bots) are not counted.
+- **#101 `/deadlines`** — public page with every open 2027/28 application
+  deadline (programmes and faculties), days left, filters
+  `?country=sk|cz&field=cs|medicine|law|economics`, residence timing block
+  (SK police up to 90 days, CZ 60 days). Linked from footer and Explore.
+- **#102 Clearer home.** Hero says who it is for (non-EU applicants to
+  Slovakia/Czechia); document country preselected from
+  `x-vercel-ip-country`; 2-column form; link to `/deadlines`.
+- **#103 Mobile sign-in.** On ≤900px the form comes first with a compact bar
+  (logo, back, theme toggle); short cookie notice on phones.
+- **#105 Cheat-sheet videos** (`marketing/notes/`): 10 videos × ru/en,
+  voice only (Piper dmitri / Kokoro am_michael), the owner adds music.
+  `README.md` has captions, hashtags and posting order. Rendered files are
+  not committed (`out/`, `shots/` are ignored).
 
 ## Delete your own story from its page (2026-11-09)
 
