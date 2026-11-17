@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     url: "/",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "DocRoute",
     description:
       "One source-linked route from university application to residence permit, with deadlines for every document.",

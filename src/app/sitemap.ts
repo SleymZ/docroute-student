@@ -1,6 +1,7 @@
 import { countryHref, countryPages } from "@/lib/country-list";
 import type { MetadataRoute } from "next";
 
+import { indexableUniversityIds } from "@/lib/indexable-universities";
 import { getSiteUrl } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -23,6 +24,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${siteUrl}/explore/top`,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    {
       url: `${siteUrl}/countries`,
       changeFrequency: "weekly",
       priority: 0.85,
@@ -31,6 +37,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}${countryHref(country.code)}`,
       changeFrequency: "weekly" as const,
       priority: 0.7,
+    })),
+    ...indexableUniversityIds().map((id) => ({
+      url: `${siteUrl}/universities/${encodeURIComponent(id)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
     })),
     {
       url: `${siteUrl}/stories`,
