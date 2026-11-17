@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- "Applicant cheat sheet" series (2026-11-17): light planner paper, ink type,
+     coral marker, voice-over with word-by-word captions, real site screens in
+     a phone. window.V = {chip, badge, scenes: [{type, at, until, cap, ...}]} -->
+<style>
+  :root { --paper: #f4f0e7; --ink: #14181d; --muted: #6b6f76; --coral: #d4502f; --marker: rgba(255,121,95,.42); --teal: #0f6f7c; --line: #ddd6c8; --card: #fffdf8; --ok: #1f8a4c; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); }
+  body { font-family: "Inter", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  #dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(20,24,29,.13) 1.6px, transparent 1.6px); background-size: 36px 36px; }
+  #margin { position: absolute; top: 0; bottom: 0; left: 64px; width: 3px; background: rgba(212,80,47,.28); }
+  .abs { position: absolute; }
+  .layer { position: absolute; inset: 0; }
+  .chip { position: absolute; top: 210px; left: 96px; display: flex; align-items: center; gap: 14px; font-size: 30px; font-weight: 800; letter-spacing: .02em; }
+  .chip .no { background: var(--ink); color: var(--paper); border-radius: 10px; padding: 6px 14px; }
+  .badge { position: absolute; top: 272px; left: 96px; font-size: 22px; font-weight: 700; color: var(--teal); border: 2.5px solid var(--teal); border-radius: 999px; padding: 6px 18px; }
+  .head { position: absolute; left: 96px; right: 120px; font-size: 104px; font-weight: 850; line-height: 1.04; letter-spacing: -0.04em; }
+  .head mark { color: var(--ink); background: linear-gradient(transparent 56%, var(--marker) 56%, var(--marker) 94%, transparent 94%) no-repeat 0 0 / calc(var(--m, 0) * 100%) 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 6px; margin: 0 -6px; }
+  .head .w { display: inline-block; }
+  .cap { position: absolute; left: 96px; right: 150px; top: 1290px; font-size: 54px; font-weight: 750; line-height: 1.22; letter-spacing: -0.015em; }
+  .cap .w { color: rgba(20,24,29,.22); transition: none; }
+  .cap .w.on { color: var(--ink); }
+  .cap .w.hl { color: var(--coral); }
+  .label { position: absolute; left: 96px; right: 150px; font-size: 44px; font-weight: 800; color: var(--muted); letter-spacing: .01em; }
+  .card { position: absolute; background: var(--card); border: 3px solid var(--ink); border-radius: 34px; box-shadow: 12px 12px 0 var(--ink); }
+  .cal { left: 270px; width: 540px; overflow: hidden; }
+  .cal .top { background: var(--coral); color: #fff; font-size: 44px; font-weight: 800; padding: 22px 0; text-align: center; letter-spacing: .04em; text-transform: uppercase; border-bottom: 3px solid var(--ink); }
+  .cal .day { font-size: 270px; font-weight: 850; letter-spacing: -0.05em; text-align: center; line-height: 1.05; padding-top: 10px; font-variant-numeric: tabular-nums; }
+  .cal .yr { font-size: 40px; font-weight: 700; color: var(--muted); text-align: center; padding-bottom: 30px; }
+  .rings { position: absolute; top: -16px; left: 0; right: 0; display: flex; justify-content: space-around; padding: 0 90px; }
+  .rings span { width: 22px; height: 46px; border-radius: 11px; background: var(--ink); }
+  .item { position: absolute; left: 96px; right: 150px; display: flex; align-items: flex-start; gap: 30px; font-size: 50px; font-weight: 750; line-height: 1.2; }
+  .item .n { flex: 0 0 auto; min-width: 104px; height: 104px; border-radius: 26px; border: 3px solid var(--ink); background: var(--card); display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 850; box-shadow: 6px 6px 0 var(--ink); padding: 0 12px; }
+  .item.warn .n { background: #ffe4dc; color: var(--coral); }
+  .item.ok .n { background: #e2f3e8; color: var(--ok); }
+  .item .t small { display: block; margin-top: 8px; font-size: 36px; font-weight: 600; color: var(--muted); }
+  .item.dim { opacity: .38; }
+  .big { position: absolute; left: 0; right: 0; text-align: center; font-size: 300px; font-weight: 850; letter-spacing: -0.06em; line-height: 1; }
+  .big span { color: var(--coral); }
+  .bigsub { position: absolute; left: 120px; right: 150px; text-align: center; font-size: 46px; font-weight: 750; line-height: 1.22; }
+  .cmp { position: absolute; left: 80px; right: 110px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .col { background: var(--card); border: 3px solid var(--ink); border-radius: 30px; box-shadow: 10px 10px 0 var(--ink); padding: 26px 26px 10px; }
+  .col h3 { display: flex; align-items: center; gap: 14px; font-size: 42px; font-weight: 850; margin-bottom: 10px; }
+  .col h3 img { width: 58px; height: 42px; border-radius: 6px; border: 2px solid var(--ink); object-fit: cover; }
+  .col .r { padding: 18px 0; border-top: 2.5px dashed var(--line); }
+  .col .r b { display: block; font-size: 26px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+  .col .r span { font-size: 40px; font-weight: 850; letter-spacing: -0.01em; line-height: 1.15; }
+  .col .r.hl span { background: linear-gradient(transparent 55%, var(--marker) 55%); }
+  .stamp { position: absolute; left: 140px; right: 190px; text-align: center; color: var(--teal); border: 9px double var(--teal); border-radius: 26px; padding: 34px 20px; font-size: 64px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; line-height: 1.1; }
+  .stamp small { display: block; margin-top: 14px; font-size: 32px; letter-spacing: .08em; }
+  .phone { position: absolute; left: 290px; width: 500px; height: 900px; border-radius: 60px; background: #111; padding: 16px; box-shadow: 14px 14px 0 rgba(20,24,29,.9); }
+  .phone .scr { width: 468px; height: 868px; border-radius: 48px; overflow: hidden; position: relative; background: #fff; }
+  .phone img { position: absolute; left: 0; top: 0; width: 468px; }
+  .phone .notch { position: absolute; top: 28px; left: 50%; width: 150px; height: 34px; margin-left: -75px; border-radius: 20px; background: #111; z-index: 2; }
+  .ring { position: absolute; border: 6px solid var(--coral); border-radius: 28px; }
+  .endw { position: absolute; left: 0; right: 0; text-align: center; font-size: 120px; font-weight: 850; letter-spacing: -0.04em; }
+  .url { position: absolute; left: 0; right: 0; text-align: center; }
+  .url span { display: inline-block; background: var(--ink); color: var(--paper); border-radius: 999px; padding: 26px 44px; font-size: 40px; font-weight: 800; }
+  .endsub { position: absolute; left: 120px; right: 150px; text-align: center; font-size: 46px; font-weight: 750; color: var(--muted); line-height: 1.25; }
+</style>
+</head>
+<body>
+<div id="dots"></div><div id="margin"></div>
+<div id="root" class="layer"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c = 1.6; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const el = (cls, html, css) => { const e = document.createElement("div"); e.className = cls; if (html != null) e.innerHTML = html; if (css) e.style.cssText = css; return e; };
+const words = s => s.split(/\s+/).filter(Boolean);
+// *marked* words get the coral marker in a headline, the coral colour in a caption
+function wordsHTML(text, markTag) {
+  let inMark = false; const out = [];
+  for (const raw of words(text)) {
+    let w = raw, open = false, close = false;
+    if (w.startsWith("*")) { open = true; w = w.slice(1); }
+    if (w.endsWith("*")) { close = true; w = w.slice(0, -1); }
+    if (open) inMark = true;
+    out.push({ w, mark: inMark });
+    if (close) inMark = false;
+  }
+  if (markTag) {
+    let html = "", i = 0;
+    while (i < out.length) {
+      if (out[i].mark) { let seg = []; while (i < out.length && out[i].mark) seg.push(`<span class="w">${esc(out[i++].w)}</span>`); html += `<mark>${seg.join(" ")}</mark> `; }
+      else html += `<span class="w">${esc(out[i++].w)}</span> `;
+    }
+    return html;
+  }
+  return out.map(o => `<span class="w${o.mark ? " hlw" : ""}">${esc(o.w)}</span>`).join(" ");
+}
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#14181d" stroke-width="5.5" stroke-linecap="round"/><path fill="#d4502f" d="${L.europe}"/><path fill="#d4502f" d="${L.swoosh}"/><path fill="#14181d" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+const wordmark = () => `<span translate="no">Doc<span style="color:var(--coral)">Route</span></span>`;
+function fitH(e, maxH, min = 40) { let fs = parseFloat(getComputedStyle(e).fontSize); while (e.offsetHeight > maxH && fs > min) { fs -= 3; e.style.fontSize = fs + "px"; } }
+
+const S = [];
+function build() {
+  const V = window.V, root = document.getElementById("root");
+  root.append(el("chip", `<span>${wordmark()}</span><span class="no">${esc(V.chip)}</span>`));
+  if (V.badge) root.append(el("badge", esc(V.badge)));
+  for (const s of V.scenes) {
+    const L = el("layer"); root.append(L); const o = { s, L, parts: [] };
+    if (s.type === "title") {
+      const h = el("head", wordsHTML(s.head, true)); L.append(h); fitH(h, 900); h.style.top = (780 - h.offsetHeight / 2) + "px";
+      o.head = h; o.hw = [...h.querySelectorAll(".w")]; o.marks = [...h.querySelectorAll("mark")];
+    } else if (s.type === "calendar") {
+      if (s.label) { const lb = el("label", esc(s.label)); L.append(lb); lb.style.top = "370px"; o.parts.push(lb); }
+      const mk = d => `<div class="rings"><span></span><span></span><span></span></div><div class="top">${esc(d.month)}</div><div class="day">${esc(d.day)}</div><div class="yr">${esc(d.year)}</div>`;
+      const c = el("card cal", mk(s.from ?? s.to)); c.style.top = (s.label ? 480 : 420) + "px"; L.append(c); o.cal = c; o.mk = mk;
+      if (s.note) { const n = el("label", esc(s.note), "text-align:center;color:var(--coral)"); n.style.top = (c.offsetTop + c.offsetHeight + 50) + "px"; L.append(n); o.note = n; }
+    } else if (s.type === "list") {
+      let y = 380;
+      if (s.title) { const t = el("label", esc(s.title)); t.style.top = y + "px"; L.append(t); y += t.offsetHeight + 46; o.title = t; }
+      o.items = s.items.map((it, i) => { const e = el(`item ${it.tone || ""}`, `<div class="n">${esc(it.n ?? String(i + 1))}</div><div class="t">${esc(it.text)}${it.small ? `<small>${esc(it.small)}</small>` : ""}</div>`); e.style.top = y + "px"; L.append(e); y += e.offsetHeight + 44; return e; });
+      const spare = 1230 - y; if (spare > 0) [o.title, ...o.items].filter(Boolean).forEach(e => e.style.top = (parseFloat(e.style.top) + spare / 2) + "px");
+    } else if (s.type === "big") {
+      const b = el("big", s.big.replace(/\*(.+?)\*/g, "<span>$1</span>")); b.style.top = "460px"; L.append(b);
+      o.parts.push(b);
+      if (s.sub) { const sb = el("bigsub", esc(s.sub)); sb.style.top = (460 + b.offsetHeight + 50) + "px"; L.append(sb); o.parts.push(sb); }
+    } else if (s.type === "compare") {
+      const col = (c, side) => `<div class="col"><h3>${c.flag ? `<img src="${c.flag}">` : ""}${esc(c.title)}</h3>` + s.rows.map((r, i) => `<div class="r r${i}${i === s.hl ? " hl" : ""}"><b>${esc(r.k)}</b><span>${esc(r[side])}</span></div>`).join("") + `</div>`;
+      const g = el("cmp", col(s.left, "l") + col(s.right, "r")); g.style.top = "380px"; L.append(g); o.grid = g;
+      o.rows = s.rows.map((_, i) => [...g.querySelectorAll(".r" + i)]);
+    } else if (s.type === "stamp") {
+      const st = el("stamp", `${esc(s.stamp)}${s.small ? `<small>${esc(s.small)}</small>` : ""}`); L.append(st); st.style.top = (760 - st.offsetHeight / 2) + "px"; o.stampEl = st;
+    } else if (s.type === "phone") {
+      const p = el("phone", `<div class="notch"></div><div class="scr"><img src="${s.img}"></div>`); p.style.top = "350px"; L.append(p); o.phone = p; o.img = p.querySelector("img");
+      if (s.ring) { const r = el("ring"); r.style.cssText += `left:${290 + 16 + s.ring[0]}px;top:${350 + 16 + s.ring[1]}px;width:${s.ring[2]}px;height:${s.ring[3]}px`; L.append(r); o.ringEl = r; }
+    } else if (s.type === "end") {
+      const lg = el("abs", logoSVG(250), "left:0;right:0;top:330px;display:flex;justify-content:center"); L.append(lg);
+      const w = el("endw", wordmark()); w.style.top = "620px"; L.append(w);
+      const u = el("url", `<span>${esc(s.url)}</span>`); u.style.top = "800px"; L.append(u);
+      const sb = el("endsub", esc(s.sub)); sb.style.top = "950px"; L.append(sb);
+      o.parts.push(lg, w, u, sb);
+    }
+    if (s.cap && s.type !== "title") { const c = el("cap", wordsHTML(s.cap, false)); L.append(c); fitH(c, 300, 40); o.cw = [...c.querySelectorAll(".w")]; }
+    S.push(o);
+  }
+}
+function enter(e, t, a, dur = .45, dy = 60) { const q = easeOut(prog(t, a, a + dur)); e.style.opacity = q; e.style.transform = `translateY(${(1 - q) * dy}px)`; return q; }
+function setTime(t) {
+  for (const o of S) {
+    const { s, L } = o, on = t >= s.at && t < s.until; L.style.display = on ? "" : "none"; if (!on) continue;
+    const a = s.at, d = s.until - s.at, fresh = !s.keep;
+    // captions: words light up as they are said (spread over the spoken part)
+    const sa = s.speechAt ?? a;
+    if (o.cw) { const sp = s.speech ?? d; o.cw.forEach((w, i) => { const at = sa + .05 + sp * (i / o.cw.length); w.classList.toggle("on", t >= at); w.classList.toggle("hl", t >= at && w.classList.contains("hlw")); }); }
+    if (s.type === "title") {
+      const sp = s.speech ?? d; o.hw.forEach((w, i) => { const at = sa + sp * .8 * (i / o.hw.length); const q = easeOut(prog(t, at, at + .25)); w.style.opacity = .12 + .88 * q; w.style.transform = `translateY(${(1 - q) * 24}px)`; });
+      o.marks.forEach(m => m.style.setProperty("--m", easeInOut(prog(t, sa + sp * .55, sa + sp * .55 + .5))));
+    } else if (s.type === "calendar") {
+      o.parts.forEach(p => fresh ? enter(p, t, a) : (p.style.opacity = 1));
+      if (fresh) { const q = back(clamp(prog(t, a, a + .5))); o.cal.style.transform = `translateY(${(1 - clamp(prog(t, a, a + .5))) * 120}px) scale(${.9 + .1 * q})`; o.cal.style.opacity = clamp(prog(t, a, a + .3)); }
+      if (s.from) { const ft = a + (s.flipAt ?? d * .45), q = prog(t, ft, ft + .5); o.cal.innerHTML = o.mk(q < .5 ? s.from : s.to); o.cal.style.transform = (o.cal.style.transform || "") + ` rotateX(${q < .5 ? q * 180 : (q - 1) * 180}deg)`; }
+      if (o.note) enter(o.note, t, a + (s.noteAt ?? (s.flipAt ?? d * .45) + .35));
+    } else if (s.type === "list") {
+      if (o.title) fresh ? enter(o.title, t, a) : (o.title.style.opacity = 1);
+      o.items.forEach((e, i) => { const it = s.items[i], at = it.at != null ? a + it.at : (fresh ? a + .3 + i * .5 : a); if (it.old) { e.style.opacity = 1; e.style.transform = ""; } else enter(e, t, at, .45, 50); if (it.dim) e.classList.add("dim"); });
+    } else if (s.type === "big") {
+      const q = back(clamp(prog(t, a, a + .55))); o.parts[0].style.transform = `scale(${.6 + .4 * q})`; o.parts[0].style.opacity = clamp(prog(t, a, a + .25));
+      if (o.parts[1]) enter(o.parts[1], t, a + .4);
+    } else if (s.type === "compare") {
+      fresh ? enter(o.grid, t, a, .5, 80) : (o.grid.style.opacity = 1, o.grid.style.transform = "");
+      o.rows.forEach((pair, i) => { const show = i <= (s.upto ?? s.rows.length - 1), at = i === s.hl ? a + .25 : a; pair.forEach(r => { r.style.display = show ? "" : "none"; if (show && i === s.hl) enter(r, t, at, .4, 30); else if (show) { r.style.opacity = 1; r.style.transform = ""; } }); });
+    } else if (s.type === "stamp") {
+      const q = clamp(prog(t, a + .15, a + .45)); o.stampEl.style.opacity = q; o.stampEl.style.transform = `rotate(-7deg) scale(${1.7 - .7 * easeOut(q)})`;
+    } else if (s.type === "phone") {
+      fresh ? enter(o.phone, t, a, .55, 140) : (o.phone.style.opacity = 1, o.phone.style.transform = "");
+      const y0 = s.from ?? 0, y1 = s.to ?? y0, q = easeInOut(prog(t, a + (s.scrollAt ?? .6), a + (s.scrollAt ?? .6) + (s.scrollDur ?? 1.6)));
+      o.img.style.transform = `translateY(${-(y0 + (y1 - y0) * q) * (468 / 780)}px)`;
+      if (o.ringEl) { const r = clamp(prog(t, a + (s.ringAt ?? 1.4), a + (s.ringAt ?? 1.4) + .35)); o.ringEl.style.opacity = r; o.ringEl.style.transform = `scale(${1.15 - .15 * r})`; }
+    } else if (s.type === "end") {
+      o.parts.forEach((p, i) => enter(p, t, a + i * .18, .5, 50));
+    }
+  }
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
