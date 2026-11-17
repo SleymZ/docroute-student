@@ -2,6 +2,7 @@
 // node marketing/notes/capture.mjs [base=http://localhost:3100]
 // Run against a local `next build && next start` of the branch with /deadlines.
 import { createRequire } from "node:module";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
@@ -9,6 +10,8 @@ let puppeteer;
 for (const p of ["puppeteer-core", "/opt/npm-tools/node_modules/puppeteer-core"]) { try { puppeteer = require(p); break; } catch {} }
 const here = path.dirname(fileURLToPath(import.meta.url));
 const base = process.argv[2] ?? "http://localhost:3100";
+// shots/ is ignored by Git, so a fresh checkout does not have it.
+fs.mkdirSync(path.join(here, "shots"), { recursive: true });
 const shots = [
   ["deadlines", "/deadlines"],
   ["medicine", "/deadlines?field=medicine"],
