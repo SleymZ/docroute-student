@@ -227,11 +227,15 @@ export function RoutePlanner({ initialDocumentCountry = "" }: { initialDocumentC
         </Link>
       </div>
 
-      <EuropeMap
-        destination={mapDestination}
-        program={program}
-        onDestinationChange={handleDestinationChange}
-      />
+      {/* On phones the map is too small to read and pushes the content
+          below the form out of reach; the form already picks the country. */}
+      <div className="hero-map">
+        <EuropeMap
+          destination={mapDestination}
+          program={program}
+          onDestinationChange={handleDestinationChange}
+        />
+      </div>
     </section>
   );
 }

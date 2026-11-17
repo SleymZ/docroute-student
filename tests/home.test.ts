@@ -141,3 +141,19 @@ test("the new home text is translated in every site language", () => {
     for (const key of keys) assert.ok(catalog[key], `${lang}: ${key.slice(0, 30)}`);
   }
 });
+
+test("home shows the soonest verified deadlines and facts from the residence data", () => {
+  const page = read("src/app/home/page.tsx");
+  assert.match(page, /<HomeSections today=\{getAdmissionDate\(\)\} locale=\{locale\} \/>/);
+  const sections = read("src/components/home/HomeSections.tsx");
+  assert.match(sections, /upcomingFacultyDeadlines\(verifiedPrograms, today\)/);
+  assert.match(sections, /slovakiaResidenceRules\.processingTimeDays/);
+  assert.match(sections, /czechiaResidenceRules\.study\.processingDays/);
+  assert.match(sections, /href="#route-builder"/);
+  for (const locale of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(read(`src/i18n/catalogs/${locale}.json`));
+    for (const key of ["Applications that close soonest", "Four stages, in the order they happen", "Start with the deadline you cannot miss"]) {
+      assert.ok(catalog[key], `${locale}: ${key}`);
+    }
+  }
+});
