@@ -35,11 +35,17 @@ export function CookieNotice() {
         <p id="cookie-notice-title" className={styles.title}>
           Cookies on DocRoute
         </p>
-        <p>
+        <p className={styles.long}>
           We use necessary cookies to keep you signed in and remember your
           progress. With &ldquo;Accept all&rdquo; we also count visits with
           cookieless, anonymous statistics (Vercel Web Analytics) to improve
           the site. No ads, no tracking across sites. <Link href="/cookies">Details and settings</Link>
+        </p>
+        {/* Phones: the same facts in one line, so the banner does not cover
+            a third of the screen. */}
+        <p className={styles.short}>
+          Necessary cookies only; &ldquo;Accept all&rdquo; adds anonymous
+          statistics without cookies. No ads. <Link href="/cookies">Details</Link>
         </p>
       </div>
       <div className={styles.buttons}>
