@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { Header } from "@/components/Header";
-import { JourneyRail } from "@/components/JourneyRail";
+import { HomeSections } from "@/components/home/HomeSections";
 import { RoutePlanner } from "@/components/RoutePlanner";
 import { applicantCountryOptions } from "@/data/applicant-countries";
+import { getLocale } from "@/i18n/server";
+import { getAdmissionDate } from "@/lib/admission-date";
 
 export const metadata: Metadata = {
   title: "Plan your route",
@@ -20,13 +22,14 @@ async function visitorCountry() {
 
 export default async function Home() {
   const initialDocumentCountry = await visitorCountry();
+  const locale = await getLocale();
   return (
     <main>
       <Header />
 
       <div className="page-container">
         <RoutePlanner initialDocumentCountry={initialDocumentCountry} />
-        <JourneyRail />
+        <HomeSections today={getAdmissionDate()} locale={locale} />
       </div>
     </main>
   );

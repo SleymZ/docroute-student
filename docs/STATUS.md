@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-17 (growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
+Last updated: 2026-11-17 (entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -64,6 +64,29 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Entry page and home redesign (2026-11-17, PR #108)
+
+Owner decisions 2026-11-17: guests still need an account for any route
+(guest short route PR #106 closed); the entry page content may change
+freely, logo and map stay (CLAUDE.md updated).
+
+- **Entry page `/`** (`src/components/EntryScreen.tsx`), centred: title
+  "Your move to Europe, step by step." for all four purposes; four purpose
+  cards linking to `/home?purpose=…#route-builder` (study shows verified
+  programmes and the next deadline; work/family/business name the covered
+  countries and official links for the rest of the EU); "Start your journey"
+  and "University deadlines 2027/28"; a card with the three soonest
+  deadlines (`upcomingFacultyDeadlines`, hidden on phones) and "How a route
+  is built"; numbers from the data. The floating facts and the corner
+  legend are gone. Dates inside sentences are formatted in English so the
+  translation engine localises them.
+- **Home `/home`** (`src/components/home/HomeSections.tsx`) below the form:
+  numbers strip, six soonest deadlines (four on phones) linking to
+  university pages, four stages with facts from the residence rules (SK 90 /
+  CZ 60 days, 6 years, 80 hours a month), a labelled example route with
+  what Free and Plus open, FAQ and a closing call to action. `JourneyRail`
+  is no longer used on /home. On phones the map is hidden (`.hero-map`).
 
 ## Own domain docroute.app (2026-11-17)
 

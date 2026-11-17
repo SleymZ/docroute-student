@@ -252,20 +252,35 @@
 
 .copy {
   align-self: center;
-  max-width: 640px;
+  max-width: 660px;
   padding: 24px clamp(18px, 4vw, 56px) 72px;
   transition:
     opacity 0.45s ease,
     transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
 }
 
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 18px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 80%, transparent);
+  color: var(--cyan);
+  font-size: 13px;
+  font-weight: 650;
+  backdrop-filter: blur(6px);
+}
+
 .title {
   margin: 0;
   color: var(--text);
-  font-size: clamp(44px, 5.6vw, 88px);
-  font-weight: 500;
-  line-height: 0.92;
-  letter-spacing: -0.06em;
+  font-size: clamp(38px, 4.4vw, 68px);
+  font-weight: 550;
+  line-height: 1;
+  letter-spacing: -0.05em;
 }
 
 .slogan {
@@ -290,7 +305,47 @@
 }
 
 .actions {
-  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 58px;
+  padding: 0 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 86%, transparent);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  transition: border-color var(--transition);
+}
+
+.secondary:hover {
+  border-color: var(--cyan);
+}
+
+.proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 18px 0 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  list-style: none;
+}
+
+.proof strong {
+  color: var(--text);
+  font-weight: 700;
 }
 
 .enter {
@@ -327,44 +382,99 @@
   transform: translateX(3px);
 }
 
-/* Icon tiles, as in the style board: white rounded squares, coral line
-   icons. Information, not buttons, so no hover state. */
+.choose {
+  margin: 26px 0 10px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+/* Four purpose cards: the main way in. Each opens the route form with that
+   purpose. */
 .purposes {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin: 30px 0 0;
+  max-width: 600px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .purposes li {
-  display: grid;
-  justify-items: center;
-  gap: 7px;
-  width: 78px;
-  padding: 12px 6px 10px;
+  display: flex;
+  min-width: 0;
+}
+
+.purposeLink {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: color-mix(in srgb, var(--tile) 88%, transparent);
+  background: color-mix(in srgb, var(--tile) 90%, transparent);
   box-shadow: 0 8px 24px light-dark(rgba(17, 20, 24, 0.06), rgba(0, 0, 0, 0.25));
   color: var(--text);
-  font-size: 12.5px;
-  font-weight: 600;
-  backdrop-filter: blur(6px);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.purposeLink:hover {
+  border-color: var(--brand);
+  transform: translateY(-1px);
 }
 
 .purposeIcon {
   display: grid;
+  flex: none;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 11px;
   background: var(--tile-icon);
   color: var(--brand);
 }
 
+.purposeText {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.purposeText strong {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.purposeText > span {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.purposeText > .purposeDeadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  color: var(--brand);
+  font-weight: 650;
+}
+
+.purposeArrow {
+  flex: none;
+  margin-left: auto;
+  color: var(--muted);
+}
+
 .enter:focus-visible,
+.secondary:focus-visible,
+.purposeLink:focus-visible,
 .account:focus-visible,
 .brand:focus-visible {
   outline: 3px solid var(--cyan);
@@ -816,12 +926,259 @@
   }
 
   .purposes {
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
   }
 
-  .purposes li {
-    flex: 1 1 0;
-    width: auto;
-    min-width: 0;
+  .purposeLink {
+    padding: 12px;
+  }
+
+  .secondary {
+    justify-content: center;
+    width: 100%;
+    min-height: 50px;
+  }
+
+}
+
+/* Three soonest university deadlines in the top middle of the map, above
+   the route (wide screens only, where there is room between the text and
+   the example route card). Replaces the three floating facts. */
+.soon {
+  position: absolute;
+  top: 15%;
+  left: calc(clamp(18px, 4vw, 56px) + 620px);
+  z-index: 1;
+  display: none;
+  width: 330px;
+  padding: 16px 16px 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  box-shadow: 0 18px 50px light-dark(rgba(17, 20, 24, 0.12), rgba(0, 0, 0, 0.35));
+  backdrop-filter: blur(10px);
+  transition: opacity 0.35s ease;
+}
+
+@media (min-width: 1340px) {
+  .soon {
+    display: block;
+  }
+}
+
+.soonKicker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 10px;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.soonList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.soonList li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--tile);
+}
+
+.soonDate {
+  min-width: 44px;
+  color: var(--text);
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.soonWhat {
+  display: grid;
+  min-width: 0;
+}
+
+.soonWhat strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.soonWhat span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.soonDays {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: light-dark(rgba(16, 112, 125, 0.1), rgba(103, 217, 237, 0.12));
+  color: light-dark(#0e5f6a, #9fe3ef);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.soonLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.soonLink:hover {
+  color: var(--brand-hover);
+}
+
+.soonLink:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.entry[data-leaving] .soon {
+  opacity: 0;
+}
+
+
+@media (min-width: 1700px) {
+  .soon {
+    left: calc(clamp(18px, 4vw, 56px) + 720px);
+    width: 380px;
+  }
+}
+
+/* ---- centred layout (owner request 2026-11-17) ----
+   Title, purposes, buttons and two cards stand in the middle of the
+   screen; the map stays where it is and shows around them. */
+
+.entry .veil {
+  background: radial-gradient(
+    ellipse 58% 72% at 50% 54%,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 92%, transparent) 46%,
+    color-mix(in srgb, var(--background) 55%, transparent) 72%,
+    transparent 100%
+  );
+}
+
+.entry .copy {
+  justify-self: center;
+  width: 100%;
+  max-width: 1120px;
+  padding: 8px clamp(18px, 4vw, 56px) 48px;
+  text-align: center;
+}
+
+.entry .title {
+  max-width: 22ch;
+  margin-inline: auto;
+  font-size: clamp(36px, 4.4vw, 68px);
+}
+
+.entry .lead {
+  max-width: 60ch;
+  margin-inline: auto;
+}
+
+.entry .choose {
+  margin-top: 28px;
+}
+
+.entry .purposes {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 1040px;
+  margin-inline: auto;
+  text-align: left;
+}
+
+.entry .actions {
+  justify-content: center;
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 14px;
+  max-width: 760px;
+  margin: 26px auto 0;
+  text-align: left;
+}
+
+.panels .soon,
+.panels .card {
+  position: static;
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+.entry .proof {
+  justify-content: center;
+  margin-top: 22px;
+}
+
+/* The legend sat under the old corner card; the centre now says it. */
+.entry .legend {
+  display: none;
+}
+
+@media (max-width: 1000px) {
+  .entry .purposes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 860px) {
+  .entry .veil {
+    display: none;
+  }
+
+  .entry .copy {
+    padding-top: calc(46svh - 96px);
+  }
+}
+
+@media (max-width: 680px) {
+  .panels {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 420px;
+  }
+
+  /* On phones the study card already shows the next deadline. */
+  .panels .soon {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .entry .purposes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .entry .title {
+    max-width: none;
   }
 }

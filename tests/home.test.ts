@@ -24,14 +24,18 @@ test("the site address opens the entry page, the full site lives at /home", () =
   assert.match(read("src/app/home/loading.tsx"), /<RouteLoader/);
 });
 
-test("the entry page has only the start button and log in, no site navigation", () => {
+test("the entry page: next deadline, start button, deadlines, purpose links and log in", () => {
   const screen = read("src/components/EntryScreen.tsx");
+  // Owner decision 2026-11-17: free redesign of the content; still no site
+  // navigation, logo and map unchanged.
   assert.doesNotMatch(screen, /<Header|AuthNavigation|\/explore|\/stories/);
-  assert.match(screen, /Start your <span className=\{styles\.accent\}>journey<\/span>/);
-  // purpose tiles and facts are information, not more ways into the site
-  assert.equal((screen.match(/<Link\b/g) ?? []).length, 1, "only the logo links");
+  assert.match(screen, /upcomingFacultyDeadlines\(verifiedPrograms, getAdmissionDate\(\)\)/);
+  assert.match(screen, /<EnterButton \/>/);
+  assert.match(screen, /href="\/deadlines"/);
+  assert.match(screen, /href=\{`\/home\?purpose=\$\{purpose\}#route-builder`\}/);
+  assert.match(screen, /className=\{styles\.map\}/);
+  assert.match(screen, /<LogoMark size=\{56\}/);
   assert.match(read("src/components/EntryActions.tsx"), /Start your journey/);
-  assert.match(screen, /Your move to Europe, one route\./);
   const actions = read("src/components/EntryActions.tsx");
   assert.match(actions, /const SITE_PATH = "\/home";/);
   assert.match(actions, /href=\{SITE_PATH\}/);
@@ -139,5 +143,21 @@ test("the new home text is translated in every site language", () => {
   for (const lang of ["ru", "es", "zh", "hi"]) {
     const catalog = JSON.parse(read(`src/i18n/catalogs/${lang}.json`));
     for (const key of keys) assert.ok(catalog[key], `${lang}: ${key.slice(0, 30)}`);
+  }
+});
+
+test("home shows the soonest verified deadlines and facts from the residence data", () => {
+  const page = read("src/app/home/page.tsx");
+  assert.match(page, /<HomeSections today=\{getAdmissionDate\(\)\} locale=\{locale\} \/>/);
+  const sections = read("src/components/home/HomeSections.tsx");
+  assert.match(sections, /upcomingFacultyDeadlines\(verifiedPrograms, today\)/);
+  assert.match(sections, /slovakiaResidenceRules\.processingTimeDays/);
+  assert.match(sections, /czechiaResidenceRules\.study\.processingDays/);
+  assert.match(sections, /href="#route-builder"/);
+  for (const locale of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(read(`src/i18n/catalogs/${locale}.json`));
+    for (const key of ["Applications that close soonest", "Four stages, in the order they happen", "Start with the deadline you cannot miss"]) {
+      assert.ok(catalog[key], `${locale}: ${key}`);
+    }
   }
 });
