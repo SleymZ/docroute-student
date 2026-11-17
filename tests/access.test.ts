@@ -118,5 +118,8 @@ test("a guest sees the Free short route with a sign-up note on every route scree
   for (const screen of ["WorkRouteScreen", "CountryGuideScreen", "PurposeRouteScreen", "CzechiaRouteScreen", "FullPathScreen", "RoutePreviewScreen"]) {
     assert.match(read(`src/components/${screen}.tsx`), /access\.tier === "guest" && !access\.loading && <GuestRouteNote \/>/, screen);
   }
-  assert.match(read("src/components/GuestRouteNote.tsx"), /signUpHref\(/);
+  const note = read("src/components/GuestRouteNote.tsx");
+  assert.match(note, /signUpHref\(/);
+  assert.match(note, /useSearchParams\(\)/);
+  assert.doesNotMatch(note, /useEffect/);
 });

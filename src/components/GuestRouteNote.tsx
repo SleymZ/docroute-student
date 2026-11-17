@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { UserRound } from "lucide-react";
 
 import { signUpHref } from "@/lib/access";
@@ -13,10 +13,12 @@ import styles from "./Plus.module.css";
  * account to keep them, and sign-up brings them back to the same route.
  */
 export function GuestRouteNote() {
-  const [href, setHref] = useState("/auth?mode=signup");
-  useEffect(() => {
-    setHref(signUpHref(`${window.location.pathname}${window.location.search}`));
-  }, []);
+  // Read the address on every render: route screens change their query
+  // (variant, citizenship) in place, and sign-up must return to the route
+  // the guest is looking at now.
+  const pathname = usePathname();
+  const query = useSearchParams().toString();
+  const href = signUpHref(query ? `${pathname}?${query}` : pathname);
   return (
     <div className={styles.feature} data-guest="" data-print-hide="">
       <span className={styles.featureIcon} aria-hidden="true">
