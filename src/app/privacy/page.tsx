@@ -71,6 +71,12 @@ const dataRows = [
     kept: "Aggregated by Vercel under its Web Analytics terms.",
   },
   {
+    what: "Clicks on our short links (addresses starting with /go/, which we put in our own posts and profiles): only a total per link and per day. No IP address, no cookie and nothing else about the person who clicked.",
+    why: "To see which of our posts or channels bring visitors.",
+    basis: "Legitimate interest in knowing which of our own posts work (Art. 6(1)(f)); no personal data is stored.",
+    kept: "As long as the totals are useful; they contain no personal data.",
+  },
+  {
     what: "Technical data: IP address, browser type, the page requested (including its address), time and errors, recorded automatically by our hosting and database providers.",
     why: "To deliver pages, keep the service secure and fix errors.",
     basis: "Legitimate interest in a secure, working service (Art. 6(1)(f)).",
