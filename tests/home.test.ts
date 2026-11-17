@@ -20,7 +20,7 @@ test("the site address opens the entry page, the full site lives at /home", () =
   // Rendered per request since the site has languages (2026-11-05): the
   // cookie or the browser decides the language of the first visit too.
   assert.doesNotMatch(entry, /force-static/);
-  assert.match(read("src/app/home/page.tsx"), /<RoutePlanner \/>/);
+  assert.match(read("src/app/home/page.tsx"), /<RoutePlanner initialDocumentCountry=\{initialDocumentCountry\} \/>/);
   assert.match(read("src/app/home/loading.tsx"), /<RouteLoader/);
 });
 
@@ -113,4 +113,31 @@ test("a sign-in code that lands on the bare domain finishes the sign-in", () => 
   assert.match(proxy, /url\.pathname = "\/auth\/callback"/);
   // Before the first-visit redirect, so the code is not lost on the way to /home.
   assert.ok(proxy.indexOf('url.pathname = "/auth/callback"') < proxy.indexOf('url.pathname = "/home"'));
+});
+
+test("home says who it is for and offers the deadlines without an account", () => {
+  const planner = read("src/components/RoutePlanner.tsx");
+  assert.match(planner, /Applying to a university in Slovakia or Czechia from outside\s+the EU\?/);
+  assert.match(planner, /<Link href="\/deadlines" className="hero-deadlines-link">/);
+});
+
+test("Documents issued in starts from the visitor's country, never a fixed one", () => {
+  const planner = read("src/components/RoutePlanner.tsx");
+  assert.doesNotMatch(planner, /useState\("IL"\)/);
+  assert.match(planner, /useState\(initialDocumentCountry\)/);
+  const home = read("src/app/home/page.tsx");
+  assert.match(home, /x-vercel-ip-country/);
+  // Only a code from the picker's own list is used.
+  assert.match(home, /applicantCountryOptions\.some\(\(option\) => option\.code === code\)/);
+});
+
+test("the new home text is translated in every site language", () => {
+  const keys = [
+    "Applying to a university in Slovakia or Czechia from outside the EU? See which documents you need and the deadline for each one, from the application to the residence permit. Every rule links to its official source. Free.",
+    "See every verified 2027/28 application deadline, no account needed →",
+  ];
+  for (const lang of ["ru", "es", "zh", "hi"]) {
+    const catalog = JSON.parse(read(`src/i18n/catalogs/${lang}.json`));
+    for (const key of keys) assert.ok(catalog[key], `${lang}: ${key.slice(0, 30)}`);
+  }
 });
