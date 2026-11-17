@@ -25,7 +25,7 @@ export const SHORT_LINK_CHANNELS = {
 export type ShortLinkChannel = keyof typeof SHORT_LINK_CHANNELS;
 
 /** Where every short link lands. */
-export const SHORT_LINK_TARGET = "/home";
+export const SHORT_LINK_TARGET = "/deadlines";
 
 // Keep in step with the check in supabase/migrations/20261116120000_link_clicks.sql.
 export const SHORT_LINK_PATTERN = /^(tt|ig|yt|tg|rd|fb|th|wa|x|li|qr|mail)-(en|ru|es|zh|hi)(-[0-9]{2})?$/;
