@@ -30,7 +30,7 @@ const DRAW_START = 0.5;
 // The example route card mirrors the stops on the map; each line is ticked
 // when the drawing line reaches its stop.
 const cardSteps = [
-  { title: "Application", detail: "University rules and the documents they ask for" },
+  { title: "Application", detail: "To the university, the employer or with your family: what they ask for" },
   { title: "Documents", detail: "Translations, apostille and the dates to order them" },
   { title: "Residence permit", detail: "Where and when to file, counted back from your move" },
 ];
@@ -165,30 +165,6 @@ export async function EntryScreen() {
       <div className={styles.veil} aria-hidden="true" />
       <div className={styles.glow} aria-hidden="true" />
 
-      {deadlines.length > 0 ? (
-        <aside className={styles.soon} aria-label="University deadlines closing soon">
-          <p className={styles.soonKicker}>
-            <CalendarClock size={15} aria-hidden="true" />
-            <span>Closing soon · 2027/28</span>
-          </p>
-          <ol className={styles.soonList}>
-            {deadlines.slice(0, 3).map((row) => (
-              <li key={row.key}>
-                <span className={styles.soonDate}>{shortDate(row.deadline, tag)}</span>
-                <span className={styles.soonWhat}>
-                  <strong>{row.universityName}</strong>
-                  <span>{row.category}</span>
-                </span>
-                <span className={styles.soonDays}>{row.daysLeft} days</span>
-              </li>
-            ))}
-          </ol>
-          <Link href="/deadlines" className={styles.soonLink}>
-            All {deadlines.length} deadlines <ArrowRight size={14} aria-hidden="true" />
-          </Link>
-        </aside>
-      ) : null}
-
       <header className={styles.bar}>
         <Link href="/" className={styles.brand} aria-label="DocRoute">
           <LogoMark size={56} className={styles.brandMark} />
@@ -251,6 +227,58 @@ export async function EntryScreen() {
           </Link>
         </div>
 
+        <div className={styles.panels}>
+            {deadlines.length > 0 ? (
+            <aside className={styles.soon} aria-label="University deadlines closing soon">
+              <p className={styles.soonKicker}>
+                <CalendarClock size={15} aria-hidden="true" />
+                <span>Closing soon · 2027/28</span>
+              </p>
+              <ol className={styles.soonList}>
+                {deadlines.slice(0, 3).map((row) => (
+                  <li key={row.key}>
+                    <span className={styles.soonDate}>{shortDate(row.deadline, tag)}</span>
+                    <span className={styles.soonWhat}>
+                      <strong>{row.universityName}</strong>
+                      <span>{row.category}</span>
+                    </span>
+                    <span className={styles.soonDays}>{row.daysLeft} days</span>
+                  </li>
+                ))}
+              </ol>
+              <Link href="/deadlines" className={styles.soonLink}>
+                All {deadlines.length} deadlines <ArrowRight size={14} aria-hidden="true" />
+              </Link>
+            </aside>
+          ) : null}
+
+          <aside className={styles.card} aria-label="Example route">
+            <p className={styles.cardKicker}>How a route is built</p>
+            <p className={styles.cardTitle}>Three stages, in order</p>
+            <ol className={styles.cardSteps}>
+              {cardSteps.map((step, index) => (
+                <li
+                  key={step.title}
+                  style={
+                    {
+                      "--stop-delay": `${(DRAW_START + map.stops[index].at * DRAW_SECONDS).toFixed(2)}s`,
+                    } as React.CSSProperties
+                  }
+                >
+                  <span className={styles.tick} aria-hidden="true">
+                    <Check size={13} strokeWidth={3} />
+                  </span>
+                  <span>
+                    <strong>{step.title}</strong>
+                    <span>{step.detail}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className={styles.cardFoot}>The same for study, work, family and business.</p>
+          </aside>
+        </div>
+
         <ul className={styles.proof} aria-label="DocRoute in numbers">
           <li>
             <strong>{verifiedPrograms.length}</strong> verified programmes
@@ -265,31 +293,6 @@ export async function EntryScreen() {
         </ul>
       </section>
 
-      <aside className={styles.card} aria-label="Example route">
-        <p className={styles.cardKicker}>Example route</p>
-        <p className={styles.cardTitle}>Study in Slovakia</p>
-        <ol className={styles.cardSteps}>
-          {cardSteps.map((step, index) => (
-            <li
-              key={step.title}
-              style={
-                {
-                  "--stop-delay": `${(DRAW_START + map.stops[index].at * DRAW_SECONDS).toFixed(2)}s`,
-                } as React.CSSProperties
-              }
-            >
-              <span className={styles.tick} aria-hidden="true">
-                <Check size={13} strokeWidth={3} />
-              </span>
-              <span>
-                <strong>{step.title}</strong>
-                <span>{step.detail}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
-        <p className={styles.cardFoot}>Every step links to its official source.</p>
-      </aside>
 
       <p className={styles.legend}>
         <span className={styles.legendDot} aria-hidden="true" />

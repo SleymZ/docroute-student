@@ -1060,15 +1060,125 @@
   opacity: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .soon {
-    animation: appear 0.6s ease 0.6s both;
-  }
-}
 
 @media (min-width: 1700px) {
   .soon {
     left: calc(clamp(18px, 4vw, 56px) + 720px);
     width: 380px;
+  }
+}
+
+/* ---- centred layout (owner request 2026-11-17) ----
+   Title, purposes, buttons and two cards stand in the middle of the
+   screen; the map stays where it is and shows around them. */
+
+.entry .veil {
+  background: radial-gradient(
+    ellipse 58% 72% at 50% 54%,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 92%, transparent) 46%,
+    color-mix(in srgb, var(--background) 55%, transparent) 72%,
+    transparent 100%
+  );
+}
+
+.entry .copy {
+  justify-self: center;
+  width: 100%;
+  max-width: 1120px;
+  padding: 8px clamp(18px, 4vw, 56px) 48px;
+  text-align: center;
+}
+
+.entry .title {
+  max-width: 22ch;
+  margin-inline: auto;
+  font-size: clamp(36px, 4.4vw, 68px);
+}
+
+.entry .lead {
+  max-width: 60ch;
+  margin-inline: auto;
+}
+
+.entry .choose {
+  margin-top: 28px;
+}
+
+.entry .purposes {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 1040px;
+  margin-inline: auto;
+  text-align: left;
+}
+
+.entry .actions {
+  justify-content: center;
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 14px;
+  max-width: 760px;
+  margin: 26px auto 0;
+  text-align: left;
+}
+
+.panels .soon,
+.panels .card {
+  position: static;
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+.entry .proof {
+  justify-content: center;
+  margin-top: 22px;
+}
+
+/* The legend sat under the old corner card; the centre now says it. */
+.entry .legend {
+  display: none;
+}
+
+@media (max-width: 1000px) {
+  .entry .purposes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 860px) {
+  .entry .veil {
+    display: none;
+  }
+
+  .entry .copy {
+    padding-top: calc(46svh - 96px);
+  }
+}
+
+@media (max-width: 680px) {
+  .panels {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 420px;
+  }
+
+  /* On phones the study card already shows the next deadline. */
+  .panels .soon {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .entry .purposes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .entry .title {
+    max-width: none;
   }
 }
