@@ -4,7 +4,6 @@ import {
   Briefcase,
   CalendarClock,
   Check,
-  Globe,
   GraduationCap,
   ShieldCheck,
   Store,
@@ -12,6 +11,8 @@ import {
 } from "lucide-react";
 
 import { highlightedCountryIds } from "@/data/highlighted-countries";
+import { LOCALE_TAGS } from "@/i18n/config";
+import { getLocale } from "@/i18n/server";
 import { verifiedPrograms } from "@/data/verified-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
 import { upcomingFacultyDeadlines } from "@/lib/deadline-list";
@@ -59,12 +60,13 @@ const purposes = [
   },
 ];
 
-// Short facts floating over the middle of the map on wide screens.
-const facts = [
-  { Icon: ShieldCheck, title: "Official sources", detail: "Ministry and university pages" },
-  { Icon: CalendarClock, title: "Counted back", detail: "Deadlines from your move date" },
-  { Icon: Globe, title: "13 countries", detail: "Routes or university listings" },
-];
+// "21 Feb" in the visitor's language. A date alone in its element is not
+// translated, so it is formatted for the language here.
+function shortDate(iso: string, tag: string) {
+  return new Intl.DateTimeFormat(tag, { timeZone: "UTC", day: "numeric", month: "short" }).format(
+    new Date(`${iso}T00:00:00Z`),
+  );
+}
 
 // A small plane pointing along +x, centred on 0,0; it flies the route.
 const PLANE =
@@ -74,8 +76,10 @@ const PLANE =
  *  next real application deadline, the way into the site, the deadlines
  *  page and a way to log in (owner decision 2026-11-17: free redesign,
  *  logo and map unchanged). */
-export function EntryScreen() {
+export async function EntryScreen() {
   const map = landingMap;
+  const locale = await getLocale();
+  const tag = locale === "en" ? "en-GB" : LOCALE_TAGS[locale];
   const deadlines = upcomingFacultyDeadlines(verifiedPrograms, getAdmissionDate());
   const next = deadlines[0];
   const nextDate = next
@@ -161,19 +165,29 @@ export function EntryScreen() {
       <div className={styles.veil} aria-hidden="true" />
       <div className={styles.glow} aria-hidden="true" />
 
-      <ul className={styles.facts} aria-label="What DocRoute checks">
-        {facts.map(({ Icon, title, detail }, index) => (
-          <li key={title} style={{ "--fact": index } as React.CSSProperties}>
-            <span className={styles.factIcon} aria-hidden="true">
-              <Icon size={18} strokeWidth={2.2} />
-            </span>
-            <span>
-              <strong>{title}</strong>
-              <span>{detail}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
+      {deadlines.length > 0 ? (
+        <aside className={styles.soon} aria-label="University deadlines closing soon">
+          <p className={styles.soonKicker}>
+            <CalendarClock size={15} aria-hidden="true" />
+            <span>Closing soon · 2027/28</span>
+          </p>
+          <ol className={styles.soonList}>
+            {deadlines.slice(0, 3).map((row) => (
+              <li key={row.key}>
+                <span className={styles.soonDate}>{shortDate(row.deadline, tag)}</span>
+                <span className={styles.soonWhat}>
+                  <strong>{row.universityName}</strong>
+                  <span>{row.category}</span>
+                </span>
+                <span className={styles.soonDays}>{row.daysLeft} days</span>
+              </li>
+            ))}
+          </ol>
+          <Link href="/deadlines" className={styles.soonLink}>
+            All {deadlines.length} deadlines <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </aside>
+      ) : null}
 
       <header className={styles.bar}>
         <Link href="/" className={styles.brand} aria-label="DocRoute">

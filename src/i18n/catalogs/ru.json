@@ -2156,5 +2156,9 @@
 "<0/>Next deadline {0} · {1} days left": "<0/>Ближайший срок {0} · осталось дней: {1}",
 "University deadlines 2027/28": "Сроки подачи в вузы 2027/28",
 "<0/> countries on the map": "<0/> стран на карте",
-"EU and Switzerland: official links": "ЕС и Швейцария: официальные ссылки"
+"EU and Switzerland: official links": "ЕС и Швейцария: официальные ссылки",
+"Closing soon · 2027/28": "Скоро закрывается · 2027/28",
+"All {0} deadlines <0/>": "Все сроки ({0}) <0/>",
+"University deadlines closing soon": "Ближайшие сроки подачи в вузы",
+"{0} days": "{0} дн."
 }
