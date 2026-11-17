@@ -13,8 +13,6 @@ import {
 
 import { highlightedCountryIds } from "@/data/highlighted-countries";
 import { verifiedPrograms } from "@/data/verified-programs";
-import { LOCALE_TAGS } from "@/i18n/config";
-import { getLocale } from "@/i18n/server";
 import { getAdmissionDate } from "@/lib/admission-date";
 import { upcomingFacultyDeadlines } from "@/lib/deadline-list";
 import { landingMap } from "@/lib/landing-map";
@@ -38,11 +36,27 @@ const cardSteps = [
 
 // What a route can be for, as icon tiles. Since the owner decision of
 // 2026-11-17 they are links: each opens the route form with that purpose.
+// The detail lines repeat what docs/STATUS.md lists as covered.
 const purposes = [
-  { label: "Study", purpose: "study", Icon: GraduationCap },
-  { label: "Work", purpose: "work", Icon: Briefcase },
-  { label: "Family", purpose: "family", Icon: Users },
-  { label: "Business", purpose: "business", Icon: Store },
+  { label: "Study", purpose: "study", Icon: GraduationCap, detail: "" },
+  {
+    label: "Work",
+    purpose: "work",
+    Icon: Briefcase,
+    detail: "Single permit and EU Blue Card in Slovakia, checklists for Czechia and Austria",
+  },
+  {
+    label: "Family",
+    purpose: "family",
+    Icon: Users,
+    detail: "Joining family in Slovakia, Czechia and Austria, official links for the rest of the EU",
+  },
+  {
+    label: "Business",
+    purpose: "business",
+    Icon: Store,
+    detail: "Residence for business in Slovakia, Czechia and Austria, official links for the rest of the EU",
+  },
 ];
 
 // Short facts floating over the middle of the map on wide screens.
@@ -60,14 +74,14 @@ const PLANE =
  *  next real application deadline, the way into the site, the deadlines
  *  page and a way to log in (owner decision 2026-11-17: free redesign,
  *  logo and map unchanged). */
-export async function EntryScreen() {
+export function EntryScreen() {
   const map = landingMap;
-  const locale = await getLocale();
-  const tag = locale === "en" ? "en-GB" : LOCALE_TAGS[locale];
   const deadlines = upcomingFacultyDeadlines(verifiedPrograms, getAdmissionDate());
   const next = deadlines[0];
   const nextDate = next
-    ? new Intl.DateTimeFormat(tag, { timeZone: "UTC", day: "numeric", month: "long" }).format(
+    ? // English date inside the sentence: the translation engine localises
+      // it together with the rest of the line.
+      new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", day: "numeric", month: "long" }).format(
         new Date(`${next.deadline}T00:00:00Z`),
       )
     : null;
@@ -178,49 +192,50 @@ export async function EntryScreen() {
       <section className={styles.copy} aria-labelledby="entry-title">
         <p className={styles.kicker}>
           <ShieldCheck size={15} aria-hidden="true" />
-          Free · checked on official pages
+          Free · every step with its official source
         </p>
         <h1 id="entry-title" className={styles.title}>
-          Study in Slovakia or Czechia. <span className={styles.accent}>Never miss a deadline.</span>
+          Your move to Europe, <span className={styles.accent}>step by step.</span>
         </h1>
         <p className={styles.lead}>
-          Documents, application deadlines and the residence permit for applicants from outside the EU, in
-          the order you need them. Every step links to its official source.
+          Study, work, family or business: the documents, deadlines and residence permit in the order you need
+          them, checked on official pages.
         </p>
 
-        {next && nextDate ? (
-          <Link href="/deadlines" className={styles.countdown}>
-            <span className={styles.countdownIcon} aria-hidden="true">
-              <CalendarClock size={20} />
-            </span>
-            <span className={styles.countdownText}>
-              <span className={styles.countdownLabel}>Next application deadline</span>
-              <strong>{nextDate} · {next.universityName}</strong>
-              <span className={styles.countdownMeta}>{next.category} · {next.daysLeft} days left</span>
-            </span>
-            <ArrowRight size={18} aria-hidden="true" className={styles.countdownArrow} />
-          </Link>
-        ) : null}
-
-        <div className={styles.actions}>
-          <EnterButton />
-          <Link href="/deadlines" className={styles.secondary}>
-            All {deadlines.length} deadlines
-          </Link>
-        </div>
-
+        <p className={styles.choose}>What brings you to Europe?</p>
         <ul className={styles.purposes} aria-label="Routes for moving to">
-          {purposes.map(({ label, purpose, Icon }) => (
+          {purposes.map(({ label, purpose, Icon, detail }) => (
             <li key={label}>
               <Link href={`/home?purpose=${purpose}#route-builder`} className={styles.purposeLink}>
                 <span className={styles.purposeIcon} aria-hidden="true">
                   <Icon size={22} strokeWidth={1.9} />
                 </span>
-                {label}
+                <span className={styles.purposeText}>
+                  <strong>{label}</strong>
+                  {purpose === "study" ? (
+                    <span>{verifiedPrograms.length} verified programmes in Slovakia and Czechia</span>
+                  ) : (
+                    <span>{detail}</span>
+                  )}
+                  {purpose === "study" && next && nextDate ? (
+                    <span className={styles.purposeDeadline}>
+                      <CalendarClock size={13} aria-hidden="true" />
+                      <span>Next deadline {nextDate} · {next.daysLeft} days left</span>
+                    </span>
+                  ) : null}
+                </span>
+                <ArrowRight size={17} aria-hidden="true" className={styles.purposeArrow} />
               </Link>
             </li>
           ))}
         </ul>
+
+        <div className={styles.actions}>
+          <EnterButton />
+          <Link href="/deadlines" className={styles.secondary}>
+            University deadlines 2027/28
+          </Link>
+        </div>
 
         <ul className={styles.proof} aria-label="DocRoute in numbers">
           <li>
@@ -230,8 +245,9 @@ export async function EntryScreen() {
             <strong>{universities}</strong> universities
           </li>
           <li>
-            <strong>{highlightedCountryIds.size}</strong> countries
+            <strong>{highlightedCountryIds.size}</strong> countries on the map
           </li>
+          <li>EU and Switzerland: official links</li>
         </ul>
       </section>
 

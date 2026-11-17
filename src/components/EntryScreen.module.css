@@ -252,7 +252,7 @@
 
 .copy {
   align-self: center;
-  max-width: 640px;
+  max-width: 660px;
   padding: 24px clamp(18px, 4vw, 56px) 72px;
   transition:
     opacity 0.45s ease,
@@ -310,72 +310,6 @@
   align-items: center;
   gap: 12px;
   margin-top: 22px;
-}
-
-/* The next real deadline, counted down; opens /deadlines. */
-.countdown {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  max-width: 520px;
-  margin-top: 24px;
-  padding: 14px 16px;
-  border: 1px solid light-dark(rgba(212, 80, 47, 0.32), rgba(255, 121, 95, 0.35));
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--tile) 90%, transparent);
-  box-shadow: 0 12px 32px light-dark(rgba(17, 20, 24, 0.08), rgba(0, 0, 0, 0.3));
-  color: var(--text);
-  text-decoration: none;
-  backdrop-filter: blur(8px);
-  transition: border-color var(--transition), transform var(--transition);
-}
-
-.countdown:hover {
-  border-color: var(--brand);
-  transform: translateY(-1px);
-}
-
-.countdownIcon {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: var(--tile-icon);
-  color: var(--brand);
-}
-
-.countdownText {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-.countdownLabel {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.countdownText strong {
-  font-size: 16px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-}
-
-.countdownMeta {
-  color: var(--brand);
-  font-size: 13.5px;
-  font-weight: 650;
-}
-
-.countdownArrow {
-  flex: none;
-  margin-left: auto;
-  color: var(--muted);
 }
 
 .secondary {
@@ -448,36 +382,44 @@
   transform: translateX(3px);
 }
 
-/* Icon tiles, as in the style board: white rounded squares, coral line
-   icons. Links to the route form with that purpose. */
+.choose {
+  margin: 26px 0 10px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+/* Four purpose cards: the main way in. Each opens the route form with that
+   purpose. */
 .purposes {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin: 30px 0 0;
+  max-width: 600px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .purposes li {
   display: flex;
+  min-width: 0;
 }
 
 .purposeLink {
-  display: grid;
-  justify-items: center;
-  gap: 7px;
-  width: 78px;
-  padding: 12px 6px 10px;
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: color-mix(in srgb, var(--tile) 88%, transparent);
+  background: color-mix(in srgb, var(--tile) 90%, transparent);
   box-shadow: 0 8px 24px light-dark(rgba(17, 20, 24, 0.06), rgba(0, 0, 0, 0.25));
   color: var(--text);
-  font-size: 12.5px;
-  font-weight: 600;
   text-decoration: none;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
   transition: border-color var(--transition), transform var(--transition);
 }
 
@@ -488,17 +430,50 @@
 
 .purposeIcon {
   display: grid;
+  flex: none;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 11px;
   background: var(--tile-icon);
   color: var(--brand);
 }
 
+.purposeText {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.purposeText strong {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.purposeText > span {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.purposeText > .purposeDeadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  color: var(--brand);
+  font-weight: 650;
+}
+
+.purposeArrow {
+  flex: none;
+  margin-left: auto;
+  color: var(--muted);
+}
+
 .enter:focus-visible,
 .secondary:focus-visible,
-.countdown:focus-visible,
 .purposeLink:focus-visible,
 .account:focus-visible,
 .brand:focus-visible {
@@ -951,16 +926,12 @@
   }
 
   .purposes {
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
   }
 
-  .purposes li {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
   .purposeLink {
-    width: 100%;
+    padding: 12px;
   }
 
   .secondary {
@@ -969,7 +940,4 @@
     min-height: 50px;
   }
 
-  .countdown {
-    margin-top: 20px;
-  }
 }
