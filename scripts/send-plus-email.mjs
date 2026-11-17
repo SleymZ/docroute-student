@@ -7,7 +7,7 @@
 //
 // Usage:
 //   node scripts/send-plus-email.mjs --csv plus-emails.csv            # dry run
-//   SMTP_PASS="<16-character Google app password>" SITE_URL=https://docroute-student.vercel.app \
+//   SMTP_PASS="<16-character Google app password>" SITE_URL=https://docroute.app \
 //     node scripts/send-plus-email.mjs --csv plus-emails.csv --send
 //
 // Optional: SMTP_HOST (smtp.gmail.com), SMTP_PORT (465), SMTP_USER and

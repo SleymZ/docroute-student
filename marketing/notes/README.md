@@ -21,7 +21,7 @@ node marketing/notes/render.mjs                  # → out/DocRoute-cheatsheet-<
 node marketing/notes/render.mjs 03 --langs ru --frames 2,9   # stills only
 ```
 
-Every video ends on **docroute-student.vercel.app/deadlines** (opens without an
+Every video ends on **docroute.app/deadlines** (opens without an
 account, PR #101). Bio links: `/go/<channel>-<lang>`; a post or Story link
 adds the video number, e.g. `/go/ig-ru-03` (PR #100).
 

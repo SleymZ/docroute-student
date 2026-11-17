@@ -1,5 +1,9 @@
 const localUrl = "http://localhost:3000";
 
+/** The production address (bought 2026-11-17). docroute-student.vercel.app
+ *  still answers and should redirect here in the Vercel domain settings. */
+export const PRODUCTION_URL = "https://docroute.app";
+
 function normalizeUrl(value: string) {
   return value.startsWith("http://") || value.startsWith("https://")
     ? value
@@ -13,8 +17,7 @@ export function getSiteUrl() {
     return normalizeUrl(configuredUrl).replace(/\/$/, "");
   }
 
-  const vercelUrl =
-    process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
-
-  return vercelUrl ? normalizeUrl(vercelUrl) : localUrl;
+  // On Vercel (production and previews) canonical links, the sitemap and
+  // link previews always name the real domain, never a *.vercel.app copy.
+  return process.env.VERCEL ? PRODUCTION_URL : localUrl;
 }

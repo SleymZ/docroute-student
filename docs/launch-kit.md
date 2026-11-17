@@ -9,7 +9,7 @@
 
 > Привет! Я студент, живу в Словакии. Сам прошёл через поступление и ВНЖ и
 > сделал бесплатный сайт, который собирает это в один маршрут:
-> **DocRoute** — https://docroute-student.vercel.app
+> **DocRoute** — https://docroute.app
 >
 > Что он умеет сейчас:
 > • учёба в Словакии (информатика, Жилинский университет, 2027/28) и в
@@ -31,7 +31,7 @@
 
 > Hi! I'm a student living in Slovakia and built a free tool for moving to
 > Slovakia or Czechia to study or work: **DocRoute** —
-> https://docroute-student.vercel.app
+> https://docroute.app
 > It builds one route with the documents you need, where to file them and a
 > deadline for each step, with an official source and check date for every
 > rule. Free beta, no sign-up needed. Feedback form at the end of each route;

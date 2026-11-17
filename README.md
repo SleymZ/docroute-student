@@ -6,7 +6,7 @@ single checklist: which documents you need, where you file them, and the
 date by which each step has to happen. Every rule links to the official
 page it came from and the date it was checked.
 
-Live beta: https://docroute-student.vercel.app (free, non-commercial).
+Live beta: https://docroute.app (free, non-commercial).
 
 > DocRoute is a preparation tool, not legal advice. Universities and
 > authorities make every decision; recheck each requirement on its official
@@ -162,6 +162,8 @@ local and deployed callback URLs to the Supabase redirect allow list:
 
 ```text
 http://localhost:3000/auth/callback
+https://docroute.app/auth/callback
+https://www.docroute.app/auth/callback
 https://docroute-student.vercel.app/auth/callback
 https://*-sleymzs-projects.vercel.app/auth/callback
 ```

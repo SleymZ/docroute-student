@@ -48,7 +48,8 @@ page `/route/guide`, 2026-10-30).
 
 ## Production
 
-- Site: https://docroute-student.vercel.app (Vercel, built from `main`).
+- Site: https://docroute.app (bought 2026-11-17; Vercel, built from `main`). The old
+  address docroute-student.vercel.app keeps working.
 - Every PR gets a Vercel Preview; Previews require a Vercel login.
 - Backend: Supabase project `klhvbgewmmadizvsdtcg` (Auth, Postgres, RLS).
   Tables: `applicant_profiles`, `saved_universities`, `route_task_progress`,
@@ -63,6 +64,17 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Own domain docroute.app (2026-11-17)
+
+- Bought in Vercel. `src/lib/site-url.ts`: on Vercel `getSiteUrl()` returns
+  `https://docroute.app` (canonical, sitemap, robots, link previews), unless
+  `NEXT_PUBLIC_SITE_URL` is set. PDF footer, launch kit, README and the
+  cheat-sheet videos (end card `docroute.app/deadlines`) use the new address.
+- Owner steps in Vercel: `docroute.app` serves Production, `www` and
+  `docroute-student.vercel.app` redirect (308) to it. In Supabase: Site URL
+  `https://docroute.app`, Redirect URLs add `https://docroute.app/auth/callback`
+  and `https://www.docroute.app/auth/callback`; keep the old ones.
 
 ## Growth series (2026-11-17, PR #98–#103, #105)
 

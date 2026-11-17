@@ -93,7 +93,7 @@ export function SaveRoutePdf({
 export function PrintNote({ asOfDate }: { asOfDate: string }) {
   return (
     <p className={styles.printNote} data-print-only="">
-      Saved from DocRoute (docroute-student.vercel.app) on {asOfDate}. Rules
+      Saved from DocRoute (docroute.app) on {asOfDate}. Rules
       change: open the live route before you file anything. DocRoute is a
       preparation tool, not legal advice.
     </p>
