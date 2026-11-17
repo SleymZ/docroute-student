@@ -12,7 +12,9 @@ const read = (path: string) => readFileSync(join(root, path), "utf8");
 
 test("guests browse; free builds a short route; plus gets everything", () => {
   assert.equal(canUse("guest", "browse"), true);
-  assert.equal(canUse("guest", "buildRoute"), false);
+  assert.equal(canUse("guest", "buildRoute"), true);
+  assert.equal(canUse("guest", "fullChecklist"), false);
+  assert.equal(canUse("guest", "saveMyRoute"), false);
   assert.equal(canUse("free", "buildRoute"), true);
   for (const feature of ["fullChecklist", "dates", "saveMyRoute", "exportFiles", "emailReminders"] as const) {
     assert.equal(canUse("free", feature), false, feature);
@@ -60,11 +62,11 @@ test("Plus needs a plus row that has not ended", () => {
   assert.equal(tierFromPlan({ plan: "plus", plus_until: "2026-11-01T00:00:00Z" }, now), "free");
 });
 
-test("every route asks a guest to sign up first; browsing stays public", () => {
-  for (const path of ["/route/work", "/route/preview", "/route/full", "/explore/profile", "/my-route", "/stories/new"]) {
+test("guests open the short route; My route and new stories need an account", () => {
+  for (const path of ["/my-route", "/stories/new"]) {
     assert.equal(needsAccount(path), true, path);
   }
-  for (const path of ["/", "/home", "/explore", "/explore/top", "/explore/universities", "/universities/x", "/stories", "/stories/abc", "/plus", "/routes-guide"]) {
+  for (const path of ["/route", "/route/work", "/route/preview", "/route/full", "/route/profile", "/explore/profile", "/", "/home", "/explore", "/explore/top", "/explore/universities", "/universities/x", "/stories", "/stories/abc", "/plus", "/routes-guide"]) {
     assert.equal(needsAccount(path), false, path);
   }
   assert.equal(signUpHref("/route/work?citizenship=UA"), "/auth?mode=signup&next=%2Froute%2Fwork%3Fcitizenship%3DUA");
@@ -105,4 +107,16 @@ test("the map links to every country that has universities", () => {
   const expected = onMap.filter((code) => codes.has(code)).sort();
   assert.deepEqual([...universityCountryCodes].sort(), expected);
   assert.ok(universityCountryCodes.has("SK") && universityCountryCodes.has("DE"));
+});
+
+test("a guest sees the Free short route with a sign-up note on every route screen", () => {
+  const tasks = [{ status: "todo" }, { status: "todo" }, { status: "attention" }];
+  assert.deepEqual(
+    stepAccess(tasks, "guest").map((item) => item.locked),
+    stepAccess(tasks, "free").map((item) => item.locked),
+  );
+  for (const screen of ["WorkRouteScreen", "CountryGuideScreen", "PurposeRouteScreen", "CzechiaRouteScreen", "FullPathScreen", "RoutePreviewScreen"]) {
+    assert.match(read(`src/components/${screen}.tsx`), /access\.tier === "guest" && !access\.loading && <GuestRouteNote \/>/, screen);
+  }
+  assert.match(read("src/components/GuestRouteNote.tsx"), /signUpHref\(/);
 });

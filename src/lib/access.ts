@@ -1,8 +1,9 @@
 // Who can use what (owner decision 2026-11-05, full table in docs/ACCESS.md).
 //
-// - guest: not signed in. Browses universities (Explore, Top 100, university
-//   pages) and stories. Any route ("Build my route", every /route/* page,
-//   the profile match) asks to sign up first (src/proxy.ts).
+// - guest: not signed in. Browses universities and stories and, since the
+//   owner decision of 2026-11-17, sees the same short route as Free without an
+//   account (ticks stay in the browser). My route and writing a story ask to
+//   sign up first (src/proxy.ts).
 // - free: signed in, no Plus. A short plan: only the important steps of every stage
 //   are open (the rest are locked cards with no text),
 //   no dates or deadline planner, no PDF/PNG, no email reminders, no saving
@@ -25,7 +26,7 @@ export type PlanFeature =
 
 const featureTiers: Record<PlanFeature, readonly AccessTier[]> = {
   browse: ["guest", "free", "plus"],
-  buildRoute: ["free", "plus"],
+  buildRoute: ["guest", "free", "plus"],
   fullChecklist: ["plus"],
   dates: ["plus"],
   saveMyRoute: ["plus"],
@@ -77,18 +78,12 @@ export function tierFromPlan(row: PlanRow | null | undefined, now: Date = new Da
 }
 
 /**
- * Paths a guest cannot open: building a route needs an account. Everything
- * else (home, Explore, Top 100, university pages, stories, legal pages)
- * stays public.
+ * Paths a guest cannot open: My route and writing a story need an account.
+ * Routes (every /route/* page and the profile match) are open to guests as
+ * the short route since 2026-11-17; everything else stays public too.
  */
 export function needsAccount(pathname: string): boolean {
-  return (
-    pathname === "/route" ||
-    pathname.startsWith("/route/") ||
-    pathname === "/explore/profile" ||
-    pathname === "/my-route" ||
-    pathname === "/stories/new"
-  );
+  return pathname === "/my-route" || pathname === "/stories/new";
 }
 
 export function signUpHref(nextPath: string): string {

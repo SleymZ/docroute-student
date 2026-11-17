@@ -1,6 +1,6 @@
 # Access: guest, Free and Plus
 
-Owner decision 2026-11-05. Change only with the owner. Code: `src/lib/access.ts`
+Owner decisions 2026-11-05 and 2026-11-17 (guests get the short route without an account). Change only with the owner. Code: `src/lib/access.ts`
 (rules), `src/hooks/useAccess.ts` (the visitor's plan in the browser),
 `src/proxy.ts` (guest redirect), `src/components/Plus.tsx` (locked features),
 page `/plus` (the comparison shown to visitors).
@@ -9,14 +9,14 @@ page `/plus` (the comparison shown to visitors).
 | --- | --- | --- | --- |
 | Explore, Top 100, university pages, home map → country universities | yes | yes | yes |
 | Stories (read) | yes | yes | yes |
-| Build a route (every `/route/*` page, `/explore/profile`) | no — sent to sign-up at once | yes | yes |
-| Steps per stage | — | only the key steps are open: the first step of each stage and every "Needs attention" step (`stepAccess`). The others stay in place as locked cards with no text (`LockedStep`), plus "N steps in this stage locked" | all open |
-| Own move/start date, deadline planner, dated steps | — | no (a `move=` date in the address is ignored) | yes |
-| Email reminders | — | no | yes, **not built yet** (shown as "coming soon"; not part of what is sold) |
-| Save to My route (`confirmed_routes`) | — | no (enforced by RLS too) | yes, one per account |
-| PDF (print) and PNG of the route | — | no | yes |
-| Ticking steps off | — | yes | yes |
-| Write a story | — | yes (moderated) | yes |
+| Build a route (every `/route/*` page, `/explore/profile`) | yes, the same short route as Free, with a note offering a free account (`GuestRouteNote`) | yes | yes |
+| Steps per stage | as Free | only the key steps are open: the first step of each stage and every "Needs attention" step (`stepAccess`). The others stay in place as locked cards with no text (`LockedStep`), plus "N steps in this stage locked" | all open |
+| Own move/start date, deadline planner, dated steps | no | no (a `move=` date in the address is ignored) | yes |
+| Email reminders | no | no | yes, **not built yet** (shown as "coming soon"; not part of what is sold) |
+| Save to My route (`confirmed_routes`) | no (sign-up first) | no (enforced by RLS too) | yes, one per account |
+| PDF (print) and PNG of the route | no | no | yes |
+| Ticking steps off | yes, kept in this browser only; moved into the account after sign-up | yes | yes |
+| Write a story | no (sign-up first) | yes (moderated) | yes |
 
 ## How the plan is stored
 

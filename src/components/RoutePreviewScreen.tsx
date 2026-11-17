@@ -30,6 +30,7 @@ import { AdmissionSources } from "@/components/AdmissionSources";
 import { MovePlanner } from "@/components/MovePlanner";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { LockedStep, PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
+import { GuestRouteNote } from "@/components/GuestRouteNote";
 import { useAccess } from "@/hooks/useAccess";
 import { lockedStepCount, stepAccess } from "@/lib/access";
 import { PrintNote, SaveRoutePdf } from "@/components/SaveRoutePdf";
@@ -511,6 +512,7 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                     ? "Progress syncs with your DocRoute account."
                     : "Progress is saved on this device."}
           </p>
+          {access.tier === "guest" && !access.loading && <GuestRouteNote />}
 
           <div className={styles.progressRing}>
             <svg viewBox="0 0 120 120" aria-hidden="true">

@@ -164,3 +164,9 @@
     display: none;
   }
 }
+
+/* Guest note under the progress status on route screens. */
+.feature[data-guest] {
+  margin-top: 12px;
+  text-align: left;
+}

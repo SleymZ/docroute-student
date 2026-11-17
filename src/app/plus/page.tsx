@@ -20,10 +20,10 @@ type Cell = boolean | string;
 const rows: { label: string; guest: Cell; free: Cell; plus: Cell }[] = [
   { label: "Browse universities, Top 100 and the country map", guest: true, free: true, plus: true },
   { label: "Read moving stories", guest: true, free: true, plus: true },
-  { label: "Build a route (study, work, family, business)", guest: false, free: true, plus: true },
+  { label: "Build a route (study, work, family, business)", guest: true, free: true, plus: true },
   {
     label: "Steps in each stage",
-    guest: false,
+    guest: "Key steps open, the rest locked",
     free: "Key steps open, the rest locked",
     plus: "All open",
   },

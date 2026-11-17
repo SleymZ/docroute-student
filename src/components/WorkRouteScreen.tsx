@@ -18,6 +18,7 @@ import {
 import { CountryPicker } from "@/components/CountryPicker";
 import { ConfirmRoute } from "@/components/ConfirmRoute";
 import { LockedStep, PlusFeature, PlusMoreSteps, RemindersNote } from "@/components/Plus";
+import { GuestRouteNote } from "@/components/GuestRouteNote";
 import { useAccess } from "@/hooks/useAccess";
 import { lockedStepCount, stepAccess } from "@/lib/access";
 import { citizenshipStage, isExistingResidentStatus } from "@/data/citizenship-notes";
@@ -635,6 +636,7 @@ export function WorkRouteScreen({ asOfDate }: { asOfDate: string }) {
                       ? "Progress syncs with your account."
                       : "Progress is saved on this device."}
             </p>
+            {access.tier === "guest" && !access.loading && <GuestRouteNote />}
           </div>
         </aside>
       </div>
