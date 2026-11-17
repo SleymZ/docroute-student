@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  /* "Hooks" series: dark navy, coral accent (site dark theme), Inter and
+     Noto Sans Devanagari. Every frame is computed from setTime(t), so the
+     render is deterministic. Calm scenes drift; spikes punch in. */
+  :root { --bg: #07121b; --panel: #0f2230; --ink: #f5f3ee; --muted: #a6bdca; --coral: #ff795f; --coral-d: #d4502f; --cyan: #79ddef; --line: rgba(132,184,206,.25); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  body { font-family: "Inter", "Noto Sans Devanagari", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; position: relative; }
+  .hi { font-family: "Noto Sans Devanagari", "Inter", sans-serif; }
+  #grid { position: absolute; inset: 0; background-image: radial-gradient(rgba(245,243,238,.09) 2px, transparent 2.5px); background-size: 34px 34px; }
+  #glow { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 40%, rgba(255,121,95,.16), transparent 70%); }
+  #flash { position: absolute; inset: 0; background: var(--coral); opacity: 0; pointer-events: none; z-index: 30; }
+  #bar { position: absolute; left: 0; top: 0; height: 10px; background: var(--coral); z-index: 40; }
+  #brand { position: absolute; left: 60px; top: 56px; display: flex; align-items: center; gap: 16px; z-index: 20; }
+  #brand b { font-size: 40px; font-weight: 800; letter-spacing: -.02em; }
+  #brand b span { color: var(--coral); }
+  #url { position: absolute; right: 60px; top: 70px; font-size: 30px; font-weight: 700; color: var(--muted); z-index: 20; }
+  #stage { position: absolute; left: 0; right: 0; top: 170px; height: 1260px; }
+  .scene { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; padding: 0 70px; text-align: center; }
+  .hook { font-size: 118px; font-weight: 800; line-height: 1.02; letter-spacing: -.045em; }
+  .hook b, .line b { color: var(--coral); }
+  .hi .hook { font-size: 104px; line-height: 1.25; letter-spacing: 0; }
+  .ring { position: absolute; width: 760px; height: 760px; border-radius: 50%; border: 6px solid rgba(255,121,95,.35); }
+  .line { font-size: 82px; font-weight: 750; line-height: 1.12; letter-spacing: -.035em; }
+  .hi .line { font-size: 74px; line-height: 1.35; letter-spacing: 0; }
+  .num { font-size: 380px; font-weight: 850; letter-spacing: -.06em; color: var(--coral); line-height: .9; font-variant-numeric: tabular-nums; }
+  .unit { font-size: 92px; font-weight: 800; margin-top: 10px; }
+  .label { font-size: 40px; color: var(--muted); margin-top: 26px; font-weight: 600; max-width: 900px; line-height: 1.35; }
+  .tag { display: inline-block; padding: 16px 34px; border-radius: 999px; border: 2px solid var(--line); color: var(--cyan); font-size: 44px; font-weight: 700; margin-bottom: 44px; }
+  .split { display: flex; flex-direction: column; gap: 34px; width: 100%; }
+  .card { padding: 46px 50px; border-radius: 34px; background: var(--panel); border: 3px solid var(--line); text-align: left; position: relative; }
+  .card h3 { font-size: 76px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 26px; }
+  .hi .card h3 { letter-spacing: 0; font-size: 68px; }
+  .card p { font-size: 50px; font-weight: 650; color: var(--muted); line-height: 1.3; margin-top: 12px; }
+  .card p:first-of-type { color: var(--ink); font-size: 64px; }
+  .card.win { border-color: var(--coral); box-shadow: 0 0 0 8px rgba(255,121,95,.18), 0 30px 80px rgba(0,0,0,.45); }
+  .badge { position: absolute; top: 40px; right: 40px; background: var(--coral); color: #1a0d09; font-weight: 800; font-size: 44px; padding: 10px 22px; border-radius: 999px; }
+  .stampBox { padding: 40px 60px; border: 12px solid var(--coral); border-radius: 30px; color: var(--coral); font-size: 108px; font-weight: 900; letter-spacing: -.03em; text-transform: uppercase; line-height: 1; }
+  .hi .stampBox { text-transform: none; font-size: 96px; line-height: 1.3; letter-spacing: 0; }
+  .stampSub { font-size: 50px; font-weight: 700; color: var(--muted); margin-top: 50px; }
+  .chain { display: flex; flex-direction: column; align-items: center; gap: 22px; width: 100%; }
+  .step { width: 100%; padding: 38px 40px; border-radius: 30px; background: var(--panel); border: 3px solid var(--line); font-size: 54px; font-weight: 750; display: flex; align-items: center; gap: 30px; text-align: left; }
+  .step i { flex: none; width: 92px; height: 92px; border-radius: 50%; background: var(--coral); color: #1a0d09; font-style: normal; font-size: 52px; font-weight: 900; display: grid; place-items: center; }
+  .step.last { border-color: var(--coral); color: var(--coral); }
+  .arrow { width: 0; height: 0; border-left: 26px solid transparent; border-right: 26px solid transparent; border-top: 30px solid var(--coral); }
+  .phone { position: relative; width: 760px; height: 1220px; border-radius: 70px; background: #0b0f14; border: 16px solid #1b2a36; box-shadow: 0 40px 120px rgba(0,0,0,.55), 0 0 0 3px rgba(132,184,206,.18); overflow: hidden; }
+  .addr { position: absolute; left: 0; right: 0; top: 0; height: 110px; background: #f3f5f6; z-index: 2; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; }
+  .addr span { background: #e3e8eb; color: #3a4a52; font-size: 30px; font-weight: 650; border-radius: 999px; padding: 10px 30px; }
+  .screen { position: absolute; left: 0; right: 0; top: 110px; bottom: 0; overflow: hidden; background: #eef2f4; }
+  .screen img { position: absolute; left: 0; top: 0; width: 728px; transform-origin: 0 0; }
+  .hl { position: absolute; border: 8px solid var(--coral); border-radius: 26px; box-shadow: 0 0 0 9999px rgba(7,18,27,.35); opacity: 0; }
+  .tap { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: rgba(255,121,95,.55); opacity: 0; }
+  .end .logoName { font-size: 120px; font-weight: 850; letter-spacing: -.04em; margin-top: 30px; }
+  .end .logoName span { color: var(--coral); }
+  .pill { margin-top: 50px; background: var(--coral); color: #1a0d09; font-size: 76px; font-weight: 850; padding: 26px 60px; border-radius: 999px; letter-spacing: -.02em; }
+  .endSub { margin-top: 40px; font-size: 46px; color: var(--muted); font-weight: 650; }
+  #cap { position: absolute; left: 60px; right: 60px; top: 1500px; height: 330px; display: flex; align-items: center; justify-content: center; text-align: center; z-index: 25; }
+  #cap div { font-size: 60px; font-weight: 800; line-height: 1.3; letter-spacing: -.01em; text-shadow: 0 4px 18px rgba(0,0,0,.6); }
+  .hi #cap div { font-size: 58px; line-height: 1.55; letter-spacing: 0; }
+  #cap em { font-style: normal; background: var(--coral); color: #1a0d09; border-radius: 14px; padding: 0 12px; }
+</style>
+</head>
+<body>
+<div id="grid"></div><div id="glow"></div>
+<div id="bar"></div>
+<div id="brand"></div><div id="url">docroute.app</div>
+<div id="stage"></div>
+<div id="cap"><div></div></div>
+<div id="flash"></div>
+<script>
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+let S = [], els = [], words = [];
+
+function logoSVG(size) {
+  const L = window.LOGO;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f5f3ee" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f5f3ee" transform="${L.planeT}" d="${L.plane}"/></svg>`;
+}
+
+function sceneHTML(s) {
+  switch (s.type) {
+    case "hook": return `<div class="ring"></div><div class="hook">${s.text}</div>`;
+    case "line": return `<div class="line">${s.text}</div>`;
+    case "count": return `<div class="num">0</div><div class="unit">${s.unit}</div><div class="label">${s.label}</div>`;
+    case "split": return `${s.tag ? `<div class="tag">${s.tag}</div>` : ""}<div class="split">${["a", "b"].map((k) => `<div class="card ${s.win === k ? "win" : ""}">${s.win === k ? `<span class="badge">${window.V.lang === "hi" ? "2× तेज़" : "2× faster"}</span>` : ""}<h3>${s[k].title}</h3>${s[k].lines.map((l) => `<p>${l}</p>`).join("")}</div>`).join("")}</div>`;
+    case "stamp": return `<div class="stampBox">${s.text}</div><div class="stampSub">${s.sub}</div>`;
+    case "chain": return `<div class="chain">${s.steps.map((st, i) => `${i ? '<div class="arrow"></div>' : ""}<div class="step ${i === s.steps.length - 1 ? "last" : ""}"><i>${i + 1}</i><span>${st}</span></div>`).join("")}</div>`;
+    case "site": return `<div class="phone"><div class="addr"><span>${s.addr}</span></div><div class="screen"><img src="${s.src}"><div class="hl"></div><div class="tap"></div></div></div>`;
+    case "end": return `${logoSVG(260)}<div class="logoName">Doc<span>Route</span></div><div class="pill">${s.url}</div><div class="endSub">${s.sub}</div>`;
+  }
+}
+
+function build() {
+  const V = window.V;
+  if (V.lang === "hi") document.body.classList.add("hi");
+  document.getElementById("brand").innerHTML = `${logoSVG(64)}<b>Doc<span>Route</span></b>`;
+  const stage = document.getElementById("stage");
+  S = V.scenes;
+  els = S.map((s) => { const d = document.createElement("div"); d.className = `scene ${s.type}`; d.innerHTML = sceneHTML(s); stage.appendChild(d); return d; });
+  // Caption chunks of a few words, highlighted word by word while spoken.
+  words = S.map((s) => {
+    const w = s.say.replace(/\s+/g, " ").trim().split(" ");
+    const size = V.lang === "hi" ? 5 : 6, chunks = [];
+    for (let i = 0; i < w.length; i += size) chunks.push(w.slice(i, i + size));
+    if (chunks.length > 1 && chunks[chunks.length - 1].length < 3) { const last = chunks.pop(); chunks[chunks.length - 1].push(...last); }
+    return { all: w, chunks };
+  });
+}
+
+function shake(lt, amp = 14) { const k = clamp(1 - lt / 0.32); return `translate(${Math.sin(lt * 90) * amp * k}px, ${Math.cos(lt * 70) * amp * 0.6 * k}px)`; }
+
+function setTime(t) {
+  const V = window.V;
+  const total = S[S.length - 1].until;
+  document.getElementById("bar").style.width = `${clamp(t / total) * 100}%`;
+  let i = S.findIndex((s) => t < s.until); if (i < 0) i = S.length - 1;
+  const s = S[i], lt = t - s.at, dur = s.until - s.at;
+  els.forEach((e, k) => (e.style.display = k === i ? "flex" : "none"));
+  const el = els[i];
+  // Spikes punch in with a flash and a short shake; calm scenes slide in
+  // and drift slowly.
+  const flash = document.getElementById("flash");
+  if (s.spike) {
+    const p = back(lt / 0.32);
+    el.style.transform = `${shake(lt)} scale(${1.14 - 0.14 * p})`;
+    el.style.opacity = clamp(lt / 0.08);
+    flash.style.opacity = s.type === "site" ? 0 : 0.28 * clamp(1 - lt / 0.18);
+  } else {
+    const p = ease(lt / 0.4);
+    el.style.transform = `translateY(${(1 - p) * 60}px) scale(${1 + 0.035 * clamp(lt / dur)})`;
+    el.style.opacity = p;
+    flash.style.opacity = 0;
+  }
+  document.getElementById("glow").style.opacity = s.spike ? 1 : 0.55;
+
+  if (s.type === "hook") {
+    el.querySelector(".ring").style.transform = `scale(${0.6 + 0.5 * ease(lt / 0.9) + 0.03 * Math.sin(lt * 6)})`;
+    el.querySelector(".ring").style.opacity = 1 - 0.6 * clamp(lt / 2);
+  }
+  if (s.type === "count") {
+    const n = Math.round(s.to * ease((lt - 0.1) / 0.9));
+    el.querySelector(".num").textContent = n;
+    const land = lt - 1.0;
+    el.querySelector(".num").style.transform = land > 0 && land < 0.3 ? `scale(${1 + 0.12 * Math.sin((land / 0.3) * Math.PI)})` : "none";
+  }
+  if (s.type === "split") {
+    const cards = el.querySelectorAll(".card"), second = dur * 0.42;
+    cards[0].style.transform = `translateX(${(1 - back(lt / 0.35)) * -700}px)`;
+    const b = lt - second;
+    cards[1].style.transform = `translateX(${(1 - back(b / 0.35)) * 700}px)`;
+    cards[1].style.opacity = b > 0 ? 1 : 0;
+    const badge = el.querySelector(".badge"); if (badge) badge.style.transform = `scale(${back((lt - dur * 0.75) / 0.3)})`;
+    if (b > 0 && b < 0.35) { el.style.transform = shake(b, 10); flash.style.opacity = 0.2 * clamp(1 - b / 0.18); }
+  }
+  if (s.type === "stamp") {
+    const p = back((lt - 0.05) / 0.35);
+    el.querySelector(".stampBox").style.transform = `rotate(-7deg) scale(${2.4 - 1.4 * p})`;
+    el.querySelector(".stampBox").style.opacity = clamp((lt - 0.05) / 0.1);
+    el.querySelector(".stampSub").style.opacity = clamp((lt - 0.6) / 0.3);
+  }
+  if (s.type === "chain") {
+    const parts = [...el.querySelectorAll(".step, .arrow")], n = s.steps.length;
+    parts.forEach((p, k) => {
+      const step = Math.floor((k + 1) / 2), at = (dur * 0.8 * step) / n;
+      const q = lt - at;
+      p.style.opacity = q > 0 ? 1 : 0;
+      p.style.transform = p.classList.contains("step") ? `scale(${q > 0 ? 1.12 - 0.12 * back(q / 0.3) : 0.8})` : "none";
+      if (p.classList.contains("step") && q > 0 && q < 0.2 && step) flash.style.opacity = 0.16 * (1 - q / 0.2);
+    });
+  }
+  if (s.type === "site") site(el, s, lt, dur);
+  if (s.type === "end") {
+    el.querySelector(".pill").style.transform = `scale(${1 + 0.05 * Math.sin(lt * 5)})`;
+  }
+
+  // Captions.
+  const W = words[i], cap = document.querySelector("#cap div");
+  const prog = clamp((t - s.speechAt) / s.speech);
+  const cur = Math.min(W.all.length - 1, Math.floor(prog * W.all.length));
+  let idx = 0, html = "";
+  for (const chunk of W.chunks) {
+    if (cur < idx + chunk.length) { html = chunk.map((w, k) => (idx + k === cur && t >= s.speechAt ? `<em>${w}</em>` : w)).join(" "); break; }
+    idx += chunk.length;
+  }
+  cap.innerHTML = s.type === "end" ? "" : html;
+}
+
+// A real site screen inside a phone: a slow scroll towards the target
+// (calm), then for zoom scenes a punch-in on the target with a highlight
+// and a tap (spike).
+function site(el, s, lt, dur) {
+  const img = el.querySelector("img"), hl = el.querySelector(".hl"), tap = el.querySelector(".tap");
+  const base = 728 / s.shotW, viewH = 1220 - 32 - 110;
+  const [bx, by, bw, bh] = s.box.map((v) => v * base);
+  const zoomAt = s.zoom > 1 ? Math.min(dur * 0.35, 1.4) : Infinity;
+  // Never zoom past the box width: the whole box stays readable.
+  const zMax = Math.max(1, Math.min(s.zoom, 700 / bw));
+  const phone = el.querySelector(".phone");
+  const startY = Math.max(0, by - viewH * 0.75), endY = Math.max(0, by + bh / 2 - viewH / 2);
+  const panP = ease(lt / Math.min(zoomAt, dur));
+  let y = startY + (endY - startY) * panP, z = 1, x = 0;
+  if (lt > zoomAt) {
+    const q = back((lt - zoomAt) / 0.4);
+    z = 1 + (zMax - 1) * q;
+    phone.style.transform = `scale(${1 + 0.07 * q})`;
+    const cx = bx + bw / 2, cy = by + bh / 2;
+    x = (cx * z - 728 / 2) * q; y = endY + (cy * z - viewH / 2 - endY) * q;
+    x = Math.max(0, Math.min(x, 728 * z - 728));
+    el.style.transform = `${shake(lt - zoomAt, 10)}`;
+    document.getElementById("flash").style.opacity = 0;
+    tap.style.left = `${cx * z - x}px`; tap.style.top = `${cy * z - y}px`;
+    const tq = (lt - zoomAt) / 0.5; tap.style.opacity = tq < 1 ? 0.9 * (1 - tq) : 0; tap.style.transform = `scale(${0.4 + 1.6 * clamp(tq)})`;
+  }
+  if (lt <= zoomAt) phone.style.transform = "none";
+  img.style.transform = `translate(${-x}px, ${-y}px) scale(${z})`;
+  const show = s.zoom > 1 ? clamp((lt - zoomAt - 0.15) / 0.2) : clamp((lt - dur * 0.45) / 0.3);
+  hl.style.opacity = show;
+  hl.style.left = `${bx * z - x - 10}px`; hl.style.top = `${by * z - y - 10}px`;
+  hl.style.width = `${bw * z + 20}px`; hl.style.height = `${bh * z + 20}px`;
+}
+</script>
+</body>
+</html>
