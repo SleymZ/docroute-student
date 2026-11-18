@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #141113; }
+  body { font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; color: #f6f1ea; position: relative;
+    background: linear-gradient(170deg, #1c1719 0%, #121012 55%, #0e0d0f 100%); }
+  .scr { position: absolute; inset: 0; display: none; }
+  #hook .k { position: absolute; left: 80px; top: 360px; font-size: 44px; font-weight: 700; letter-spacing: .2em; color: #ff795f; }
+  #hook .t { position: absolute; left: 80px; right: 160px; top: 440px; font-family: "Inter Display", "Inter"; font-size: 132px; font-weight: 800; line-height: .98; letter-spacing: -0.045em; }
+  #hook .t span { color: #ff795f; }
+  #hook .dots { position: absolute; left: 80px; top: 1060px; display: flex; gap: 22px; }
+  #hook .dots div { width: 120px; height: 120px; border-radius: 50%; border: 6px solid #3a3336; display: flex; align-items: center; justify-content: center; font-size: 60px; font-weight: 800; color: #6e6569; }
+  #q .top { position: absolute; left: 80px; right: 160px; top: 230px; display: flex; justify-content: space-between; align-items: center; }
+  #q .cnt { font-size: 40px; font-weight: 700; letter-spacing: .16em; color: #9a9094; }
+  #q .cnt b { color: #f6f1ea; }
+  #q .tag { display: inline-block; margin-top: 0; font-size: 38px; font-weight: 700; color: #141113; background: #ff795f; border-radius: 999px; padding: 10px 28px; }
+  #q .qt { position: absolute; left: 80px; right: 160px; top: 380px; font-family: "Inter Display", "Inter"; font-size: 86px; font-weight: 800; line-height: 1.06; letter-spacing: -0.035em; }
+  #q .ring { position: absolute; right: 160px; top: 205px; width: 120px; height: 120px; }
+  #q .ring .num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 54px; font-weight: 800; }
+  #q .opts { position: absolute; left: 80px; right: 160px; top: 800px; }
+  .opt { position: relative; height: 150px; border-radius: 75px; border: 4px solid #3a3336; margin-bottom: 30px; display: flex; align-items: center; padding: 0 50px; font-size: 64px; font-weight: 700; letter-spacing: -0.02em; overflow: hidden; background: #1a1618; }
+  .opt .fill { position: absolute; inset: 0; background: #ff795f; transform-origin: left; }
+  .opt .tx { position: relative; display: flex; gap: 30px; align-items: center; width: 100%; }
+  .opt .l { font-size: 44px; font-weight: 800; color: #8a8084; width: 50px; }
+  .opt.win .tx, .opt.win .l { color: #141113; }
+  .opt .ok { margin-left: auto; font-size: 54px; }
+  #q .src { position: absolute; left: 80px; right: 160px; top: 1360px; font-size: 36px; font-weight: 500; color: #9a9094; line-height: 1.3; }
+  #end .t { position: absolute; left: 80px; right: 160px; top: 360px; font-family: "Inter Display", "Inter"; font-size: 120px; font-weight: 800; line-height: 1; letter-spacing: -0.045em; }
+  #end .t span { color: #ff795f; }
+  #end .score { position: absolute; left: 80px; top: 650px; display: flex; gap: 22px; }
+  #end .score div { height: 120px; padding: 0 44px; border-radius: 60px; border: 5px solid #ff795f; display: flex; align-items: center; font-size: 60px; font-weight: 800; color: #ff795f; }
+  #end .brand { position: absolute; left: 80px; top: 900px; display: flex; align-items: center; gap: 28px; }
+  #end .w { font-size: 92px; font-weight: 800; letter-spacing: -0.04em; }
+  #end .c1 { position: absolute; left: 80px; right: 160px; top: 1090px; font-size: 54px; font-weight: 500; line-height: 1.22; }
+  #end .c2 { position: absolute; left: 80px; top: 1260px; font-size: 42px; font-weight: 600; color: #9a9094; }
+</style>
+</head>
+<body>
+<div id="hook" class="scr"><div class="k">QUIZ · MOVING TO EUROPE</div><div class="t">3 questions.<br>Can you get <span>all 3?</span></div><div class="dots"><div>1</div><div>2</div><div>3</div></div></div>
+<div id="q" class="scr">
+  <div class="top"><div><span class="cnt"><b id="qn">1</b> / 3</span> &nbsp; <span class="tag" id="tag"></span></div></div>
+  <svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#3a3336" stroke-width="8"/><circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="#ff795f" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.7" transform="rotate(-90 60 60)"/></svg>
+  <div class="ring"><div class="num" id="sec">3</div></div>
+  <div class="qt" id="qt"></div>
+  <div class="opts" id="opts"></div>
+  <div class="src" id="src"></div>
+</div>
+<div id="end" class="scr"><div class="t">How many<br>did you <span>get?</span></div><div class="score"><div>0</div><div>1</div><div>2</div><div>3</div></div><div class="brand"></div><div class="c1">Every rule on DocRoute comes with its official source.</div><div class="c2">Comment your score · link in bio</div></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => 1 - Math.pow(1 - x, 3);
+const back = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const $ = s => document.querySelector(s);
+const QS = [
+  { at: 2, tag: "AUSTRIA", q: "After moving in, how fast must you register your address?", o: ["3 days", "14 days", "30 days"], a: 0, src: "Source: oesterreich.gv.at (Jan 2026)" },
+  { at: 8.5, tag: "AUSTRIA", q: "EU Blue Card 2026: the minimum yearly gross salary?", o: ["€35,000", "€45,000", "€55,678"], a: 2, src: "Source: migration.gv.at (2026)" },
+  { at: 15, tag: "CZECHIA", q: "Business visa: how much money must you show?", o: ["CZK 50,000", "CZK 156,500", "CZK 500,000"], a: 1, src: "Source: ipc.gov.cz (Jul 2026)" },
+];
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f6f1ea" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f6f1ea" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+function build() {
+  $("#opts").innerHTML = [0, 1, 2].map(i => `<div class="opt"><div class="fill"></div><div class="tx"><span class="l">${"ABC"[i]}</span><span class="v"></span><span class="ok"></span></div></div>`).join("");
+  $("#end .brand").innerHTML = `${logoSVG(140)}<div class="w">Doc<span style="color:#ff795f">Route</span></div>`;
+}
+function setTime(t) {
+  ["#hook", "#q", "#end"].forEach(s => $(s).style.display = "none");
+  if (t < 2) {
+    $("#hook").style.display = "block";
+    const p = back(prog(t, 0, .35));
+    $("#hook .t").style.transform = `scale(${.85 + .15 * p})`; $("#hook .t").style.transformOrigin = "left top";
+    [...document.querySelectorAll("#hook .dots div")].forEach((d, i) => { const q = ease(prog(t, .4 + i * .15, .7 + i * .15)); d.style.opacity = q; d.style.transform = `scale(${.6 + .4 * q})`; });
+    $("#hook").style.opacity = 1 - prog(t, 1.85, 2);
+  } else if (t < 21.5) {
+    $("#q").style.display = "block";
+    const k = t < 8.5 ? 0 : t < 15 ? 1 : 2, Q = QS[k], lt = t - Q.at;
+    $("#qn").textContent = k + 1; $("#tag").textContent = Q.tag;
+    $("#qt").textContent = Q.q;
+    const pq = ease(prog(lt, 0, .4));
+    $("#qt").style.opacity = pq; $("#qt").style.transform = `translateY(${40 * (1 - pq)}px)`;
+    const tl = clamp(lt - 1.2, 0, 3);
+    $("#arc").setAttribute("stroke-dashoffset", 326.7 * (tl / 3));
+    $("#sec").textContent = lt < 1.2 ? 3 : lt < 4.2 ? Math.ceil(3 - tl) : "";
+    const rev = prog(lt, 4.2, 4.5);
+    [...document.querySelectorAll(".opt")].forEach((o, i) => {
+      const a = .5 + i * .15, p = ease(prog(lt, a, a + .3));
+      o.style.opacity = p * (rev > 0 && i !== Q.a ? 1 - .65 * rev : 1);
+      o.style.transform = `translateX(${80 * (1 - p)}px) scale(${i === Q.a ? 1 + .04 * Math.sin(Math.PI * rev) : 1})`;
+      o.querySelector(".v").textContent = Q.o[i];
+      const win = i === Q.a && rev > 0;
+      o.classList.toggle("win", win);
+      o.querySelector(".fill").style.transform = `scaleX(${i === Q.a ? ease(rev) : 0})`;
+      o.querySelector(".ok").innerHTML = win ? `<svg width="60" height="60" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19.5 6.5" fill="none" stroke="#141113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>` : "";
+      o.style.borderColor = win ? "#ff795f" : "#3a3336";
+    });
+    $("#src").textContent = Q.src; $("#src").style.opacity = ease(prog(lt, 4.6, 5));
+    $("#q").style.opacity = 1 - prog(lt, 6.35, 6.5);
+  } else {
+    $("#end").style.display = "block";
+    const p = ease(prog(t, 21.5, 22));
+    $("#end .t").style.opacity = p;
+    [...document.querySelectorAll("#end .score div")].forEach((d, i) => { const q = back(prog(t, 21.8 + i * .12, 22.1 + i * .12)); d.style.opacity = clamp(q); d.style.transform = `scale(${.6 + .4 * q})`; });
+    $("#end .brand").style.opacity = ease(prog(t, 22.8, 23.3)); $("#end .c1").style.opacity = ease(prog(t, 23.1, 23.6)); $("#end .c2").style.opacity = ease(prog(t, 23.4, 23.9));
+  }
+}
+</script>
+</body>
+</html>
