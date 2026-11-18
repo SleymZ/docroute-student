@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #08090b; }
+  body { font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; color: #f4f1ec; position: relative;
+    background: radial-gradient(1200px 900px at 50% 38%, #15171c 0%, #08090b 70%); }
+  #head { position: absolute; left: 70px; right: 150px; top: 250px; display: flex; justify-content: space-between; align-items: center;
+    font-size: 30px; font-weight: 700; letter-spacing: .24em; color: #7c7f87; }
+  #head b { color: #ff795f; font-weight: 800; }
+  #clock { font-variant-numeric: tabular-nums; letter-spacing: .08em; color: #f4f1ec; }
+  #board { position: absolute; left: 70px; top: 340px; padding: 26px; border-radius: 22px; background: #0f1013; border: 2px solid #1f2127;
+    box-shadow: 0 40px 120px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.04); }
+  .row { display: flex; gap: 5px; margin-bottom: 8px; }
+  .row:last-child { margin-bottom: 0; }
+  .tile { width: 60px; height: 96px; border-radius: 7px; background: linear-gradient(#1b1d22 0 49%, #000 49% 51%, #16181c 51%); position: relative; overflow: hidden;
+    font-family: "Inter Display", "Inter", sans-serif; font-size: 70px; font-weight: 800; line-height: 96px; text-align: center; color: #f1ead9; }
+  .tile.tag { color: #ff795f; }
+  .tile.flip { color: #8a8478; }
+  .tile::after { content: ""; position: absolute; left: 0; right: 0; top: 47px; height: 2px; background: rgba(0,0,0,.85); }
+  #cap { position: absolute; left: 70px; right: 150px; top: 1010px; font-size: 58px; font-weight: 500; line-height: 1.22; letter-spacing: -0.015em; }
+  #src { position: absolute; left: 70px; right: 150px; top: 1300px; font-size: 30px; font-weight: 600; color: #6c6f77; letter-spacing: .06em; }
+  #end { position: absolute; inset: 0; display: none; }
+  #end .brand { position: absolute; left: 70px; top: 960px; display: flex; align-items: center; gap: 30px; }
+  #end .w { font-size: 100px; font-weight: 800; letter-spacing: -0.04em; }
+  #end .c1 { position: absolute; left: 70px; right: 150px; top: 1150px; font-size: 54px; font-weight: 500; line-height: 1.22; }
+  #end .c1 span { color: #ff795f; }
+  #end .c2 { position: absolute; left: 70px; top: 1430px; font-size: 42px; font-weight: 600; color: #8f9199; }
+</style>
+</head>
+<body>
+<div id="head"><span>DEPARTURES · <b>BUSINESS</b></span><span id="clock">00:00</span></div>
+<div id="board"></div>
+<div id="cap"></div>
+<div id="src">SOURCE: IOM MIGRATION INFORMATION CENTRE, SLOVAKIA · 2026</div>
+<div id="end"><div class="brand"></div><div class="c1">This route step by step, plus checklists for <span>Czechia and Austria</span>. Official sources only.</div><div class="c2">Free to start · link in channel</div></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => 1 - Math.pow(1 - x, 3);
+const $ = s => document.querySelector(s);
+const CH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+let tiles = [];
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f4f1ec" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f4f1ec" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+function build() {
+  const B = window.B, b = $("#board");
+  for (let r = 0; r < 4; r++) { const row = document.createElement("div"); row.className = "row"; const rr = [];
+    for (let c = 0; c < B.cols; c++) { const d = document.createElement("div"); d.className = "tile"; row.append(d); rr.push(d); }
+    b.append(row); tiles.push(rr); }
+  $("#end .brand").innerHTML = `${logoSVG(150)}<div class="w">Doc<span style="color:#ff795f">Route</span></div>`;
+}
+function sceneAt(t) {
+  const B = window.B;
+  if (t < B.hook) return [0, 0];
+  if (t >= B.end) return [-1, B.end];
+  const k = Math.floor((t - B.hook) / B.step); return [k + 1, B.hook + k * B.step];
+}
+function setTime(t) {
+  const B = window.B, [si, st] = sceneAt(t);
+  const mm = Math.floor(t / 60), ss = Math.floor(t % 60);
+  $("#clock").textContent = `09:${String(14 + Math.floor(t / 3.5)).padStart(2, "0")}`;
+  const sc = si >= 0 ? B.scenes[si] : { tag: "", rows: ["NOW BOARDING", "DOCROUTE"], cap: "" };
+  const rows = (sc.tag ? [sc.tag] : []).concat(sc.rows);
+  const lt = t - st;
+  for (let r = 0; r < 4; r++) for (let c = 0; c < B.cols; c++) {
+    const d = tiles[r][c], target = (rows[r] || "").padEnd(B.cols).slice(0, B.cols)[c];
+    const at = .15 + r * .12 + c * .035, settle = at + .38;
+    if (lt < at) d.textContent = d.dataset.prev || " ";
+    else if (lt < settle) { const k = Math.floor((lt - at) / .045); d.textContent = CH[(k * 7 + r * 5 + c * 3 + si * 11) % CH.length]; d.classList.add("flip"); }
+    else { d.textContent = target; d.classList.remove("flip"); }
+    d.classList.toggle("tag", !!sc.tag && r === 0);
+    if (lt >= settle) d.dataset.cur = target;
+  }
+  // the previous board stays until each tile starts flipping
+  if (lt > 1) for (const rr of tiles) for (const d of rr) d.dataset.prev = d.dataset.cur || " ";
+  const capT = .15 + Math.max(0, rows.length - 1) * .12 + B.cols * .035 + .45;
+  $("#cap").textContent = sc.cap; $("#cap").style.opacity = ease(prog(lt, capT, capT + .4));
+  $("#cap").style.transform = `translateY(${20 * (1 - ease(prog(lt, capT, capT + .4)))}px)`;
+  $("#src").style.opacity = si > 0 ? .9 : 0;
+  const e = $("#end"); e.style.display = si === -1 ? "block" : "none";
+  if (si === -1) { const p = ease(prog(t, B.end + 1.0, B.end + 1.6)); e.style.opacity = p; $("#cap").style.opacity = 0; $("#src").style.opacity = 0; }
+}
+</script>
+</body>
+</html>
