@@ -44,7 +44,7 @@ async function open(lang) {
   await page.goto("file://" + path.join(here, "shorts.html"));
   await page.evaluate(async () => {
     // load every face before measuring, or headlines are laid out with a fallback font
-    for (const w of ["200", "300", "500", "700", "800", "900"]) await Promise.all([document.fonts.load(`${w} 40px Inter`, "A"), document.fonts.load(`${w} 40px "Inter Display"`, "A")]);
+    for (const w of ["200", "300", "500", "700", "800", "900"]) await Promise.all([document.fonts.load(`${w} 40px Inter`, "A"), document.fonts.load(`${w} 40px "Inter Display"`, "A"), document.fonts.load(`${w} 40px "Noto Sans Devanagari"`, "अ")]);
     await document.fonts.ready; build();
   });
   await page.evaluate(() => Promise.all([...document.images].map(i => i.decode().catch(() => {}))));

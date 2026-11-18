@@ -1,8 +1,50 @@
-{"slots": [[0.05, 2.38], [2.45, 6.35], [6.45, 10.35], [10.45, 14.35], [14.45, 18.35], [18.45, 22.35], [22.5, 26.95]],
- "en": ["Five things to check before you apply to uni in Europe.",
+{
+ "slots": [
+  [
+   0.05,
+   2.38
+  ],
+  [
+   2.45,
+   6.35
+  ],
+  [
+   6.45,
+   10.35
+  ],
+  [
+   10.45,
+   14.35
+  ],
+  [
+   14.45,
+   18.35
+  ],
+  [
+   18.45,
+   22.35
+  ],
+  [
+   22.5,
+   26.95
+  ]
+ ],
+ "en": [
+  "Five things to check before you apply to uni in Europe.",
   "One. Is your school diploma accepted? Each country has its own rules.",
   "Two. Your language score. In every section, not just overall.",
   "Three. The deadline's time zone. Theirs, not yours.",
   "Four. Apostille and sworn translation. Start early.",
   "Five. Proof of funds for the visa. Each country sets the amount.",
-  "DocRoute maps all of it, step by step, with official sources. Save this. Here are the"]}
+  "DocRoute maps all of it, step by step, with official sources. Save this. Here are the"
+ ],
+ "hi": [
+  "यूरोप में अप्लाई से पहले, पाँच चीज़ें।",
+  "एक। क्या आपका स्कूल सर्टिफ़िकेट मान्य है? हर देश के अपने नियम हैं।",
+  "दो। लैंग्वेज स्कोर, हर सेक्शन में, सिर्फ़ ओवरऑल नहीं।",
+  "तीन। डेडलाइन का टाइम ज़ोन। उनका, आपका नहीं।",
+  "चार। एपोस्टिल और प्रमाणित अनुवाद। जल्दी शुरू करें।",
+  "पाँच। वीज़ा के लिए पैसों का प्रमाण। रकम हर देश तय करता है।",
+  "DocRoute: सब कदम दर कदम, आधिकारिक स्रोतों के साथ। सेव करें।"
+ ]
+}
