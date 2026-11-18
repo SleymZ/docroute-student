@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-18 (contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
+Last updated: 2026-11-18 (free Plus month PR #112, contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -112,6 +112,26 @@ visitor sees the entry screen; someone who has been here before is sent to
 the Next.js security release of 2026-11-03 (fixed in 16.4.5; `npm audit`:
 moderate, 16.0.0–16.4.4). After the update `npm audit --omit=dev` finds 0
 vulnerabilities. Tests and a local production build pass; no code changes.
+
+## Free Plus month (2026-11-18, PR #112)
+
+Owner decision 2026-11-18: every registered account has Plus for free until
+18 December 2026 inclusive, to use in promotion ("free for a month").
+Nothing is deleted.
+- `FREE_PLUS_UNTIL = "2026-12-19T00:00:00+01:00"` and `freePlusActive()` in
+  `src/lib/access.ts`; `tierFromPlan()` returns Plus for every signed-in
+  account during the month (`useAccess`, `/my-route`), the account page says
+  "Plan: Plus · free for every account until 18 December".
+- Database: `has_plus()` returns true for every signed-in account until the
+  same moment (migration `20261118120000_free_plus_month.sql`), so saving to
+  My route works. **The owner must run this SQL in Supabase.**
+- Plus is not sold during the month: `/api/billing/checkout` returns
+  `free-plus-month`, `/plus` shows the free month instead of the buy button.
+  Whop, `account_plans` and payments stay and apply again afterwards.
+- `FreePlusBadge` (link to /plus) on the entry page, under the /home form and
+  on /plus; it disappears by itself after the date.
+- Promotion: mention "Plus free for a month, until 18 December" in captions
+  and videos; guests still need a free account for any route.
 
 ## Contact page and numbers under the map (2026-11-18, PR #110, #111)
 

@@ -2180,5 +2180,9 @@
 "work": "trabajo",
 "family": "familia",
 "business": "negocio",
-"RULES CHECKED": "NORMAS COMPROBADAS"
+"RULES CHECKED": "NORMAS COMPROBADAS",
+"Plus is free for every account until {0}": "Plus es gratis para todas las cuentas hasta el {0}",
+"<0/>Plus is free for every account until {0}": "<0/>Plus es gratis para todas las cuentas hasta el {0}",
+"Plan: Plus · free for every account until {0}": "Plan: Plus · gratis para todas las cuentas hasta el {0}",
+"Until {0}, Plus is free for every registered account: every step, your own dates, PDF and PNG, and saving to My route. Create a free account and it opens at once. Nothing to pay and nothing to cancel.": "Hasta el {0}, Plus es gratis para todas las cuentas registradas: todos los pasos, tus fechas, PDF y PNG, y guardar en Mi ruta. Crea una cuenta gratuita y se abre al momento. Nada que pagar ni que cancelar."
 }

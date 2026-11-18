@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FREE_PLUS_LAST_DAY, freePlusActive } from "@/lib/access";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -159,6 +160,9 @@ async function loadPlan(
 /** "Plan: Free · See Plus" or "Plan: Plus until … · Manage on Whop". */
 function renderPlanLine(plan: PlanRow | null, locale: string) {
   const active = plan?.plan === "plus" && (!plan.plus_until || Date.parse(plan.plus_until) > Date.now());
+  if (!active && freePlusActive()) {
+    return <p className={styles.planLine}>Plan: Plus · free for every account until {FREE_PLUS_LAST_DAY}</p>;
+  }
   if (!active) {
     return (
       <p className={styles.planLine}>

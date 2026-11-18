@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Check, Minus, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/Header";
+import { FreePlusBadge } from "@/components/FreePlusBadge";
 import { PlusCheckout } from "@/components/PlusCheckout";
+import { FREE_PLUS_LAST_DAY, freePlusActive } from "@/lib/access";
 import { getPlusPrice, ordersUrl, whopConfig } from "@/lib/whop";
 import storyStyles from "@/components/Stories.module.css";
 
@@ -59,6 +61,7 @@ export default async function PlansPage() {
               Browsing is open to everyone. Building a route needs a free account; Plus adds your dates, the full
               checklist, PDF and PNG, and saving.
             </p>
+            <FreePlusBadge className={styles.freePlus} />
           </div>
         </header>
 
@@ -89,7 +92,20 @@ export default async function PlansPage() {
 
         <section className={styles.note} id="get-plus">
           <h2>How to get Plus</h2>
-          {config.checkoutEnabled ? (
+          {freePlusActive() ? (
+            <>
+              <p>
+                Until {FREE_PLUS_LAST_DAY}, Plus is free for every registered account: every step, your own dates,
+                PDF and PNG, and saving to My route. Create a free account and it opens at once. Nothing to pay and
+                nothing to cancel.
+              </p>
+              <div className={styles.actions}>
+                <Link href="/auth?mode=signup&next=/home" className={storyStyles.primary}>
+                  Create a free account
+                </Link>
+              </div>
+            </>
+          ) : config.checkoutEnabled ? (
             <>
               <p>
                 Pay once a period through Whop and Plus opens on your account within a minute. Cancel any time; you

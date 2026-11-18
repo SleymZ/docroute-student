@@ -30,11 +30,12 @@ async function lookupTier(): Promise<AccessTier> {
       .select("plan, plus_until")
       .eq("user_id", data.user.id)
       .maybeSingle();
-    if (error) return "free";
+    if (error) return tierFromPlan(null);
     return tierFromPlan(row);
   } catch {
-    // Table missing (migration not run yet) or offline: the Free plan.
-    return "free";
+    // Table missing (migration not run yet) or offline: the Free plan, or
+    // Plus during the free Plus month.
+    return tierFromPlan(null);
   }
 }
 

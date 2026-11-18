@@ -792,3 +792,9 @@ a svg {
     display: none;
   }
 }
+
+/* Free Plus month badge under the route form (FreePlusBadge). */
+.hero-free-plus {
+  align-self: flex-start;
+  margin-top: 12px;
+}
