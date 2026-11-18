@@ -42,6 +42,32 @@
   color: var(--cyan);
 }
 
+/* Under the map in the hero (wide screens): pinned to the bottom so the
+   right column ends level with the form. */
+.proofHero {
+  display: none;
+  margin-top: auto;
+}
+
+@media (min-width: 1200px) {
+  .proofHero {
+    display: grid;
+  }
+
+  .proofBelow {
+    display: none;
+  }
+}
+
+.proofHero li {
+  padding: 14px 16px;
+  font-size: 12.5px;
+}
+
+.proofHero strong {
+  font-size: 26px;
+}
+
 .block {
   padding: 26px;
   border: 1px solid var(--border);

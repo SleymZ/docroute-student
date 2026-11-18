@@ -20,6 +20,7 @@ import { verifiedPrograms } from "@/data/verified-programs";
 import { LOCALE_TAGS, type Locale } from "@/i18n/config";
 import { upcomingFacultyDeadlines, type FacultyDeadline } from "@/lib/deadline-list";
 import { flagSrc } from "@/lib/flags";
+import { getAdmissionDate } from "@/lib/admission-date";
 
 import styles from "./HomeSections.module.css";
 
@@ -60,6 +61,35 @@ function DeadlineRow({ row, date }: { row: FacultyDeadline; date: string }) {
   );
 }
 
+/** Numbers from the verified data. On wide screens it stands under the map
+ *  in the hero (owner request 2026-11-18: fill the space there); below
+ *  1200px, where the map moves under the form, it stays under the hero. */
+export function HomeProof({ placement, today }: { placement: "hero" | "below"; today?: string }) {
+  const deadlines = upcomingFacultyDeadlines(verifiedPrograms, today ?? getAdmissionDate());
+  const universities = new Set(verifiedPrograms.map((program) => program.universityId)).size;
+  const programmes = verifiedPrograms.length;
+  return (
+    <ul className={`${styles.proof} ${placement === "hero" ? styles.proofHero : styles.proofBelow}`} aria-label="DocRoute in numbers">
+      <li>
+        <strong>{programmes}</strong>
+        <span>verified programmes</span>
+      </li>
+      <li>
+        <strong>{universities}</strong>
+        <span>universities in Slovakia and Czechia</span>
+      </li>
+      <li>
+        <strong>{deadlines.length}</strong>
+        <span>open application deadlines</span>
+      </li>
+      <li>
+        <ShieldCheck size={22} aria-hidden="true" />
+        <span>Every rule links to its official source</span>
+      </li>
+    </ul>
+  );
+}
+
 export function HomeSections({ today, locale }: { today: string; locale: Locale }) {
   const tag = locale === "en" ? "en-GB" : LOCALE_TAGS[locale];
   const dateOf = (iso: string) =>
@@ -68,29 +98,10 @@ export function HomeSections({ today, locale }: { today: string; locale: Locale 
   const deadlines = upcomingFacultyDeadlines(verifiedPrograms, today);
   const soonest = deadlines.slice(0, 6);
   const next = deadlines[0];
-  const universities = new Set(verifiedPrograms.map((program) => program.universityId)).size;
-  const programmes = verifiedPrograms.length;
 
   return (
     <div className={styles.sections}>
-      <ul className={styles.proof} aria-label="DocRoute in numbers">
-        <li>
-          <strong>{programmes}</strong>
-          <span>verified programmes</span>
-        </li>
-        <li>
-          <strong>{universities}</strong>
-          <span>universities in Slovakia and Czechia</span>
-        </li>
-        <li>
-          <strong>{deadlines.length}</strong>
-          <span>open application deadlines</span>
-        </li>
-        <li>
-          <ShieldCheck size={22} aria-hidden="true" />
-          <span>Every rule links to its official source</span>
-        </li>
-      </ul>
+      <HomeProof placement="below" today={today} />
 
       {soonest.length > 0 ? (
         <section className={styles.block} aria-labelledby="home-deadlines">

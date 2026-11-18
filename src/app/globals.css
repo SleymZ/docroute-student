@@ -764,10 +764,12 @@ a svg {
 /* Home: the map sits in a wrapper so phones can drop it (RoutePlanner). */
 .hero-map {
   display: flex;
+  flex-direction: column;
+  gap: 16px;
   min-width: 0;
 }
 
-.hero-map > * {
+.hero-map > :first-child {
   flex: 1;
 }
 
