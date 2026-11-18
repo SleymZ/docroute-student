@@ -218,7 +218,7 @@
 }
 
 /* На среднем экране убираем только иконки меню */
-@media (min-width: 1101px) and (max-width: 1350px) {
+@media (min-width: 1200px) and (max-width: 1600px) {
   .header {
     gap: 16px;
   }
@@ -234,7 +234,7 @@
 }
 
 /* Меню переносится на вторую строку */
-@media (max-width: 1100px) {
+@media (max-width: 1199px) {
   .header {
     flex-wrap: wrap;
     gap: 12px;

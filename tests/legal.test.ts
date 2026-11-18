@@ -137,3 +137,15 @@ test("the short phone cookie text is translated in every site language", async (
     assert.ok(catalog["Details"], lang);
   }
 });
+
+test("the contact page puts the email first, then Instagram and TikTok", () => {
+  const page = read("src/app/contact/page.tsx");
+  assert.match(page, /href=\{contact\.href\}/);
+  assert.ok(page.indexOf("contact.href") < page.indexOf("socialLinks.map"));
+  const legal = read("src/data/legal.ts");
+  assert.match(legal, /https:\/\/www\.instagram\.com\/docroute_en\//);
+  assert.match(legal, /https:\/\/www\.tiktok\.com\/@docrouteen/);
+  assert.match(read("src/components/Header.tsx"), /href: "\/contact"/);
+  assert.match(read("src/components/SiteFooter.tsx"), /<Link href="\/contact">Contact<\/Link>/);
+  assert.match(read("src/app/sitemap.ts"), /"\/contact"/);
+});
