@@ -109,3 +109,10 @@ export const contact = legalInfo.contactEmail
       label: "GitHub (DocRoute issues)",
       isEmail: false,
     };
+
+/** DocRoute's own social accounts (owner, 2026-11-18). The operator is not
+ *  named on the site; these are the brand accounts. */
+export const socialLinks = [
+  { network: "Instagram", handle: "@docroute_en", href: "https://www.instagram.com/docroute_en/" },
+  { network: "TikTok", handle: "@docrouteen", href: "https://www.tiktok.com/@docrouteen" },
+] as const;

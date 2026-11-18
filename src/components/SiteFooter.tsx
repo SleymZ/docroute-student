@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { contact, legalPages } from "@/data/legal";
+import { legalPages } from "@/data/legal";
 
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { TranslationNotice } from "./TranslationNotice";
@@ -28,7 +28,7 @@ export function SiteFooter() {
           <Link href="/countries">Countries</Link>
           <Link href="/plus">Plans</Link>
           <Link href="/feedback">Feedback</Link>
-          <a href={contact.href}>Contact</a>
+          <Link href="/contact">Contact</Link>
         </nav>
 
         <LanguageSwitcher />
