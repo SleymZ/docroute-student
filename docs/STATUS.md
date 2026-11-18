@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-17 (entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
+Last updated: 2026-11-18 (contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -64,6 +64,21 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Contact page and numbers under the map (2026-11-18, PR #110, #111)
+
+- **#110** `/home`: the numbers strip (`HomeProof` in
+  `src/components/home/HomeSections.tsx`) stands under the map from 1200px
+  (`RoutePlanner` prop `mapFooter`), level with the bottom of the form;
+  below 1200px it stays under the hero.
+- **#111** `/contact`: email `docroutestu@gmail.com` first (mailto), then
+  Instagram `@docroute_en` and TikTok `@docrouteen` (`socialLinks` in
+  `src/data/legal.ts`). "Contact" in the header and footer, in the sitemap.
+  Header: compact style up to 1600px, nav wraps from 1199px.
+- Marketing (no code): videos 01–03 of `marketing/hooks` posted through
+  Metricool (TikTok docrouteen, Instagram docroute_en, YouTube) on 17, 18 and
+  19 Nov at 10:00 (01 on 17 Nov 22:20). Video files for Metricool are on the
+  branch `media-hooks` (raw GitHub links); Releases are not allowed here.
 
 ## Entry page and home redesign (2026-11-17, PR #108)
 

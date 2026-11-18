@@ -20,7 +20,10 @@ test("the site address opens the entry page, the full site lives at /home", () =
   // Rendered per request since the site has languages (2026-11-05): the
   // cookie or the browser decides the language of the first visit too.
   assert.doesNotMatch(entry, /force-static/);
-  assert.match(read("src/app/home/page.tsx"), /<RoutePlanner initialDocumentCountry=\{initialDocumentCountry\} \/>/);
+  const home = read("src/app/home/page.tsx");
+  assert.match(home, /<RoutePlanner\s+initialDocumentCountry=\{initialDocumentCountry\}/);
+  // The numbers strip stands under the map on wide screens (2026-11-18).
+  assert.match(home, /mapFooter=\{<HomeProof placement="hero" today=\{getAdmissionDate\(\)\} \/>\}/);
   assert.match(read("src/app/home/loading.tsx"), /<RouteLoader/);
 });
 

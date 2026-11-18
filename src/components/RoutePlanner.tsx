@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type React from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,7 +40,14 @@ const workRouteCountries = new Set(["SK", "CZ"]);
 // university programmes yet: "Build my route" opens the residence route.
 const studyResidenceRouteCountries = new Set(["CZ"]);
 
-export function RoutePlanner({ initialDocumentCountry = "" }: { initialDocumentCountry?: string }) {
+export function RoutePlanner({
+  initialDocumentCountry = "",
+  mapFooter = null,
+}: {
+  initialDocumentCountry?: string;
+  /** Shown under the map on wide screens (the /home numbers strip). */
+  mapFooter?: React.ReactNode;
+}) {
   const router = useRouter();
   const [purpose, setPurpose] = useState<MovePurpose>("study");
   // The visitor's country from the hosting's location header when known;
@@ -235,6 +243,7 @@ export function RoutePlanner({ initialDocumentCountry = "" }: { initialDocumentC
           program={program}
           onDestinationChange={handleDestinationChange}
         />
+        {mapFooter}
       </div>
     </section>
   );
