@@ -1,0 +1,46 @@
+{
+ "slots": [
+  [
+   0.05,
+   1.98
+  ],
+  [
+   2.1,
+   4.15
+  ],
+  [
+   6.25,
+   8.4
+  ],
+  [
+   8.6,
+   10.65
+  ],
+  [
+   12.75,
+   14.9
+  ],
+  [
+   15.1,
+   17.15
+  ],
+  [
+   19.25,
+   21.4
+  ],
+  [
+   21.6,
+   25.8
+  ]
+ ],
+ "en": [
+  "Three questions. Can you get all three?",
+  "Austria. How fast must you register your address?",
+  "Three days. That's it.",
+  "Austria's Blue Card. Minimum yearly salary?",
+  "About fifty-six thousand euros, gross.",
+  "Czechia. A business visa. How much money must you show?",
+  "About a hundred fifty-seven thousand crowns.",
+  "How many did you get? Comment your score. Every rule is sourced on DocRoute."
+ ]
+}

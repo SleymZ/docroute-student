@@ -1,0 +1,9 @@
+{"cols": 13, "hook": 3.0, "step": 3.5, "scenes": [
+ {"rows": ["MOVING TO", "EUROPE WITH", "A BUSINESS?"], "cap": ""},
+ {"tag": "SLOVAKIA", "rows": ["2 WAYS IN"], "cap": "Sole trader with a trade licence, or company executive."},
+ {"tag": "STEP 1", "rows": ["BUSINESS", "PLAN"], "cap": "On the Ministry of Economy template, with proof it’s feasible."},
+ {"tag": "STEP 2", "rows": ["FUNDS ON A", "BUSINESS ACCT"], "cap": "A set amount: one for sole traders, another for executives."},
+ {"tag": "STEP 3", "rows": ["EMBASSY", "FIRST"], "cap": "The first application is filed at an embassy."},
+ {"tag": "DECISION", "rows": ["UP TO 90 DAYS"], "cap": "The permit is valid for up to 3 years."},
+ {"tag": "RENEWAL", "rows": ["SHOW YOUR", "TAXES"], "cap": "Since 15 July 2026, renewal checks the business’s income and tax."}
+], "end": 24.0, "total": 29.0}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0b0c10; }
+  body { font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; color: #f4f1ec; position: relative;
+    background: radial-gradient(900px 700px at 50% 45%, #171a22 0%, #0b0c10 75%); }
+  #top { position: absolute; left: 70px; right: 160px; top: 200px; font-size: 58px; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+  #cnt { position: absolute; left: 70px; top: 390px; display: flex; align-items: baseline; gap: 22px; }
+  #cnt b { font-family: "Inter Display", "Inter"; font-size: 150px; font-weight: 900; letter-spacing: -0.05em; color: #ff795f; font-variant-numeric: tabular-nums; }
+  #cnt span { font-size: 56px; font-weight: 700; color: #f4f1ec; }
+  #clock { position: absolute; right: 160px; top: 440px; font-size: 54px; font-weight: 700; color: #8d8f98; font-variant-numeric: tabular-nums; }
+  #pile { position: absolute; inset: 0; }
+  .tab { position: absolute; width: 580px; height: 110px; border-radius: 20px 20px 10px 10px; background: #222630; border: 2px solid #343946;
+    display: flex; align-items: center; gap: 18px; padding: 0 28px; font-size: 38px; font-weight: 600; color: #d9d6cf; white-space: nowrap; overflow: hidden;
+    box-shadow: 0 14px 40px rgba(0,0,0,.5); }
+  .tab i { flex: none; width: 30px; height: 30px; border-radius: 8px; background: #3b4150; }
+  .tab .x { margin-left: auto; color: #7c808b; font-size: 34px; }
+  .tab .tt { overflow: hidden; text-overflow: ellipsis; }
+  #dim { position: absolute; inset: 0; background: #0b0c10; opacity: 0; }
+  #close { position: absolute; left: 0; right: 0; top: 820px; text-align: center; font-family: "Inter Display", "Inter"; font-size: 190px; font-weight: 900; letter-spacing: -0.05em; opacity: 0; }
+  #end { position: absolute; inset: 0; opacity: 0; }
+  #end .one { position: absolute; left: 70px; right: 160px; top: 330px; height: 92px; border-radius: 20px 20px 10px 10px; background: #2a2224; border: 3px solid #ff795f; display: flex; align-items: center; gap: 18px; padding: 0 26px; font-size: 34px; font-weight: 700; }
+  #end .one i { width: 30px; height: 30px; border-radius: 8px; background: #ff795f; }
+  #end .h { position: absolute; left: 70px; right: 160px; top: 540px; font-family: "Inter Display", "Inter"; font-size: 120px; font-weight: 800; line-height: 1.02; letter-spacing: -0.045em; }
+  #end .h span { color: #ff795f; }
+  #end .s { position: absolute; left: 70px; right: 160px; top: 950px; font-size: 54px; font-weight: 500; line-height: 1.25; color: #c9c6c0; }
+  #end .brand { position: absolute; left: 70px; top: 1130px; display: flex; align-items: center; gap: 26px; }
+  #end .w { font-size: 88px; font-weight: 800; letter-spacing: -0.04em; }
+  #end .c2 { position: absolute; left: 70px; top: 1300px; font-size: 42px; font-weight: 600; color: #8d8f98; }
+</style>
+</head>
+<body>
+<div id="pile"></div>
+<div id="top">me at 2 a.m. researching how to move to Europe</div>
+<div id="cnt"><b id="n">1</b><span id="nl">tab</span></div>
+<div id="clock">02:00</div>
+<div id="dim"></div>
+<div id="close">Close them.</div>
+<div id="end">
+  <div class="one"><i></i>DocRoute · your route to Europe</div>
+  <div class="h">One tab.<br>Every step.<br><span>Every deadline.</span></div>
+  <div class="s">Each rule with its official source.</div>
+  <div class="brand"></div>
+  <div class="c2">Free to start · link in bio</div>
+</div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => 1 - Math.pow(1 - x, 3);
+const $ = s => document.querySelector(s);
+const TITLES = ["student visa requirements", "apostille near me", "IELTS minimum each band", "deadline 18:00 UK time in my time", "proof of funds amount", "sworn translator list",
+  "residence permit appointment", "is my diploma recognised", "health insurance for students", "bank account without address", "how to register address", "tuition fees non-EU",
+  "embassy opening hours", "blue card salary 2026", "visa processing time", "student accommodation", "documents older than 90 days?", "do I need a translation",
+  "application portal login", "entrance exam dates", "scholarship deadline", "language certificate accepted?", "police registration", "criminal record check"];
+const N = 63, TABS = [];
+let seed = 12345; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const count = t => t < .8 ? 1 : Math.min(N, 1 + Math.floor(62 * Math.pow((t - .8) / 7.2, 1.8)));
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f4f1ec" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f4f1ec" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+function build() {
+  const pile = $("#pile");
+  for (let i = 0; i < N; i++) {
+    const d = document.createElement("div"); d.className = "tab";
+    d.innerHTML = `<i></i><span class="tt">${TITLES[i % TITLES.length]}</span><span class="x">×</span>`;
+    const x = i === 0 ? 70 : -40 + rnd() * 560, y = i === 0 ? 600 : 560 + rnd() * 880, r = i === 0 ? 0 : (rnd() - .5) * 16;
+    TABS.push({ d, x, y, r, born: 0 }); pile.append(d);
+  }
+  $("#end .brand").innerHTML = `${logoSVG(130)}<div class="w">Doc<span style="color:#ff795f">Route</span></div>`;
+}
+function setTime(t) {
+  const c = t < 8.6 ? count(Math.min(t, 8)) : N;
+  $("#n").textContent = c; $("#nl").textContent = c === 1 ? "tab" : "tabs";
+  const mins = Math.floor(157 * Math.pow(clamp(t / 8), 1.3));
+  $("#clock").textContent = `0${2 + Math.floor(mins / 60)}:${String(mins % 60).padStart(2, "0")}`;
+  const col = clamp(prog(t, 8.6, 9.2));
+  TABS.forEach((T, i) => {
+    const bornAt = i === 0 ? 0 : .8 + 7.2 * Math.pow(i / 62, 1 / 1.8);
+    const p = ease(prog(t, bornAt, bornAt + .18));
+    let x = T.x, y = T.y, s = .7 + .3 * p, o = p;
+    if (col > 0) { const q = ease(col); x = T.x + (270 - T.x) * q; y = T.y + (900 - T.y) * q; s *= 1 - .8 * q; o *= 1 - q; }
+    const jit = t > 5 && t < 8 ? Math.sin(t * 60 + i) * 3 * (t - 5) / 3 : 0;
+    T.d.style.opacity = o;
+    T.d.style.transform = `translate(${x + jit}px, ${y}px) rotate(${T.r}deg) scale(${s})`;
+  });
+  // the counter shakes once there are too many tabs
+  const sh = t > 5.5 && t < 8 ? Math.sin(t * 70) * 6 * (t - 5.5) / 2.5 : 0;
+  $("#cnt").style.transform = `translateX(${sh}px)`;
+  $("#cnt b").style.transform = `scale(${1 + .12 * Math.max(0, Math.sin((t * 8) % Math.PI)) * prog(t, 3, 8)})`;
+  $("#cnt b").style.transformOrigin = "left bottom";
+  const pre = 1 - prog(t, 8.9, 9.3);
+  ["#top", "#cnt", "#clock"].forEach(s => $(s).style.opacity = pre);
+  $("#dim").style.opacity = .7 * prog(t, 8, 8.15) * (1 - prog(t, 9.2, 9.6));
+  const cl = $("#close"); cl.style.opacity = prog(t, 8.05, 8.2) * (1 - prog(t, 9.1, 9.4));
+  cl.style.transform = `scale(${1.25 - .25 * ease(prog(t, 8.05, 8.3))})`;
+  const e = ease(prog(t, 9.3, 9.8)); $("#end").style.opacity = e * (1 - prog(t, 13.2, 13.5));
+  $("#end .one").style.transform = `scale(${.9 + .1 * e})`;
+  $("#end .h").style.opacity = ease(prog(t, 9.6, 10.1)); $("#end .s").style.opacity = ease(prog(t, 10.4, 10.9));
+  $("#end .brand").style.opacity = ease(prog(t, 10.9, 11.4)); $("#end .c2").style.opacity = ease(prog(t, 11.3, 11.8));
+  if (t > 13.2) { const b = prog(t, 13.2, 13.5); ["#top", "#cnt", "#clock"].forEach(s => $(s).style.opacity = b); TABS[0].d.style.opacity = b; TABS[0].d.style.transform = `translate(${TABS[0].x}px, ${TABS[0].y}px)`; $("#n").textContent = 1; $("#nl").textContent = "tab"; $("#clock").textContent = "02:00"; }
+}
+</script>
+</body>
+</html>

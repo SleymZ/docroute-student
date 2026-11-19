@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 400; src: url("../promo/fonts/noto-sans-devanagari-devanagari-500-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("../promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("../promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0c111d; }
+  body { font-family: "Inter Display", "Inter", "Noto Sans Devanagari", sans-serif; -webkit-font-smoothing: antialiased; position: relative; color: #f4f1ec;
+    background-image: radial-gradient(rgba(255,255,255,.06) 2px, transparent 2.5px); background-size: 54px 54px; }
+  #bar { position: absolute; left: 70px; right: 150px; top: 230px; display: flex; gap: 14px; }
+  #bar div { flex: 1; height: 14px; border-radius: 7px; background: rgba(255,255,255,.12); overflow: hidden; }
+  #bar i { display: block; height: 100%; width: 0; background: #ff795f; }
+  .scr { position: absolute; inset: 0; }
+  #hook .n { position: absolute; left: 50px; top: 250px; font-size: 900px; font-weight: 900; line-height: 1; color: transparent; -webkit-text-stroke: 8px #ff795f; letter-spacing: -0.06em; }
+  #hook .t { position: absolute; left: 70px; right: 150px; top: 1080px; font-size: 104px; font-weight: 800; line-height: 1.02; letter-spacing: -0.04em; }
+  #hook .t span { color: #ff795f; }
+  #item .n { position: absolute; left: 50px; top: 300px; font-size: 470px; font-weight: 900; line-height: 1; color: transparent; -webkit-text-stroke: 6px rgba(255,121,95,.9); letter-spacing: -0.06em; }
+  #item .row { position: absolute; left: 70px; right: 150px; top: 860px; display: flex; gap: 40px; align-items: flex-start; }
+  .box { flex: none; width: 120px; height: 120px; border-radius: 26px; border: 7px solid #4a5163; position: relative; margin-top: 6px; }
+  .box svg { position: absolute; inset: -6px; }
+  #item .ti { font-size: 100px; font-weight: 800; line-height: 1.02; letter-spacing: -0.04em; }
+  #item .de { margin-top: 44px; font-size: 54px; font-weight: 400; line-height: 1.25; color: #a3a7b3; }
+  #item .de b { color: #f4f1ec; font-weight: 600; }
+  #end .list { position: absolute; left: 70px; right: 150px; top: 330px; }
+  #end .li { display: flex; align-items: center; gap: 30px; font-size: 62px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 34px; }
+  #end .li .box { width: 76px; height: 76px; border-radius: 18px; border-width: 5px; margin: 0; }
+  #end .brand { position: absolute; left: 70px; right: 150px; top: 920px; display: flex; align-items: center; gap: 30px; }
+  #end .w { font-family: "Inter", sans-serif; font-size: 96px; font-weight: 800; letter-spacing: -0.04em; }
+  #end .c1 { position: absolute; left: 70px; right: 150px; top: 1130px; font-size: 60px; font-weight: 500; line-height: 1.2; }
+  #end .c1 span { color: #ff795f; }
+  #end .c2 { position: absolute; left: 70px; top: 1320px; font-size: 44px; font-weight: 600; color: #a3a7b3; }
+  body.hi #hook .t { font-size: 84px; line-height: 1.3; letter-spacing: 0; }
+  body.hi #item .ti { font-size: 84px; line-height: 1.28; letter-spacing: 0; }
+  body.hi #item .de, body.hi #end .c1 { line-height: 1.45; }
+  body.hi #end .li { font-size: 56px; letter-spacing: 0; }
+  #fade { position: absolute; inset: 0; background: #0c111d; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="bar"><div><i></i></div><div><i></i></div><div><i></i></div><div><i></i></div><div><i></i></div></div>
+<div id="hook" class="scr"><div class="n">5</div><div class="t">things to check before you apply to <span>uni in Europe</span></div></div>
+<div id="item" class="scr"><div class="n"></div><div class="row"><div class="box" id="bx"></div><div><div class="ti"></div><div class="de"></div></div></div></div>
+<div id="end" class="scr"><div class="list"></div><div class="brand"></div><div class="c1">Your route, step by step, with <span>the official source</span> for every rule.</div><div class="c2">Free to start · link in channel</div></div>
+<div id="fade"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => 1 - Math.pow(1 - x, 3);
+const back = x => { const c = 1.8; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const $ = s => document.querySelector(s);
+const H = 2.4, IL = 4.0, END = H + 5 * IL;   // hook, item length, end card start (22.4)
+const ITEMS = [
+  ["Is your diploma accepted?", "Each country sets <b>its own entry rules</b> for foreign school diplomas."],
+  ["Your score in every section", "IELTS 6.5 often comes with <b>a minimum in each part</b>, not just overall."],
+  ["The deadline’s time zone", "18:00 UK time is <b>not 18:00 your time</b>."],
+  ["Apostille + sworn translation", "Documents often need both. <b>Start early.</b>"],
+  ["Proof of funds", "The visa asks for a fixed sum. <b>Each country sets the amount.</b>"],
+];
+const SHORT = ["Diploma accepted", "Score in every section", "Deadline time zone", "Apostille + translation", "Proof of funds"];
+const TICK = p => `<svg width="132" height="132" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19.5 6.5" fill="none" stroke="#ff795f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="${24 * (1 - p)}"/></svg>`;
+function logoSVG(size) { const L = window.LOGO; return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible"><path d="${L.ring}" fill="none" stroke="#f4f1ec" stroke-width="5.5" stroke-linecap="round"/><path fill="#ff795f" d="${L.europe}"/><path fill="#ff795f" d="${L.swoosh}"/><path fill="#f4f1ec" transform="${L.planeT}" d="${L.plane}"/></svg>`; }
+function build() {
+  const T = window.T || {};
+  if (T.items) { ITEMS.splice(0, 5, ...T.items); SHORT.splice(0, 5, ...T.short); $("#hook .t").innerHTML = T.hook; $("#end .c1").innerHTML = T.c1; $("#end .c2").textContent = T.c2; document.body.classList.add(window.LANG); }
+  $("#end .list").innerHTML = SHORT.map(s => `<div class="li"><div class="box"></div><div>${s}</div></div>`).join("");
+  $("#end .brand").innerHTML = `${logoSVG(150)}<div class="w">Doc<span style="color:#ff795f">Route</span></div>`;
+}
+function setTime(t) {
+  const bars = [...document.querySelectorAll("#bar i")];
+  bars.forEach((b, i) => b.style.width = 100 * prog(t, H + i * IL, H + (i + 1) * IL) + "%");
+  ["#hook", "#item", "#end"].forEach(s => $(s).style.display = "none");
+  $("#fade").style.opacity = prog(t, 26.6, 27);
+  if (t < H) {
+    $("#hook").style.display = "block";
+    const p = back(prog(t, 0, 0.35));
+    $("#hook .n").style.transform = `scale(${0.6 + 0.4 * p})`; $("#hook .n").style.transformOrigin = "20% 40%";
+    const q = ease(prog(t, 0.25, 0.7));
+    $("#hook .t").style.opacity = q; $("#hook .t").style.transform = `translateY(${40 * (1 - q)}px)`;
+    $("#hook").style.opacity = 1 - prog(t, H - 0.15, H);
+  } else if (t < END) {
+    $("#item").style.display = "block";
+    const k = Math.floor((t - H) / IL), lt = t - H - k * IL;
+    $("#item .n").textContent = k + 1;
+    $("#item .ti").textContent = ITEMS[k][0];
+    $("#item .de").innerHTML = ITEMS[k][1];
+    const pn = back(prog(lt, 0, 0.3));
+    $("#item .n").style.transform = `scale(${0.7 + 0.3 * pn})`; $("#item .n").style.transformOrigin = "15% 50%";
+    const pt = ease(prog(lt, 0.15, 0.5));
+    $("#item .row").style.opacity = pt; $("#item .row").style.transform = `translateX(${60 * (1 - pt)}px)`;
+    const pd = ease(prog(lt, 0.9, 1.3));
+    $("#item .de").style.opacity = pd;
+    const tk = prog(lt, 3.1, 3.35);
+    $("#bx").innerHTML = TICK(tk); $("#bx").style.borderColor = tk > 0 ? "#ff795f" : "#4a5163";
+    $("#item").style.opacity = 1 - prog(lt, IL - 0.15, IL);
+  } else {
+    $("#end").style.display = "block";
+    [...document.querySelectorAll("#end .li")].forEach((li, i) => {
+      const a = END + 0.1 + i * 0.22, p = ease(prog(t, a, a + 0.25));
+      li.style.opacity = p; li.style.transform = `translateX(${40 * (1 - p)}px)`;
+      const bx = li.querySelector(".box"); bx.innerHTML = TICK(prog(t, a + 0.1, a + 0.3)).replace(/132/g, "86"); bx.style.borderColor = "#ff795f";
+    });
+    const pb = ease(prog(t, END + 1.4, END + 1.9));
+    $("#end .brand").style.opacity = pb; $("#end .c1").style.opacity = ease(prog(t, END + 1.8, END + 2.3)); $("#end .c2").style.opacity = ease(prog(t, END + 2.2, END + 2.7));
+  }
+}
+</script>
+</body>
+</html>
