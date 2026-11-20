@@ -97,6 +97,15 @@ visitor sees the entry screen; someone who has been here before is sent to
   "Czechia" instead of "Czech Republic" in Explore and on university pages
   (`displayCountryName`, display only); long Wikimedia credits shortened to
   the author (`shortPhotoAuthor`); `/explore` canonical.
+- **Signed-in check (owner's Free account, 2026-11-20):** profile → matches
+  → university → route preview work. Fixed on the way: the route summary
+  showed the citizenship code ("IN") and an internal route version; it now
+  shows the country name and "Rules checked <date>". The teaching-language
+  note reads "You have not marked Slovak as a language you would study in"
+  for one language. The country picker forgets its search when closed with
+  its own button. Plus-only parts (My route, ticking steps, PDF/PNG) not
+  tested: the account is Free.
+
 ## Next.js 16.4.6 (2026-11-20)
 
 `next` and `eslint-config-next` 16.4.2 → 16.4.6. 16.4.2 is in the range of

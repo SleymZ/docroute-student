@@ -54,6 +54,7 @@ import styles from "./RoutePreviewScreen.module.css";
 import { flagSrc } from "@/lib/flags";
 import { PassportWarning } from "@/components/PassportWarning";
 import { PassportBadge } from "@/components/PassportBadge";
+import { REGION_NAMES } from "@/data/region-names";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -300,14 +301,16 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
           <Flag size={18} aria-hidden="true" />
           <div>
             <small>CITIZENSHIP</small>
-            <strong>{profile.citizenshipCountryCode}</strong>
+            <strong>{REGION_NAMES[profile.citizenshipCountryCode] ?? profile.citizenshipCountryCode}</strong>
           </div>
         </article>
         <article>
           <ShieldCheck size={18} aria-hidden="true" />
           <div>
-            <small>ROUTE VERSION</small>
-            <strong>{route.version}</strong>
+            {/* The date the faculty's rules were checked; the internal route
+                version id meant nothing to applicants. */}
+            <small>RULES CHECKED</small>
+            <strong>{formatDate(program.verifiedAt)}</strong>
           </div>
         </article>
       </section>
