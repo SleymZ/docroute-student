@@ -773,6 +773,16 @@ a svg {
   flex: 1;
 }
 
+/* One column (tablets and small laptops, 701–1199px): the map needs its
+   own height (540px from EuropeMap). With flex: 1 it collapsed to 0 and
+   its search box slid over the numbers below it. After the rule above, so
+   it wins. */
+@media (max-width: 1199px) {
+  .hero-map > :first-child {
+    flex: none;
+  }
+}
+
 #route-builder {
   scroll-margin-top: 12px;
 }

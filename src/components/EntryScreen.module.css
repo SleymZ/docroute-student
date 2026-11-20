@@ -240,6 +240,9 @@
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
+  /* "Log in" stays on one line next to the brand on narrow phones. */
+  white-space: nowrap;
+  flex-shrink: 0;
   backdrop-filter: blur(6px);
   transition: border-color var(--transition), background-color var(--transition);
 }

@@ -146,7 +146,12 @@ export function CountryPicker({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => {
+          // Closing with the button also forgets the search, like the
+          // other ways of closing, so it opens with the full list again.
+          if (open) setQuery("");
+          setOpen(!open);
+        }}
       >
         <span className={styles.selection}>
           {selectedCountry && selectedCountry.code !== "ZZ" ? (

@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Explore European universities",
   description:
     "Browse European universities by destination and study interest, with verified program coverage marked clearly.",
+  alternates: { canonical: "/explore" },
 };
 
 export default function ExplorePage() {

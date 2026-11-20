@@ -161,6 +161,14 @@ test("any country can be chosen: residence and education lists hold every countr
   assert.equal(new Set(applicantCountryOptions.map((country) => country.name)).size, applicantCountryOptions.length);
 });
 
+test("the applicant country list covers every directory country without loading the directory", async () => {
+  const { applicantCountryOptions } = await import("../src/data/applicant-countries");
+  const catalog = JSON.parse(readFileSync(join(root, "src/data/universities.json"), "utf8"));
+  const places = new Set(applicantCountryOptions.map((country) => country.code));
+  for (const university of catalog.universities) assert.ok(places.has(university.countryCode), university.countryCode);
+  assert.doesNotMatch(readFileSync(join(root, "src/data/applicant-countries.ts"), "utf8"), /universities\.json/);
+});
+
 test("every country name is translated in every site language", async () => {
   const { applicantCountryOptions } = await import("../src/data/applicant-countries");
   for (const locale of ["ru", "es", "zh", "hi"]) {
@@ -292,4 +300,13 @@ test("EU, EEA and Swiss citizens get a green 'easier' table, translated, with th
     for (const row of rows) for (const text of [row.label, row.value]) assert.ok(catalog[text], `${locale}: ${text}`);
     assert.ok(catalog["Easier for you: EU free movement"], locale);
   }
+});
+
+test("the home map outlines are exactly the world-atlas shapes in the map's projection", async () => {
+  const { computeCountryPaths } = await import("../src/lib/europe-map-geometry");
+  const world = JSON.parse(readFileSync(join(root, "node_modules/world-atlas/countries-50m.json"), "utf8"));
+  const stored = JSON.parse(readFileSync(join(root, "src/data/europe-map-paths.json"), "utf8"));
+  assert.deepEqual(stored, computeCountryPaths(world));
+  // The browser bundle must not pull in the whole world again.
+  assert.doesNotMatch(readFileSync(join(root, "src/lib/europe-map.ts"), "utf8"), /world-atlas/);
 });

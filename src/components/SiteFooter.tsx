@@ -3,6 +3,7 @@ import Link from "next/link";
 import { legalPages } from "@/data/legal";
 
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { TranslationNotice } from "./TranslationNotice";
 import styles from "./SiteFooter.module.css";
 
@@ -31,7 +32,11 @@ export function SiteFooter() {
           <Link href="/contact">Contact</Link>
         </nav>
 
-        <LanguageSwitcher />
+        <div className={styles.controls}>
+          <LanguageSwitcher />
+          {/* On phones the header has no room for the theme switch. */}
+          <ThemeToggle className={styles.phoneOnly} />
+        </div>
       </div>
     </footer>
   );

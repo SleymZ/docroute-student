@@ -27,9 +27,9 @@ test("short link codes: channel, language and an optional video number", () => {
 test("a short link forwards with campaign tags only", () => {
   assert.equal(
     shortLinkDestination(parseShortLink("tt-ru-07")!),
-    "/deadlines?utm_source=tiktok&utm_medium=social&utm_campaign=ru&utm_content=v07",
+    "/?utm_source=tiktok&utm_medium=social&utm_campaign=ru&utm_content=v07",
   );
-  assert.equal(shortLinkDestination(parseShortLink("qr-en")!), "/deadlines?utm_source=qr&utm_medium=print&utm_campaign=en");
+  assert.equal(shortLinkDestination(parseShortLink("qr-en")!), "/?utm_source=qr&utm_medium=print&utm_campaign=en");
 });
 
 test("link previews in chats are not counted as clicks", () => {

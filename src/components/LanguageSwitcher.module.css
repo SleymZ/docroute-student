@@ -88,6 +88,19 @@
   top: calc(100% + 8px);
 }
 
+/* Phones: the header button shows only the flag (its label stays for
+   screen readers), so the brand and the actions fit on one row. */
+@media (max-width: 480px) {
+  .compact .trigger {
+    padding: 0 10px;
+  }
+
+  .compact .name,
+  .compact .chevron {
+    display: none;
+  }
+}
+
 /* On phones the header button sits near the left edge: open to the right. */
 @media (max-width: 720px) {
   .compact .menu {

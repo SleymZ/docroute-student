@@ -40,7 +40,7 @@ function DaysLeft({ days }: { days: number }) {
 function DeadlineRow({ row, date }: { row: FacultyDeadline; date: string }) {
   return (
     <li className={styles.deadline}>
-      <Link href={`/universities/${encodeURIComponent(row.universityId)}`} className={styles.deadlineLink}>
+      <Link href={row.universityHref} className={styles.deadlineLink}>
         <span className={styles.deadlineDate}>
           <strong>{date}</strong>
           <DaysLeft days={row.daysLeft} />

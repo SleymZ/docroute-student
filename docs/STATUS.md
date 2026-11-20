@@ -65,6 +65,47 @@ page `/route/guide`, 2026-10-30).
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
 
+## Site polish before promotion (2026-11-20)
+
+Owner decision 2026-11-20: every short link `/go/<channel>-<lang>[-NN]`
+lands on the entry screen `/` (was `/deadlines`), tags kept. A first-time
+visitor sees the entry screen; someone who has been here before is sent to
+`/home` by `src/proxy.ts` (first-visit rule unchanged), tags included.
+
+- **Map on tablets (701–1199px):** the home map had collapsed to 0 px and
+  its search box covered the numbers strip. The map now keeps its 540px
+  height there (`globals.css`, rule after `.hero-map > :first-child`).
+  Map shape and highlighted countries unchanged.
+- **/deadlines:** the university link opens the card's own programme
+  (`?programId=`, e.g. Comenius medicine instead of computer science); each
+  card has "Build my route" (`/route/profile?...`, guests sign up first).
+  `universityHref` / `routeHref` in `src/lib/deadline-list.ts`, also used
+  by the home deadline list. Labels translated in es/zh/hi too.
+- **Phone header (≤480px):** brand and actions on one row (flag-only
+  language button, theme switch moved to the footer), menu without a
+  scrollbar and with a fade. 172 → 128 px. Entry screen "Log in" no longer
+  wraps.
+- **Lighter pages:** the home form no longer imports the whole university
+  directory (`applicant-countries.ts` uses `REGION_NAMES` only), and the
+  map draws precomputed outlines `src/data/europe-map-paths.json`
+  (regenerate: `node --experimental-strip-types scripts/europe-map-paths.mjs`;
+  a test checks they equal world-atlas in the same projection). JS loaded
+  on `/`, `/deadlines`, `/home`: about 2.27 MB → 1.22 MB.
+- **Texts:** How it works no longer says a guest profile is kept in the
+  browser; /countries shows "student residence" instead of "study" where
+  only the residence route is verified (Austria: 0 verified programmes);
+  "Czechia" instead of "Czech Republic" in Explore and on university pages
+  (`displayCountryName`, display only); long Wikimedia credits shortened to
+  the author (`shortPhotoAuthor`); `/explore` canonical.
+- **Signed-in check (owner's Free account, 2026-11-20):** profile → matches
+  → university → route preview work. Fixed on the way: the route summary
+  showed the citizenship code ("IN") and an internal route version; it now
+  shows the country name and "Rules checked <date>". The teaching-language
+  note reads "You have not marked Slovak as a language you would study in"
+  for one language. The country picker forgets its search when closed with
+  its own button. Plus-only parts (My route, ticking steps, PDF/PNG) not
+  tested: the account is Free.
+
 ## Next.js 16.4.6 (2026-11-20)
 
 `next` and `eslint-config-next` 16.4.2 → 16.4.6. 16.4.2 is in the range of

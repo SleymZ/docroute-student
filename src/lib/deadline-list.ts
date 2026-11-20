@@ -17,7 +17,27 @@ export type FacultyDeadline = {
   fee: string | null;
   applicationUrl: string;
   checkedAt: string;
+  /** The university page opened on this faculty's first programme, so the
+   *  visitor lands on the programme of the card, not on another field. */
+  universityHref: string;
+  /** Building the route for this field, degree and intake (guests are sent
+   *  to sign-up first and come back here). */
+  routeHref: string;
 };
+
+export function programmeHref(program: AdmissionProgram) {
+  return `/universities/${encodeURIComponent(program.universityId)}?${new URLSearchParams({ programId: program.id }).toString()}`;
+}
+
+/** Same address as "Build my route" on the university page. */
+export function programmeRouteHref(program: AdmissionProgram) {
+  return `/route/profile?${new URLSearchParams({
+    country: program.countryCode,
+    program: program.category,
+    degree: program.degreeLevel,
+    intake: program.intake,
+  }).toString()}`;
+}
 
 const DAY = 86_400_000;
 
@@ -76,6 +96,8 @@ export function upcomingFacultyDeadlines(programs: readonly AdmissionProgram[], 
       fee,
       applicationUrl: program.application.applicationUrl,
       checkedAt: program.verifiedAt,
+      universityHref: programmeHref(program),
+      routeHref: programmeRouteHref(program),
     });
   }
   return [...groups.values()].sort(

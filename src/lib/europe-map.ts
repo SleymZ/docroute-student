@@ -1,45 +1,19 @@
-import { geoGraticule10, geoMercator, geoPath } from "d3-geo";
-import { feature } from "topojson-client";
-import type {
-  GeometryCollection,
-  Topology,
-} from "topojson-specification";
-import worldData from "world-atlas/countries-50m.json";
+import { geoGraticule10, geoPath } from "d3-geo";
 
+import countryPaths from "@/data/europe-map-paths.json";
 import { highlightedCountryIds } from "@/data/highlighted-countries";
 import type { Destination } from "@/types/destination";
 
-type CountryProperties = {
-  name: string;
-};
-
-type WorldTopology = Topology<{
-  countries: GeometryCollection<CountryProperties>;
-}>;
+import { MAP_HEIGHT, MAP_WIDTH, mapProjection, type CountryPath } from "./europe-map-geometry";
 
 type MapPoint = {
   x: number;
   y: number;
 };
 
-export const MAP_WIDTH = 1100;
-export const MAP_HEIGHT = 600;
+export { MAP_HEIGHT, MAP_WIDTH };
 
-const topology = worldData as unknown as WorldTopology;
-
-const countries = feature(
-  topology,
-  topology.objects.countries,
-).features;
-
-const projection = geoMercator()
-  .center([16, 50])
-  .scale(875)
-  .translate([MAP_WIDTH / 2, MAP_HEIGHT / 2])
-  .clipExtent([
-    [0, 0],
-    [MAP_WIDTH, MAP_HEIGHT],
-  ]);
+const projection = mapProjection();
 
 const pathGenerator = geoPath(projection);
 
@@ -174,25 +148,16 @@ const interactiveCountryIds = new Set(
   Object.keys(europeanCountryNames),
 );
 
-export const mapCountries = countries
-  .map((country, index) => {
-    const id = String(
-      country.id ?? `country-${index}`,
-    ).padStart(3, "0");
-
-    return {
-      id,
-      name:
-        europeanCountryNames[id] ??
-        country.properties?.name ??
-        "Country",
-      path: pathGenerator(country) ?? "",
-      destination: destinationById[id],
-      highlighted: highlightedCountryIds.has(id),
-      interactive: interactiveCountryIds.has(id),
-    };
-  })
-  .filter((country) => country.path.length > 0);
+// Outlines precomputed with the same projection
+// (src/lib/europe-map-geometry.ts); only countries inside the map are kept.
+export const mapCountries = (countryPaths as CountryPath[]).map(([id, name, path]) => ({
+  id,
+  name: europeanCountryNames[id] ?? name,
+  path,
+  destination: destinationById[id],
+  highlighted: highlightedCountryIds.has(id),
+  interactive: interactiveCountryIds.has(id),
+}));
 
 export const graticulePath =
   pathGenerator(geoGraticule10()) ?? "";

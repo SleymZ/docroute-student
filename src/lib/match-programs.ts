@@ -732,9 +732,15 @@ export function matchProgram(
           "."
       : studyLanguage
         ? "You are willing to study in " + studyLanguage.name + "."
-        : "This verified program is taught in " +
-          program.instructionLanguages.map((item) => item.name).join(", ") +
-          ". None of those languages is marked as a language you would study in.",
+        : program.instructionLanguages.length === 1
+          ? "This verified program is taught in " +
+            program.instructionLanguages[0].name +
+            ". You have not marked " +
+            program.instructionLanguages[0].name +
+            " as a language you would study in."
+          : "This verified program is taught in " +
+            program.instructionLanguages.map((item) => item.name).join(", ") +
+            ". None of these languages is marked as a language you would study in.",
   );
   if (!studyLanguage)
     nextActions.push(

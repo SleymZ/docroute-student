@@ -71,7 +71,9 @@ test("guests can open the deadlines page, it is indexable and linked", () => {
   assert.match(read("src/app/sitemap.ts"), /\/deadlines`/);
   assert.match(read("src/app/deadlines/page.tsx"), /canonical: "\/deadlines"/);
   assert.match(read("src/components/SiteFooter.tsx"), /href="\/deadlines"/);
-  assert.match(read("src/lib/short-links.ts"), /SHORT_LINK_TARGET = "\/deadlines"/);
+  // Short links land on the entry screen (owner decision 2026-11-20), which links here.
+  assert.match(read("src/lib/short-links.ts"), /SHORT_LINK_TARGET = "\/"/);
+  assert.match(read("src/components/EntryScreen.tsx"), /href="\/deadlines"/);
 });
 
 test("a faculty with programmes in two fields keeps each under its own field filter", () => {
@@ -82,4 +84,24 @@ test("a faculty with programmes in two fields keeps each under its own field fil
   }
   const cs = filterDeadlines(rows, null, "Computer Science").flatMap((row) => row.programmes);
   assert.ok(cs.includes("Management Informatics"));
+});
+
+test("each deadline card opens its own programme and offers the route for it", () => {
+  const rows = upcomingFacultyDeadlines(verifiedPrograms, "2026-11-16");
+  for (const row of rows) {
+    const href = new URL(row.universityHref, "https://docroute.app");
+    assert.equal(href.pathname, `/universities/${row.universityId}`);
+    const program = verifiedPrograms.find((p) => p.id === href.searchParams.get("programId"));
+    assert.ok(program, row.universityHref);
+    assert.equal(program.universityId, row.universityId);
+    assert.equal(program.faculty, row.faculty);
+    const route = new URL(row.routeHref, "https://docroute.app");
+    assert.equal(route.pathname, "/route/profile");
+    assert.equal(route.searchParams.get("country"), row.countryCode);
+    assert.equal(route.searchParams.get("program"), row.category);
+    assert.ok(needsAccount(route.pathname), "guests are asked to sign up first");
+  }
+  // Comenius medicine (the first card in November) must open medicine, not computer science.
+  const medicine = rows.find((row) => row.faculty.startsWith("Faculty of Medicine (LF UK Bratislava)"));
+  assert.ok(medicine?.universityHref.includes("programId=uniba-lf-"), medicine?.universityHref);
 });

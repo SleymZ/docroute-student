@@ -46,7 +46,7 @@ export function AuthNavigation() {
   return (
     <div className={styles.actions}>
       <LanguageSwitcher compact />
-      <ThemeToggle />
+      <ThemeToggle className={styles.themeToggle} />
 
       {signedIn ? (
         <Link

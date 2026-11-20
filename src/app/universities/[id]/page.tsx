@@ -41,7 +41,7 @@ import { TopUniversityFacts, TopUniversitySources } from "@/components/TopUniver
 import { findVerifiedProgram, verifiedPrograms } from "@/data/verified-programs";
 import { programForDate, matchProgram, matchStatusLabels } from "@/lib/match-programs";
 import { getAdmissionDate } from "@/lib/admission-date";
-import { formatDegreeLevel, formatProgramDegree } from "@/lib/profile-options";
+import { formatProgramDegree } from "@/lib/profile-options";
 import { createProfileSearchParams, parseApplicantProfile } from "@/lib/profile-query";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -49,6 +49,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import styles from "./UniversityPage.module.css";
 import { flagSrc } from "@/lib/flags";
+import { displayCountryName } from "@/lib/country-name";
 
 type RawSearchParams = Record<
   string,
@@ -361,7 +362,7 @@ export default async function UniversityPage({
           </Link>
 
           <span>/</span>
-          <span>{university.country}</span>
+          <span>{displayCountryName(university.country)}</span>
           <span>/</span>
           <strong>{displayName}</strong>
         </nav>
@@ -384,14 +385,14 @@ export default async function UniversityPage({
             <div className={styles.location}>
               <Image
                 src={flagSrc(university.countryCode)}
-                alt={`${university.country} flag`}
+                alt={`${displayCountryName(university.country)} flag`}
                 width={32}
                 height={24}
                 unoptimized
               />
 
               <span>
-                {university.country} · {displayRegion}
+                {displayCountryName(university.country)} · {displayRegion}
               </span>
             </div>
 
@@ -493,7 +494,7 @@ export default async function UniversityPage({
 
             <div>
               <small>DESTINATION</small>
-              <strong>{university.country}</strong>
+              <strong>{displayCountryName(university.country)}</strong>
               <p>{displayRegion}</p>
             </div>
           </article>
