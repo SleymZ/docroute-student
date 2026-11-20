@@ -51,6 +51,7 @@ import type { ProgramMatch } from "@/types/admission";
 import styles from "./ExploreCatalog.module.css";
 import linkStyles from "./UniversityResults.module.css";
 import { flagSrc } from "@/lib/flags";
+import { displayCountryName } from "@/lib/country-name";
 
 const PAGE_SIZE = 8;
 
@@ -843,7 +844,7 @@ export function UniversityResults({
                   </div>
 
                   <p className={styles.location}>
-                    {university.country}
+                    {displayCountryName(university.country)}
                     {university.region
                       ? ` · ${university.region}`
                       : ""}

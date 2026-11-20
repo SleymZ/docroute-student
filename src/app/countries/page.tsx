@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 
@@ -20,10 +21,12 @@ export default function CountriesPage() {
     const verifiedPurposes = (["work", "family", "business"] as const).filter(
       (purpose) => purposeRoute(country.code, purpose).coverage === "verified",
     );
-    // Study counts as verified with checked programmes or a checked student
-    // residence route (visa and permit).
-    const verifiedStudy = study.verified.length > 0 || study.residence === "verified";
-    return { country, study, verified: [...(verifiedStudy ? ["study"] : []), ...verifiedPurposes] };
+    // "study" only with checked programmes. A checked student residence
+    // route (visa and permit) without them says so, so a country with no
+    // verified programme (Austria) does not read as a verified study route.
+    const studyLabel =
+      study.verified.length > 0 ? "study" : study.residence === "verified" ? "student residence" : null;
+    return { country, study, verified: [...(studyLabel ? [studyLabel] : []), ...verifiedPurposes] };
   });
 
   return (
@@ -52,7 +55,18 @@ export default function CountriesPage() {
                 </span>
                 {verified.length > 0 ? (
                   <span className={styles.badge} data-coverage="verified">
-                    <CheckCircle2 size={13} aria-hidden="true" /> Verified: {verified.join(", ")}
+                    <CheckCircle2 size={13} aria-hidden="true" />
+                    {/* One text run for the badge's flex layout; each label is
+                        its own text so it is translated. */}
+                    <span>
+                      <span>Verified:</span>{" "}
+                      {verified.map((label, index) => (
+                        <Fragment key={label}>
+                          {index > 0 ? ", " : null}
+                          <span>{label}</span>
+                        </Fragment>
+                      ))}
+                    </span>
                   </span>
                 ) : (
                   <span className={styles.badge} data-coverage="links">

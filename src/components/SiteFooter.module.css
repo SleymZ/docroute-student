@@ -65,6 +65,22 @@
   text-underline-offset: 3px;
 }
 
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.controls .phoneOnly {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .controls .phoneOnly {
+    display: inline-grid;
+  }
+}
+
 @media print {
   .footer {
     display: none;

@@ -1833,7 +1833,6 @@
 "Why are you moving to Czechia?": "Почему вы переезжаете в Чехию?",
 "Within 30 days": "В течение 30 дней",
 "Within {0} working days of arriving on {1} (weekends and Slovak public holidays skipped).": "В течение {0} рабочих дней после приезда {1} (выходные и государственные праздники Словакии не считаются).",
-"Without an account, your profile, bookmarks and progress stay in your browser. With an account, they are stored so that only you can read them. Pages personalised with your profile are kept out of search engines.": "Без аккаунта профиль, закладки и прогресс хранятся в вашем браузере. С аккаунтом они сохраняются так, что прочитать их можете только вы. Страницы, персонализированные по профилю, закрыты от поисковиков.",
 "Work": "Работа",
 "Work route": "Маршрут для работы",
 "Work route in Slovakia": "Маршрут для работы в Словакии",
@@ -1863,7 +1862,6 @@
 "You already have {0} stories, the most one account can keep. Delete one below to write a new one.": "У вас уже {0} историй — это максимум для одного аккаунта. Удалите одну ниже, чтобы написать новую.",
 "You are a citizen of {0}": "Вы гражданин страны {0}",
 "You are on the list. We will write to you once if the full route launches.": "Вы в списке. Мы напишем вам один раз, если полный маршрут запустится.",
-"You can browse the university directory in Explore without a profile. A personal route needs a profile; as a guest it is kept in your browser, and after you log in it syncs with your account.": "Каталог университетов в разделе «Обзор» можно смотреть без профиля. Для личного маршрута нужен профиль: у гостя он хранится в браузере, а после входа синхронизируется с аккаунтом.",
 "You can change it or delete it, with its photos, comments and likes, at any time.": "Её можно изменить или удалить вместе с фото, комментариями и лайками в любой момент.",
 "You can explore {0} on the map. University, admission and residence information for this destination is still being prepared.": "Вы можете посмотреть {0} на карте. Информация об университетах, поступлении и ВНЖ для этого направления ещё готовится.",
 "You can keep at most {0} stories. Delete one first.": "Можно хранить не больше {0} историй. Сначала удалите одну.",
@@ -2171,5 +2169,15 @@
 "Write to us <0/>": "Написать нам <0/>",
 "Write to us": "Написать нам",
 "DocRoute is not legal advice and cannot file anything for you. For a decision on your case, contact the university or the authority named in your route.": "DocRoute — не юридическая консультация и не подаёт документы за вас. По решению по вашему делу обращайтесь в университет или ведомство, указанное в маршруте.",
-"Write to DocRoute by email, or find us on Instagram and TikTok.": "Напишите DocRoute на почту или найдите нас в Instagram и TikTok."
+"Write to DocRoute by email, or find us on Instagram and TikTok.": "Напишите DocRoute на почту или найдите нас в Instagram и TikTok.",
+"You can browse the university directory in Explore without an account. A personal route needs a free account, so your profile and progress are saved and you can continue on any device.": "Каталог университетов в разделе «Обзор» можно смотреть без аккаунта. Для личного маршрута нужен бесплатный аккаунт: так профиль и прогресс сохраняются, и продолжить можно с любого устройства.",
+"Universities, deadlines and stories are open without an account. With an account, your profile, bookmarks and progress are stored so that only you can read them. Pages personalised with your profile are kept out of search engines.": "Университеты, сроки и истории открыты без аккаунта. С аккаунтом ваш профиль, закладки и прогресс хранятся так, что прочитать их можете только вы. Страницы, подобранные под ваш профиль, не попадают в поисковики.",
+"Application fee:": "Сбор за заявление:",
+"English": "Английский",
+"Verified:": "Проверено:",
+"study": "учёба",
+"student residence": "ВНЖ для учёбы",
+"work": "работа",
+"family": "семья",
+"business": "бизнес"
 }

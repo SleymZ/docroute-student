@@ -24,8 +24,12 @@ export const SHORT_LINK_CHANNELS = {
 
 export type ShortLinkChannel = keyof typeof SHORT_LINK_CHANNELS;
 
-/** Where every short link lands. */
-export const SHORT_LINK_TARGET = "/deadlines";
+/**
+ * Where every short link lands: the entry screen (owner decision
+ * 2026-11-20). A first-time visitor sees it; someone who has been here
+ * before is sent on to /home by src/proxy.ts, tags included.
+ */
+export const SHORT_LINK_TARGET = "/";
 
 // Keep in step with the check in supabase/migrations/20261116120000_link_clicks.sql.
 export const SHORT_LINK_PATTERN = /^(tt|ig|yt|tg|rd|fb|th|wa|x|li|qr|mail)-(en|ru|es|zh|hi)(-[0-9]{2})?$/;

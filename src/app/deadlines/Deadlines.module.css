@@ -285,6 +285,26 @@
   border-color: var(--coral);
 }
 
+/* The card's main action: the route for this programme (a free account). */
+.route {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: 1px solid var(--coral);
+  border-radius: 10px;
+  background: var(--coral);
+  color: light-dark(#101820, #101820);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.route:hover {
+  filter: brightness(1.06);
+}
+
 .checked {
   display: inline-flex;
   align-items: center;

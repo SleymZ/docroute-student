@@ -344,6 +344,22 @@
   .buildRoute svg {
     display: none;
   }
+
+  /* One row for the brand and the actions: the theme follows the phone's
+     own setting, and the switch moves to the footer (SiteFooter). */
+  .actions .themeToggle {
+    display: none;
+  }
+
+  /* The menu scrolls sideways; no scrollbar, a fade shows there is more. */
+  .navigation {
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  }
+
+  .navigation::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

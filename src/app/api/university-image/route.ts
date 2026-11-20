@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { shortPhotoAuthor } from "@/lib/photo-credit";
 
 export const runtime = "nodejs";
 
@@ -293,7 +294,7 @@ export async function GET(request: NextRequest) {
       imageUrl:
         imageInfo.thumburl ?? imageInfo.url ?? null,
       sourcePage: imageInfo.descriptionurl ?? null,
-      author: stripHtml(metadata?.Artist?.value),
+      author: shortPhotoAuthor(stripHtml(metadata?.Artist?.value)),
       license:
         stripHtml(metadata?.LicenseShortName?.value),
       licenseUrl:

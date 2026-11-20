@@ -2,6 +2,7 @@ import {
   NextRequest,
   NextResponse,
 } from "next/server";
+import { shortPhotoAuthor } from "@/lib/photo-credit";
 
 type MetadataValue = {
   value?: string;
@@ -419,13 +420,14 @@ export async function GET(
         ),
       );
 
-    const author =
+    const author = shortPhotoAuthor(
       cleanMetadataText(
         metadata.Artist?.value,
       ) ??
       cleanMetadataText(
         metadata.Credit?.value,
-      );
+      ),
+    );
 
     const license =
       cleanMetadataText(

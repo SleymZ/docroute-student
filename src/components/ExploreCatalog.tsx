@@ -32,6 +32,7 @@ import { t } from "@/i18n/client";
 
 import styles from "./ExploreCatalog.module.css";
 import { flagSrc } from "@/lib/flags";
+import { displayCountryName } from "@/lib/country-name";
 
 type CountryOption = {
   code: string;
@@ -73,7 +74,7 @@ const countryOptions: CountryOption[] = [
   .filter(([code]) => europeanCountryCodes.has(code))
   .map(([code, name]) => ({
     code,
-    name,
+    name: displayCountryName(name),
     universityCount: countryCounts[code] ?? 0,
   }))
   .sort((a, b) => a.name.localeCompare(b.name, "en"));

@@ -36,7 +36,7 @@ import { verifiedPrograms } from "@/data/verified-programs";
 import { matchStatusLabels } from "@/lib/match-programs";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { STUDY_ROUTES_CHECKED } from "@/lib/residence/study-routes";
-import { formatDegreeLevel, formatProgramDegree } from "@/lib/profile-options";
+import { formatProgramDegree } from "@/lib/profile-options";
 import type { MatchStatus } from "@/types/admission";
 
 import styles from "./HowItWorks.module.css";
@@ -193,9 +193,9 @@ export default function HowItWorksPage() {
           </ol>
 
           <p className={styles.aside}>
-            You can browse the university directory in Explore without a
-            profile. A personal route needs a profile; as a guest it is kept in
-            your browser, and after you log in it syncs with your account.
+            You can browse the university directory in Explore without an
+            account. A personal route needs a free account, so your profile and
+            progress are saved and you can continue on any device.
           </p>
 
           <div className={styles.workNote}>
@@ -508,10 +508,10 @@ export default function HowItWorksPage() {
             <div>
               <h2 id="privacy-heading">Your information</h2>
               <p>
-                Without an account, your profile, bookmarks and progress stay
-                in your browser. With an account, they are stored so that only
-                you can read them. Pages personalised with your profile are
-                kept out of search engines.
+                Universities, deadlines and stories are open without an
+                account. With an account, your profile, bookmarks and progress
+                are stored so that only you can read them. Pages personalised
+                with your profile are kept out of search engines.
               </p>
             </div>
           </div>

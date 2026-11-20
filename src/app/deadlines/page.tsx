@@ -70,18 +70,23 @@ function Row({ row, dayLabel, checkedLabel }: { row: FacultyDeadline; dayLabel: 
           <span>{COUNTRY_NAMES[row.countryCode]} · {row.city}</span>
         </p>
         <h3>
-          <Link href={`/universities/${encodeURIComponent(row.universityId)}`}>{row.universityName}</Link>
+          <Link href={row.universityHref}>{row.universityName}</Link>
         </h3>
         <p className={styles.faculty}>{row.faculty}</p>
         <p className={styles.programmes}>{row.programmes.join(" · ")}</p>
         <p className={styles.meta}>
           <span>{row.category}</span>
           <span>Taught in {row.languages.join(", ")}</span>
-          {row.fee ? <span>Application fee: {row.fee}</span> : null}
+          {/* The label is its own text so it is translated even when the
+              fee itself is an English phrase. */}
+          {row.fee ? <span>Application fee: <span>{row.fee}</span></span> : null}
           {row.laterRound ? <span>Later round</span> : null}
         </p>
       </div>
       <div className={styles.actions}>
+        <Link href={row.routeHref} className={styles.route}>
+          Build my route <ArrowRight size={14} aria-hidden="true" />
+        </Link>
         <a href={row.applicationUrl} target="_blank" rel="noopener noreferrer" className={styles.official}>
           Official page <ArrowUpRight size={14} aria-hidden="true" />
         </a>

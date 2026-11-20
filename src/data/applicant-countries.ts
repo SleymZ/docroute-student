@@ -1,4 +1,3 @@
-import catalog from "@/data/universities.json";
 import { DEPENDENT_TERRITORIES, REGION_NAMES } from "@/data/region-names";
 
 export type CountryOption = { code: string; name: string };
@@ -14,13 +13,15 @@ function byName(a: CountryOption, b: CountryOption) {
   return a.name.localeCompare(b.name, "en");
 }
 
-// Every country and inhabited territory, plus the catalog countries (their
-// names as the catalog spells them). "ZZ" stands for "other country" —
-// stateless people, or a place missing from the list.
+// Every country and inhabited territory (REGION_NAMES already holds every
+// catalog country, Kosovo included; a test checks it). "ZZ" stands for
+// "other country" — stateless people, or a place missing from the list.
+// The university directory is not imported here: this list is used by the
+// home form, and the directory would add ~500 KB to every page that links
+// to /home.
 const allPlaces: CountryOption[] = [
   ...new Map<string, string>([
     ...Object.entries(REGION_NAMES).map(([code, name]) => [code, NAME_OVERRIDES[code] ?? name] as const),
-    ...catalog.universities.map((university) => [university.countryCode, university.country] as const),
     ["ZZ", "Other country"],
   ]).entries(),
 ]
