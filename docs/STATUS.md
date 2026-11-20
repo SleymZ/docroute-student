@@ -65,6 +65,13 @@ page `/route/guide`, 2026-10-30).
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
 
+## Next.js 16.4.6 (2026-11-20)
+
+`next` and `eslint-config-next` 16.4.2 → 16.4.6. 16.4.2 is in the range of
+the Next.js security release of 2026-11-03 (fixed in 16.4.5; `npm audit`:
+moderate, 16.0.0–16.4.4). After the update `npm audit --omit=dev` finds 0
+vulnerabilities. Tests and a local production build pass; no code changes.
+
 ## Contact page and numbers under the map (2026-11-18, PR #110, #111)
 
 - **#110** `/home`: the numbers strip (`HomeProof` in
