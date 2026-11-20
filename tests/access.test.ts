@@ -5,7 +5,7 @@ import { test } from "node:test";
 
 import universities from "../src/data/universities.json";
 import { universityCountryCodes } from "../src/data/university-countries";
-import { canUse, isImportantStep, lockedStepCount, needsAccount, openStepIds, signUpHref, stepAccess, tierFromPlan } from "../src/lib/access";
+import { canUse, freePlusActive, isImportantStep, lockedStepCount, needsAccount, openStepIds, signUpHref, stepAccess, tierFromPlan } from "../src/lib/access";
 
 const root = process.env.REPO_ROOT ?? process.cwd();
 const read = (path: string) => readFileSync(join(root, path), "utf8");
@@ -51,13 +51,13 @@ test("a locked step renders none of the real step", () => {
   assert.match(locked, /href="\/plus"/);
 });
 
-test("Plus needs a plus row that has not ended", () => {
-  const now = new Date("2026-11-05T12:00:00Z");
+test("Plus needs a plus row that has not ended (outside the free Plus month)", () => {
+  const now = new Date("2027-01-05T12:00:00Z");
   assert.equal(tierFromPlan(null, now), "free");
   assert.equal(tierFromPlan({ plan: "free", plus_until: null }, now), "free");
   assert.equal(tierFromPlan({ plan: "plus", plus_until: null }, now), "plus");
-  assert.equal(tierFromPlan({ plan: "plus", plus_until: "2026-12-01T00:00:00Z" }, now), "plus");
-  assert.equal(tierFromPlan({ plan: "plus", plus_until: "2026-11-01T00:00:00Z" }, now), "free");
+  assert.equal(tierFromPlan({ plan: "plus", plus_until: "2027-02-01T00:00:00Z" }, now), "plus");
+  assert.equal(tierFromPlan({ plan: "plus", plus_until: "2027-01-01T00:00:00Z" }, now), "free");
 });
 
 test("every route asks a guest to sign up first; browsing stays public", () => {
@@ -105,4 +105,21 @@ test("the map links to every country that has universities", () => {
   const expected = onMap.filter((code) => codes.has(code)).sort();
   assert.deepEqual([...universityCountryCodes].sort(), expected);
   assert.ok(universityCountryCodes.has("SK") && universityCountryCodes.has("DE"));
+});
+
+test("free Plus month: every account has Plus until 18 December 2026, then its own plan", () => {
+  const during = new Date("2026-12-18T23:59:00+01:00");
+  const after = new Date("2026-12-19T00:00:01+01:00");
+  assert.equal(freePlusActive(during), true);
+  assert.equal(freePlusActive(after), false);
+  assert.equal(tierFromPlan(null, during), "plus");
+  assert.equal(tierFromPlan({ plan: "free", plus_until: null }, during), "plus");
+  assert.equal(tierFromPlan(null, after), "free");
+  assert.equal(tierFromPlan({ plan: "plus", plus_until: null }, after), "plus");
+  // Guests still need an account.
+  assert.equal(canUse("guest", "buildRoute"), false);
+  // Same date in the database, and Plus is not sold during the month.
+  assert.match(read("supabase/migrations/20261118120000_free_plus_month.sql"), /now\(\) < timestamptz '2026-12-19 00:00:00\+01'/);
+  assert.match(read("src/app/api/billing/checkout/route.ts"), /if \(freePlusActive\(\)\) return NextResponse\.json\(\{ error: "free-plus-month" \}/);
+  assert.match(read("src/components/FreePlusBadge.tsx"), /if \(!freePlusActive\(\)\) return null;/);
 });

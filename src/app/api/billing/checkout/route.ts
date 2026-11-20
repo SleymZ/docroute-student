@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { freePlusActive } from "@/lib/access";
 import { legalInfo } from "@/data/legal";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -32,6 +33,9 @@ export async function POST(request: Request) {
     consent = false;
   }
   if (!consent) return NextResponse.json({ error: "consent-required" }, { status: 400 });
+
+  // Plus is not sold during the free Plus month: every account has it.
+  if (freePlusActive()) return NextResponse.json({ error: "free-plus-month" }, { status: 409 });
 
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.auth.getUser();

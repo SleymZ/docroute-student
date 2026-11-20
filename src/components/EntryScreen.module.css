@@ -1185,3 +1185,18 @@
     max-width: none;
   }
 }
+
+/* Free Plus month badge above the kicker (promotion, 2026-11-18). */
+.entry .freePlus {
+  margin: 0 auto 12px;
+}
+
+.entry .copy > .freePlus + .kicker {
+  margin-left: 10px;
+}
+
+@media (max-width: 700px) {
+  .entry .copy > .freePlus + .kicker {
+    margin-left: 0;
+  }
+}

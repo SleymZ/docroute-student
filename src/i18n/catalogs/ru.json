@@ -2180,5 +2180,9 @@
 "work": "работа",
 "family": "семья",
 "business": "бизнес",
-"RULES CHECKED": "ПРАВИЛА ПРОВЕРЕНЫ"
+"RULES CHECKED": "ПРАВИЛА ПРОВЕРЕНЫ",
+"Plus is free for every account until {0}": "Plus бесплатно для всех аккаунтов до {0}",
+"<0/>Plus is free for every account until {0}": "<0/>Plus бесплатно для всех аккаунтов до {0}",
+"Plan: Plus · free for every account until {0}": "Тариф: Plus · бесплатно для всех аккаунтов до {0}",
+"Until {0}, Plus is free for every registered account: every step, your own dates, PDF and PNG, and saving to My route. Create a free account and it opens at once. Nothing to pay and nothing to cancel.": "До {0} Plus бесплатен для каждого зарегистрированного аккаунта: все шаги, ваши даты, PDF и PNG и сохранение в «Мой маршрут». Создайте бесплатный аккаунт — всё откроется сразу. Ничего платить и ничего отменять не нужно."
 }

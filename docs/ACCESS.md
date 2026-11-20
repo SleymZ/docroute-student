@@ -1,6 +1,13 @@
 # Access: guest, Free and Plus
 
-Owner decision 2026-11-05. Change only with the owner. Code: `src/lib/access.ts`
+Owner decision 2026-11-05. Change only with the owner.
+
+**Free Plus month (owner decision 2026-11-18):** until 18 December 2026
+inclusive (`FREE_PLUS_UNTIL = 2026-12-19T00:00+01:00` in `src/lib/access.ts`,
+same date in `has_plus()`, migration `20261118120000_free_plus_month.sql`)
+every registered account gets Plus. Guests still need an account. Plus is not
+sold during the month (checkout returns `free-plus-month`); plans and payments
+are kept and apply again afterwards. The month is used in promotion. Code: `src/lib/access.ts`
 (rules), `src/hooks/useAccess.ts` (the visitor's plan in the browser),
 `src/proxy.ts` (guest redirect), `src/components/Plus.tsx` (locked features),
 page `/plus` (the comparison shown to visitors).

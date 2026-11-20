@@ -2180,5 +2180,9 @@
 "work": "工作",
 "family": "家庭",
 "business": "创业",
-"RULES CHECKED": "规定核实于"
+"RULES CHECKED": "规定核实于",
+"Plus is free for every account until {0}": "{0}前所有账户免费使用 Plus",
+"<0/>Plus is free for every account until {0}": "<0/>{0}前所有账户免费使用 Plus",
+"Plan: Plus · free for every account until {0}": "套餐：Plus · {0}前所有账户免费",
+"Until {0}, Plus is free for every registered account: every step, your own dates, PDF and PNG, and saving to My route. Create a free account and it opens at once. Nothing to pay and nothing to cancel.": "{0}前，所有注册账户均可免费使用 Plus：全部步骤、你自己的日期、PDF 和 PNG，以及保存到“我的路线”。创建免费账户即可立即开启。无需付费，也无需取消。"
 }

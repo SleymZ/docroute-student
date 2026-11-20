@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type React from "react";
+
+import { FreePlusBadge } from "@/components/FreePlusBadge";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -233,6 +235,7 @@ export function RoutePlanner({
         <Link href="/deadlines" className="hero-deadlines-link">
           See every verified 2027/28 application deadline, no account needed →
         </Link>
+        <FreePlusBadge className="hero-free-plus" />
       </div>
 
       {/* On phones the map is too small to read and pushes the content

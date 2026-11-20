@@ -18,6 +18,7 @@ import { getAdmissionDate } from "@/lib/admission-date";
 import { upcomingFacultyDeadlines } from "@/lib/deadline-list";
 import { landingMap } from "@/lib/landing-map";
 
+import { FreePlusBadge } from "./FreePlusBadge";
 import { EnterButton, EntryAccountLink } from "./EntryActions";
 import styles from "./EntryScreen.module.css";
 import { LogoMark, LogoWord } from "./Logo";
@@ -180,6 +181,7 @@ export async function EntryScreen() {
       </header>
 
       <section className={styles.copy} aria-labelledby="entry-title">
+        <FreePlusBadge className={styles.freePlus} />
         <p className={styles.kicker}>
           <ShieldCheck size={15} aria-hidden="true" />
           Free · every step with its official source

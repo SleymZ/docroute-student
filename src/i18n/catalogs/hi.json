@@ -2180,5 +2180,9 @@
 "work": "काम",
 "family": "परिवार",
 "business": "व्यवसाय",
-"RULES CHECKED": "नियम जाँचे गए"
+"RULES CHECKED": "नियम जाँचे गए",
+"Plus is free for every account until {0}": "{0} तक हर खाते के लिए Plus मुफ़्त है",
+"<0/>Plus is free for every account until {0}": "<0/>{0} तक हर खाते के लिए Plus मुफ़्त है",
+"Plan: Plus · free for every account until {0}": "प्लान: Plus · {0} तक हर खाते के लिए मुफ़्त",
+"Until {0}, Plus is free for every registered account: every step, your own dates, PDF and PNG, and saving to My route. Create a free account and it opens at once. Nothing to pay and nothing to cancel.": "{0} तक हर पंजीकृत खाते के लिए Plus मुफ़्त है: हर कदम, आपकी अपनी तारीख़ें, PDF और PNG, और My route में सेव करना। मुफ़्त खाता बनाइए और यह तुरंत खुल जाएगा। न कुछ चुकाना, न कुछ रद्द करना।"
 }

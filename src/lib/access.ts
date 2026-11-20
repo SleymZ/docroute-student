@@ -70,7 +70,23 @@ export type PlanRow = {
 };
 
 /** Plus only while the row says plus and the end date (if any) is ahead. */
+/**
+ * Free Plus month (owner decision 2026-11-18): every registered account has
+ * Plus until this moment, to promote the site. Nothing is removed: plans and
+ * payments stay, Plus is not sold while it is free, and after this moment
+ * every account falls back to its own plan. The database function
+ * has_plus() (migration 20261118120000_free_plus_month.sql) uses the same date.
+ */
+export const FREE_PLUS_UNTIL = "2026-12-19T00:00:00+01:00";
+/** The last free day, in English; sentences containing it are translated with it. */
+export const FREE_PLUS_LAST_DAY = "18 December";
+
+export function freePlusActive(now: Date = new Date()): boolean {
+  return now.getTime() < Date.parse(FREE_PLUS_UNTIL);
+}
+
 export function tierFromPlan(row: PlanRow | null | undefined, now: Date = new Date()): "free" | "plus" {
+  if (freePlusActive(now)) return "plus";
   if (!row || row.plan !== "plus") return "free";
   if (row.plus_until && new Date(row.plus_until).getTime() <= now.getTime()) return "free";
   return "plus";
