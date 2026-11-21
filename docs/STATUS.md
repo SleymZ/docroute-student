@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-21 (country match and move profile, site polish PR #113, Next.js 16.4.6 PR #114, free Plus month PR #112, contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
+Last updated: 2026-11-21 (country match and move profile PR #115, site polish PR #113, Next.js 16.4.6 PR #114, free Plus month PR #112, contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -65,7 +65,7 @@ page `/route/guide`, 2026-10-30).
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
 
-## Country match and move profile (2026-11-21)
+## Country match and move profile (2026-11-21, PR #115)
 
 Owner request 2026-11-21: the profile is not only for study. New quiz
 `/account/match` (account needed; guests go to sign-up, `needsAccount`) and a
@@ -82,7 +82,18 @@ country never suggested):
   country, a spoken official language, a permit where the person lives, the
   EU Blue Card where it applies (not DK, IE). Countries that stopped visas
   for the passport (`russia-belarus.ts`, "blocked") are left out and listed,
-  except the country where a family member lives (family exceptions).
+  except for someone who already lives there with a permit, and for family
+  only where the official exception names the family member's status
+  (Czechia: family of EU citizens or of a foreigner living there; Estonia:
+  family of Estonian or EU citizens; Lithuania: none). The checked work,
+  family and business routes are permit routes: they count, and are linked
+  with the passport filled in, only for non-EU citizens, and the family ones
+  only for joining a non-EU relative with a permit; EU citizens and family
+  of the country's own or other EU citizens go to the country page.
+  Germany's visa-free entry for "no employment" passports (for example
+  Brazil) counts only for study and family. Study counts checked programmes
+  of the chosen field at the next degree, only English-taught ones when the
+  person wants English; "Something else" counts none.
 - **Fits how you want to live:** the answers weighted against official
   Eurostat figures in `src/data/country-lifestyle.ts` (prices, heating and
   cooling degree days, share living in cities, usual weekly hours, job
@@ -101,8 +112,9 @@ deleted with the account); the three countries are worked out each time the
 page opens. Download my data includes the row; privacy policy row added;
 access row in `docs/ACCESS.md` (Free and Plus). Ukrainian citizens see the
 EU temporary protection note. Translated in ru/es/zh/hi (also the language
-names of the study profile form). **The owner must run the migration SQL
-before the quiz can save on production.**
+names of the study profile form). The owner ran the migration on production
+(checked 2026-11-21: the table exists and the anonymous key is refused).
+Codex review: six findings, all fixed.
 
 Control check the same day:
 - Comenius medicine in English: the entrance text now says what the faculty
