@@ -2300,9 +2300,6 @@
 "DocRoute has a checked step-by-step family route": "У DocRoute есть проверенный пошаговый маршрут для воссоединения семьи",
 "DocRoute has a checked step-by-step business route": "У DocRoute есть проверенный пошаговый маршрут для бизнеса",
 "Free movement: as an EU citizen you need no visa or work permit there": "Свобода передвижения: как гражданину ЕС вам там не нужны виза и разрешение на работу",
-"Family members are among those who can still apply: read the note on the route": "Члены семьи входят в число тех, кто всё ещё может подать документы: прочитайте примечание в маршруте",
-"Checked bachelor programmes taught in English: {0}": "Проверенные программы бакалавриата на английском: {0}",
-"Checked bachelor programmes: {0}": "Проверенные программы бакалавриата: {0}",
 "Checked {0} programmes taught in English: {1}": "Проверенные программы ({0}) на английском: {1}",
 "Checked {0} programmes: {1}": "Проверенные программы ({0}): {1}",
 "DocRoute checked the steps for the student residence permit": "DocRoute проверил шаги для студенческого вида на жительство",
@@ -2397,5 +2394,6 @@
 "Hebrew": "Иврит",
 "Hindi": "Хинди",
 "Chinese": "Китайский",
-"{0} of 27": "{0} из 27"
+"{0} of 27": "{0} из 27",
+"Some family members can still apply: check the exact conditions on the route before you plan": "Некоторые члены семьи всё ещё могут подать документы: перед планированием проверьте точные условия в маршруте"
 }

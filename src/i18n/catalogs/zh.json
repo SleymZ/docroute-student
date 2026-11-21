@@ -2300,9 +2300,6 @@
 "DocRoute has a checked step-by-step family route": "DocRoute 有经过核实的分步家庭团聚路线",
 "DocRoute has a checked step-by-step business route": "DocRoute 有经过核实的分步创业路线",
 "Free movement: as an EU citizen you need no visa or work permit there": "自由流动：作为欧盟公民，你在那里不需要签证或工作许可",
-"Family members are among those who can still apply: read the note on the route": "家庭成员属于仍可申请的人群：请阅读路线中的说明",
-"Checked bachelor programmes taught in English: {0}": "已核实的英语授课本科项目：{0}",
-"Checked bachelor programmes: {0}": "已核实的本科项目：{0}",
 "Checked {0} programmes taught in English: {1}": "已核实的{0}英语授课项目：{1}",
 "Checked {0} programmes: {1}": "已核实的{0}项目：{1}",
 "DocRoute checked the steps for the student residence permit": "DocRoute 已核实学生居留许可的办理步骤",
@@ -2397,5 +2394,6 @@
 "Hebrew": "希伯来语",
 "Hindi": "印地语",
 "Chinese": "中文",
-"{0} of 27": "27 国中 {0}"
+"{0} of 27": "27 国中 {0}",
+"Some family members can still apply: check the exact conditions on the route before you plan": "部分家庭成员仍可申请：规划前请在路线中查看具体条件"
 }

@@ -34,6 +34,7 @@ import {
   type MatchAnswers,
   type MatchField,
   type MatchPurpose,
+  type SponsorStatus,
 } from "@/lib/country-match-answers";
 import { countryHref, findCountryPage, purposeRoute, type Coverage } from "@/lib/country-list";
 import { passportTrack, type TrackKind } from "@/lib/passport-track";
@@ -149,7 +150,7 @@ export type EaseFactor =
   | { kind: "passport"; track: "easier" | "harder"; title: string }
   | { kind: "family-exception"; title: string }
   | { kind: "verified-route"; purpose: Exclude<MatchPurpose, "study"> }
-  | { kind: "verified-programmes"; count: number; field: MatchField; english: boolean }
+  | { kind: "verified-programmes"; count: number; field: Exclude<MatchField, "other">; english: boolean }
   | { kind: "study-residence" }
   | { kind: "job-offer" }
   | { kind: "blue-card" }
@@ -164,15 +165,14 @@ function targetDegree(answers: MatchAnswers) {
   return answers.education === "secondary" ? "bachelor" : "master";
 }
 
+/** Checked programmes in the chosen field at the next degree. "Something
+ *  else" matches none: the checked programmes are all in the listed fields. */
 function matchingProgrammes(answers: MatchAnswers, code: string) {
-  if (!answers.study) return [];
+  if (!answers.study || answers.study.field === "other") return [];
   const field = answers.study.field;
   const level = targetDegree(answers);
   return verifiedPrograms.filter(
-    (program) =>
-      program.countryCode === code &&
-      program.degreeLevel === level &&
-      (field === "other" || program.category === field),
+    (program) => program.countryCode === code && program.degreeLevel === level && program.category === field,
   );
 }
 
@@ -180,6 +180,24 @@ function matchingProgrammes(answers: MatchAnswers, code: string) {
  *  (russia-belarus.ts); the notes list who can still apply. */
 export function blockedFor(citizenship: string, code: string): RestrictionNote[] {
   return russiaBelarusNotes(citizenship, code).filter((note) => note.severity === "blocked");
+}
+
+// Family members a blocked note names among those who can still apply, by
+// the status of the family member who lives there (from each note's text):
+// Czechia lists family members of EU citizens and the spouse and children of
+// a foreigner living in Czechia; Estonia lists close family of Estonian
+// citizens or long-term residents and family members of EU citizens using
+// free movement (a residence permit alone is not "long-term"); Lithuania
+// names no family exception.
+const familyExceptions: Readonly<Record<string, readonly SponsorStatus[]>> = {
+  "ru-cz-visa-ban": ["citizen", "eu-citizen", "resident"],
+  "by-cz-visa-ban": ["citizen", "eu-citizen", "resident"],
+  "ru-ee-no-visas": ["citizen", "eu-citizen"],
+};
+
+/** The blocked notes still leave a way in for this family situation. */
+export function familyMayApply(notes: readonly RestrictionNote[], status: SponsorStatus) {
+  return notes.length > 0 && notes.every((note) => familyExceptions[note.id]?.includes(status) ?? false);
 }
 
 const trackBase: Record<TrackKind, number> = { own: 0, eu: 0.8, easier: 0.6, standard: 0.45, harder: 0.25 };
@@ -216,7 +234,7 @@ export function easeOfMove(answers: MatchAnswers, code: EuCountryCode) {
       factors.push({
         kind: "verified-programmes",
         count: counted,
-        field: answers.study?.field ?? "other",
+        field: answers.study!.field as Exclude<MatchField, "other">,
         english: wantsEnglish && english.length > 0,
       });
     }
@@ -328,8 +346,7 @@ function lifestyleReasons(answers: MatchAnswers, code: EuCountryCode, limit: num
 function routeFor(answers: MatchAnswers, code: string): { href: string; coverage: Coverage } {
   if (answers.purpose !== "study") return purposeRoute(code, answers.purpose);
   if (matchingProgrammes(answers, code).length) {
-    const field = answers.study?.field;
-    const query = new URLSearchParams({ country: code, ...(field && field !== "other" ? { program: field } : {}) });
+    const query = new URLSearchParams({ country: code, program: answers.study!.field });
     return { href: `/explore/universities?${query}`, coverage: "verified" };
   }
   return { href: countryHref(code), coverage: studyResidenceCountries.has(code) ? "verified" : "official-links" };
@@ -340,7 +357,9 @@ export function computeCountryMatch(answers: MatchAnswers): MatchResult {
   const candidates = euCountryCodes.filter((code) => {
     if (code === answers.citizenship) return false;
     const blocked = blockedFor(answers.citizenship, code);
-    if (blocked.length && answers.family?.sponsorCountry !== code) {
+    const familyException =
+      answers.family?.sponsorCountry === code && familyMayApply(blocked, answers.family.sponsorStatus);
+    if (blocked.length && !familyException) {
       excluded.push({ code, name: countryName(code), title: blocked[0].title, sources: blocked[0].sources });
       return false;
     }

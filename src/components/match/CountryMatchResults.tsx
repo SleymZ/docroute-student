@@ -63,15 +63,10 @@ function easeLine(factor: EaseFactor) {
     case "passport":
       return factor.title;
     case "family-exception":
-      return `${factor.title}. Family members are among those who can still apply: read the note on the route`;
+      return `${factor.title}. Some family members can still apply: check the exact conditions on the route before you plan`;
     case "verified-route":
       return routeLabels[factor.purpose];
     case "verified-programmes":
-      if (factor.field === "other") {
-        return factor.english
-          ? `Checked bachelor programmes taught in English: ${factor.count}`
-          : `Checked bachelor programmes: ${factor.count}`;
-      }
       return factor.english
         ? `Checked ${factor.field} programmes taught in English: ${factor.count}`
         : `Checked ${factor.field} programmes: ${factor.count}`;

@@ -2300,9 +2300,6 @@
 "DocRoute has a checked step-by-step family route": "DocRoute tiene una ruta familiar verificada paso a paso",
 "DocRoute has a checked step-by-step business route": "DocRoute tiene una ruta de negocio verificada paso a paso",
 "Free movement: as an EU citizen you need no visa or work permit there": "Libre circulación: como ciudadano de la UE no necesitas visado ni permiso de trabajo allí",
-"Family members are among those who can still apply: read the note on the route": "Los familiares están entre quienes aún pueden solicitarlo: lee la nota de la ruta",
-"Checked bachelor programmes taught in English: {0}": "Programas de grado verificados en inglés: {0}",
-"Checked bachelor programmes: {0}": "Programas de grado verificados: {0}",
 "Checked {0} programmes taught in English: {1}": "Programas verificados de {0} en inglés: {1}",
 "Checked {0} programmes: {1}": "Programas verificados de {0}: {1}",
 "DocRoute checked the steps for the student residence permit": "DocRoute comprobó los pasos del permiso de residencia de estudiante",
@@ -2397,5 +2394,6 @@
 "Hebrew": "Hebreo",
 "Hindi": "Hindi",
 "Chinese": "Chino",
-"{0} of 27": "{0} de 27"
+"{0} of 27": "{0} de 27",
+"Some family members can still apply: check the exact conditions on the route before you plan": "Algunos familiares aún pueden solicitarlo: comprueba las condiciones exactas en la ruta antes de planificar"
 }

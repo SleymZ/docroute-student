@@ -2300,9 +2300,6 @@
 "DocRoute has a checked step-by-step family route": "DocRoute के पास परिवार के लिए जाँचा गया चरण-दर-चरण रूट है",
 "DocRoute has a checked step-by-step business route": "DocRoute के पास व्यवसाय के लिए जाँचा गया चरण-दर-चरण रूट है",
 "Free movement: as an EU citizen you need no visa or work permit there": "मुक्त आवागमन: EU नागरिक होने के नाते आपको वहाँ वीज़ा या वर्क परमिट की ज़रूरत नहीं",
-"Family members are among those who can still apply: read the note on the route": "परिवार के सदस्य उन लोगों में हैं जो अब भी आवेदन कर सकते हैं: रूट पर दिया गया नोट पढ़ें",
-"Checked bachelor programmes taught in English: {0}": "अंग्रेज़ी में पढ़ाए जाने वाले जाँचे गए बैचलर प्रोग्राम: {0}",
-"Checked bachelor programmes: {0}": "जाँचे गए बैचलर प्रोग्राम: {0}",
 "Checked {0} programmes taught in English: {1}": "{0} के अंग्रेज़ी में पढ़ाए जाने वाले जाँचे गए प्रोग्राम: {1}",
 "Checked {0} programmes: {1}": "{0} के जाँचे गए प्रोग्राम: {1}",
 "DocRoute checked the steps for the student residence permit": "DocRoute ने छात्र निवास परमिट के चरण जाँचे हैं",
@@ -2397,5 +2394,6 @@
 "Hebrew": "हिब्रू",
 "Hindi": "हिंदी",
 "Chinese": "चीनी",
-"{0} of 27": "27 में {0}"
+"{0} of 27": "27 में {0}",
+"Some family members can still apply: check the exact conditions on the route before you plan": "परिवार के कुछ सदस्य अब भी आवेदन कर सकते हैं: योजना बनाने से पहले रूट पर सटीक शर्तें जाँचें"
 }

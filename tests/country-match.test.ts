@@ -163,6 +163,18 @@ test("family: the country where the family member lives comes first, even with r
   assert.ok(russian.picks[0].easeFactors.some((factor) => factor.kind === "family-exception"));
   assert.ok(!russian.excluded.some((item) => item.code === "CZ"));
 
+  // Only where the official exceptions name the family member's status.
+  const lithuania = computeCountryMatch(
+    answers({ citizenship: "RU", purpose: "family", family: { sponsorCountry: "LT", sponsorStatus: "resident" } }),
+  );
+  assert.ok(lithuania.excluded.some((item) => item.code === "LT"));
+  assert.ok(!lithuania.picks.some((pick) => pick.code === "LT"));
+  const estonia = (sponsorStatus: string) =>
+    computeCountryMatch(answers({ citizenship: "RU", purpose: "family", family: { sponsorCountry: "EE", sponsorStatus } }));
+  assert.equal(estonia("citizen").picks[0].code, "EE");
+  assert.ok(estonia("resident").excluded.some((item) => item.code === "EE"));
+  assert.ok(estonia("unsure").excluded.some((item) => item.code === "EE"));
+
   const outside = computeCountryMatch(answers({ purpose: "family", family: { sponsorCountry: null, sponsorStatus: "unsure" } }));
   assert.equal(outside.familyOutsideEu, true);
 });
@@ -202,6 +214,13 @@ test("study: checked programmes count only for the next degree and the chosen fi
     ).length;
   const leader = ["SK", "CZ"].sort((a, b) => englishMedicine(b) - englishMedicine(a))[0];
   if (englishMedicine("SK") !== englishMedicine("CZ")) assert.equal(italian.picks[0].code, leader);
+
+  // "Something else" is not matched with programmes of other fields.
+  const other = computeCountryMatch(answers({ purpose: "study", education: "secondary", study: { field: "other", english: true } }));
+  for (const pick of other.picks) {
+    assert.ok(!pick.easeFactors.some((factor) => factor.kind === "verified-programmes"), pick.code);
+    assert.ok(!pick.route.href.startsWith("/explore/"), pick.route.href);
+  }
 
   const master = computeCountryMatch(answers({ purpose: "study", education: "bachelor", study: { field: "Medicine", english: true } }));
   for (const pick of master.picks) {
