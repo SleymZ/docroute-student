@@ -22,6 +22,7 @@ import { upcomingFacultyDeadlines, type FacultyDeadline } from "@/lib/deadline-l
 import { flagSrc } from "@/lib/flags";
 import { getAdmissionDate } from "@/lib/admission-date";
 
+import { PhoneMatchTeaser } from "./PhoneMatchTeaser";
 import styles from "./HomeSections.module.css";
 
 // Everything below the route form on /home. Every number comes from the
@@ -101,6 +102,7 @@ export function HomeSections({ today, locale }: { today: string; locale: Locale 
 
   return (
     <div className={styles.sections}>
+      <PhoneMatchTeaser />
       <HomeProof placement="below" today={today} />
 
       {soonest.length > 0 ? (

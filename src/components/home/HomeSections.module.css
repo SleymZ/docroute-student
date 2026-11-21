@@ -575,6 +575,16 @@
     margin-top: 18px;
   }
 
+  /* The phone hero already shows the numbers (PhoneHero). */
+  .proofBelow {
+    display: none;
+  }
+
+  /* Three soonest deadlines on phones; "All deadlines" shows the rest. */
+  .deadlines > li:nth-child(n + 4) {
+    display: none;
+  }
+
   .proof li {
     flex-direction: column;
     align-items: flex-start;

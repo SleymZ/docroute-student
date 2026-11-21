@@ -65,6 +65,22 @@ page `/route/guide`, 2026-10-30).
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
 
+## Phone home page: the map (2026-11-21)
+
+Owner decision 2026-11-21 (variant A of three): on phones (≤700px) `/home`
+opens with the map, as on the computer, instead of the long paragraph.
+`PhoneHero`: a map card (Slovakia and Czechia stronger as "Study route
+checked", the other highlighted countries lighter, a dashed flight to
+Bratislava; tap opens `/countries`; animation off with reduced motion), the
+short headline "Your move to Europe, mapped.", one line of text and the
+numbers (programmes, universities, open deadlines). The map is three static
+masks in `public/map/` built by `scripts/phone-map-masks.mjs` from the home
+map outlines and coloured with CSS, so it follows the theme and adds
+nothing to the HTML. Also on phones only: a "Not sure which country?" card
+to the country match under the form, the numbers block below is hidden (it
+is in the hero) and the deadline list shows the three soonest. Desktop and
+tablet unchanged. Translated in ru/es/zh/hi.
+
 ## Country match and move profile (2026-11-21, PR #115)
 
 Owner request 2026-11-21: the profile is not only for study. New quiz
