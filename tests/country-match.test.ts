@@ -179,6 +179,28 @@ test("family: the country where the family member lives comes first, even with r
   assert.equal(outside.familyOutsideEu, true);
 });
 
+test("a visa stop does not shut out someone who already lives there with a permit", () => {
+  const resident = computeCountryMatch(
+    answers({ citizenship: "RU", livesIn: "CZ", residentWhereLives: true, work: { offerCountry: "CZ" }, languages: [] }),
+  );
+  assert.equal(resident.picks[0].code, "CZ");
+  assert.ok(!resident.excluded.some((item) => item.code === "CZ"));
+  const abroad = computeCountryMatch(answers({ citizenship: "RU", livesIn: "RU", work: { offerCountry: "CZ" }, languages: [] }));
+  assert.ok(abroad.excluded.some((item) => item.code === "CZ"));
+});
+
+test("the checked family routes count only for joining a non-EU relative with a permit", () => {
+  const resident = easeOfMove(answers({ purpose: "family", family: { sponsorCountry: "CZ", sponsorStatus: "resident" } }), "CZ");
+  assert.ok(resident.factors.some((factor) => factor.kind === "verified-route"));
+  for (const sponsorStatus of ["citizen", "eu-citizen", "unsure"]) {
+    const family = answers({ purpose: "family", family: { sponsorCountry: "CZ", sponsorStatus } });
+    assert.ok(!easeOfMove(family, "CZ").factors.some((factor) => factor.kind === "verified-route"), sponsorStatus);
+    const pick = computeCountryMatch(family).picks.find((item) => item.code === "CZ");
+    assert.ok(pick, sponsorStatus);
+    assert.deepEqual(pick.route, { href: "/countries/cz", coverage: "official-links" });
+  }
+});
+
 test("work: a job offer decides the easiest country; the Blue Card is not counted in Denmark or Ireland", () => {
   const result = computeCountryMatch(answers({ work: { offerCountry: "NL" } }));
   assert.equal(result.picks[0].code, "NL");

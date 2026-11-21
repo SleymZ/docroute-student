@@ -178,9 +178,21 @@ function matchingProgrammes(answers: MatchAnswers, code: string) {
 }
 
 /** "blocked" notes: the country has stopped visas for this passport
- *  (russia-belarus.ts); the notes list who can still apply. */
-export function blockedFor(citizenship: string, code: string): RestrictionNote[] {
-  return russiaBelarusNotes(citizenship, code).filter((note) => note.severity === "blocked");
+ *  (russia-belarus.ts); the notes list who can still apply. Someone who
+ *  already lives there with a permit applies inside the country, so only
+ *  notes marked appliesToResidents count for them (as in passportWarnings). */
+export function blockedFor(answers: MatchAnswers, code: string): RestrictionNote[] {
+  const existingResident = answers.livesIn === code && answers.residentWhereLives;
+  return russiaBelarusNotes(answers.citizenship, code).filter(
+    (note) => note.severity === "blocked" && (!existingResident || note.appliesToResidents),
+  );
+}
+
+/** The checked family routes (Slovakia, Czechia, Austria, Germany) cover
+ *  joining a non-EU relative with a residence permit; family of the
+ *  country's own or other EU citizens is listed there as not covered. */
+function familyRouteCovers(answers: MatchAnswers) {
+  return answers.purpose !== "family" || answers.family?.sponsorStatus === "resident";
 }
 
 // Family members a blocked note names among those who can still apply, by
@@ -219,7 +231,7 @@ export function easeOfMove(answers: MatchAnswers, code: EuCountryCode) {
   const factors: EaseFactor[] = [];
   let score = trackBase[kind];
 
-  const blocked = blockedFor(answers.citizenship, code);
+  const blocked = blockedFor(answers, code);
   if (free) factors.push({ kind: "free-movement" });
   else if (track && (kind === "easier" || (kind === "harder" && !blocked.length))) {
     factors.push({ kind: "passport", track: kind, title: track.title });
@@ -252,7 +264,7 @@ export function easeOfMove(answers: MatchAnswers, code: EuCountryCode) {
       score += 0.08;
       factors.push({ kind: "study-residence" });
     }
-  } else if (purposeRoute(code, answers.purpose).coverage === "verified") {
+  } else if (familyRouteCovers(answers) && purposeRoute(code, answers.purpose).coverage === "verified") {
     score += free ? 0.05 : 0.12;
     factors.push({ kind: "verified-route", purpose: answers.purpose });
   }
@@ -354,6 +366,9 @@ function lifestyleReasons(answers: MatchAnswers, code: EuCountryCode, limit: num
 }
 
 function routeFor(answers: MatchAnswers, code: string): { href: string; coverage: Coverage } {
+  // Family of the country's own or other EU citizens: the country page with
+  // its official links, not a checklist written for another situation.
+  if (!familyRouteCovers(answers)) return { href: countryHref(code), coverage: "official-links" };
   if (answers.purpose !== "study") return purposeRoute(code, answers.purpose);
   if (matchingProgrammes(answers, code).length) {
     const query = new URLSearchParams({ country: code, program: answers.study!.field });
@@ -366,7 +381,7 @@ export function computeCountryMatch(answers: MatchAnswers): MatchResult {
   const excluded: MatchResult["excluded"] = [];
   const candidates = euCountryCodes.filter((code) => {
     if (code === answers.citizenship) return false;
-    const blocked = blockedFor(answers.citizenship, code);
+    const blocked = blockedFor(answers, code);
     const familyException =
       answers.family?.sponsorCountry === code && familyMayApply(blocked, answers.family.sponsorStatus);
     if (blocked.length && !familyException) {
