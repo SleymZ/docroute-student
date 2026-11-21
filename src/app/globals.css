@@ -363,6 +363,14 @@ a svg {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* Laptops: the hero column is narrow, so the three study fields stack and
+   programme names ("Computer Science", "Economics & Business") stay whole. */
+@media (min-width: 1200px) and (max-width: 1699px) {
+  .form-grid:not(.form-grid-two) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .form-grid label {
   display: flex;
   flex-direction: column;

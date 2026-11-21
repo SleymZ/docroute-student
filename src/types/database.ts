@@ -138,6 +138,29 @@ export type Database = {
         };
         Relationships: [];
       };
+      move_profiles: {
+        Row: {
+          user_id: string;
+          purpose: "study" | "work" | "family" | "business";
+          answers: Json;
+          answers_version: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          purpose: "study" | "work" | "family" | "business";
+          answers: Json;
+          answers_version?: number;
+        };
+        Update: {
+          user_id?: string;
+          purpose?: "study" | "work" | "family" | "business";
+          answers?: Json;
+          answers_version?: number;
+        };
+        Relationships: [];
+      };
       route_task_progress: {
         Row: {
           user_id: string;

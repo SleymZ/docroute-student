@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-18 (free Plus month PR #112, contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
+Last updated: 2026-11-21 (country match and move profile, site polish PR #113, Next.js 16.4.6 PR #114, free Plus month PR #112, contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -64,6 +64,55 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Country match and move profile (2026-11-21)
+
+Owner request 2026-11-21: the profile is not only for study. New quiz
+`/account/match` (account needed; guests go to sign-up, `needsAccount`) and a
+card on `/account`. Five steps: purpose (study, work, family, business),
+about you (citizenship, where you live and whether you have a permit there,
+highest education), languages with a level, the plan for the purpose (field
+and English for study, a job offer country for work, where the family member
+lives and their status, the kind of business) and nine questions on how the
+person wants to live. Result: three different EU countries (EU only, own
+country never suggested):
+
+- **Easiest to move to:** passport (free movement, `passportTrack`), the
+  checked DocRoute routes and programmes, a job offer or family member in the
+  country, a spoken official language, a permit where the person lives, the
+  EU Blue Card where it applies (not DK, IE). Countries that stopped visas
+  for the passport (`russia-belarus.ts`, "blocked") are left out and listed,
+  except the country where a family member lives (family exceptions).
+- **Fits how you want to live:** the answers weighted against official
+  Eurostat figures in `src/data/country-lifestyle.ts` (prices, heating and
+  cooling degree days, share living in cities, usual weekly hours, job
+  vacancies, unemployment, life satisfaction, crime in the area, foreign
+  languages, non-EU residents; checked 2026-11-21, years in the file) and the
+  official EU languages. A figure is shown as a reason only when the country
+  is in the best third (#1–#9 of 27), with a link to the dataset. No opinions
+  about the people of a country.
+- **Best all-round:** both together, a third country.
+
+Logic in `src/lib/country-match.ts` (server only), answers and their check in
+`src/lib/country-match-answers.ts` (also used by the quiz in the browser).
+Answers are stored in the new table `move_profiles` (migration
+`20261121120000_move_profiles.sql`: one row per account, RLS own row only,
+deleted with the account); the three countries are worked out each time the
+page opens. Download my data includes the row; privacy policy row added;
+access row in `docs/ACCESS.md` (Free and Plus). Ukrainian citizens see the
+EU temporary protection note. Translated in ru/es/zh/hi (also the language
+names of the study profile form). **The owner must run the migration SQL
+before the quiz can save on production.**
+
+Control check the same day:
+- Comenius medicine in English: the entrance text now says what the faculty
+  page says — applicants from outside the EU should use the March round only
+  (visa times). After 21 February 2027 the route still offers the July round
+  to everyone: to change later.
+- `/home` 1200–1699px: the three study fields stack, so "Computer Science"
+  and "Economics & Business" are no longer cut.
+- Header 481–1199px: menu items wrap instead of being cut ("Contact" was cut
+  at 768px); icons hidden up to 900px.
 
 ## Site polish before promotion (2026-11-20)
 

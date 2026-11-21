@@ -103,6 +103,7 @@ export function needsAccount(pathname: string): boolean {
     pathname.startsWith("/route/") ||
     pathname === "/explore/profile" ||
     pathname === "/my-route" ||
+    pathname === "/account/match" ||
     pathname === "/stories/new"
   );
 }

@@ -43,6 +43,7 @@ export function AccountDataControls() {
         storyComments,
         storyLikes,
         plan,
+        moveProfile,
       ] = await Promise.all([
         supabase.from("applicant_profiles").select("*").eq("user_id", user.id),
         supabase.from("saved_universities").select("*").eq("user_id", user.id),
@@ -54,6 +55,7 @@ export function AccountDataControls() {
         supabase.from("story_comments").select("*").eq("user_id", user.id),
         supabase.from("story_likes").select("*").eq("user_id", user.id),
         supabase.from("account_plans").select("*").eq("user_id", user.id),
+        supabase.from("move_profiles").select("*").eq("user_id", user.id),
       ]);
       const failed = [profile, saved, progress, publicProfile, stories].find(
         (result) => result.error,
@@ -79,6 +81,8 @@ export function AccountDataControls() {
         confirmedRoute: confirmedRoute.data?.[0] ?? null,
         // Free when there is no row (or the table cannot be read).
         plan: plan.data?.[0] ?? null,
+        // Country match answers; null also when the table cannot be read.
+        moveProfile: moveProfile.data?.[0] ?? null,
         // Photo files stay in Storage; these rows list their paths.
         storyPhotos: storyPhotos.data ?? [],
         storyComments: storyComments.data ?? [],

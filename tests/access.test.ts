@@ -61,7 +61,7 @@ test("Plus needs a plus row that has not ended (outside the free Plus month)", (
 });
 
 test("every route asks a guest to sign up first; browsing stays public", () => {
-  for (const path of ["/route/work", "/route/preview", "/route/full", "/explore/profile", "/my-route", "/stories/new"]) {
+  for (const path of ["/route/work", "/route/preview", "/route/full", "/explore/profile", "/my-route", "/account/match", "/stories/new"]) {
     assert.equal(needsAccount(path), true, path);
   }
   for (const path of ["/", "/home", "/explore", "/explore/top", "/explore/universities", "/universities/x", "/stories", "/stories/abc", "/plus", "/routes-guide"]) {
