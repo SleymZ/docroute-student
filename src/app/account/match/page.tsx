@@ -8,7 +8,7 @@ import { Header } from "@/components/Header";
 import { CountryMatchQuiz, type MatchPrefill } from "@/components/match/CountryMatchQuiz";
 import { CountryMatchResults } from "@/components/match/CountryMatchResults";
 import { signUpHref } from "@/lib/access";
-import { levelFromCefr, matchLanguages } from "@/lib/country-match-answers";
+import { educationFromStudyProfile, levelFromCefr, matchLanguages } from "@/lib/country-match-answers";
 import { computeCountryMatch } from "@/lib/country-match";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -98,7 +98,7 @@ export default async function CountryMatchPage({ searchParams }: MatchPageProps)
     if (profile) {
       prefill = {
         citizenship: profile.citizenshipCountryCode,
-        education: profile.educationStatus === "completed" || profile.educationStatus === "final-year" ? "secondary" : undefined,
+        education: educationFromStudyProfile(profile.degreeLevel, profile.educationStatus),
         languages: profile.languages
           .filter((language) => matchLanguages.some((option) => option.code === language.code))
           .map((language) => ({ code: language.code, level: levelFromCefr(language.level) })),

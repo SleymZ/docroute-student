@@ -11,6 +11,7 @@ import {
   officialLanguages,
 } from "../src/data/country-lifestyle";
 import {
+  educationFromStudyProfile,
   lifestyleKeys,
   lifestyleOptions,
   matchLanguages,
@@ -75,6 +76,15 @@ test("the statistics cover all 27 EU countries and nothing else", () => {
   for (const languages of Object.values(officialLanguages)) {
     for (const code of languages) assert.ok(matchLanguages.some((language) => language.code === code), code);
   }
+});
+
+test("the study profile prefills the highest finished education by its degree", () => {
+  assert.equal(educationFromStudyProfile("bachelor", "completed"), "secondary");
+  assert.equal(educationFromStudyProfile("bachelor", "final-year"), "secondary");
+  assert.equal(educationFromStudyProfile("bachelor", "earlier-year"), undefined);
+  assert.equal(educationFromStudyProfile("master", "completed"), "bachelor");
+  assert.equal(educationFromStudyProfile("master", "final-year"), "secondary");
+  assert.equal(educationFromStudyProfile("master", "earlier-year"), "secondary");
 });
 
 test("the quiz labels cover every lifestyle answer", () => {

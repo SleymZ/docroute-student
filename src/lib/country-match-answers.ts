@@ -4,6 +4,7 @@
 // scoring with the country data lives in country-match.ts (server only).
 
 import { isCitizenshipCode } from "@/data/region-names";
+import type { DegreeLevel, EducationStatus } from "@/types/admission";
 
 export const MATCH_VERSION = 1;
 
@@ -193,4 +194,14 @@ export function levelFromCefr(level: string): LanguageLevel {
   if (level === "C1" || level === "C2" || level === "native") return "fluent";
   if (level === "B1" || level === "B2") return "good";
   return "basic";
+}
+
+/** Highest finished education from the study profile, whose status is about
+ *  the school before the degree it targets (ApplicantProfileForm): someone
+ *  aiming at a master's has finished secondary school, and a bachelor's when
+ *  it is completed; someone aiming at a bachelor's has finished secondary
+ *  school unless still in an earlier school year (then left unanswered). */
+export function educationFromStudyProfile(degreeLevel: DegreeLevel, status: EducationStatus): EducationLevel | undefined {
+  if (degreeLevel === "master") return status === "completed" ? "bachelor" : "secondary";
+  return status === "earlier-year" ? undefined : "secondary";
 }
