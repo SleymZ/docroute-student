@@ -383,6 +383,20 @@ function businessRouteParams(code: string, kind: BusinessKind | undefined): Reco
   return {};
 }
 
+/** The checked work route opened as the person answered: with or without a
+ *  job offer in that country. Slovakia and Czechia ask it as "offer";
+ *  without an offer Austria's route opens on the job-seeker path (very
+ *  highly qualified) and Germany's on the Opportunity Card; with an offer
+ *  but no degree, Germany's skilled-worker route instead of the Blue Card. */
+function workRouteParams(answers: MatchAnswers, code: string): Record<string, string> {
+  const offer = answers.work?.offerCountry === code;
+  if (code === "SK" || code === "CZ") return { offer: offer ? "yes" : "no" };
+  if (code === "AT" && !offer) return { variant: "very-highly-qualified" };
+  if (code === "DE" && !offer) return { variant: "opportunity-card" };
+  if (code === "DE" && answers.education === "secondary") return { variant: "skilled-worker" };
+  return {};
+}
+
 export function routeFor(answers: MatchAnswers, code: string): { href: string; coverage: Coverage } {
   const free = isEuEeaSwiss(answers.citizenship);
   if (answers.purpose !== "study") {
@@ -395,9 +409,13 @@ export function routeFor(answers: MatchAnswers, code: string): { href: string; c
     // The route opens with the passport (and the business plan) already chosen.
     const url = new URL(route.href, "https://docroute.app");
     url.searchParams.set("citizenship", answers.citizenship);
-    if (answers.purpose === "business") {
-      for (const [key, value] of Object.entries(businessRouteParams(code, answers.business?.kind))) url.searchParams.set(key, value);
-    }
+    const plan =
+      answers.purpose === "business"
+        ? businessRouteParams(code, answers.business?.kind)
+        : answers.purpose === "work"
+          ? workRouteParams(answers, code)
+          : {};
+    for (const [key, value] of Object.entries(plan)) url.searchParams.set(key, value);
     return { href: `${url.pathname}${url.search}`, coverage: "verified" };
   }
   if (matchingProgrammes(answers, code).length) {

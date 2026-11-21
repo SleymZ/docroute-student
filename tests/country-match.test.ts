@@ -232,6 +232,20 @@ test("EU citizens are not sent to permit checklists", () => {
   assert.equal(indian.picks[0].route.href, "/route/guide?country=AT&purpose=work&citizenship=IN");
 });
 
+test("a work route opens as answered: with or without a job offer there", () => {
+  const noOffer = answers({});
+  assert.equal(routeFor(noOffer, "AT").href, "/route/guide?country=AT&purpose=work&citizenship=IN&variant=very-highly-qualified");
+  assert.equal(routeFor(noOffer, "DE").href, "/route/guide?country=DE&purpose=work&citizenship=IN&variant=opportunity-card");
+  assert.equal(routeFor(noOffer, "SK").href, "/route/work?country=SK&citizenship=IN&offer=no");
+  assert.equal(routeFor(noOffer, "CZ").href, "/route/czechia?country=CZ&purpose=work&citizenship=IN&offer=no");
+  assert.equal(routeFor(answers({ work: { offerCountry: "AT" } }), "AT").href, "/route/guide?country=AT&purpose=work&citizenship=IN");
+  assert.equal(routeFor(answers({ work: { offerCountry: "SK" } }), "SK").href, "/route/work?country=SK&citizenship=IN&offer=yes");
+  assert.equal(
+    routeFor(answers({ education: "secondary", work: { offerCountry: "DE" } }), "DE").href,
+    "/route/guide?country=DE&purpose=work&citizenship=IN&variant=skilled-worker",
+  );
+});
+
 test("a business route opens on the variant that matches the plan", () => {
   const plan = (kind: string) => answers({ purpose: "business", business: { kind } });
   assert.equal(routeFor(plan("startup"), "AT").href, "/route/guide?country=AT&purpose=business&citizenship=IN&variant=start-up");
