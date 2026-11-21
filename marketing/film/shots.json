@@ -1,0 +1,16 @@
+[
+ {"id": "01", "a": 0.0, "b": 5.0, "picture": "Dark apartment, lying on the bed scrolling, rain on the window", "grade": ["#0e1622", "#1b2a3a"]},
+ {"id": "02", "a": 5.0, "b": 7.0, "picture": "Thumb scrolling, phone glow on the hand", "grade": ["#0d1520", "#18283a"]},
+ {"id": "03", "a": 7.0, "b": 9.2, "picture": "Rain on the window, days repeating", "grade": ["#0b121c", "#152233"]},
+ {"id": "04", "a": 9.2, "b": 12.0, "picture": "Match cut: hands zip a suitcase", "grade": ["#16212e", "#3a3a3a"]},
+ {"id": "05", "a": 12.0, "b": 13.8, "picture": "Train platform at dawn, walking away with the suitcase", "grade": ["#2b3a4a", "#6b6a6a"]},
+ {"id": "06", "a": 13.8, "b": 15.6, "picture": "Sunrise over Bratislava: castle above the Danube", "grade": ["#5a4a6a", "#d99a6a"]},
+ {"id": "07", "a": 15.6, "b": 16.8, "picture": "6 AM: tying running shoes", "grade": ["#7a5a3a", "#d9a86a"]},
+ {"id": "08", "a": 16.8, "b": 18.0, "picture": "Running along the Danube at sunrise", "grade": ["#8a6a3a", "#e0b070"]},
+ {"id": "09", "a": 18.0, "b": 20.0, "picture": "Historic old-town streets", "grade": ["#9a7a4a", "#e6c08a"]},
+ {"id": "10", "a": 20.0, "b": 21.8, "picture": "Forest trail, then rocky High Tatras path", "grade": ["#3a5a3a", "#9ab07a"]},
+ {"id": "11", "a": 21.8, "b": 27.6, "picture": "Summit above the clouds at sunrise, drone pull-back", "grade": ["#b07a3a", "#f0c27a"]},
+ {"id": "12", "a": 27.6, "b": 30.6, "picture": "Sitting on a rock, looking at the valley", "grade": ["#8a6a3a", "#d0a060"]},
+ {"id": "13", "a": 30.6, "b": 37.8, "picture": "Match cut to shot 01 in a bright room, then the warm desk and laptop", "grade": ["#5a3a20", "#c08040"]},
+ {"id": "14", "a": 37.8, "b": 40.1, "picture": "Push-in, the laptop glow turns orange", "grade": ["#1F2937", "#FF7A00"]}
+]

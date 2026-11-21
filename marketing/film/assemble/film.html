@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 700; src: url("/home/claude/docroute-student/marketing/promo/fonts/noto-sans-devanagari-devanagari-700-normal.woff2"); }
+  @font-face { font-family: "Noto Sans Devanagari"; font-weight: 800; src: url("/home/claude/docroute-student/marketing/promo/fonts/noto-sans-devanagari-devanagari-800-normal.woff2"); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070a; font-family: "Inter", "Noto Sans Devanagari", sans-serif; }
+  .shot { position: absolute; inset: 0; overflow: hidden; }
+  .bg { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; object-fit: cover; filter: blur(46px) brightness(.42) saturate(1.1); }
+  .frame { position: absolute; left: 0; width: 1080px; height: 722px; top: 500px; overflow: hidden; box-shadow: 0 40px 120px rgba(0,0,0,.7); }
+  .frame img { position: absolute; left: 0; top: 0; width: 1080px; height: 722px; transform-origin: 0 0; }
+  #vig { position: absolute; inset: 0; z-index: 50; background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%); pointer-events: none; }
+  #grain { position: absolute; inset: 0; z-index: 51; opacity: .07; mix-blend-mode: overlay; pointer-events: none; }
+  #orange { position: absolute; inset: 0; z-index: 52; background: #FF7A00; opacity: 0; mix-blend-mode: screen; }
+  #cap { position: absolute; z-index: 60; left: 70px; right: 70px; top: 1330px; text-align: center; font-size: 54px; font-weight: 700; line-height: 1.3; color: #fff; text-shadow: 0 3px 20px rgba(0,0,0,.95); }
+  #cap .w { opacity: .38; } #cap .w.on { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="shots"></div>
+<div id="vig"></div>
+<canvas id="grain" width="540" height="960"></canvas>
+<div id="orange"></div>
+<div id="cap"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+// shots: picture, start, end, camera from → to ({z: zoom, x/y: point of the picture kept in view, 0–1}), grade
+const SHOTS = [
+  { img: "01-bed", a: 0, b: 5.0, from: { z: 1.0, x: .45, y: .5 }, to: { z: 1.14, x: .5, y: .45 }, f: "saturate(.55) brightness(.85) contrast(1.08) hue-rotate(-8deg)" },
+  { img: "02-desk", a: 5.0, b: 9.2, from: { z: 1.04, x: .5, y: .5 }, to: { z: 1.16, x: .55, y: .45 }, f: "saturate(.55) brightness(.85) contrast(1.08)" },
+  { img: "03-pack", a: 9.2, b: 12.0, from: { z: 1.12, x: .45, y: .5 }, to: { z: 1.2, x: .6, y: .45 }, f: "saturate(.75) brightness(.95) contrast(1.05)" },
+  { img: "04-station", a: 12.0, b: 15.6, from: { z: 1.0, x: .5, y: .5 }, to: { z: 1.15, x: .6, y: .4 }, f: "saturate(.95) brightness(1) contrast(1.05)" },
+  { img: "05-run", a: 15.6, b: 20.0, from: { z: 1.12, x: .3, y: .5 }, to: { z: 1.2, x: .6, y: .45 }, f: "saturate(1.08) brightness(1.04) contrast(1.05) sepia(.08)" },
+  { img: "06-tatras", a: 20.0, b: 21.8, from: { z: 1.0, x: .5, y: .5 }, to: { z: 1.14, x: .48, y: .52 }, f: "saturate(1.05) brightness(1.03) contrast(1.06)" },
+  { img: "07-summit", a: 21.8, b: 26.4, from: { z: 1.22, x: .4, y: .55 }, to: { z: 1.0, x: .5, y: .5 }, f: "saturate(1.12) brightness(1.04) contrast(1.06) sepia(.1)" },
+  { img: "07-summit", a: 26.4, b: 30.6, from: { z: 1.55, x: .3, y: .55 }, to: { z: 1.7, x: .3, y: .52 }, f: "saturate(1.05) brightness(1) contrast(1.06) sepia(.12)" },
+  { img: "08-coding", a: 30.6, b: 34.3, from: { z: 1.0, x: .5, y: .5 }, to: { z: 1.12, x: .55, y: .55 }, f: "saturate(1.05) brightness(1) contrast(1.06) sepia(.1)" },
+  { img: "08-coding", a: 34.3, b: 37.9, from: { z: 1.45, x: .62, y: .55 }, to: { z: 1.6, x: .6, y: .58 }, f: "saturate(1.05) brightness(1) contrast(1.06) sepia(.12)" },
+  { img: "08-coding", a: 37.9, b: 40.1, from: { z: 1.6, x: .42, y: .72 }, to: { z: 2.6, x: .42, y: .74 }, f: "saturate(1.1) brightness(1.05) contrast(1.06) sepia(.15)" },
+];
+const XF = .45;   // crossfade between shots
+let els = [], capLines, TL;
+function build() {
+  TL = window.TL;
+  // another language: shots start where their lines start (BOUNDS = shot start times + end)
+  if (window.BOUNDS) SHOTS.forEach((s, i) => { s.a = window.BOUNDS[i]; s.b = window.BOUNDS[i + 1]; }); const root = document.getElementById("shots");
+  els = SHOTS.map(s => { const d = document.createElement("div"); d.className = "shot"; d.innerHTML = `<img class="bg" src="panels/${s.img}.png"><div class="frame"><img src="panels/${s.img}.png"></div>`; root.append(d); return { d, im: d.querySelector(".frame img"), bg: d.querySelector(".bg") }; });
+  capLines = TL.map(l => l.line.split(/(\s+)/).map(p => /^\s+$/.test(p) ? p : `<span class="w">${esc(p)}</span>`).join(""));
+}
+let capIdx = -2;
+function setTime(t) {
+  SHOTS.forEach((s, i) => {
+    const e = els[i], on = t >= s.a - XF && t < s.b + (i === SHOTS.length - 1 ? 1 : XF);
+    e.d.style.display = on ? "block" : "none"; if (!on) return;
+    const op = i === 0 ? 1 : clamp((t - s.a + XF / 2) / XF); e.d.style.opacity = op; e.d.style.zIndex = i;
+    const p = ease(prog(t, s.a, s.b)), z = s.from.z + (s.to.z - s.from.z) * p, x = s.from.x + (s.to.x - s.from.x) * p, y = s.from.y + (s.to.y - s.from.y) * p;
+    // keep point (x, y) of the picture in the frame centre, never showing an edge
+    const W = 1080 * z, H = 722 * z; let ox = 540 - x * W, oy = 361 - y * H; ox = Math.min(0, Math.max(1080 - W, ox)); oy = Math.min(0, Math.max(722 - H, oy));
+    e.im.style.transform = `translate(${ox}px, ${oy}px) scale(${z})`; e.im.style.filter = s.f; e.bg.style.filter = `blur(46px) brightness(.42) ${s.f}`;
+  });
+  // the laptop glow turns into the orange of the end card
+  const END = SHOTS[SHOTS.length - 1].b; document.getElementById("orange").style.opacity = Math.pow(prog(t, END - 1.5, END), 1.6);
+  // film grain
+  const g = document.getElementById("grain").getContext("2d"), img = g.createImageData(540, 960); let seed = Math.floor(t * 30) * 9301 + 49297;
+  for (let i = 0; i < img.data.length; i += 4) { seed = (seed * 9301 + 49297) % 233280; const v = seed / 233280 * 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
+  g.putImageData(img, 0, 0);
+  // subtitles (only in the version with them)
+  const cap = document.getElementById("cap"); if (!window.SUBS) { cap.style.display = "none"; return; }
+  let k = -1; TL.forEach((l, i) => { if (t >= l.a - .1 && t < l.b + .5) k = i; });
+  if (k !== capIdx) { capIdx = k; cap.innerHTML = k >= 0 ? capLines[k] : ""; cap.ws = [...cap.querySelectorAll(".w")]; cap.wl = cap.ws.map(w => w.textContent.length); }
+  if (k >= 0) { const l = TL[k], p = prog(t, l.a, l.b), tot = cap.wl.reduce((a, b) => a + b, 0) || 1; let acc = 0; cap.ws.forEach((w, i) => { w.classList.toggle("on", acc / tot <= p + .02); acc += cap.wl[i]; }); cap.style.opacity = prog(t, l.a - .1, l.a + .1) * (1 - prog(t, l.b + .3, l.b + .5)); }
+}
+window.build = build; window.setTime = setTime;
+</script>
+</body>
+</html>
