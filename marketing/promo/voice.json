@@ -1,0 +1,68 @@
+{
+ "slots": [
+  [
+   0.3,
+   3.3
+  ],
+  [
+   3.7,
+   8.3
+  ],
+  [
+   8.8,
+   11.3
+  ],
+  [
+   11.8,
+   17.3
+  ],
+  [
+   17.8,
+   20.9
+  ],
+  [
+   21.2,
+   24.8
+  ]
+ ],
+ "en": [
+  "Moving to Europe?",
+  "Dozens of tabs, different offices — and one missed deadline can cost you a whole year.",
+  "DocRoute. Official steps, real deadlines.",
+  "One route: every step, every deadline, and a link to the official source.",
+  "Built for your passport.",
+  "Free to start, in five languages. DocRoute — start your journey."
+ ],
+ "ru": [
+  "Переезжаете в Европу?",
+  "Десятки вкладок, разные ведомства. Пропущенный срок может стоить года.",
+  "DocRoute. Официальные шаги, реальные сроки.",
+  "Один маршрут: каждый шаг, каждый срок и ссылка на официальный источник.",
+  "С учётом вашего паспорта.",
+  "Бесплатно, на пяти языках. DocRoute — начните свой путь."
+ ],
+ "es": [
+  "¿Te mudas a Europa?",
+  "Decenas de pestañas, distintas oficinas, y un plazo perdido puede costarte un año entero.",
+  "DocRoute. Pasos oficiales, plazos reales.",
+  "Una sola ruta: cada paso, cada plazo y el enlace a la fuente oficial.",
+  "Hecho para tu pasaporte.",
+  "Empieza gratis, en cinco idiomas. DocRoute: empieza tu camino."
+ ],
+ "zh": [
+  "想搬去欧洲？",
+  "几十个网页，好几个部门，错过一个期限，可能耽误整整一年。",
+  "DocRoute。官方步骤，真实期限。",
+  "一条路线：每一步、每个期限，都附官方来源。",
+  "按你的护照定制。",
+  "免费开始，支持五种语言。DocRoute，开始你的旅程。"
+ ],
+ "hi": [
+  "यूरोप जाने की सोच रहे हैं?",
+  "दर्जनों टैब, अलग-अलग दफ़्तर — और एक छूटी समय-सीमा पूरा साल बर्बाद कर सकती है।",
+  "DocRoute. आधिकारिक कदम, असली समय-सीमाएँ।",
+  "एक मार्ग: हर कदम, हर समय-सीमा, और आधिकारिक स्रोत का लिंक।",
+  "आपके पासपोर्ट के हिसाब से।",
+  "मुफ़्त में शुरू करें, पाँच भाषाओं में। DocRoute — अपनी यात्रा शुरू करें।"
+ ]
+}

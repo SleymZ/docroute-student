@@ -1,0 +1,86 @@
+{
+ "slots": [
+  [
+   0.2,
+   2.9
+  ],
+  [
+   3.1,
+   7.9
+  ],
+  [
+   8.0,
+   9.9
+  ],
+  [
+   10.1,
+   12.9
+  ],
+  [
+   13.1,
+   15.9
+  ],
+  [
+   16.1,
+   19.4
+  ],
+  [
+   19.6,
+   21.4
+  ],
+  [
+   21.6,
+   24.8
+  ]
+ ],
+ "en": [
+  "Choosing a university in Europe?",
+  "Sites only in the local language, deadlines buried in PDFs, last year's rules…",
+  "Stop. There's an easier way.",
+  "Nearly 2,600 unis in 46 countries.",
+  "The Top 100: the last day to apply, and the days left.",
+  "Check your profile against the rules: what you have, and what's missing.",
+  "Every rule links to the official source.",
+  "Find your uni on DocRoute."
+ ],
+ "ru": [
+  "Выбираешь вуз в Европе?",
+  "Сайты на местном языке, дедлайны в огромных PDF, требования за прошлый год…",
+  "Стоп. Есть способ проще.",
+  "Почти 2600 вузов, 46 стран.",
+  "Топ-100: последний день подачи и сколько осталось.",
+  "Сравни свой профиль с правилами: что есть и чего не хватает.",
+  "Всё по официальным источникам.",
+  "Найди свой вуз в DocRoute."
+ ],
+ "es": [
+  "¿Eligiendo universidad en Europa?",
+  "Webs solo en el idioma local, plazos escondidos en PDF enormes, requisitos del año pasado…",
+  "Para. Hay una forma más fácil.",
+  "Casi 2600 universidades en 46 países.",
+  "El Top 100: último día para solicitar y días restantes.",
+  "Compara tu perfil con las normas: qué tienes y qué te falta.",
+  "Cada norma enlaza a la fuente oficial.",
+  "Encuentra tu uni en DocRoute."
+ ],
+ "zh": [
+  "在挑欧洲的大学？",
+  "官网只有当地语言，截止日期藏在长长的 PDF 里，要求还是去年的……",
+  "停。有更简单的办法。",
+  "46 个国家，近 2600 所大学。",
+  "前 100 名榜单：申请截止日，还剩几天。",
+  "把你的条件和规定对比：哪些有，哪些还缺。",
+  "每条规定都附官方来源。",
+  "在 DocRoute 找到你的大学。"
+ ],
+ "hi": [
+  "यूरोप में यूनिवर्सिटी चुन रहे हो?",
+  "वेबसाइटें स्थानीय भाषा में, डेडलाइन PDF में छिपी, शर्तें पिछले साल की…",
+  "रुको। इसका आसान तरीका है।",
+  "46 देशों में लगभग 2,600 यूनिवर्सिटी।",
+  "टॉप 100: आवेदन की आख़िरी तारीख़ और बचे दिन।",
+  "अपनी प्रोफ़ाइल को नियमों से मिलाओ: क्या है और क्या कम है।",
+  "हर नियम के साथ आधिकारिक स्रोत।",
+  "DocRoute पर अपनी यूनिवर्सिटी ढूँढो।"
+ ]
+}

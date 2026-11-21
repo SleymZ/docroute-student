@@ -43,3 +43,10 @@ node marketing/promo/render.mjs en --frames 7.5,16.5      # stills only, for che
 Needs google-chrome, ffmpeg and puppeteer (or puppeteer-core); Inter and
 Noto Sans CJK must be installed as system fonts. Texts live in `texts.json`;
 change a text there and render that language again (about 2.5 minutes).
+
+## Voice-over version
+
+`voice.json` holds one spoken line per scene in each language;
+`python3 marketing/voice/voiceover.py promo <kokoro models> en ru es zh hi`
+adds the voice (and a quiet pad) to the rendered videos →
+`out/DocRoute-promo-voice-<lang>.mp4`.

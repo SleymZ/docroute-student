@@ -11,3 +11,9 @@ links to the official source → call to action. Texts: `texts.json`.
 node marketing/teen/render.mjs en ru es zh hi   # → marketing/teen/out/
 ```
 Needs the Devanagari font in `marketing/promo/fonts` (see promo README).
+
+## Voice-over version
+
+`voice.json` holds one spoken line per scene; `python3 marketing/voice/voiceover.py
+teen <kokoro models> en ru es zh hi` speaks them over the beat (lowered) →
+`out/DocRoute-unis-voice-<lang>.mp4`.
