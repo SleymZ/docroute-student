@@ -799,6 +799,13 @@ a svg {
   .hero-map {
     display: none;
   }
+
+  /* Phone first screen (PhoneHero) replaces the desktop headline. */
+  .phone-hero-on .hero-copy > .eyebrow,
+  .phone-hero-on .hero-copy > h1,
+  .phone-hero-on .hero-copy > .hero-description {
+    display: none;
+  }
 }
 
 /* Free Plus month badge under the route form (FreePlusBadge). */
