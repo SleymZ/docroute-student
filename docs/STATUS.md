@@ -93,7 +93,13 @@ country never suggested):
   Germany's visa-free entry for "no employment" passports (for example
   Brazil) counts only for study and family. Study counts checked programmes
   of the chosen field at the next degree, only English-taught ones when the
-  person wants English; "Something else" counts none.
+  person wants English; "Something else" counts none. A family route counts
+  only in the country where the relative lives. Routes open as answered:
+  work with or without an offer there (SK/CZ `offer=`, Austria's job-seeker
+  path, Germany's Opportunity Card, or skilled worker without a degree),
+  business on the plan's variant (Austria's start-up founder, Slovakia's
+  trade licence or company executive), programmes with `language=en`
+  (the explore list then opens each university's English-taught programme).
 - **Fits how you want to live:** the answers weighted against official
   Eurostat figures in `src/data/country-lifestyle.ts` (prices, heating and
   cooling degree days, share living in cities, usual weekly hours, job
@@ -114,7 +120,8 @@ access row in `docs/ACCESS.md` (Free and Plus). Ukrainian citizens see the
 EU temporary protection note. Translated in ru/es/zh/hi (also the language
 names of the study profile form). The owner ran the migration on production
 (checked 2026-11-21: the table exists and the anonymous key is refused).
-Codex review: six findings, all fixed.
+Codex review: eleven findings over the rounds, all fixed; the last round
+had none.
 
 Control check the same day:
 - Comenius medicine in English: the entrance text now says what the faculty
