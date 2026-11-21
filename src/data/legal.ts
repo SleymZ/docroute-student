@@ -31,7 +31,7 @@ export const legalInfo = {
   minimumAccountAge: 16,
   /** Date the current versions of the documents take effect. */
   termsUpdated: "2026-11-09",
-  privacyUpdated: "2026-11-16",
+  privacyUpdated: "2026-11-21",
   cookiesUpdated: "2026-11-16",
   /** Slovak data protection authority, where anyone can complain. */
   supervisoryAuthority: {

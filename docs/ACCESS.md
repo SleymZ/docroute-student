@@ -17,6 +17,7 @@ page `/plus` (the comparison shown to visitors).
 | Explore, Top 100, university pages, home map → country universities | yes | yes | yes |
 | Stories (read) | yes | yes | yes |
 | Build a route (every `/route/*` page, `/explore/profile`) | no — sent to sign-up at once | yes | yes |
+| Country match quiz and move profile (`/account/match`, card on `/account`; table `move_profiles`) | no — sent to sign-up at once | yes | yes |
 | Steps per stage | — | only the key steps are open: the first step of each stage and every "Needs attention" step (`stepAccess`). The others stay in place as locked cards with no text (`LockedStep`), plus "N steps in this stage locked" | all open |
 | Own move/start date, deadline planner, dated steps | — | no (a `move=` date in the address is ignored) | yes |
 | Email reminders | — | no | yes, **not built yet** (shown as "coming soon"; not part of what is sold) |

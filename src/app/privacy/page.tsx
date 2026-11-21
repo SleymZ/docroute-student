@@ -29,6 +29,12 @@ const dataRows = [
     kept: "Until you change it or delete your account.",
   },
   {
+    what: "Move profile (country match) you choose to save: what you are moving for (study, work, family or business); citizenship; the country you live in and whether you have a residence permit there; your highest education; the languages you speak and how well; the details you choose for your purpose (study field and language, the country of a job offer, where your family member lives and their status, or the kind of business); and your answers about how you like to live (city or quiet places, winters, summers, budget, work rhythm, languages, people around you, safety, jobs). No documents are uploaded.",
+    why: "To suggest three EU countries and explain why, using the rules DocRoute checked on official websites and official Eurostat statistics. The suggestions are worked out each time you open the page and are not stored.",
+    basis: "Contract (Art. 6(1)(b)).",
+    kept: "Until you change or delete it, or delete your account.",
+  },
+  {
     what: "Saved universities, the route tasks you tick off and the route you confirm as My route (the route page address with your answers in it, such as citizenship, status and move date, plus its title).",
     why: "To remember your shortlist and progress across devices.",
     basis: "Contract (Art. 6(1)(b)).",
@@ -296,7 +302,7 @@ export default function PrivacyPage() {
         use <strong>Download my data</strong> or{" "}
         <strong>Delete my account</strong> on the{" "}
         <Link href="/account">Account</Link> page. Deleting your account
-        removes your account, profile, plan, saved universities, progress, My route and
+        removes your account, profile, move profile, plan, saved universities, progress, My route and
         waitlist entries made with the same email from our database
         immediately; copies in our providers&apos; backups are
         overwritten within their backup cycle. For anything else, email{" "}

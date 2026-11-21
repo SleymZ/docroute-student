@@ -257,6 +257,25 @@
   }
 }
 
+/* Tablets: the six menu items fit on their own row without icons; in a
+   longer language they wrap to a second line instead of being cut off. */
+@media (max-width: 900px) {
+  .navLink {
+    padding-inline: 12px;
+  }
+
+  .navLink svg {
+    display: none;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1199px) {
+  .navigation {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
 @media (max-width: 600px) {
   .header {
     gap: 10px;

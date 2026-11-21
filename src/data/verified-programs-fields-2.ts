@@ -237,7 +237,7 @@ const fmedEn = programs(
       entrance: {
         label: "Entrance exam (March or August)",
         dueLabel: "15 March 2027 online (August: 16 August)",
-        text: "March round online on 15 March 2027 (register by 21 February); August round on 16 August 2027, online or in Bratislava (register 17 March – 25 July). Exam-free with the IB Diploma (33+ points, Biology and Chemistry HL 6+). Results within 30 days; enrolment in September 2027.",
+        text: "March round online on 15 March 2027 (register by 21 February); August round on 16 August 2027, online or in Bratislava (register 17 March – 25 July). Exam-free with the IB Diploma (33+ points, Biology and Chemistry HL 6+). Results within 30 days; enrolment in September 2027. Applicants from outside the EU: the faculty advises the March round only, because the visa process can take several weeks.",
         sourceIds: ["fmed-en-admission-2027"],
       },
     },
@@ -275,7 +275,7 @@ fmedEn[1].genericRules = {
   entrance: {
     label: "Entrance exam (March or August)",
     dueLabel: "16 March 2027 online (August: 17 August)",
-    text: "March round online on 16 March 2027 (register by 21 February); August round on 17 August 2027, online or in Bratislava (register 17 March – 25 July). Exam-free with the IB Diploma (33+ points, grade 6 in three listed HL subjects). Results within 30 days; enrolment in September 2027.",
+    text: "March round online on 16 March 2027 (register by 21 February); August round on 17 August 2027, online or in Bratislava (register 17 March – 25 July). Exam-free with the IB Diploma (33+ points, grade 6 in three listed HL subjects). Results within 30 days; enrolment in September 2027. Applicants from outside the EU: the faculty advises the March round only, because the visa process can take several weeks.",
     sourceIds: ["fmed-en-admission-2027"],
   },
 };

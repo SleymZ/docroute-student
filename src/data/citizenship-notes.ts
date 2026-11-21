@@ -395,6 +395,13 @@ function documentsNote(
   );
 }
 
+/** The temporary protection note for Ukrainian citizens, outside a route
+ *  (the country match shows it once for every suggested country). */
+export function temporaryProtectionNote(countryCode: string) {
+  const { task, sources: noteSources } = ukraineNote(countryCode.toUpperCase());
+  return { title: task.title, description: task.description, sources: noteSources };
+}
+
 function ukraineNote(countryCode: string): Note {
   if (countryCode === "DK") {
     return note(

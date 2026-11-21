@@ -27,6 +27,7 @@ import { AccountDataControls } from "@/components/AccountDataControls";
 import { Avatar } from "@/components/Avatar";
 import { AccountSignOut } from "@/components/AccountSignOut";
 import { PublicProfileEditor } from "@/components/PublicProfileEditor";
+import { MoveProfileCard } from "@/components/match/MoveProfileCard";
 import { Header } from "@/components/Header";
 import catalog from "@/data/universities.json";
 import { verifiedPrograms } from "@/data/verified-programs";
@@ -43,6 +44,7 @@ import {
 } from "@/lib/profile-options";
 import { createProfileSearchParams } from "@/lib/profile-query";
 import { loadApplicantProfile } from "@/lib/supabase/applicant-profile";
+import { loadMoveProfile, type SavedMoveProfile } from "@/lib/supabase/move-profile";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { loadPublicProfile } from "@/lib/supabase/stories";
@@ -223,6 +225,17 @@ export default async function AccountPage() {
     profileError = true;
   }
 
+  let moveProfile: SavedMoveProfile | null = null;
+  let moveProfileUnavailable = false;
+  try {
+    moveProfile = await loadMoveProfile(supabase, user.id);
+  } catch {
+    moveProfileUnavailable = true;
+  }
+  const moveCard = (
+    <MoveProfileCard saved={moveProfile} unavailable={moveProfileUnavailable} />
+  );
+
   const memory = await loadWorkspaceMemory(supabase, user.id);
   const plan = await loadPlan(supabase, user.id);
   const locale = await getLocale();
@@ -279,6 +292,8 @@ export default async function AccountPage() {
             </div>
             {identityCard}
           </header>
+
+          {moveCard}
 
           <section className={styles.emptyState}>
             <FileText size={34} aria-hidden="true" />
@@ -424,6 +439,8 @@ export default async function AccountPage() {
             </div>
           </article>
         </section>
+
+        {moveCard}
 
         <div className={styles.contentGrid}>
           <section className={styles.profileCard}>
