@@ -194,10 +194,12 @@ export function blockedFor(answers: MatchAnswers, code: string): RestrictionNote
 }
 
 /** The checked family routes (Slovakia, Czechia, Austria, Germany) cover
- *  joining a non-EU relative with a residence permit; family of the
- *  country's own or other EU citizens is listed there as not covered. */
-function familyRouteCovers(answers: MatchAnswers) {
-  return answers.purpose !== "family" || answers.family?.sponsorStatus === "resident";
+ *  joining a non-EU relative with a residence permit of that country; family
+ *  of the country's own or other EU citizens is listed there as not covered,
+ *  and a permit of another country gives no right there. */
+function familyRouteCovers(answers: MatchAnswers, code: string) {
+  if (answers.purpose !== "family") return true;
+  return answers.family?.sponsorStatus === "resident" && answers.family.sponsorCountry === code;
 }
 
 // Family members a blocked note names among those who can still apply, by
@@ -266,7 +268,7 @@ export function easeOfMove(answers: MatchAnswers, code: EuCountryCode) {
       score += 0.08;
       factors.push({ kind: "study-residence" });
     }
-  } else if (!free && familyRouteCovers(answers) && purposeRoute(code, answers.purpose).coverage === "verified") {
+  } else if (!free && familyRouteCovers(answers, code) && purposeRoute(code, answers.purpose).coverage === "verified") {
     // The checked work, family and business routes are permit routes for
     // non-EU citizens; EU citizens move freely and are not covered by them.
     score += 0.12;
@@ -375,7 +377,7 @@ function routeFor(answers: MatchAnswers, code: string): { href: string; coverage
     // EU citizens, and family of the country's own or other EU citizens: the
     // country page (free-movement table, official links), not a permit
     // checklist written for another situation.
-    if (free || !familyRouteCovers(answers)) return { href: countryHref(code), coverage: "official-links" };
+    if (free || !familyRouteCovers(answers, code)) return { href: countryHref(code), coverage: "official-links" };
     const route = purposeRoute(code, answers.purpose);
     if (route.coverage !== "verified") return route;
     // The route opens with the passport already chosen.

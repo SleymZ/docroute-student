@@ -192,6 +192,14 @@ test("a visa stop does not shut out someone who already lives there with a permi
 test("the checked family routes count only for joining a non-EU relative with a permit", () => {
   const resident = easeOfMove(answers({ purpose: "family", family: { sponsorCountry: "CZ", sponsorStatus: "resident" } }), "CZ");
   assert.ok(resident.factors.some((factor) => factor.kind === "verified-route"));
+  // Only in the country where that relative lives.
+  const portugal = answers({ purpose: "family", family: { sponsorCountry: "PT", sponsorStatus: "resident" } });
+  for (const code of ["AT", "CZ", "DE", "SK"] as const) {
+    assert.ok(!easeOfMove(portugal, code).factors.some((factor) => factor.kind === "verified-route"), code);
+  }
+  for (const pick of computeCountryMatch(portugal).picks) {
+    if (pick.code !== "PT") assert.equal(pick.route.href, `/countries/${pick.code.toLowerCase()}`, pick.code);
+  }
   for (const sponsorStatus of ["citizen", "eu-citizen", "unsure"]) {
     const family = answers({ purpose: "family", family: { sponsorCountry: "CZ", sponsorStatus } });
     assert.ok(!easeOfMove(family, "CZ").factors.some((factor) => factor.kind === "verified-route"), sponsorStatus);
