@@ -120,8 +120,9 @@ access row in `docs/ACCESS.md` (Free and Plus). Ukrainian citizens see the
 EU temporary protection note. Translated in ru/es/zh/hi (also the language
 names of the study profile form). The owner ran the migration on production
 (checked 2026-11-21: the table exists and the anonymous key is refused).
-Codex review: eleven findings over the rounds, all fixed; the last round
-had none.
+Codex review: twelve findings over the rounds (the last one: education
+prefilled from the study profile's degree), all fixed; the last round had
+none.
 
 Control check the same day:
 - Comenius medicine in English: the entrance text now says what the faculty
