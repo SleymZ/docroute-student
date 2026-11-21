@@ -17,7 +17,7 @@ import {
   parseMatchAnswers,
   type MatchAnswers,
 } from "../src/lib/country-match-answers";
-import { computeCountryMatch, easeOfMove, lifestyleScore } from "../src/lib/country-match";
+import { computeCountryMatch, easeOfMove, lifestyleScore, routeFor } from "../src/lib/country-match";
 import { verifiedPrograms } from "../src/data/verified-programs";
 import { countryPages } from "../src/lib/country-list";
 import { isEuEeaSwiss } from "../src/lib/passport-track";
@@ -230,6 +230,15 @@ test("EU citizens are not sent to permit checklists", () => {
   // Non-EU citizens get the checked route with their passport filled in.
   const indian = computeCountryMatch(answers({ work: { offerCountry: "AT" } }));
   assert.equal(indian.picks[0].route.href, "/route/guide?country=AT&purpose=work&citizenship=IN");
+});
+
+test("a business route opens on the variant that matches the plan", () => {
+  const plan = (kind: string) => answers({ purpose: "business", business: { kind } });
+  assert.equal(routeFor(plan("startup"), "AT").href, "/route/guide?country=AT&purpose=business&citizenship=IN&variant=start-up");
+  assert.equal(routeFor(plan("self-employed"), "AT").href, "/route/guide?country=AT&purpose=business&citizenship=IN&variant=self-employed");
+  assert.equal(routeFor(plan("company"), "SK").href, "/route/business?country=SK&citizenship=IN&form=company-executive");
+  assert.equal(routeFor(plan("self-employed"), "SK").href, "/route/business?country=SK&citizenship=IN&form=trade-licence");
+  assert.equal(routeFor(plan("startup"), "DE").href, "/route/guide?country=DE&purpose=business&citizenship=IN");
 });
 
 test("study in English counts only programmes taught in English", () => {

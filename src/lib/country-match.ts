@@ -35,6 +35,7 @@ import {
   type MatchAnswers,
   type MatchField,
   type MatchPurpose,
+  type BusinessKind,
   type SponsorStatus,
 } from "@/lib/country-match-answers";
 import { countryHref, findCountryPage, purposeRoute, type Coverage } from "@/lib/country-list";
@@ -371,7 +372,18 @@ function lifestyleReasons(answers: MatchAnswers, code: EuCountryCode, limit: num
     }));
 }
 
-function routeFor(answers: MatchAnswers, code: string): { href: string; coverage: Coverage } {
+/** The variant of the checked business route that matches the plan:
+ *  Austria's start-up founder route, Slovakia's trade licence or company
+ *  executive. Elsewhere the route's own first variant fits every plan. */
+function businessRouteParams(code: string, kind: BusinessKind | undefined): Record<string, string> {
+  if (code === "AT" && kind === "startup") return { variant: "start-up" };
+  if (code === "AT" && kind === "self-employed") return { variant: "self-employed" };
+  if (code === "SK" && kind === "self-employed") return { form: "trade-licence" };
+  if (code === "SK" && kind === "company") return { form: "company-executive" };
+  return {};
+}
+
+export function routeFor(answers: MatchAnswers, code: string): { href: string; coverage: Coverage } {
   const free = isEuEeaSwiss(answers.citizenship);
   if (answers.purpose !== "study") {
     // EU citizens, and family of the country's own or other EU citizens: the
@@ -380,9 +392,12 @@ function routeFor(answers: MatchAnswers, code: string): { href: string; coverage
     if (free || !familyRouteCovers(answers, code)) return { href: countryHref(code), coverage: "official-links" };
     const route = purposeRoute(code, answers.purpose);
     if (route.coverage !== "verified") return route;
-    // The route opens with the passport already chosen.
+    // The route opens with the passport (and the business plan) already chosen.
     const url = new URL(route.href, "https://docroute.app");
     url.searchParams.set("citizenship", answers.citizenship);
+    if (answers.purpose === "business") {
+      for (const [key, value] of Object.entries(businessRouteParams(code, answers.business?.kind))) url.searchParams.set(key, value);
+    }
     return { href: `${url.pathname}${url.search}`, coverage: "verified" };
   }
   if (matchingProgrammes(answers, code).length) {
