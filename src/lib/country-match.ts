@@ -387,6 +387,8 @@ function routeFor(answers: MatchAnswers, code: string): { href: string; coverage
   }
   if (matchingProgrammes(answers, code).length) {
     const query = new URLSearchParams({ country: code, program: answers.study!.field });
+    // The list then opens the English-taught programme of each university.
+    if (answers.study?.english) query.set("language", "en");
     return { href: `/explore/universities?${query}`, coverage: "verified" };
   }
   return { href: countryHref(code), coverage: studyResidenceCountries.has(code) ? "verified" : "official-links" };

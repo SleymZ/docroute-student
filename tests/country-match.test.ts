@@ -254,7 +254,11 @@ test("study: checked programmes count only for the next degree and the chosen fi
   assert.ok(["SK", "CZ"].includes(first.code), first.code);
   const programmes = first.easeFactors.find((factor) => factor.kind === "verified-programmes");
   assert.ok(programmes && programmes.kind === "verified-programmes" && programmes.english && programmes.count > 0);
-  assert.equal(first.route.href, `/explore/universities?country=${first.code}&program=Medicine`);
+  assert.equal(first.route.href, `/explore/universities?country=${first.code}&program=Medicine&language=en`);
+  // The university list honours it: each card opens an English-taught programme.
+  const results = read("src/components/UniversityResults.tsx");
+  assert.match(results, /searchParams\.get\("language"\)/);
+  assert.match(results, /language\.code === requestedLanguage/);
 
   // An EU citizen: the country with the most checked programmes in English comes first.
   const italian = computeCountryMatch(

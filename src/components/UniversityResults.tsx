@@ -100,6 +100,10 @@ export function UniversityResults({
     searchParams.get("country")?.toUpperCase() ?? "";
   const requestedProgram =
     searchParams.get("program") ?? "";
+  // Explore links from the country match can ask for a teaching language
+  // ("language=en"): each university then opens a programme taught in it.
+  const requestedLanguage =
+    searchParams.get("language")?.toLowerCase() ?? "";
   const profileState = useApplicantProfile(
     searchParams,
     {
@@ -719,10 +723,16 @@ export function UniversityResults({
           .map((university, index) => {
             const isSaved = saved.has(university.id);
             const firstMatch = university.matchingPrograms[0];
-            const directoryProgram = mode === "explore" ? verifiedPrograms.find(
+            const directoryPrograms = mode === "explore" ? verifiedPrograms.filter(
               (program) => program.universityHost === getWebsiteHost(university.website) &&
                 (anyProgram || program.category === selectedProgram),
-            ) : undefined;
+            ) : [];
+            const directoryProgram =
+              directoryPrograms.find(
+                (program) =>
+                  !requestedLanguage ||
+                  program.instructionLanguages.some((language) => language.code === requestedLanguage),
+              ) ?? directoryPrograms[0];
             // Catalog names come from an imported list and can be inaccurate
             // ("University of Zilinska"); prefer the name from checked data.
             const displayName =
