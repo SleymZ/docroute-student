@@ -213,6 +213,31 @@ test("work: a job offer decides the easiest country; the Blue Card is not counte
   assert.ok(!easeOfMove(answers({ education: "secondary" }), "AT").factors.some((factor) => factor.kind === "blue-card"));
 });
 
+test("EU citizens are not sent to permit checklists", () => {
+  const result = computeCountryMatch(answers({ citizenship: "IT", languages: [{ code: "de", level: "fluent" }] }));
+  for (const pick of result.picks) {
+    assert.ok(!pick.easeFactors.some((factor) => factor.kind === "verified-route"), pick.code);
+    assert.equal(pick.route.href, `/countries/${pick.code.toLowerCase()}`);
+  }
+  // Non-EU citizens get the checked route with their passport filled in.
+  const indian = computeCountryMatch(answers({ work: { offerCountry: "AT" } }));
+  assert.equal(indian.picks[0].route.href, "/route/guide?country=AT&purpose=work&citizenship=IN");
+});
+
+test("study in English counts only programmes taught in English", () => {
+  const csEnglish = answers({ purpose: "study", education: "secondary", study: { field: "Computer Science", english: true } });
+  for (const code of ["SK", "CZ"] as const) {
+    const hasEnglish = verifiedPrograms.some(
+      (program) =>
+        program.countryCode === code &&
+        program.category === "Computer Science" &&
+        program.instructionLanguages.some((language) => language.code === "en"),
+    );
+    const factor = easeOfMove(csEnglish, code).factors.find((item) => item.kind === "verified-programmes");
+    assert.equal(Boolean(factor), hasEnglish, code);
+  }
+});
+
 test("study: checked programmes count only for the next degree and the chosen field", () => {
   const bachelor = computeCountryMatch(
     answers({ purpose: "study", education: "secondary", study: { field: "Medicine", english: true } }),

@@ -38,7 +38,7 @@ import {
   type SponsorStatus,
 } from "@/lib/country-match-answers";
 import { countryHref, findCountryPage, purposeRoute, type Coverage } from "@/lib/country-list";
-import { passportTrack, type TrackKind } from "@/lib/passport-track";
+import { isEuEeaSwiss, passportTrack, type TrackKind } from "@/lib/passport-track";
 import { verifiedStudyResidence } from "@/lib/residence/study-routes";
 import type { RouteSource } from "@/types/route-preview";
 
@@ -166,14 +166,19 @@ function targetDegree(answers: MatchAnswers) {
   return answers.education === "secondary" ? "bachelor" : "master";
 }
 
-/** Checked programmes in the chosen field at the next degree. "Something
- *  else" matches none: the checked programmes are all in the listed fields. */
+/** Checked programmes in the chosen field at the next degree, taught in
+ *  English when the person wants English. "Something else" matches none:
+ *  the checked programmes are all in the listed fields. */
 function matchingProgrammes(answers: MatchAnswers, code: string) {
   if (!answers.study || answers.study.field === "other") return [];
-  const field = answers.study.field;
+  const { field, english } = answers.study;
   const level = targetDegree(answers);
   return verifiedPrograms.filter(
-    (program) => program.countryCode === code && program.degreeLevel === level && program.category === field,
+    (program) =>
+      program.countryCode === code &&
+      program.degreeLevel === level &&
+      program.category === field &&
+      (!english || program.instructionLanguages.some((language) => language.code === "en")),
   );
 }
 
@@ -247,25 +252,24 @@ export function easeOfMove(answers: MatchAnswers, code: EuCountryCode) {
   if (answers.purpose === "study") {
     const programmes = matchingProgrammes(answers, code);
     if (programmes.length) {
-      const english = programmes.filter((program) => program.instructionLanguages.some((language) => language.code === "en"));
-      const wantsEnglish = Boolean(answers.study?.english);
-      const counted = wantsEnglish && english.length ? english.length : programmes.length;
+      const english = Boolean(answers.study?.english);
       // More checked programmes, more choice: a small step per programme.
-      score += 0.15 + Math.min(5, counted) * 0.01;
-      if (wantsEnglish && english.length) score += 0.1;
+      score += 0.15 + Math.min(5, programmes.length) * 0.01 + (english ? 0.1 : 0);
       factors.push({
         kind: "verified-programmes",
-        count: counted,
+        count: programmes.length,
         field: answers.study!.field as Exclude<MatchField, "other">,
-        english: wantsEnglish && english.length > 0,
+        english,
       });
     }
     if (!free && studyResidenceCountries.has(code)) {
       score += 0.08;
       factors.push({ kind: "study-residence" });
     }
-  } else if (familyRouteCovers(answers) && purposeRoute(code, answers.purpose).coverage === "verified") {
-    score += free ? 0.05 : 0.12;
+  } else if (!free && familyRouteCovers(answers) && purposeRoute(code, answers.purpose).coverage === "verified") {
+    // The checked work, family and business routes are permit routes for
+    // non-EU citizens; EU citizens move freely and are not covered by them.
+    score += 0.12;
     factors.push({ kind: "verified-route", purpose: answers.purpose });
   }
 
@@ -366,10 +370,19 @@ function lifestyleReasons(answers: MatchAnswers, code: EuCountryCode, limit: num
 }
 
 function routeFor(answers: MatchAnswers, code: string): { href: string; coverage: Coverage } {
-  // Family of the country's own or other EU citizens: the country page with
-  // its official links, not a checklist written for another situation.
-  if (!familyRouteCovers(answers)) return { href: countryHref(code), coverage: "official-links" };
-  if (answers.purpose !== "study") return purposeRoute(code, answers.purpose);
+  const free = isEuEeaSwiss(answers.citizenship);
+  if (answers.purpose !== "study") {
+    // EU citizens, and family of the country's own or other EU citizens: the
+    // country page (free-movement table, official links), not a permit
+    // checklist written for another situation.
+    if (free || !familyRouteCovers(answers)) return { href: countryHref(code), coverage: "official-links" };
+    const route = purposeRoute(code, answers.purpose);
+    if (route.coverage !== "verified") return route;
+    // The route opens with the passport already chosen.
+    const url = new URL(route.href, "https://docroute.app");
+    url.searchParams.set("citizenship", answers.citizenship);
+    return { href: `${url.pathname}${url.search}`, coverage: "verified" };
+  }
   if (matchingProgrammes(answers, code).length) {
     const query = new URLSearchParams({ country: code, program: answers.study!.field });
     return { href: `/explore/universities?${query}`, coverage: "verified" };
