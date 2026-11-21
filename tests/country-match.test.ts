@@ -244,6 +244,17 @@ test("lifestyle: the pick follows the person's answers and Eurostat, not the pas
   assert.ok(countryLifestyle[nordic.code].cold! > 3000, nordic.code);
 });
 
+test("Germany's visa-free entry for Brazilians counts for study, not for work", () => {
+  const work = easeOfMove(answers({ citizenship: "BR", languages: [] }), "DE");
+  assert.equal(work.track, "standard");
+  assert.ok(!work.factors.some((factor) => factor.kind === "passport"));
+  const study = easeOfMove(answers({ citizenship: "BR", purpose: "study", study: { field: "Medicine", english: true }, languages: [] }), "DE");
+  assert.equal(study.track, "easier");
+  assert.ok(study.factors.some((factor) => factor.kind === "passport"));
+  // Countries with the relief for every purpose keep it for work.
+  assert.equal(easeOfMove(answers({ citizenship: "US", languages: [] }), "DE").track, "easier");
+});
+
 test("speaking an official language makes a country easier", () => {
   const withGerman = easeOfMove(answers({ languages: [{ code: "de", level: "good" }] }), "AT");
   const without = easeOfMove(answers({ languages: [{ code: "de", level: "basic" }] }), "AT");

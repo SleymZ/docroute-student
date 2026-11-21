@@ -25,6 +25,7 @@ import {
   type EuCountryCode,
   type LifestyleIndicator,
 } from "@/data/country-lifestyle";
+import { germanyVisaFreeLongStayNoWork } from "@/data/citizenship-lists";
 import { temporaryProtectionNote } from "@/data/citizenship-notes";
 import { blueCardCountries } from "@/data/eu-immigration-portal";
 import { russiaBelarusNotes, type RestrictionNote } from "@/data/russia-belarus";
@@ -202,9 +203,18 @@ export function familyMayApply(notes: readonly RestrictionNote[], status: Sponso
 
 const trackBase: Record<TrackKind, number> = { own: 0, eu: 0.8, easier: 0.6, standard: 0.45, harder: 0.25 };
 
+/** Germany's visa-free entry for these passports holds only for people who
+ *  do not intend to take up employment (passport-track.ts): not for a move
+ *  to work or to run a business. */
+function reliefApplies(answers: MatchAnswers, code: string) {
+  if (code !== "DE" || !germanyVisaFreeLongStayNoWork.includes(answers.citizenship)) return true;
+  return answers.purpose === "study" || answers.purpose === "family";
+}
+
 export function easeOfMove(answers: MatchAnswers, code: EuCountryCode) {
   const track = passportTrack(answers.citizenship, code, countryName(code));
-  const kind: TrackKind = track?.kind ?? "standard";
+  let kind: TrackKind = track?.kind ?? "standard";
+  if (kind === "easier" && !reliefApplies(answers, code)) kind = "standard";
   const free = kind === "eu";
   const factors: EaseFactor[] = [];
   let score = trackBase[kind];
