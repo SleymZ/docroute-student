@@ -1,0 +1,183 @@
+/* Newly verified programmes: a slim band that scrolls by itself. */
+
+.ticker {
+  --ticker-bg: light-dark(rgba(255, 255, 255, 0.82), rgba(11, 27, 39, 0.82));
+  --ticker-card: light-dark(#ffffff, #0f2230);
+  --ticker-new: light-dark(rgba(212, 80, 47, 0.12), rgba(255, 121, 95, 0.16));
+
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 8px clamp(14px, 3vw, 40px);
+  border-block: 1px solid var(--border);
+  background: var(--ticker-bg);
+  backdrop-filter: blur(10px);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--coral);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.track {
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
+
+.belt {
+  display: flex;
+  width: max-content;
+}
+
+.list {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0 10px 0 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--ticker-card);
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--transition, 180ms ease);
+}
+
+.card:hover {
+  border-color: var(--coral);
+}
+
+.card:focus-visible,
+.all:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.new {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--ticker-new);
+  color: var(--coral);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.what {
+  display: grid;
+  line-height: 1.2;
+}
+
+.what strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lang {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.where {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.by {
+  color: var(--coral);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.all {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--coral);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.all:hover {
+  color: var(--coral-hover);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .belt {
+    animation: belt 38s linear infinite;
+  }
+
+  .ticker:hover .belt,
+  .ticker:focus-within .belt {
+    animation-play-state: paused;
+  }
+}
+
+/* Less motion: no scrolling by itself, the visitor swipes instead. */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .list[aria-hidden] {
+    display: none;
+  }
+}
+
+@keyframes belt {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Phones: one row of cards; each card already says "New". */
+@media (max-width: 700px) {
+  .ticker {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 6px 0;
+  }
+
+  .label,
+  .all {
+    display: none;
+  }
+
+  .what strong {
+    font-size: 13px;
+  }
+}

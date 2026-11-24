@@ -1,6 +1,6 @@
 # DocRoute — project status
 
-Last updated: 2026-11-21 (country match and move profile PR #115, site polish PR #113, Next.js 16.4.6 PR #114, free Plus month PR #112, contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
+Last updated: 2026-11-24 (newly verified strip on / and /home, phone home map PR #116, country match and move profile PR #115, site polish PR #113, Next.js 16.4.6 PR #114, free Plus month PR #112, contact page PR #111, numbers under the map PR #110, entry page and home redesign PR #108, own domain PR #107, growth series PR #98–#105: link previews, sitemap, short links, deadlines page, clearer home, mobile sign-in, cheat-sheet videos). Keep this file factual: describe what exists and
 what was actually checked, not plans presented as done.
 
 ## What the product is
@@ -64,6 +64,22 @@ page `/route/guide`, 2026-10-30).
   (2026-10-31) and the owner's moderator account was added by SQL. The
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
+
+## Newly verified strip (2026-11-24)
+
+Owner request 2026-11-24: a bar with the newest verified universities on
+the first screen. `VerifiedTicker` sits under the bar of the entry page `/`
+and under the header of `/home`: "Newly verified" and 3–5 programme cards
+(field, "In English" when taught in English, university · city, "Apply by"
+the round still open) that scroll by themselves, stop on hover or focus and
+can be swiped with reduced motion; "All programmes" opens `/deadlines`. On
+phones one row of cards only. Each card opens the programme on its
+university page (guests may see it). The list is `src/data/recently-verified.ts`
+(newest first; when a new faculty is verified, add it on top and drop the
+last one); today the 5 Nov 2026 batch: Medicine in English at Comenius
+University Bratislava, Charles University Plzeň and Jessenius Martin,
+Business Administration in English at ČZU Prague, Law at UPJŠ Košice. The
+map and logo are unchanged. Translated in ru/es/zh/hi.
 
 ## Phone home page: the map (2026-11-21)
 
