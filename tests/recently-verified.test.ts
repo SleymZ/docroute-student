@@ -26,6 +26,10 @@ test("each card opens its programme and shows the round still open", () => {
   assert.equal(bratislava.deadline, "2027-02-21");
   assert.equal(bratislava.english, true);
   assert.match(bratislava.href, /^\/universities\/.+\?programId=uniba-lf-medicine-en-2027$/);
+  // A programme taught in three languages is not "In English".
+  const law = cards.find((card) => card.id === "upjs-pf-law-trilingual-bc-2027")!;
+  assert.equal(law.english, false);
+  assert.deepEqual(law.languages, ["SK", "EN", "FR"]);
   // After the main deadline the later round is shown; after every round, none.
   assert.equal(recentlyVerifiedCards("2027-03-01").find((card) => card.id === bratislava.id)!.deadline, "2027-07-25");
   assert.equal(recentlyVerifiedCards("2027-12-01").find((card) => card.id === bratislava.id)!.deadline, null);

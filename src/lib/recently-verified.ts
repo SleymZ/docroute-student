@@ -6,7 +6,10 @@ export type RecentlyVerifiedCard = {
   id: string;
   universityName: string;
   category: string;
+  /** Taught only in English. */
   english: boolean;
+  /** Language codes when the programme needs several (SK · EN · FR). */
+  languages: string[];
   city: string;
   countryCode: string;
   addedOn: string;
@@ -27,7 +30,11 @@ export function recentlyVerifiedCards(today: string): RecentlyVerifiedCard[] {
         id: program.id,
         universityName: program.universityName,
         category: program.category,
-        english: program.instructionLanguages.some((language) => language.code === "en"),
+        english: program.instructionLanguages.every((language) => language.code === "en"),
+        languages:
+          program.instructionLanguages.length > 1
+            ? program.instructionLanguages.map((language) => language.code.toUpperCase())
+            : [],
         city: program.city,
         countryCode: program.countryCode,
         addedOn,

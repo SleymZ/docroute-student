@@ -30,6 +30,9 @@ export function VerifiedTicker({ today, className }: { today: string; className?
               <span className={styles.top}>
                 <strong>{card.category}</strong>
                 {card.english ? <span className={styles.lang}>In English</span> : null}
+                {card.languages.length > 1 ? (
+                  <span className={styles.lang}>{card.languages.join(" · ")}</span>
+                ) : null}
               </span>
               <span className={styles.where}>
                 {card.universityName} · {card.city}
