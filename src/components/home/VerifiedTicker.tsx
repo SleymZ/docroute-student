@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, Code2, GraduationCap, Scale, Stethoscope, TrendingUp } from "lucide-react";
+
+import { flagSrc } from "@/lib/flags";
 
 import { recentlyVerifiedCards } from "@/lib/recently-verified";
 
@@ -13,6 +15,14 @@ function day(iso: string) {
   );
 }
 
+// The card's picture: the field's icon on its own colour, with the flag.
+const fields: Record<string, { icon: typeof Stethoscope; tone: string }> = {
+  Medicine: { icon: Stethoscope, tone: "medicine" },
+  Law: { icon: Scale, tone: "law" },
+  "Economics & Business": { icon: TrendingUp, tone: "business" },
+  "Computer Science": { icon: Code2, tone: "computing" },
+};
+
 /** A strip of newly verified programmes (owner request 2026-11-24), on the
  *  entry page and /home. Each card opens the programme on its university
  *  page, which guests may see. Scrolls by itself unless the visitor asked
@@ -25,9 +35,17 @@ export function VerifiedTicker({ today, className }: { today: string; className?
       {cards.map((card) => (
         <li key={card.id}>
           <Link href={card.href} className={styles.card} tabIndex={copy ? -1 : undefined}>
-            <span className={styles.new}>New</span>
+            <span className={styles.pic} data-tone={(fields[card.category]?.tone) ?? "other"} aria-hidden="true">
+              {(() => {
+                const Icon = fields[card.category]?.icon ?? GraduationCap;
+                return <Icon className={styles.picIcon} size={28} strokeWidth={1.8} />;
+              })()}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={styles.flag} src={flagSrc(card.countryCode)} alt="" width={20} height={20} />
+            </span>
             <span className={styles.what}>
               <span className={styles.top}>
+                <span className={styles.new}>New</span>
                 <strong>{card.category}</strong>
                 {card.english ? <span className={styles.lang}>In English</span> : null}
                 {card.languages.length > 1 ? (
@@ -37,10 +55,8 @@ export function VerifiedTicker({ today, className }: { today: string; className?
               <span className={styles.where}>
                 {card.universityName} · {card.city}
               </span>
+              {card.deadline ? <span className={styles.by}>Apply by {day(card.deadline)}</span> : null}
             </span>
-            {card.deadline ? (
-              <span className={styles.by}>Apply by {day(card.deadline)}</span>
-            ) : null}
           </Link>
         </li>
       ))}

@@ -70,7 +70,7 @@ page `/route/guide`, 2026-10-30).
 Owner request 2026-11-24: a bar with the newest verified universities on
 the first screen. `VerifiedTicker` sits under the bar of the entry page `/`
 and under the header of `/home`: "Newly verified" and 3–5 programme cards
-(field, "In English" when taught in English, university · city, "Apply by"
+(a picture: the field's icon on its colour with the country flag; field, "In English" when taught in English, university · city, "Apply by"
 the round still open) that scroll by themselves, stop on hover or focus and
 can be swiped with reduced motion; "All programmes" opens `/deadlines`. On
 phones one row of cards only. Each card opens the programme on its
