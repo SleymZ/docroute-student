@@ -20,7 +20,7 @@
 
   position: relative;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
@@ -1199,4 +1199,13 @@
   .entry .copy > .freePlus + .kicker {
     margin-left: 0;
   }
+}
+
+/* Newly verified strip under the bar (owner request 2026-11-24). */
+.entry .ticker {
+  transition: opacity 0.35s ease;
+}
+
+.entry[data-leaving] .ticker {
+  opacity: 0;
 }

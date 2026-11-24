@@ -23,6 +23,7 @@ import { EnterButton, EntryAccountLink } from "./EntryActions";
 import styles from "./EntryScreen.module.css";
 import { LogoMark, LogoWord } from "./Logo";
 import { RouteLoader } from "./RouteLoader";
+import { VerifiedTicker } from "./home/VerifiedTicker";
 
 // Seconds the route takes to draw on load; stops appear as it reaches them.
 const DRAW_SECONDS = 2.4;
@@ -179,6 +180,8 @@ export async function EntryScreen() {
         </Link>
         <EntryAccountLink />
       </header>
+
+      <VerifiedTicker today={getAdmissionDate()} className={styles.ticker} />
 
       <section className={styles.copy} aria-labelledby="entry-title">
         <FreePlusBadge className={styles.freePlus} />

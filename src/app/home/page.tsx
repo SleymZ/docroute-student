@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { Header } from "@/components/Header";
 import { HomeProof, HomeSections } from "@/components/home/HomeSections";
 import { PhoneHero } from "@/components/home/PhoneHero";
+import { VerifiedTicker } from "@/components/home/VerifiedTicker";
 import { RoutePlanner } from "@/components/RoutePlanner";
 import { applicantCountryOptions } from "@/data/applicant-countries";
 import { getLocale } from "@/i18n/server";
@@ -27,6 +28,7 @@ export default async function Home() {
   return (
     <main>
       <Header />
+      <VerifiedTicker today={getAdmissionDate()} />
 
       <div className="page-container phone-hero-on">
         <PhoneHero today={getAdmissionDate()} />
