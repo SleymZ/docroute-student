@@ -164,6 +164,9 @@ export type GenericAdmissionRules = {
     exemptSchools: string[];
     proof: string;
     sourceIds: string[];
+    // The university tests the language itself (Frankfurt School's
+    // Assessment Centre): no certificate to obtain, only the level to reach.
+    assessedByUniversity?: boolean;
   } | null;
   languageUnknownNote?: string;
   // Schools whose certificates need no recognition step.

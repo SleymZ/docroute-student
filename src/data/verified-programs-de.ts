@@ -194,6 +194,7 @@ const frankfurtSchool = programs(
         exemptSchools: [],
         proof: "No certificate needed: English is assessed at the Assessment Centre.",
         sourceIds: ["fs-bba-2027"],
+        assessedByUniversity: true,
       },
       recognition: {
         exemptSchools: germany,

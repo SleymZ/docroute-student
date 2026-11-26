@@ -88,3 +88,13 @@ test("saved full-path links of promoted listings lead to the verified programme"
   assert.equal(promotedFullPathProgram("utwente-bit-bsc-2027")?.id, "utwente-tcs-bsc-2027");
   assert.equal(promotedFullPathProgram("tue-cse-bsc-2027"), null, "still coming soon");
 });
+
+test("Frankfurt School tests English itself; Twente needs proof even from Canada", () => {
+  const fs = findVerifiedProgram("fs-bba-bsc-2027")!;
+  const applicant = profile({ destinationCountryCode: "DE", studyCategory: "Economics & Business" });
+  const match = matchProgram(applicant, fs, today);
+  assert.ok(!match.nextActions.some((action) => action.startsWith("Get proof of English")));
+  const twente = findVerifiedProgram("utwente-tcs-bsc-2027")!;
+  const canada = matchProgram(profile({ educationCountryCode: "CA" }), twente, today);
+  assert.ok(canada.requiredDocuments.some((item) => item.id === "utwente-english"));
+});
