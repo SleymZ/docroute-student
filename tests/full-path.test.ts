@@ -79,7 +79,7 @@ test("Slovak and Czech listings use the verified residence routes", () => {
 });
 
 test("other countries: link to the official page, EU rules for EU citizens", () => {
-  const delft = group("tudelft-cse-bsc-2027");
+  const delft = group("tue-cse-bsc-2027");
   const third = buildFullPath(delft, nonEu);
   assert.equal(third.residenceCoverage, "official-link");
   const residence = third.stages.find((stage) => stage.id === "residence")!;

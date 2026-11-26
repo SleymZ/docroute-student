@@ -14,6 +14,7 @@ import type {
   RouteTask,
 } from "@/types/route-preview";
 import { matchesStudyChoice, slovakTestRule } from "@/lib/match-programs";
+import { studyResidenceForProgram } from "@/lib/full-path";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -68,6 +69,15 @@ export function buildRoutePreview(
   const applicationDeadline = formatDate(program.application.deadline);
   const admissionDate = formatDate(program.application.admissionDate);
   const czech = program.countryCode === "CZ";
+  const slovak = program.countryCode === "SK";
+  // Outside Slovakia and Czechia: the checked study-residence route
+  // (Austria, Germany) or the official-link checklist (the Netherlands).
+  const otherResidence = czech || slovak
+    ? null
+    : studyResidenceForProgram(program, {
+        citizenshipCountryCode: profile.citizenshipCountryCode,
+        currentResidenceStatus: profile.currentResidenceStatus,
+      });
   const languageTest = program.languagePolicy.foreignApplicantTest;
   const languageDeadline = languageTest ? formatDate(languageTest.deadline) : null;
   const verifiedAt = formatDate(program.verifiedAt);
@@ -225,18 +235,28 @@ export function buildRoutePreview(
           status: "information",
           sourceIds: [
             ...programSourceIds,
-            czech ? "cz-ipc-study-permit" : "iom-study-residence-application",
+            ...(czech ? ["cz-ipc-study-permit"] : slovak ? ["iom-study-residence-application"] : []),
           ],
         },
       ],
     },
-    ...(czech ? czechResidenceStages(profile) : [buildSlovakiaResidenceStage(profile)]),
+    ...(czech
+      ? czechResidenceStages(profile)
+      : slovak
+        ? [buildSlovakiaResidenceStage(profile)]
+        : otherResidence!.stages.map((stage, index) => ({
+            ...stage,
+            id: index === 0 ? "residence" : stage.id,
+            number: String(4 + index).padStart(2, "0"),
+          }))),
   ];
 
   return {
     version: czech
       ? `route-${program.intake}-${CZECH_ROUTE_VERSION}-admissions-${program.verifiedAt}`
-      : `route-${program.intake}-${slovakiaResidenceRules.effectiveFrom}-admissions-${program.verifiedAt}-v2`,
+      : slovak
+        ? `route-${program.intake}-${slovakiaResidenceRules.effectiveFrom}-admissions-${program.verifiedAt}-v2`
+        : `route-${program.intake}-${program.countryCode.toLowerCase()}-${otherResidence!.coverage}-admissions-${program.verifiedAt}`,
     generatedFor: profile,
     match,
     stages,
@@ -245,7 +265,11 @@ export function buildRoutePreview(
         ...source,
         authority: "official" as const,
       })),
-      ...(czech ? czechiaSources : [...slovakiaResidenceRules.sources, ...slovakiaResidentSources]),
+      ...(czech
+        ? czechiaSources
+        : slovak
+          ? [...slovakiaResidenceRules.sources, ...slovakiaResidentSources]
+          : otherResidence!.sources),
     ],
     disclaimer:
       `This is a preparation route based on the profile you entered and university sources checked on ${verifiedAt}. It is not an admission decision or legally binding immigration advice. Recheck every open task before submission.`,

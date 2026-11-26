@@ -1,6 +1,9 @@
 import { verifiedFieldPrograms } from "@/data/verified-programs-fields";
 import { verifiedFieldProgramsSecond } from "@/data/verified-programs-fields-2";
 import { verifiedSkCzPrograms } from "@/data/verified-programs-sk-cz";
+import { verifiedAustriaPrograms } from "@/data/verified-programs-at";
+import { verifiedGermanyPrograms } from "@/data/verified-programs-de";
+import { verifiedNetherlandsPrograms } from "@/data/verified-programs-nl";
 import type { AdmissionProgram } from "@/types/admission";
 
 const admissionsPage =
@@ -570,6 +573,10 @@ export const verifiedPrograms: readonly AdmissionProgram[] = [
   ...verifiedSkCzPrograms,
   ...verifiedFieldPrograms,
   ...verifiedFieldProgramsSecond,
+  // Verified 2026-11-26: the Netherlands, Austria and Germany.
+  ...verifiedNetherlandsPrograms,
+  ...verifiedAustriaPrograms,
+  ...verifiedGermanyPrograms,
 ];
 
 export type VerifiedProgram = AdmissionProgram;

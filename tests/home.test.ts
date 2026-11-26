@@ -124,7 +124,7 @@ test("a sign-in code that lands on the bare domain finishes the sign-in", () => 
 
 test("home says who it is for and offers the deadlines without an account", () => {
   const planner = read("src/components/RoutePlanner.tsx");
-  assert.match(planner, /Applying to a university in Slovakia or Czechia from outside\s+the EU\?/);
+  assert.match(planner, /Applying to a university in Slovakia, Czechia, the Netherlands,\s+Austria or Germany from outside the EU\?/);
   assert.match(planner, /<Link href="\/deadlines" className="hero-deadlines-link">/);
 });
 
@@ -140,7 +140,7 @@ test("Documents issued in starts from the visitor's country, never a fixed one",
 
 test("the new home text is translated in every site language", () => {
   const keys = [
-    "Applying to a university in Slovakia or Czechia from outside the EU? See which documents you need and the deadline for each one, from the application to the residence permit. Every rule links to its official source. Free.",
+    "Applying to a university in Slovakia, Czechia, the Netherlands, Austria or Germany from outside the EU? See which documents you need and the deadline for each one, from the application to the residence permit. Every rule links to its official source. Free.",
     "See every verified 2027/28 application deadline, no account needed →",
   ];
   for (const lang of ["ru", "es", "zh", "hi"]) {

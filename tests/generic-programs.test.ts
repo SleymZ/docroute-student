@@ -26,7 +26,9 @@ function profile(patch: Partial<ApplicantProfile> = {}): ApplicantProfile {
   };
 }
 
-const generic = verifiedPrograms.filter((program) => program.admissionPolicy === "generic-2027");
+const genericAll = verifiedPrograms.filter((program) => program.admissionPolicy === "generic-2027");
+const generic = genericAll.filter((program) => ["SK", "CZ"].includes(program.countryCode));
+const europe = genericAll.filter((program) => !["SK", "CZ"].includes(program.countryCode));
 
 test("49 programmes at 25 faculties verified on 2026-11-05 use the shared policy with their own dates", () => {
   assert.equal(generic.length, 49);
@@ -119,15 +121,26 @@ test("1. LF UK: a Slovak maturita covers Czech C1 and needs no recognition", () 
   assert.ok(ua.requiredDocuments.some((item) => item.id === "lf1-czech-c1"));
 });
 
+test("11 programmes in the Netherlands, Austria and Germany verified on 2026-11-26", () => {
+  assert.equal(europe.length, 11);
+  const byCountry = (code: string) => europe.filter((program) => program.countryCode === code).length;
+  assert.deepEqual([byCountry("NL"), byCountry("AT"), byCountry("DE")], [6, 2, 3]);
+  for (const program of europe) {
+    assert.equal(program.verifiedAt, "2026-11-26", program.id);
+    assert.ok(program.application.deadline > today, `${program.id}: deadline must be ahead`);
+    assert.ok(program.application.admissionDate >= program.application.deadline, program.id);
+    for (const source of program.sources) assert.equal(source.checkedAt, "2026-11-26", program.id);
+  }
+});
+
 test("each field has verified 2027/28 programmes in Slovakia and Czechia", () => {
-  const count = (category: string) => verifiedPrograms.filter((program) => program.category === category && program.intake === "2027/28").length;
+  const count = (category: string) => verifiedPrograms.filter((program) => ["SK", "CZ"].includes(program.countryCode) && program.category === category && program.intake === "2027/28").length;
   assert.equal(count("Computer Science"), 18);
   assert.equal(count("Medicine"), 15);
   assert.equal(count("Economics & Business"), 15);
   // Every full-time Czech or Slovak law programme with published 2027/28
   // rules on 2026-11-05; Slovak law faculties had not published theirs yet.
   assert.equal(count("Law"), 7);
-  for (const program of verifiedPrograms) assert.ok(["SK", "CZ"].includes(program.countryCode), program.id);
 });
 
 test("medicine programmes: dentistry follows its faculty's own 2027/28 rules", () => {

@@ -31,7 +31,7 @@ test("the deadlines list shows every verified programme once, soonest first", ()
     assert.ok(row.daysLeft >= 0);
     assert.match(row.applicationUrl, /^https:\/\//);
     assert.match(row.checkedAt, /^\d{4}-\d{2}-\d{2}$/);
-    assert.ok(row.countryCode === "SK" || row.countryCode === "CZ");
+    assert.ok(["SK", "CZ", "NL", "AT", "DE"].includes(row.countryCode), row.countryCode);
   }
 });
 

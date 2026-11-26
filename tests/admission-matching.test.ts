@@ -427,8 +427,16 @@ test("every generated requirement and document has a resolvable official source"
       assert.ok(detail.sourceIds.length);
       assert.ok(detail.sourceIds.every((id) => ids.has(id)));
     }
-    // Brno University of Technology's catalogue site is vutbr.cz, its pages vut.cz.
-    const hosts = item.universityHost === "vutbr.cz" ? ["vutbr.cz", "vut.cz"] : [item.universityHost];
+    // Catalogue host -> the hosts of the university's own pages: Brno
+    // University of Technology (vut.cz), WU Vienna (wu.ac.at), Constructor
+    // University (formerly Jacobs), Saarland's informatics campus site.
+    const hostAliases: Record<string, string[]> = {
+      "vutbr.cz": ["vutbr.cz", "vut.cz"],
+      "wu-wien.ac.at": ["wu.ac.at"],
+      "jacobs-university.de": ["constructor.university"],
+      "uni-saarland.de": ["uni-saarland.de", "saarland-informatics-campus.de"],
+    };
+    const hosts = hostAliases[item.universityHost] ?? [item.universityHost];
     assert.ok(
       item.sources.every((source) =>
         hosts.some((host) => new URL(source.url).hostname.endsWith(host)),

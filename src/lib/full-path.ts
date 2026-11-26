@@ -417,6 +417,16 @@ function linkedResidenceStages(
   };
 }
 
+/** The residence part for a verified programme outside Slovakia and
+ *  Czechia: DocRoute's checked route where one exists (Austria, Germany,
+ *  Poland, Switzerland), otherwise the official-link checklist. */
+export function studyResidenceForProgram(
+  program: { countryCode: string; country: string },
+  answers: FullPathAnswers,
+) {
+  return linkedResidenceStages(program as PendingProgramGroup, answers);
+}
+
 function residenceStages(group: PendingProgramGroup, answers: FullPathAnswers) {
   if (!verifiedResidenceCountries.has(group.countryCode)) {
     return linkedResidenceStages(group, answers);

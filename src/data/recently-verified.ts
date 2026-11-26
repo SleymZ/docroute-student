@@ -4,9 +4,9 @@
 // be a programme in verifiedPrograms; `addedOn` is the day its verified
 // route went live (git history of src/data/verified-programs*.ts).
 export const recentlyVerified = [
-  { programId: "uniba-lf-medicine-en-2027", addedOn: "2026-11-05" },
-  { programId: "lfp-medicine-en-2027", addedOn: "2026-11-05" },
-  { programId: "uniba-jlf-medicine-en-2027", addedOn: "2026-11-05" },
-  { programId: "czu-pef-business-administration-en-2027", addedOn: "2026-11-05" },
-  { programId: "upjs-pf-law-trilingual-bc-2027", addedOn: "2026-11-05" },
+  { programId: "tudelft-cse-bsc-2027", addedOn: "2026-11-26" },
+  { programId: "eur-ibeb-bsc-2027", addedOn: "2026-11-26" },
+  { programId: "wu-bbe-bsc-2027", addedOn: "2026-11-26" },
+  { programId: "rug-iel-llb-2027", addedOn: "2026-11-26" },
+  { programId: "constructor-cs-bsc-2027", addedOn: "2026-11-26" },
 ] as const;

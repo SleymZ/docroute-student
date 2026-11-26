@@ -21,9 +21,9 @@ import { flagSrc } from "@/lib/flags";
 import styles from "./Deadlines.module.css";
 
 export const metadata: Metadata = {
-  title: "University application deadlines 2027/28 in Slovakia and Czechia",
+  title: "University application deadlines 2027/28 in Slovakia, Czechia, the Netherlands, Austria and Germany",
   description:
-    "Verified 2027/28 application deadlines for bachelor's and long-cycle programmes in Slovakia and Czechia (computer science, medicine, law, economics), with days left, fees and the official page for each faculty.",
+    "Verified 2027/28 application deadlines for bachelor's and long-cycle programmes in Slovakia, Czechia, the Netherlands, Austria and Germany (computer science, medicine, law, economics), with days left, fees and the official page for each faculty.",
   alternates: { canonical: "/deadlines" },
 };
 
@@ -132,7 +132,7 @@ export default async function DeadlinesPage({ searchParams }: PageProps) {
               University application deadlines for 2027/28, <span>checked on official pages.</span>
             </h1>
             <p className={styles.lead}>
-              Bachelor&apos;s and long-cycle programmes in Slovakia and Czechia whose
+              Bachelor&apos;s and long-cycle programmes in Slovakia, Czechia, the Netherlands, Austria and Germany whose
               2027/28 admission rules we read line by line. Each date links to the
               faculty&apos;s own page and shows when we checked it. The university
               always decides; open its page before you apply.
