@@ -1,8 +1,10 @@
 import { englishTaught, europeDoc as doc, europePrograms as programs, europeSource as source } from "@/data/verified-europe-helpers";
 import type { AdmissionProgram } from "@/types/admission";
 
-// Austrian programmes verified on 2026-11-26: the only two of the ten
-// checked whose winter 2027/28 dates are already published. Austria's
+// Austrian programme verified on 2026-11-26: the only one of the ten
+// checked whose winter 2027/28 dates are already published. University of
+// Vienna law was taken out again: review found a separate 2027/28 entrance
+// procedure page (aufnahmeverfahren.univie.ac.at) that was not checked. Austria's
 // student residence permit is a DocRoute-checked route (study-routes.ts).
 // Still "coming soon": TU Wien, Vienna and Graz informatics, JKU AI,
 // Innsbruck, Salzburg (2026/27 dates only) and Medical University of
@@ -83,75 +85,4 @@ const wu = programs(
   [{ id: "wu-bbe-bsc-2027", programName: "Business and Economics (BBE, English)", localProgramName: "Bachelor's Program in Business and Economics" }],
 );
 
-// ------------------------------------------------- University of Vienna, Law
-
-const univieSources = [
-  source("univie-deadlines-2027", "Deadlines: winter semester 2027/28", "University of Vienna", "https://studieren.univie.ac.at/en/applying-for-a-programme/deadlines"),
-  source("univie-non-eu-steps", "Admission to bachelor's and diploma programmes: non-EU/EEA applicants", "University of Vienna", "https://studieren.univie.ac.at/en/admission/bachelor/non-eu"),
-  source("univie-german", "Knowledge of German", "University of Vienna", "https://studieren.univie.ac.at/en/knowledge-of-german/"),
-  source("univie-legalisation", "Legalisation of documents", "University of Vienna", "https://studieren.univie.ac.at/en/applying-for-a-programme/international-students/legalisation"),
-  source("univie-tuition", "Amount of the tuition fee and Students' Union fee", "University of Vienna", "https://studieren.univie.ac.at/en/studying-and-learning/financial-matters/amount-of-the-tuition-fee/students-union-fee"),
-];
-
-const univieLaw = programs(
-  {
-    universityId: "32ffe57248ac6dc925b6",
-    universityHost: "univie.ac.at",
-    universityName: "University of Vienna",
-    faculty: "Faculty of Law",
-    country: "Austria",
-    countryCode: "AT",
-    city: "Vienna",
-    category: "Law",
-    degreeLevel: "bachelor",
-    programType: "long-cycle",
-    durationYears: 4,
-    instructionLanguages: [{ code: "de", name: "German" }],
-    application: {
-      deadline: "2027-06-28",
-      admissionDate: "2027-07-12",
-      feeLabel: "No application fee stated",
-      applicationUrl: "https://studieren.univie.ac.at/en/admission/bachelor/non-eu",
-      languageProofDueLabel: "German A2 with the application; C1 for admission",
-    },
-    languagePolicy: {
-      generalStatement: "Taught in German. German A2 to apply (applications without it are rejected), C1 to be admitted; without C1 the university prescribes a supplementary German exam at the VWU preparatory programme.",
-    },
-    documents: [
-      doc("univie-apply", "Apply in u:space, 31 May – 28 June 2027", "Create a u:account, apply in u:space and upload your passport or ID. Non-EU/EEA citizens apply for winter 2027/28 between 31 May and 28 June 2027.", "always", "application", ["univie-deadlines-2027", "univie-non-eu-steps"], "31 May – 28 June 2027"),
-      doc("univie-certificate", "School-leaving certificate, translated and legalised", "All pages in one PDF with translation and legalisation, plus proof of a national university entrance exam if your country has one, and the list of subjects (Stundentafel) with translation.", "foreign-education", "application", ["univie-non-eu-steps", "univie-legalisation"]),
-      doc("univie-german-a2", "German at A2 or higher", "Proof of German at A2 with the application (certificate under two years old); C1 is needed for admission.", "foreign-language-test", "application", ["univie-german"]),
-    ],
-    minimumRequirements: [
-      { id: "univie-law-admission", title: "Admission letter and admission period", description: "The admission letter comes by email and in u:space and lists any supplementary exams. Admission period 12 July – 31 October 2027. No entrance exam.", sourceIds: ["univie-non-eu-steps", "univie-deadlines-2027"] },
-      { id: "univie-legal-groups", title: "Legalisation by country", description: "No legalisation for EU/EEA and Swiss documents (and, for example, the USA and UK); an apostille for many countries (China also needs APS); full diplomatic legalisation for others such as Egypt, Iran, Nigeria and Thailand. Translations only into German or English by a court-certified translator, kept attached.", sourceIds: ["univie-legalisation"] },
-      { id: "univie-tuition", title: "Tuition for non-EU/EEA students", description: "€726.72 a semester plus the Students' Union fee of €26.20.", sourceIds: ["univie-tuition"] },
-    ],
-    sources: univieSources,
-    genericRules: {
-      language: {
-        code: "de",
-        name: "German",
-        minimumLevel: "C1",
-        exemptCitizenships: [],
-        exemptSchools: ["AT", "DE"],
-        proof: "A2 with the application, C1 for admission (a German-language school certificate counts as proof); without C1, a supplementary German exam at the VWU.",
-        sourceIds: ["univie-german"],
-      },
-      recognition: {
-        exemptSchools: austria,
-        text: "Upload the translated and legalised school-leaving certificate, entrance-exam proof and subject list; the admission letter names any supplementary exams.",
-        sourceIds: ["univie-non-eu-steps", "univie-legalisation"],
-      },
-      entrance: {
-        label: "No entrance exam",
-        dueLabel: "Admission 12 July – 31 October 2027",
-        text: "Law has no entrance exam: the University of Vienna checks your documents and German, then admits you in the admission period.",
-        sourceIds: ["univie-deadlines-2027", "univie-non-eu-steps"],
-      },
-    },
-  },
-  [{ id: "univie-law-mag-2027", programName: "Law (Diploma programme)", localProgramName: "Diplomstudium Rechtswissenschaften" }],
-);
-
-export const verifiedAustriaPrograms: readonly AdmissionProgram[] = [...wu, ...univieLaw];
+export const verifiedAustriaPrograms: readonly AdmissionProgram[] = [...wu];

@@ -121,10 +121,10 @@ test("1. LF UK: a Slovak maturita covers Czech C1 and needs no recognition", () 
   assert.ok(ua.requiredDocuments.some((item) => item.id === "lf1-czech-c1"));
 });
 
-test("11 programmes in the Netherlands, Austria and Germany verified on 2026-11-26", () => {
-  assert.equal(europe.length, 11);
+test("10 programmes in the Netherlands, Austria and Germany verified on 2026-11-26", () => {
+  assert.equal(europe.length, 10);
   const byCountry = (code: string) => europe.filter((program) => program.countryCode === code).length;
-  assert.deepEqual([byCountry("NL"), byCountry("AT"), byCountry("DE")], [6, 2, 3]);
+  assert.deepEqual([byCountry("NL"), byCountry("AT"), byCountry("DE")], [6, 1, 3]);
   for (const program of europe) {
     assert.equal(program.verifiedAt, "2026-11-26", program.id);
     assert.ok(program.application.deadline > today, `${program.id}: deadline must be ahead`);

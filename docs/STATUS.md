@@ -69,7 +69,7 @@ page `/route/guide`, 2026-10-30).
 
 Owner request 2026-11-26: "check all those countries [Germany, Denmark,
 Netherlands, Austria] and verify them in one merge". 40 candidates checked
-on official university, portal and government pages; 11 became verified
+on official university, portal and government pages; 10 became verified
 routes (policy `generic-2027`, `verifiedAt` 2026-11-26), new files
 `src/data/verified-programs-{nl,at,de}.ts` and `verified-europe-helpers.ts`.
 
@@ -77,9 +77,12 @@ routes (policy `generic-2027`, `verifiedAt` 2026-11-26), new files
   International & European Law, Twente Technical Computer Science, VU
   Computer Science, Erasmus IBEB. Residence: official-link checklist (EU
   Immigration Portal), no DocRoute route.
-- Austria (2): WU BBE (2027/28 selection published), University of Vienna
-  law (Diplomstudium, WS 2027/28 deadlines published). Residence: the
-  checked Austrian student-permit route.
+- Austria (1): WU BBE (2027/28 selection published). Residence: the
+  checked Austrian student-permit route. University of Vienna law was
+  verified and taken out again in review: it has its own 2027/28 entrance
+  procedure page (aufnahmeverfahren.univie.ac.at/rechtswissenschaften,
+  reportedly registration 1 March – 4 May 2027 and a test on 13 July 2027)
+  that still needs checking.
 - Germany (3): Saarland Computer Science (FAQ names the 2027 intake),
   Constructor University Computer Science (Fall 2027 rounds), Frankfurt
   School BBA (2027 deadline and Assessment Centre dates). Residence: the
@@ -606,7 +609,7 @@ profile statuses; example cards are labelled "Example").
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
 | Current Slovak residents | Study residence (report new studies, gap, renewal), other purpose (change of purpose to study), permanent/long-term (no new application) | 2026-10-28 |
 | Admission | Slovakia and Czechia · 2027/28 · Medicine 15, Law 7, Economics & Business 15, Computer Science +2 programmes (`src/data/verified-programs-fields.ts`, `src/data/verified-programs-sk-cz.ts`), policy `generic-2027` | 2026-11-05 |
-| Admission | Netherlands (6), Austria (2), Germany (3) · 2027/28 · see "Netherlands, Austria and Germany verified" above (`src/data/verified-programs-nl.ts`, `-at.ts`, `-de.ts`) | 2026-11-26 |
+| Admission | Netherlands (6), Austria (1), Germany (3) · 2027/28 · see "Netherlands, Austria and Germany verified" above (`src/data/verified-programs-nl.ts`, `-at.ts`, `-de.ts`) | 2026-11-26 |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
 
 The catalog (`src/data/universities.json`, 2,598 institutions in 46

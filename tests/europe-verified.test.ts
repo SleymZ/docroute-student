@@ -54,21 +54,6 @@ test("Constructor University: the German visa route; a later round stays open af
   assert.equal(matchProgram(applicant, program, "2027-03-01").canBuildRoute, true);
 });
 
-test("Vienna law asks for German, an EU citizen gets EU rules instead of a permit", () => {
-  const program = findVerifiedProgram("univie-law-mag-2027")!;
-  const noGerman = matchProgram(profile({ destinationCountryCode: "AT", studyCategory: "Law" }), program, today);
-  assert.notEqual(noGerman.checks.find((item) => item.id === "language")!.status, "met");
-  const eu = profile({
-    destinationCountryCode: "AT",
-    studyCategory: "Law",
-    citizenshipCountryCode: "SK",
-    currentResidenceStatus: "eu-eea-swiss-passport",
-    languages: [{ code: "de", level: "C1", willingToStudyIn: true, proof: "certificate" }],
-  });
-  const route = buildRoutePreview(eu, matchProgram(eu, program, today));
-  if (route) assert.ok(!route.sources.some((source) => source.id === "at-oead-student-permit"));
-});
-
 test("the newly verified strip leads with the 2026-11-26 programmes", () => {
   assert.ok(recentlyVerified.length >= 3 && recentlyVerified.length <= 5);
   for (const entry of recentlyVerified) assert.ok(findVerifiedProgram(entry.programId), entry.programId);
