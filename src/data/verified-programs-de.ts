@@ -179,7 +179,7 @@ const frankfurtSchool = programs(
     documents: [
       doc("fs-apply", "Online application and €100 fee", "Apply online with your school diploma (your last two upper-secondary reports are enough at first), CV, passport or ID and an optional motivation letter (up to 500 words). The €100 fee is paid before processing. Rolling admission until 30 June 2027.", "always", "application", ["fs-bba-2027"]),
       doc("fs-ac", "Online Assessment Centre", "Quantitative, figural and verbal reasoning tests, graph and table analysis, an English assessment and a structured interview. Dates: 20 January, 17 February and 17 March 2027 (more to follow); apply at least two weeks before your date.", "entrance-exam", "admission-day", ["fs-bba-2027"], "20 January, 17 February or 17 March 2027"),
-      doc("fs-diploma", "Recognised school-leaving certificate", "A recognised school-leaving certificate such as the Abitur or IB Diploma, by enrolment.", "graduating-this-year", "enrolment", ["fs-bba-2027"]),
+      doc("fs-diploma", "Recognised school-leaving certificate", "A recognised school-leaving certificate such as the Abitur or IB Diploma, by enrolment.", "always", "enrolment", ["fs-bba-2027"]),
     ],
     minimumRequirements: [
       { id: "fs-fees", title: "Tuition €8,600 a semester", description: "Seven full-time semesters (210 ECTS), the 5th abroad with an internship. €100 application fee and €600 enrolment fee.", sourceIds: ["fs-bba-2027"] },

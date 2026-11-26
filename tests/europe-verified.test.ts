@@ -83,3 +83,9 @@ test("Frankfurt School tests English itself; Twente needs proof even from Canada
   const canada = matchProgram(profile({ educationCountryCode: "CA" }), twente, today);
   assert.ok(canada.requiredDocuments.some((item) => item.id === "utwente-english"));
 });
+
+test("Erasmus keeps the certified-copy task for earlier graduates", () => {
+  const program = findVerifiedProgram("eur-ibeb-bsc-2027")!;
+  const applicant = profile({ studyCategory: "Economics & Business", educationStatus: "completed" });
+  assert.ok(matchProgram(applicant, program, today).requiredDocuments.some((item) => item.id === "eur-certified"));
+});
