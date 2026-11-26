@@ -27,7 +27,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/deadlines" },
 };
 
-const COUNTRY_NAMES: Record<string, string> = { SK: "Slovakia", CZ: "Czechia" };
+const COUNTRY_NAMES: Record<string, string> = {
+  SK: "Slovakia",
+  CZ: "Czechia",
+  NL: "Netherlands",
+  AT: "Austria",
+  DE: "Germany",
+};
 const FIELD_SLUGS: Record<string, (typeof DEADLINE_FIELDS)[number]> = {
   cs: "Computer Science",
   medicine: "Medicine",

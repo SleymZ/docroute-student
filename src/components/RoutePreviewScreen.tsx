@@ -337,7 +337,9 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                 }
               : {})}
             unavailableReason={
-              thirdCountry
+              !czechRoute && program?.countryCode !== "SK"
+                ? "Dated residence planning is available for Slovakia and Czechia. For this country, follow the residence steps below."
+                : thirdCountry
                 ? null
                 : "Your profile does not use the third-country student residence procedure, so there are no residence deadlines to plan. See the residence stage below."
             }

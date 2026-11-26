@@ -105,3 +105,8 @@ test("each deadline card opens its own programme and offers the route for it", (
   const medicine = rows.find((row) => row.faculty.startsWith("Faculty of Medicine (LF UK Bratislava)"));
   assert.ok(medicine?.universityHref.includes("programId=uniba-lf-"), medicine?.universityHref);
 });
+
+test("the deadlines page names and filters the five verified countries", () => {
+  const page = read("src/app/deadlines/page.tsx");
+  for (const code of ["SK", "CZ", "NL", "AT", "DE"]) assert.match(page, new RegExp(`${code}: "`));
+});
