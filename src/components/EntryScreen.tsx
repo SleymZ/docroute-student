@@ -208,7 +208,7 @@ export async function EntryScreen() {
                 <span className={styles.purposeText}>
                   <strong>{label}</strong>
                   {purpose === "study" ? (
-                    <span>{verifiedPrograms.length} verified programmes in Slovakia and Czechia</span>
+                    <span>{verifiedPrograms.length} verified programmes in 5 European countries</span>
                   ) : (
                     <span>{detail}</span>
                   )}

@@ -31,7 +31,7 @@ test("the deadlines list shows every verified programme once, soonest first", ()
     assert.ok(row.daysLeft >= 0);
     assert.match(row.applicationUrl, /^https:\/\//);
     assert.match(row.checkedAt, /^\d{4}-\d{2}-\d{2}$/);
-    assert.ok(row.countryCode === "SK" || row.countryCode === "CZ");
+    assert.ok(["SK", "CZ", "NL", "AT", "DE"].includes(row.countryCode), row.countryCode);
   }
 });
 
@@ -104,4 +104,9 @@ test("each deadline card opens its own programme and offers the route for it", (
   // Comenius medicine (the first card in November) must open medicine, not computer science.
   const medicine = rows.find((row) => row.faculty.startsWith("Faculty of Medicine (LF UK Bratislava)"));
   assert.ok(medicine?.universityHref.includes("programId=uniba-lf-"), medicine?.universityHref);
+});
+
+test("the deadlines page names and filters the five verified countries", () => {
+  const page = read("src/app/deadlines/page.tsx");
+  for (const code of ["SK", "CZ", "NL", "AT", "DE"]) assert.match(page, new RegExp(`${code}: "`));
 });

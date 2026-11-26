@@ -65,6 +65,57 @@ page `/route/guide`, 2026-10-30).
   owner checked on production (2026-11-01): publishing a story on
   `/stories/review`, editing a story and uploading an avatar all work.
 
+## Netherlands, Austria and Germany verified (2026-11-26)
+
+Owner request 2026-11-26: "check all those countries [Germany, Denmark,
+Netherlands, Austria] and verify them in one merge". 40 candidates checked
+on official university, portal and government pages; 10 became verified
+routes (policy `generic-2027`, `verifiedAt` 2026-11-26), new files
+`src/data/verified-programs-{nl,at,de}.ts` and `verified-europe-helpers.ts`.
+
+- Netherlands (6): TU Delft CSE, Groningen Computing Science, Groningen
+  International & European Law, Twente Technical Computer Science, VU
+  Computer Science, Erasmus IBEB. Residence: official-link checklist (EU
+  Immigration Portal), no DocRoute route.
+- Austria (1): WU BBE (2027/28 selection published). Residence: the
+  checked Austrian student-permit route. University of Vienna law was
+  verified and taken out again in review: it has its own 2027/28 entrance
+  procedure page (aufnahmeverfahren.univie.ac.at/rechtswissenschaften,
+  reportedly registration 1 March – 4 May 2027 and a test on 13 July 2027)
+  that still needs checking.
+- Germany (3): Saarland Computer Science (FAQ names the 2027 intake),
+  Constructor University Computer Science (Fall 2027 rounds), Frankfurt
+  School BBA (2027 deadline and Assessment Centre dates). Residence: the
+  checked German student-visa route.
+- Verified routes outside Slovakia and Czechia now take their residence
+  part from `studyResidenceForProgram` (full-path.ts): the checked route
+  for AT/DE/PL/CH, otherwise the official-link checklist
+  (`build-route-preview.ts`).
+- Removed from "coming soon": the 9 verified listings plus Twente Business
+  & IT (Twente computing is now covered by the verified TCS route; one
+  scope per university and field).
+- Still "coming soon", with the reason: TU/e CSE and UvA EBE (English
+  minimum and fee not on a readable official page), TUM and KIT informatics
+  and Charité (15 July deadline without a year, German level not named),
+  TU Wien, Vienna, Graz, Innsbruck, Salzburg informatics and JKU AI (only
+  2026/27 dates), MedUni Wien (MedAT 2027 dates provisional), ITU GBI
+  (no 2027 dates; tuition for 2026 admits; no English minimum).
+- Not added (owner's extra candidates whose pages did not give the 2027
+  rules): Maastricht European Law School (no English minimum or fee
+  amount), MedUni Innsbruck (MedAT provisional), TUM Management &
+  Technology, RWTH, Heidelberg, Humboldt law (no year), Bucerius (page not
+  reachable), CBS programmes, Aarhus, Copenhagen and Aarhus medicine and
+  law (CBS pages describe 2024 admission; no 2027 fees or English
+  minimums found). Denmark: 0 verified.
+- Rule used for German pages: a deadline without a year is not treated as
+  published for 2027/28 (only pages that name 2027 count).
+- Newly verified strip: TU Delft, Erasmus IBEB, WU BBE, Groningen IEL,
+  Constructor (stacked on PR #118).
+- Copy: "Slovakia and Czechia" now reads "5 European countries" or lists
+  the five countries (entry page, home, explore, how it works, deadlines);
+  translated in ru/es/zh/hi. Programme texts stay in English like the
+  earlier batches (TranslationNotice).
+
 ## Newly verified strip (2026-11-24)
 
 Owner request 2026-11-24: a bar with the newest verified universities on
@@ -558,6 +609,7 @@ profile statuses; example cards are labelled "Example").
 | EU/EEA/Swiss residence | Slovakia: notice of stay, registration, optional card, duties, for study and work (`src/data/slovakia-residents.ts`) | 2026-10-28 |
 | Current Slovak residents | Study residence (report new studies, gap, renewal), other purpose (change of purpose to study), permanent/long-term (no new application) | 2026-10-28 |
 | Admission | Slovakia and Czechia · 2027/28 · Medicine 15, Law 7, Economics & Business 15, Computer Science +2 programmes (`src/data/verified-programs-fields.ts`, `src/data/verified-programs-sk-cz.ts`), policy `generic-2027` | 2026-11-05 |
+| Admission | Netherlands (6), Austria (1), Germany (3) · 2027/28 · see "Netherlands, Austria and Germany verified" above (`src/data/verified-programs-nl.ts`, `-at.ts`, `-de.ts`) | 2026-11-26 |
 | Other countries, fields, degrees, intakes | Not verified; shown as "Verification pending" | — |
 
 The catalog (`src/data/universities.json`, 2,598 institutions in 46

@@ -481,7 +481,7 @@ export default function HowItWorksPage() {
                 <li>
                   <strong>{availablePurposes.join(", ")}</strong>
                   <span>
-                    Study: verified admission in Slovakia and Czechia, official
+                    Study: verified admission in Slovakia, Czechia, the Netherlands, Austria and Germany, official
                     rules checked in {new Set(pendingProgramGroups.map((group) => group.countryCode)).size}{" "}
                     countries. Work, family and business: verified for Slovakia,
                     Czechia and Austria; official-link checklists for the

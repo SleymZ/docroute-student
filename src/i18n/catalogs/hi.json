@@ -2409,5 +2409,19 @@
 "In English": "अंग्रेज़ी में",
 "Apply by {0}": "{0} तक आवेदन करें",
 "Newly verified": "हाल ही में सत्यापित",
-"Newly verified programmes": "हाल ही में सत्यापित प्रोग्राम"
+"Newly verified programmes": "हाल ही में सत्यापित प्रोग्राम",
+"{0} verified programmes in 5 European countries": "5 यूरोपीय देशों में {0} सत्यापित प्रोग्राम",
+"Application deadlines 2027/28 in 5 European countries": "5 यूरोपीय देशों में आवेदन की अंतिम तिथियाँ 2027/28",
+"<0/>Application deadlines 2027/28 in 5 European countries<1/>": "<0/>5 यूरोपीय देशों में आवेदन की अंतिम तिथियाँ 2027/28<1/>",
+"universities in 5 European countries": "विश्वविद्यालय, 5 यूरोपीय देशों में",
+"Applying to a university in Slovakia, Czechia, the Netherlands, Austria or Germany from outside the EU? See which documents you need and the deadline for each one, from the application to the residence permit. Every rule links to its official source. Free.": "EU के बाहर से स्लोवाकिया, चेकिया, नीदरलैंड, ऑस्ट्रिया या जर्मनी के किसी विश्वविद्यालय में आवेदन कर रहे हैं? देखें कि आपको कौन-से दस्तावेज़ चाहिए और हर एक की अंतिम तिथि क्या है, आवेदन से लेकर निवास परमिट तक। हर नियम उसके आधिकारिक स्रोत से जुड़ा है। मुफ़्त।",
+"Study routes are verified for Slovakia, Czechia, the Netherlands, Austria and Germany. For work, family and business there are checklists for Slovakia, Czechia and Austria, and official links for the other EU countries and Switzerland.": "पढ़ाई के रूट स्लोवाकिया, चेकिया, नीदरलैंड, ऑस्ट्रिया और जर्मनी के लिए सत्यापित हैं। काम, परिवार और व्यवसाय के लिए स्लोवाकिया, चेकिया और ऑस्ट्रिया की चेकलिस्ट हैं, और बाकी EU देशों व स्विट्ज़रलैंड के लिए आधिकारिक लिंक।",
+"Study: verified admission in Slovakia, Czechia, the Netherlands, Austria and Germany, official rules checked in {0} countries. Work, family and business: verified for Slovakia, Czechia and Austria; official-link checklists for the other EU countries and Switzerland.": "पढ़ाई: स्लोवाकिया, चेकिया, नीदरलैंड, ऑस्ट्रिया और जर्मनी में सत्यापित प्रवेश, {0} देशों में आधिकारिक नियम जाँचे गए। काम, परिवार और व्यवसाय: स्लोवाकिया, चेकिया और ऑस्ट्रिया के लिए सत्यापित; बाकी EU देशों और स्विट्ज़रलैंड के लिए आधिकारिक लिंक वाली चेकलिस्ट।",
+"University application deadlines 2027/28 in Slovakia, Czechia, the Netherlands, Austria and Germany": "स्लोवाकिया, चेकिया, नीदरलैंड, ऑस्ट्रिया और जर्मनी में विश्वविद्यालय आवेदन की अंतिम तिथियाँ 2027/28",
+"Verified 2027/28 application deadlines for bachelor's and long-cycle programmes in Slovakia, Czechia, the Netherlands, Austria and Germany (computer science, medicine, law, economics), with days left, fees and the official page for each faculty.": "स्लोवाकिया, चेकिया, नीदरलैंड, ऑस्ट्रिया और जर्मनी में बैचलर और लंबे-चक्र प्रोग्रामों (कंप्यूटर साइंस, मेडिसिन, क़ानून, अर्थशास्त्र) की सत्यापित 2027/28 आवेदन अंतिम तिथियाँ, बचे दिनों, शुल्क और हर फ़ैकल्टी के आधिकारिक पेज के साथ।",
+"Bachelor's and long-cycle programmes in Slovakia, Czechia, the Netherlands, Austria and Germany whose 2027/28 admission rules we read line by line. Each date links to the faculty's own page and shows when we checked it. The university always decides; open its page before you apply.": "स्लोवाकिया, चेकिया, नीदरलैंड, ऑस्ट्रिया और जर्मनी के बैचलर और लंबे-चक्र प्रोग्राम, जिनके 2027/28 प्रवेश नियम हमने पंक्ति-दर-पंक्ति पढ़े। हर तिथि फ़ैकल्टी के अपने पेज से जुड़ी है और दिखाती है कि हमने उसे कब जाँचा। फ़ैसला हमेशा विश्वविद्यालय करता है; आवेदन से पहले उसका पेज खोलें।",
+"This programme now has a verified route": "इस प्रोग्राम का अब सत्यापित रूट है",
+"DocRoute has checked the 2027/28 rules of {0}. Open the programme to build your personal route with every document and date.": "DocRoute ने {0} के 2027/28 नियम जाँच लिए हैं। हर दस्तावेज़ और तिथि के साथ अपना निजी रूट बनाने के लिए प्रोग्राम खोलें।",
+"Open the verified programme": "सत्यापित प्रोग्राम खोलें",
+"Dated residence planning is available for Slovakia and Czechia. For this country, follow the residence steps below.": "तिथियों के साथ निवास योजना स्लोवाकिया और चेकिया के लिए उपलब्ध है। इस देश के लिए नीचे दिए गए निवास चरणों का पालन करें।"
 }

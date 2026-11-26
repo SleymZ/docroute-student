@@ -144,6 +144,11 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
     if (!profile || !program || !route || !thirdCountry || !moveDate) {
       return null;
     }
+    // Only Slovakia and Czechia have a dated residence planner; other
+    // countries' routes show their steps without computed dates.
+    if (!czechRoute && program.countryCode !== "SK") {
+      return null;
+    }
 
     if (czechRoute) {
       return planCzechiaDeadlines(czechRoute, moveDate, asOfDate, program.application.admissionDate);
@@ -332,7 +337,9 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
                 }
               : {})}
             unavailableReason={
-              thirdCountry
+              !czechRoute && program?.countryCode !== "SK"
+                ? "Dated residence planning is available for Slovakia and Czechia. For this country, follow the residence steps below."
+                : thirdCountry
                 ? null
                 : "Your profile does not use the third-country student residence procedure, so there are no residence deadlines to plan. See the residence stage below."
             }

@@ -238,8 +238,6 @@ test("German entries never match", () => {
   assert.deepEqual(german.map((group) => group.id), [
     "tum-informatics-bsc-2027",
     "kit-informatics-bsc-2027",
-    "saarland-cs-bsc-2027",
-    "constructor-cs-bsc-2027",
   ]);
   assert.equal(findVerifiedProgram("tum-informatics-bsc-2027"), null);
 });
@@ -350,13 +348,12 @@ test("European listings cover many countries, each with sources on the universit
 test("Dutch computing listings are found from a Netherlands profile", () => {
   const nl = findPendingProgramGroups({ countryCode: "NL", category: "Computer Science", degreeLevel: "bachelor", intake: "2027/28" });
   assert.deepEqual(nl.map((group) => group.id), [
-    "tudelft-cse-bsc-2027",
     "tue-cse-bsc-2027",
-    "rug-cs-bsc-2027",
-    "utwente-tcs-bsc-2027",
-    "vu-cs-bsc-2027",
-    "utwente-bit-bsc-2027",
   ]);
+  // Verified on 2026-11-26 (TU Delft, Groningen, Twente, VU): no longer listed.
+  for (const id of ["tudelft-cse-bsc-2027", "rug-cs-bsc-2027", "utwente-tcs-bsc-2027", "vu-cs-bsc-2027"]) {
+    assert.ok(findVerifiedProgram(id), id);
+  }
 });
 
 test("Switzerland: ETH, EPFL, UZH, Bern and Basel are coming-soon computing listings with the latest published rules", () => {

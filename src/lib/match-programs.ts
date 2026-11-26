@@ -455,6 +455,16 @@ function matchGeneric(
           : `Your school in ${school} is exempt from the ${language.name} proof (if your school did not teach in ${language.name} or a language the faculty accepts, ask the faculty).`,
         language.sourceIds,
       );
+    } else if (language.assessedByUniversity) {
+      const enough = reachesLevel(bestLanguage(profile, [language.code]), language.minimumLevel);
+      push(
+        "language",
+        `${language.name} at ${language.minimumLevel}, tested by the university`,
+        enough ? "action" : "missing",
+        language.proof,
+        language.sourceIds,
+      );
+      nextActions.push(`Prepare for the university's ${language.name} assessment.`);
     } else {
       needsLanguageProof = true;
       const enough = reachesLevel(bestLanguage(profile, [language.code]), language.minimumLevel);

@@ -185,7 +185,7 @@ test("the official lists are consistent", () => {
 });
 
 test("the full study path adds the Indian stage before residence", () => {
-  const group = findFullPathGroup("tudelft-cse-bsc-2027")!;
+  const group = findFullPathGroup("tue-cse-bsc-2027")!;
   const path = buildFullPath(group, { citizenshipCountryCode: "IN", currentResidenceStatus: "non-eu-passport-no-residence" });
   const ids = path.stages.map((stage) => stage.id);
   assert.ok(ids.indexOf("citizenship-in") >= 0 && ids.indexOf("citizenship-in") < ids.indexOf("residence"));

@@ -22,11 +22,13 @@ import {
   buildFullPath,
   countryLabel,
   findFullPathGroup,
+  promotedFullPathProgram,
   fullPathHref,
   parseFullPathAnswers,
   type FullPathAnswers,
 } from "@/lib/full-path";
 import { getResidenceStatusLabel } from "@/lib/profile-options";
+import { programmeHref } from "@/lib/deadline-list";
 import { formatPlanDate } from "@/lib/residence/deadlines";
 import { currentResidenceStatuses, type CurrentResidenceStatus } from "@/types/admission";
 import type { RouteTaskStatus } from "@/types/route-preview";
@@ -145,6 +147,25 @@ export function FullPathScreen({ asOfDate }: { asOfDate: string }) {
       <span>Full study path</span>
     </nav>
   );
+
+  const promoted = group ? null : promotedFullPathProgram(searchParams.get("group"));
+  if (!group && promoted) {
+    return (
+      <div className={styles.page}>
+        {breadcrumb}
+        <section className={styles.intro}>
+          <h1>This programme now has a verified route</h1>
+          <p>
+            DocRoute has checked the 2027/28 rules of {promoted.universityName}. Open the programme to
+            build your personal route with every document and date.
+          </p>
+          <p>
+            <Link href={programmeHref(promoted)}>Open the verified programme</Link>
+          </p>
+        </section>
+      </div>
+    );
+  }
 
   if (!group) {
     return (

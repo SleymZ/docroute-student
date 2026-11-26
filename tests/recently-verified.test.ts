@@ -22,17 +22,15 @@ test("the newly verified strip lists 3–5 real verified programmes, newest firs
 test("each card opens its programme and shows the round still open", () => {
   const cards = recentlyVerifiedCards("2026-11-24");
   assert.equal(cards.length, recentlyVerified.length);
-  const bratislava = cards.find((card) => card.id === "uniba-lf-medicine-en-2027")!;
-  assert.equal(bratislava.deadline, "2027-02-21");
-  assert.equal(bratislava.english, true);
-  assert.match(bratislava.href, /^\/universities\/.+\?programId=uniba-lf-medicine-en-2027$/);
-  // A programme taught in three languages is not "In English".
-  const law = cards.find((card) => card.id === "upjs-pf-law-trilingual-bc-2027")!;
-  assert.equal(law.english, false);
-  assert.deepEqual(law.languages, ["SK", "EN", "FR"]);
+  const delft = cards.find((card) => card.id === "tudelft-cse-bsc-2027")!;
+  assert.equal(delft.deadline, "2027-01-15");
+  assert.equal(delft.english, true);
+  assert.equal(delft.countryCode, "NL");
+  assert.match(delft.href, /^\/universities\/.+\?programId=tudelft-cse-bsc-2027$/);
   // After the main deadline the later round is shown; after every round, none.
-  assert.equal(recentlyVerifiedCards("2027-03-01").find((card) => card.id === bratislava.id)!.deadline, "2027-07-25");
-  assert.equal(recentlyVerifiedCards("2027-12-01").find((card) => card.id === bratislava.id)!.deadline, null);
+  const constructor = "constructor-cs-bsc-2027";
+  assert.equal(recentlyVerifiedCards("2027-03-01").find((card) => card.id === constructor)!.deadline, "2027-07-31");
+  assert.equal(recentlyVerifiedCards("2027-12-01").find((card) => card.id === constructor)!.deadline, null);
 });
 
 test("the strip is on the entry page and on /home", () => {

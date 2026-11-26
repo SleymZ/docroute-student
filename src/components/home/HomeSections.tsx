@@ -77,7 +77,7 @@ export function HomeProof({ placement, today }: { placement: "hero" | "below"; t
       </li>
       <li>
         <strong>{universities}</strong>
-        <span>universities in Slovakia and Czechia</span>
+        <span>universities in 5 European countries</span>
       </li>
       <li>
         <strong>{deadlines.length}</strong>
@@ -268,7 +268,7 @@ export function HomeSections({ today, locale }: { today: string; locale: Locale 
           <details>
             <summary>Which countries are covered?</summary>
             <p>
-              Study routes are verified for Slovakia and Czechia. For work, family and business there are
+              Study routes are verified for Slovakia, Czechia, the Netherlands, Austria and Germany. For work, family and business there are
               checklists for Slovakia, Czechia and Austria, and official links for the other EU countries and
               Switzerland.
             </p>

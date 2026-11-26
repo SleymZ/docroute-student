@@ -212,8 +212,8 @@ export function RoutePlanner({
         </h1>
 
         <p className="hero-description">
-          Applying to a university in Slovakia or Czechia from outside
-          the EU? See which documents you need and the deadline for each
+          Applying to a university in Slovakia, Czechia, the Netherlands,
+          Austria or Germany from outside the EU? See which documents you need and the deadline for each
           one, from the application to the residence permit. Every rule
           links to its official source. Free.
         </p>

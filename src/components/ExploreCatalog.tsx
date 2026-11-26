@@ -288,7 +288,7 @@ export function ExploreCatalog() {
 
           <Link href="/deadlines" className={styles.atlasTopLink}>
             <CalendarClock size={15} aria-hidden="true" />
-            Application deadlines 2027/28 in Slovakia and Czechia
+            Application deadlines 2027/28 in 5 European countries
             <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
