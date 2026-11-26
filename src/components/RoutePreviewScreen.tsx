@@ -144,6 +144,11 @@ export function RoutePreviewScreen({ asOfDate }: { asOfDate: string }) {
     if (!profile || !program || !route || !thirdCountry || !moveDate) {
       return null;
     }
+    // Only Slovakia and Czechia have a dated residence planner; other
+    // countries' routes show their steps without computed dates.
+    if (!czechRoute && program.countryCode !== "SK") {
+      return null;
+    }
 
     if (czechRoute) {
       return planCzechiaDeadlines(czechRoute, moveDate, asOfDate, program.application.admissionDate);

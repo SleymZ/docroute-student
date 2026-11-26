@@ -52,8 +52,17 @@ const saarland = programs(
     ],
     sources: saarSources,
     genericRules: {
-      language: null,
-      languageUnknownNote: "Saarland asks for an English certificate (IELTS, TOEFL, Cambridge or PTE) but states no minimum score; it recommends B2 (advanced).",
+      // The FAQ requires a certificate but names no minimum score; the
+      // programme page recommends B2 (advanced), so the route asks for one.
+      language: {
+        code: "en",
+        name: "English",
+        minimumLevel: "B2",
+        exemptCitizenships: [],
+        exemptSchools: [],
+        proof: "An IELTS Academic, TOEFL iBT or Essential, Cambridge or PTE Academic certificate unless you are a native speaker. No minimum score is stated; the programme page recommends B2 (advanced).",
+        sourceIds: ["saar-cs-faq", "saar-cs-programme"],
+      },
       recognition: {
         exemptSchools: germany,
         text: "Your certificate must give direct access to German universities (anabin “Direkter Zugang (für alle Fächer)”); Studienkolleg-level qualifications do not qualify.",

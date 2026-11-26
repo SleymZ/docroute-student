@@ -74,3 +74,10 @@ test("the newly verified strip leads with the 2026-11-26 programmes", () => {
   for (const entry of recentlyVerified) assert.ok(findVerifiedProgram(entry.programId), entry.programId);
   assert.equal(recentlyVerified[0].addedOn, "2026-11-26");
 });
+
+test("Saarland keeps the English certificate task although no score is stated", () => {
+  const program = findVerifiedProgram("saarland-cs-bsc-2027")!;
+  const applicant = profile({ destinationCountryCode: "DE", languages: [] });
+  const match = matchProgram(applicant, program, today);
+  assert.ok(match.requiredDocuments.some((item) => item.id === "saar-english"));
+});

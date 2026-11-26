@@ -96,7 +96,7 @@ const rugDiplomaDoc = doc("rug-diploma", "Diploma or school statement, and trans
 
 const rugCsSources = [
   source("rug-cs-programme", "BSc Computing Science: admission (2027-2028)", "University of Groningen", "https://www.rug.nl/bachelors/computing-science/?lang=en"),
-  source("rug-fse-language", "Language requirements for English-taught bachelor's (2025-2026 page)", "Faculty of Science and Engineering, University of Groningen", "https://www.rug.nl/fse/education/admission-application/apply-bsc/language?lang=en"),
+  source("rug-language-2027", "English language requirements, bachelor's (2027/28)", "University of Groningen", "https://www.rug.nl/education/application-enrolment-tuition-fees/admission/non-dutch-qualification/language-requirement"),
   ...rugShared,
 ];
 
@@ -121,12 +121,12 @@ const rugCs = programs(
       languageProofDueLabel: "With the application by 1 May 2027",
     },
     languagePolicy: {
-      generalStatement: "Taught in English. The faculty's language page (2025-2026) asks for IELTS Academic 6.5 with 6.5 in every section, TOEFL iBT 90 or Cambridge C1/C2.",
+      generalStatement: "Taught in English. For 2027/28 the Faculty of Science and Engineering asks for CEFR B2: IELTS Academic 6.0 in every section, TOEFL iBT 4.0 per section (old format 80) or Cambridge/Linguaskill 169.",
     },
     documents: [
       rugFeeDoc,
       rugDiplomaDoc,
-      doc("rug-cs-english", "English test result", "IELTS Academic 6.5 (6.5 in each section), TOEFL iBT 90 (reading and listening 21) or Cambridge C1 Advanced or C2 Proficiency; IELTS and TOEFL no more than two years old.", "foreign-language-test", "application", ["rug-fse-language"]),
+      doc("rug-cs-english", "English test result", "IELTS Academic 6.0 overall and in each section, TOEFL iBT 4.0 per section (old format 80: listening 18, reading 18, speaking 20, writing 21) or Cambridge C1/C2 or Linguaskill 169 (listening and reading 162, speaking and writing 165).", "foreign-language-test", "application", ["rug-language-2027"]),
     ],
     minimumRequirements: [
       { id: "rug-cs-deadline", title: "1 May 2027, or Early Bird", description: "Apply by 1 May 2027 for a start on 1 September 2027. Apply between 1 October and 28 February with all documents and you get a decision within 15 working days. No numerus fixus.", sourceIds: ["rug-cs-programme"] },
@@ -141,8 +141,8 @@ const rugCs = programs(
         minimumLevel: "B2",
         exemptCitizenships: [],
         exemptSchools: englishSchoolCountries,
-        proof: "IELTS Academic 6.5 (6.5 per section), TOEFL iBT 90 or Cambridge C1/C2. Exempt: secondary school or a bachelor's in the USA, UK, Ireland, New Zealand, Australia or English-speaking Canada, three A-levels at A*–C, an IB with English as medium, or an EB with English.",
-        sourceIds: ["rug-fse-language"],
+        proof: "IELTS Academic 6.0 in every section, TOEFL iBT 4.0 per section (old format 80) or Cambridge/Linguaskill 169. Exempt: secondary or higher education in a majority English-speaking country, an IB taught in English, three A-levels at A–C, or an EB with English.",
+        sourceIds: ["rug-language-2027"],
       },
       recognition: dutchRecognition(["rug-cs-programme"], "The Admissions Board checks that your diploma equals the Dutch VWO and that your mathematics is sufficient."),
       entrance: {
@@ -159,6 +159,7 @@ const rugCs = programs(
 const rugLawSources = [
   source("rug-iel-programme", "LLB International and European Law: admission (2027-2028)", "University of Groningen", "https://www.rug.nl/bachelors/international-and-european-law/?lang=en"),
   source("rug-iel-requirements", "LLB admission requirements (2026/27 page)", "Faculty of Law, University of Groningen", "https://www.rug.nl/rechten/education/international-programmes/llb/application/admission-requirements"),
+  source("rug-language-2027", "English language requirements, bachelor's (2027/28)", "University of Groningen", "https://www.rug.nl/education/application-enrolment-tuition-fees/admission/non-dutch-qualification/language-requirement"),
   ...rugShared,
 ];
 
@@ -183,12 +184,12 @@ const rugLaw = programs(
       languageProofDueLabel: "Results by 31 August 2027",
     },
     languagePolicy: {
-      generalStatement: "Taught in English. The 2026/27 requirements page asks for IELTS Academic 7.0, TOEFL iBT 100 or Cambridge C1/C2 185, with section minimums.",
+      generalStatement: "Taught in English at CEFR C1 (2027/28): IELTS Academic 7.0 (6.5 per section, 6.0 for listening and reading), TOEFL iBT 5.0 (old format 100) or Cambridge/Linguaskill 185.",
     },
     documents: [
       rugFeeDoc,
       rugDiplomaDoc,
-      doc("rug-iel-english", "English test result", "IELTS Academic 7.0 (listening 6.0, speaking 6.5, reading 6.0, writing 6.5), TOEFL iBT 100 (5 on the new scale) or Cambridge C1/C2 185. You may apply before you have it; results must arrive by 31 August.", "foreign-language-test", "enrolment", ["rug-iel-requirements"], "By 31 August 2027"),
+      doc("rug-iel-english", "English test result", "For 2027/28: IELTS Academic 7.0 (6.5 per section; 6.0 for listening and reading), TOEFL iBT 5.0 in the 2026 format (old format 100 with section minimums) or Cambridge/Linguaskill 185 (176 per section; 169 for listening and reading). You may apply before you have it; the 2026/27 page asks for results by 31 August.", "foreign-language-test", "enrolment", ["rug-language-2027", "rug-iel-requirements"], "By 31 August 2027"),
     ],
     minimumRequirements: [
       { id: "rug-iel-deadline", title: "Studielink and documents before 1 May 2027", description: "Apply in Studielink and upload your documents before 1 May 2027 for a start on 1 September 2027. The matching activity is compulsory; its advice is not binding.", sourceIds: ["rug-iel-programme"] },
@@ -202,9 +203,9 @@ const rugLaw = programs(
         name: "English",
         minimumLevel: "C1",
         exemptCitizenships: [],
-        exemptSchools: [],
-        proof: "IELTS Academic 7.0, TOEFL iBT 100 or Cambridge C1/C2 185 with the section minimums. The Admissions Board decides exemptions (for example native speakers, IB English, three A-levels).",
-        sourceIds: ["rug-iel-requirements"],
+        exemptSchools: ["US", "GB", "IE", "AU"],
+        proof: "IELTS Academic 7.0, TOEFL iBT 5.0 (old format 100) or Cambridge/Linguaskill 185 with the section minimums. Exempt: secondary or higher education in a majority English-speaking country, an IB taught in English, three A-levels at A–C, or an EB with English.",
+        sourceIds: ["rug-language-2027"],
       },
       recognition: dutchRecognition(["rug-iel-requirements"], "An IB, EB or a diploma equivalent to the Dutch VWO; no subject requirements. Not yet graduated: apply with an expected-graduation statement for a conditional admission."),
       entrance: {
