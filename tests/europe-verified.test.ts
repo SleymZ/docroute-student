@@ -81,3 +81,10 @@ test("Saarland keeps the English certificate task although no score is stated", 
   const match = matchProgram(applicant, program, today);
   assert.ok(match.requiredDocuments.some((item) => item.id === "saar-english"));
 });
+
+test("saved full-path links of promoted listings lead to the verified programme", async () => {
+  const { promotedFullPathProgram } = await import("../src/lib/full-path");
+  assert.equal(promotedFullPathProgram("tudelft-cse-bsc-2027")?.id, "tudelft-cse-bsc-2027");
+  assert.equal(promotedFullPathProgram("utwente-bit-bsc-2027")?.id, "utwente-tcs-bsc-2027");
+  assert.equal(promotedFullPathProgram("tue-cse-bsc-2027"), null, "still coming soon");
+});

@@ -12,6 +12,7 @@ import {
 import { slovakiaResidenceRules } from "@/data/slovakia-residence";
 import { slovakiaResidentSources } from "@/data/slovakia-residents";
 import { czechStudyRoute } from "@/lib/build-route-preview";
+import { findVerifiedProgram } from "@/data/verified-programs";
 import { isEuEeaSwissCitizen } from "@/lib/profile-options";
 import { profileForDestination } from "@/lib/route-options";
 import { buildSlovakiaResidenceStage } from "@/lib/residence/slovakia";
@@ -64,6 +65,19 @@ const euCountries = new Set([
 // Country names as they read inside a sentence ("in the Netherlands").
 export function countryLabel(group: Pick<PendingProgramGroup, "countryCode" | "country">) {
   return group.countryCode === "NL" ? "the Netherlands" : group.country;
+}
+
+// Coming-soon listings that became verified routes keep working links
+// (My route stores /route/full?group=<id>). Twente Business & IT was
+// dropped when Twente's Technical Computer Science was verified.
+const promotedGroups: Readonly<Record<string, string>> = {
+  "utwente-bit-bsc-2027": "utwente-tcs-bsc-2027",
+};
+
+/** The verified programme a former coming-soon listing became, if any. */
+export function promotedFullPathProgram(id: string | null) {
+  if (!id || findFullPathGroup(id)) return null;
+  return findVerifiedProgram(promotedGroups[id] ?? id);
 }
 
 export function findFullPathGroup(id: string | null) {
